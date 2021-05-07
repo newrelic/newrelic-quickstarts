@@ -17,7 +17,7 @@ type dashboardWidgetInput = {
     title?: string,
     configuration?: dashboardWidgetConfigurationInput,
     layout?: dashboardWidgetLayoutInput,
-    linkedEntityGuids: unknown[],
+    linkedEntityGuids?: unknown[],
     rawConfiguration?: unknown,
     visualization?: dashboardWidgetVisualizationInput,
 }
@@ -86,7 +86,7 @@ type dashboardWidgetLayoutInput = {
     column?: number,
     height?: number,
     row?: number,
-    widht?: number,
+    width?: number,
 }
 
 type dashboardWidgetVisualizationInput = {
