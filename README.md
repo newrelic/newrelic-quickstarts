@@ -1,8 +1,8 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# [Name of Project] [build badges go here when available]
+# New Relic Observability Packs
 
->[Brief description - what is the project and value does it provide? How often should users expect to get releases? How is versioning set up? Where does this project want to go?]
+The New Relic Observability Pack provides a jump start to getting value from New Relic, for the specific use case an engineer cares about. It includes clear steps for setting up instrumentation, as well as the basic observability building blocks like dashboards & alerts. All of this is available through an open ecosystem where relics, partners and customers contribute their best-practice solutions.
 
 ## Installation
 
