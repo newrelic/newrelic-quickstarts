@@ -90,16 +90,16 @@ See the [versioning documentation](https://github.com/actions/toolkit/blob/maste
 
 ## Validate
 
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
-
-```yaml
-uses: ./
-with:
-  milliseconds: 1000
-```
 
 See the [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
 
 ## Usage:
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+
+### Import dashboard:
+
+To run the import dashboard function from cli, enter the following command:
+```
+npm run import-dashboard -- --accountId=number --nrApiKey=string --pack=string
+```

@@ -1,8 +1,16 @@
+export type importedDashboardBody = {
+    description: string,
+    name: string,
+    pages: dashboardPageInput[],
+    permissions?: string,
+    default: dashboardBody
+}
+
 export type dashboardBody = {
     description: string,
     name: string,
     pages: dashboardPageInput[],
-    permissions: string,
+    permissions?: string,
 }
 
 type dashboardPageInput = {
@@ -61,7 +69,7 @@ type dashboardMarkdownWidgetConfigurationInput = {
 }
 
 type dashboardBillboardWidgetConfigurationInput = {
-    nrqlQueriees: dashboardWidgetNrqlQueryInput[],
+    nrqlQueries: dashboardWidgetNrqlQueryInput[],
     thresholds: dashboardBillboardWidgetThresholdInput[],
 }
 
