@@ -39,32 +39,34 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dashboardImporter = void 0;
 const graphql_request_1 = __webpack_require__(2476);
 const yargs = __importStar(__webpack_require__(9287));
-const process_1 = __webpack_require__(1765);
 const url = 'https://api.newrelic.com/graphql';
 const dashboardImporter = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 0, void 0, function* () {
     if (!accountId && !nrApiKey && !dashboardPack) {
-        const argv = yargs.options({
+        const args = yargs.options({
             accountId: {
                 alias: 'id',
                 demandOption: true,
+                type: 'number',
                 description: 'NR account id'
             },
             nrApiKey: {
                 alias: 'key',
                 demandOption: true,
+                type: 'string',
                 description: 'NR API Key'
             },
             dashboardPack: {
                 alias: 'pack',
                 demandOption: true,
+                type: 'string',
                 description: 'NR API Key'
-            },
+            }
         }).argv;
-        accountId = argv.accountId;
-        nrApiKey = argv.nrApiKey;
-        dashboardPack = argv.dashboardPack;
+        console.log(args);
+        accountId = args.accountId;
+        nrApiKey = args.nrApiKey;
+        dashboardPack = args.dashboardPack;
     }
-    console.log(process_1.argv);
     const replacer = new RegExp('"accountId":0', 'g');
     const importedFile = yield Promise.resolve().then(() => __importStar(require(`../../../../${dashboardPack}/dashboards/${dashboardPack}.json`)));
     let dashboard = importedFile.default;
@@ -73,26 +75,29 @@ const dashboardImporter = (accountId, nrApiKey, dashboardPack) => __awaiter(void
     stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
     const parsedDashboard = JSON.parse(stringifiedDashboard);
     const addDashboard = graphql_request_1.gql `
-        mutation ($accountId: Int!, $dashboard: DashboardInput!) {
-            dashboardCreate(accountId: $accountId, dashboard: $dashboard) {
-            errors {
-                description
-                type
-            }
-            entityResult {
-                guid
-            }
-            }
+    mutation($accountId: Int!, $dashboard: DashboardInput!) {
+      dashboardCreate(accountId: $accountId, dashboard: $dashboard) {
+        errors {
+          description
+          type
         }
-    `;
+        entityResult {
+          guid
+        }
+      }
+    }
+  `;
     const variables = {
         accountId: accountId,
         dashboard: parsedDashboard
     };
-    const client = new graphql_request_1.GraphQLClient(url, { headers: { 'Content-Type': 'application/json', 'API-Key': `${nrApiKey}` } });
+    const client = new graphql_request_1.GraphQLClient(url, {
+        headers: { 'Content-Type': 'application/json', 'API-Key': `${nrApiKey}` }
+    });
     client.request(addDashboard, variables);
 });
 exports.dashboardImporter = dashboardImporter;
+exports.default = exports.dashboardImporter;
 
 
 /***/ }),
@@ -12775,14 +12780,6 @@ module.exports = require("os");;
 
 "use strict";
 module.exports = require("path");;
-
-/***/ }),
-
-/***/ 1765:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("process");;
 
 /***/ }),
 
