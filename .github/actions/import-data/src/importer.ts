@@ -1,36 +1,38 @@
-import { dashboardBody, importedDashboardBody } from "./types/dashboardInput"
+import { dashboardBody, importedDashboardBody } from './types/dashboardInput'
 import { gql, GraphQLClient } from 'graphql-request'
 import * as yargs from 'yargs';
-import { argv } from "process";
 
 
 const url = 'https://api.newrelic.com/graphql';
 
 export const dashboardImporter = async (accountId: number, nrApiKey: string, dashboardPack: string) : Promise<void> => {
     if(!accountId && !nrApiKey && !dashboardPack){
-        const argv = yargs.options({
+        const args = yargs.options({
             accountId: {
                 alias: 'id',
                 demandOption: true,
+                type: 'number',
                 description: 'NR account id'
             },
             nrApiKey: {
                 alias: 'key',
                 demandOption: true,
+                type: 'string',
                 description: 'NR API Key'
             },
             dashboardPack: {
                 alias: 'pack',
                 demandOption: true,
+                type: 'string',
                 description: 'NR API Key'
             },
         }).argv;
+        console.log(args);
 
-        accountId = argv.accountId as number;
-        nrApiKey = argv.nrApiKey as string;
-        dashboardPack = argv.dashboardPack as string;
+        accountId = args.accountId;
+        nrApiKey = args.nrApiKey;
+        dashboardPack = args.dashboardPack;
     }
-    console.log(argv);
 
     const replacer = new RegExp('"accountId":0', 'g')
 
@@ -66,3 +68,5 @@ export const dashboardImporter = async (accountId: number, nrApiKey: string, das
     const client = new GraphQLClient(url, { headers: { 'Content-Type': 'application/json', 'API-Key': `${nrApiKey}` }})
     client.request(addDashboard,variables);
 }
+
+export default dashboardImporter;
