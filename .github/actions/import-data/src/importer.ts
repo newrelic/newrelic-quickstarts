@@ -1,8 +1,14 @@
 import {dashboardBody, importedDashboardBody} from './types/dashboardInput'
 import {gql, GraphQLClient} from 'graphql-request'
 import * as yargs from 'yargs'
+import fs from 'fs'
+import path from 'path'
 
-const url = 'https://api.newrelic.com/graphql'
+const url = 'https://api.newrelic.com/graphql';
+
+const client = new GraphQLClient(url, {
+    headers: {'Content-Type': 'application/json'}
+});
 
 export const dashboardImporter = async (
   accountId: number,
@@ -30,7 +36,6 @@ export const dashboardImporter = async (
         description: 'NR API Key'
       }
     }).argv
-    console.log(args)
 
     accountId = args.accountId
     nrApiKey = args.nrApiKey
@@ -38,45 +43,42 @@ export const dashboardImporter = async (
   }
 
   const replacer = new RegExp('"accountId":0', 'g')
+  const dir = `${__dirname}/../../../../${dashboardPack}/dashboards`
+  client.setHeader('API-Key', nrApiKey);
+  const importedFiles: Array<importedDashboardBody> = fs
+    .readdirSync(dir)
+    .filter(name => path.extname(name) === '.json')
+    .map(name => require(path.join(dir, name)));
 
-  const importedFile: importedDashboardBody = await import(
-    `../../../../${dashboardPack}/dashboards/${dashboardPack}.json`
-  )
+  importedFiles.forEach(file => {
+    file.permissions = 'PUBLIC_READ_WRITE'
+    let stringifiedDashboard = JSON.stringify(file)
+    stringifiedDashboard = stringifiedDashboard.replace(
+      replacer,
+      `"accountId": ${accountId}`
+    )
+    const parsedDashboard = JSON.parse(stringifiedDashboard)
 
-  let dashboard: dashboardBody = importedFile.default
-  dashboard.permissions = 'PUBLIC_READ_WRITE'
-
-  let stringifiedDashboard = JSON.stringify(dashboard)
-  stringifiedDashboard = stringifiedDashboard.replace(
-    replacer,
-    `"accountId": ${accountId}`
-  )
-
-  const parsedDashboard = JSON.parse(stringifiedDashboard)
-
-  const addDashboard = gql`
-    mutation($accountId: Int!, $dashboard: DashboardInput!) {
-      dashboardCreate(accountId: $accountId, dashboard: $dashboard) {
-        errors {
-          description
-          type
-        }
-        entityResult {
-          guid
+    const addDashboard = gql`
+      mutation($accountId: Int!, $dashboard: DashboardInput!) {
+        dashboardCreate(accountId: $accountId, dashboard: $dashboard) {
+          errors {
+            description
+            type
+          }
+          entityResult {
+            guid
+          }
         }
       }
+    `
+
+    const variables = {
+      accountId: accountId,
+      dashboard: parsedDashboard
     }
-  `
-
-  const variables = {
-    accountId: accountId,
-    dashboard: parsedDashboard
-  }
-
-  const client = new GraphQLClient(url, {
-    headers: {'Content-Type': 'application/json', 'API-Key': `${nrApiKey}`}
+    client.request(addDashboard, variables)
   })
-  client.request(addDashboard, variables)
 }
 
 export default dashboardImporter
