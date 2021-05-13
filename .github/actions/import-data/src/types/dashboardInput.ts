@@ -44,26 +44,6 @@ type dashboardBasicWidgetConfigurationInput = {
     nrqlQueries: dashboardWidgetNrqlQueryInput[],
 }
 
-// type dashboardAreaWidgetConfigurationInput = {
-//     nrqlQueries: dashboardWidgetNrqlQueryInput[],
-// }
-
-// type dashboardBarWidgetConfigurationInput = {
-//     nrqlQueries: dashboardWidgetNrqlQueryInput[],
-// }
-
-// type dashboardLineWidgetConfigurationInput = {
-//     nrqlQueries: dashboardWidgetNrqlQueryInput[],
-// }
-
-// type dashboardPieWidgetConfigurationInput = {
-//     nrqlQueries: dashboardWidgetNrqlQueryInput[],
-// }
-
-// type dashboardTableWidgetConfigurationInput = {
-//     nrqlQueries: dashboardWidgetNrqlQueryInput[],
-// }
-
 type dashboardMarkdownWidgetConfigurationInput = {
     text: string,
 }
