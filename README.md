@@ -16,7 +16,7 @@ Do you have some great dashboards to share? Follow the steps below to add them t
 
 4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your Observability pack.
 
-Lets say you want to add some dashboards to your pack. First export your dashboard using the `Copy JSON to clipboard` functionality in the dashboard UI and save it as a file `[name].json` in the `dashboards` directory. You can use any name to replace `[name`] and you can also add multiple json files. Next create a screenshot of your dashboard and add it to `dashboards` directory, and give it the same name as your dashboard json file.
+To add a dashboard to your pack  export your dashboard using the `Copy JSON to clipboard` functionality in the dashboard UI and save it as a file `[name].json` in the `dashboards` directory. You can use any name to replace `[name`] and you can also add multiple json files. Next create a screenshot of your dashboard and add it to `dashboards` directory, and give it the same name as your dashboard json file.
 
 Optionally you can add multiple screenshots per dashboard as long as they have the same name as your dashboard file. For example `rabbitmq.json` `rabbitmq.png` `rabbitmq.jpeg`. You can add multiple screenshots by putting a number after the filename, for example `rabbitmq01.png`, `rabbitmq02.png`.
 
