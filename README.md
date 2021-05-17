@@ -18,17 +18,26 @@ Do you have some great dashboards to share? Follow the steps below to add them t
 
 To add a dashboard to your pack  export your dashboard using the `Copy JSON to clipboard` functionality in the dashboard UI and save it as a file `[name].json` in the `dashboards` directory. You can use any name to replace `[name`] and you can also add multiple json files. Next create a screenshot of your dashboard and add it to `dashboards` directory, and give it the same name as your dashboard json file.
 
-Optionally you can add multiple screenshots per dashboard as long as they have the same name as your dashboard file. For example `rabbitmq.json` `rabbitmq.png` `rabbitmq.jpeg`. You can add multiple screenshots by putting a number after the filename, for example `rabbitmq01.png`, `rabbitmq02.png`.
+> **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
-As a last step for adding a dashboard you should copy the `config.yaml` file inside the `dashboard` directory and give it the same name as your dashboard. Make sure you also change the values inside the config file so the dashboard has a clear name and description.
+- `rabbitmq.json` 
+- `rabbitmq.png` or `rabbitmq.jpeg`
+- `rabbitmq01.png`
+- `rabbitmq02.png` 
 
-The process is similar for all other directories. Once you're happy with all the resources in the pack you can move on to the next step.
+Finally, rename the `config.yaml` file to the same name as the JSON file, and update its contents. This is where you provide a clear name and description for your dashboard.
 
-5. In the directory of your pack you will find a `config.yaml` file. Edit it with the name of your pack. Everything else is optional.
+This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, you can simply delete the corresponding directory.
+
+5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
 
 6. Now let's commit your changes `git add -A` and `git commit -m "Added [name]"`. Change the `[name]` with a description of the dashboard you've added.
 
-7. Push your changes to Github `git push`
+7. Push your changes to Github: 
+
+```sh
+git push
+```
 
 8. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-observability-packs/compare?expand=1).
 
