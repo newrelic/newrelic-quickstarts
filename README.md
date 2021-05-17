@@ -12,7 +12,7 @@ Do you have some great dashboards to share? Follow the steps below to add them t
 
 2. [Clone your own repository to your local machine](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
-3. Copy the directory `_template` and it's content to a new directory within the root folder. Choose a name which identifies the main purpose of your pack, for example: `rabbitmq`, `apm-errors`, `sre`, `aws-s3`, ...
+3. Copy the `_template` directory and its content to a new directory within the root folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
 4. If you like inside your newly created directory you will find multiple folders `dashboards`, `alerts`, `flex`, `synthetics`. Each of these folders contain examples that you can use to add your own. If you don't anything to add to a specific folder, you can just delete it. For example, if you don't have alerts, delete the `alert` folder in your directory.
 
