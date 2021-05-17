@@ -14,7 +14,7 @@ Do you have some great dashboards to share? Follow the steps below to add them t
 
 3. Copy the `_template` directory and its content to a new directory within the root folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. If you like inside your newly created directory you will find multiple folders `dashboards`, `alerts`, `flex`, `synthetics`. Each of these folders contain examples that you can use to add your own. If you don't anything to add to a specific folder, you can just delete it. For example, if you don't have alerts, delete the `alert` folder in your directory.
+4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your Observability pack.
 
 Lets say you want to add some dashboards to your pack. First export your dashboard using the `Copy JSON to clipboard` functionality in the dashboard UI and save it as a file `[name].json` in the `dashboards` directory. You can use any name to replace `[name`] and you can also add multiple json files. Next create a screenshot of your dashboard and add it to `dashboards` directory, and give it the same name as your dashboard json file.
 
