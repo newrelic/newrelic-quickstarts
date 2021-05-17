@@ -1,8 +1,8 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# New Relic Observability Packs
+# New Relic One Observability Packs
 
-The New Relic Observability Pack provides a jump start to getting value from New Relic, for the specific use case an engineer cares about. It includes clear steps for setting up instrumentation, as well as the basic observability building blocks like dashboards & alerts. All of this is available through an open ecosystem where relics, partners and customers contribute their best-practice solutions.
+The New Relic One Observability Pack provides a jump start to getting value from New Relic, for the specific use case an engineer cares about. It includes clear steps for setting up instrumentation, as well as the basic observability building blocks like dashboards & alerts. All of this is available through an open ecosystem where relics, partners and customers contribute their best-practice solutions.
 
 ## Getting Started
 
@@ -65,7 +65,7 @@ New Relic hosts and moderates an online forum where customers can interact with 
 
 ## Contribute
 
-We encourage your contributions to improve New Relic Observability packs! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
+We encourage your contributions to improve New Relic One Observability packs! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 
 If you have any questions, or to execute our corporate CLA (which is required if your contribution is on behalf of a company), drop us an email at opensource@newrelic.com.
 
@@ -77,8 +77,8 @@ If you believe you have found a security vulnerability in this project or any of
 
 If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
 
-To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic Observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
+To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic One Observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
 
 ## License
-New Relic Observability packs is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
->[If applicable: The New Relic Observability packs also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
+New Relic One Observability packs is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+>[If applicable: The New Relic One Observability packs also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
