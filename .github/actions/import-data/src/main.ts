@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {dashboardImporter} from './importer'
+import {importer} from './importer'
 
 async function run(): Promise<void> {
   try {
@@ -7,7 +7,7 @@ async function run(): Promise<void> {
     const nrApiKey = core.getInput('nr-api-key')
     const pack = core.getInput('pack-to-import')
 
-    dashboardImporter(accountId, nrApiKey, pack)
+    importer(accountId, nrApiKey, pack)
   } catch (error) {
     core.setFailed(error.message)
   }

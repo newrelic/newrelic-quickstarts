@@ -1,7 +1,13 @@
 export type AlertsNrqlBaselineCondition = {
     accountId: number,
-    condition: AlertsNrqlConditionBaselineInput | AlertsNrqlConditionOutlierInput | AlertsNrqlConditionStaticInput,
+    condition: ConditionTypeInput,
     policyId: string | number
+}
+
+export type AlertsUnion = AlertsNrqlConditionBaselineInput | AlertsNrqlConditionOutlierInput | AlertsNrqlConditionStaticInput
+
+export type ConditionTypeInput = {
+    condition: AlertsNrqlConditionBaselineInput | AlertsNrqlConditionOutlierInput | AlertsNrqlConditionStaticInput
 }
 
 export type AlertsNrqlConditionBaselineInput = {
@@ -15,7 +21,8 @@ export type AlertsNrqlConditionBaselineInput = {
     signal: AlertsNrqlConditionSignalInput,
     terms: Array<AlertsNrqlDynamicConditionTermsInput>,
     violationTimeLimit: AlertsViolationTimeLimit,
-    violationTimeLimitSeconds: number
+    violationTimeLimitSeconds: number,
+    type?: string
 }
 
 enum AlertsNrqlBaselineDirection {
@@ -57,7 +64,9 @@ type AlertsNrqlDynamicConditionTermsInput = {
 }
 
 enum AlertsNrqlDynamicConditionTermsOperator {
-    'ABOVE'
+    'ABOVE',
+    'BELOW', 
+    'EQUALS'
 }
 
 enum AlertsNrqlConditionPriority {
@@ -93,7 +102,8 @@ export type AlertsNrqlConditionOutlierInput = {
     signal: AlertsNrqlConditionSignalInput,
     terms: Array<AlertsNrqlDynamicConditionTermsInput>,
     violationTimeLimit: AlertsViolationTimeLimit,
-    violationTimeLimitSeconds: number
+    violationTimeLimitSeconds: number,
+    type?: string
 }
 
 export type AlertsNrqlConditionStaticInput = {
@@ -107,7 +117,8 @@ export type AlertsNrqlConditionStaticInput = {
     terms: Array<AlertsNrqlDynamicConditionTermsInput>,
     valueFunction: AlertsNrqlStaticConditionValueFunction,
     violationTimeLimit: AlertsViolationTimeLimit,
-    violationTimeLimitSeconds: number
+    violationTimeLimitSeconds: number,
+    type?: string
 }
 
 enum AlertsNrqlStaticConditionValueFunction {
