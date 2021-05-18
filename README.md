@@ -2,7 +2,12 @@
 
 # New Relic One Observability Packs
 
-The New Relic One Observability Pack provides a jump start to getting value from New Relic, for the specific use case an engineer cares about. It includes clear steps for setting up instrumentation, as well as the basic observability building blocks like dashboards & alerts. All of this is available through an open ecosystem where relics, partners and customers contribute their best-practice solutions.
+New Relic One observability packs jump start your New Relic journey by providing immediate value for your specific use cases. They include: 
+
+- Clear steps for instrumenting your services 
+- Observability building blocks like dashboards and alerts 
+
+All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
 
 ## Getting Started
 
@@ -14,9 +19,9 @@ Do you have some great dashboards to share? Follow the steps below to add them t
 
 3. Copy the `_template` directory and its content to a new directory within the root folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your Observability pack.
+4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your observability pack.
 
-To add a dashboard to your pack  export your dashboard using the `Copy JSON to clipboard` functionality in the dashboard UI and save it as a file `[name].json` in the `dashboards` directory. You can use any name to replace `[name`] and you can also add multiple json files. Next create a screenshot of your dashboard and add it to `dashboards` directory, and give it the same name as your dashboard json file.
+For example, to add an existing dashboard to your new observability pack, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
 > **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
@@ -31,7 +36,14 @@ This process is similar for all other entity directories. Also, if you don't wan
 
 5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
 
-6. Now let's commit your changes `git add -A` and `git commit -m "Added [name]"`. Change the `[name]` with a description of the dashboard you've added.
+6. Commit your changes:
+
+```sh
+git add -A
+git commit -m "Added [name]"
+```
+
+Change the `[name]` with a description of the dashboard you've added.
 
 7. Push your changes to Github: 
 
@@ -65,7 +77,7 @@ New Relic hosts and moderates an online forum where customers can interact with 
 
 ## Contribute
 
-We encourage your contributions to improve New Relic One Observability packs! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
+We encourage your contributions to improve New Relic One observability packs! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 
 If you have any questions, or to execute our corporate CLA (which is required if your contribution is on behalf of a company), drop us an email at opensource@newrelic.com.
 
@@ -77,8 +89,8 @@ If you believe you have found a security vulnerability in this project or any of
 
 If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
 
-To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic One Observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
+To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic One observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
 
 ## License
-New Relic One Observability packs is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
->[If applicable: The New Relic One Observability packs also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
+New Relic One observability packs is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+>[If applicable: The New Relic One observability packs also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
