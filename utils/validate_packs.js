@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
+const glob = require('glob');
 const Ajv = require('ajv');
 const ajv = new Ajv();
 
@@ -10,109 +11,135 @@ const mainConfigSchema = require('./schemas/main_config.json');
 const alertSchema = require('./schemas/alert_config.json');
 const dashboardSchema = require('./schemas/dashboard_config.json');
 const flexConfigSchema = require('./schemas/flex_config.json');
+const flexIntegrationsSchema = require('./schemas/flex_integrations.json');
 const syntheticSchema = require('./schemas/synthetic_config.json');
 
+const EXCLUDED_DIRECTORY_PATTERNS = [
+	'node_modules/**',
+	'utils/**',
+	'*',
+];
+
 /** 
-* Method whichs reads contents at a file path, and validates contents against a schema. Errors are printed out to console.
-* @param {String} filePath - Path of a file to read contents of and validate.
+* Validates an object against a JSON schema
+* @param {Object} content - The object to validate
 * @param {Object} schema - Json schema used for validation.
-* @return {Object} Either a map containing { filePath : errors }, or undefined.
+* @returns {Object[]} An array of any errors found
 */
-const validateFile = (filePath, schema) => {
-	const file = fs.readFileSync(filePath);
-	const content = yaml.load(file);	
+const validateAgainstSchema = (content, schema) => {
 	const validate = ajv.compile(schema);
 	const valid = validate(content);
 
-	console.log(`Validating: ${filePath} . . .`);
-
 	if (!valid) {
-		const error = { [filePath] : validate.errors }; // this includes both the error, and path of file that errored
-		return error;
+		return validate.errors;
 	}
+
+	return [];
+}
+
+
+/**
+ * Read and parse a YAML file
+ * @param {String} filePath - The path to the YAML file
+ * @returns {Object} An object containing the path and contents of the file
+ */
+const readYamlFile = (filePath) => {
+	const file = fs.readFileSync(filePath);
+	const contents = yaml.loadAll(file);
+	return { path: filePath, contents };
+}
+
+/**
+ * Read and parse a JSON file
+ * @param {String} filePath - The path to the JSON file
+ * @returns {Object} An object containing the path and contents of the file
+ */
+const readJsonFile = (filePath) => {
+	const file = fs.readFileSync(filePath);
+	const contents = JSON.parse(file);
+	return { path: filePath, contents: [ contents ] }; // Return array here to be consistent with the yaml reading
+}
+
+/**
+ * Reads in a JSON or YAML file
+ * @param {String} filePath - The path to the JSON or YAML file
+ * @returns {Object} An object containing the path and contents of the file
+ */
+const readFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile(filePath) : readYamlFile(filePath);
+
+/**
+ * Validates a files contents against the appropriate schema
+ * @param {Object} file - an object containing the path and contents of a file
+ * @returns {Object} the same file object with an array of `errors`
+ */
+const validateFile = (file) => {
+	const filePath = file.path;
+	let errors = [];
+
+	switch(true) {
+		case(filePath.includes('/alerts/')): // validate using alert schema
+			errors = validateAgainstSchema(file.contents[0], alertSchema);
+			break;
+		case(filePath.includes('/dashboards/')): // validate using dashboard schema
+			errors = validateAgainstSchema(file.contents[0], dashboardSchema);
+			break;
+		case(filePath.includes('/instrumentation/synthetics/')): // validate using synthetics schema
+			errors = validateAgainstSchema(file.contents[0], syntheticSchema);
+			break;
+		case(filePath.includes('/instrumentation/flex/')): // validate using flex config schema. 
+			// The flex YAML is two documents, validate each of them
+			errors = [ 
+				...validateAgainstSchema(file.contents[0], flexConfigSchema), 
+				...validateAgainstSchema(file.contents[1], flexIntegrationsSchema)
+			];
+			break;
+		default: // use main config schema
+			errors = validateAgainstSchema(file.contents[0], mainConfigSchema);
+			break;
+	}
+
+	return { ...file, errors };
 }
 
 /** 
-* Method which given a list of file paths, validates the contents of each file accordingly.
-* @summary Method which given a list of filepaths, validates the contents of each file accordingly. Depending on the 'type' a file represents, a different schema is selected for validation.
-* @param {String[]} filePaths - Array of file paths, whose file contents will be validated.
-* @return {Void}
+ * Globs YAML and JSON files to be validated
+ * @param {String} basePath - the base path to search under, usually the current working directory
+ * @returns {String[]} An array containing the file paths
 */
-const validateFiles = (filePaths) => {
-	const errors = []
+const getPackFilePaths = (basePath) => {
+	const options = {
+		ignore: EXCLUDED_DIRECTORY_PATTERNS.map(d => path.resolve(basePath, d)) 
+	};
 
-	for (const filePath of filePaths){
-		let schema;
-		
-		switch(true){
-			case(filePath.includes('/alerts/')): // validate using alert schema
-				schema = alertSchema;
-				break;
-			case(filePath.includes('/dashboards/')): // validate using dashboard schema
-				schema = dashboardSchema;
-				break;
-			case(filePath.includes('/synthetics/')): // validate using synthetics schema
-				schema = syntheticSchema;
-				break;
-			case(filePath.includes('/flex_configs/')): // validate using flex config schema. TODO: update directory structure
-				schema = flexConfigSchema;
-				break;
-			default: // use main config schema
-				schema = mainConfigSchema;
-				break;
-		}
+	const yamlFilePaths = [
+		...glob.sync(path.resolve(basePath, '**/*.yaml'), options), 
+		...glob.sync(path.resolve(basePath, '**/*.yml'), options)
+	];
 
-		let output = validateFile(filePath, schema);
-		if(output != undefined){
-			errors.push(output);
+	const jsonFilePaths = glob.sync(path.resolve(basePath, '**/*.json'), options);
+
+	return [ ...yamlFilePaths, ...jsonFilePaths ];
+}
+
+const removePathPrefix = (filePath) => filePath.split('newrelic-observability-packs/')[1];
+
+const main = () => {
+	const filePaths = getPackFilePaths(process.cwd());
+	const files = filePaths.map(readFile);
+
+	const filesWithErrors = files.map(validateFile).filter(file => file.errors.length > 0);
+
+	for (const f of filesWithErrors) {
+		console.log(`\nError: ${removePathPrefix(f.path)}`);
+		for (const e of f.errors) {
+			console.log(`\t ${e.message}`);
 		}
 	}
 
-	if (errors.length > 0){
-		console.log(`Errors found.`);
-		console.log(JSON.stringify(errors, null, 4));
+	if (filesWithErrors.length > 0) {
 		process.exit(1);
 	}
 }
 
-const getConfigFile = (packDir) => {
-	const configPath = path.resolve(process.cwd(), packDir, 'config.yml');
-	console.log('PATH', configPath);
-	const file = fs.readFileSync(configPath);
-	const configContent = yaml.load(file);
-
-	return configContent;
-}
-
-/** 
-* Method which takes in all files, and filters to only the ones we care about.
-* @param {String[]} changedFilePaths - Array of filePaths containing all files that have been changed.
-* @return {String[]} Array of filePaths containing only the relevant changed files.
-*/
-const getChangedFiles = (changedFilePaths) => {
-	const relevantChangedFiles = changedFilePaths
-		.filter(filePath => ['.yml', 'yaml'].includes(path.extname(filePath))) // only yaml files
-		.filter(filePath => !path.dirname(filePath).includes('.github')); // ignore files in .github folder
-
-	return relevantChangedFiles;
-}
-
-const main = () => {
-	/* Pseudo code
-	1. Read in changed files from input.
-	2. Filter out irrelevant files.
-		validate only yaml files
-		dont validate internal files, etc. so nothing in .github.
-	3. For each relevant file, validate it.
-	4. Print out result for each file as it validates.
-	*/
-
-	const changedFiles = getChangedFiles(process.argv.slice(2));
-	console.log(`Running against: ${JSON.stringify(changedFiles, null, 4)}`);
-	validateFiles(changedFiles);
-}
-
 main();
 
-// const contents = getConfigFile('mysql');
-// validateFile(contents, mainConfigSchema);
