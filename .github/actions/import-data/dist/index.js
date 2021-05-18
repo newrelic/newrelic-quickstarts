@@ -128,36 +128,35 @@ const createAlertLocal = (accountId, pack, policyId) => __awaiter(void 0, void 0
     const fileNames = fs_1.default
         .readdirSync(dir)
         .filter(name => path_1.default.extname(name) === '.yml');
-    fileNames.forEach(file => {
+    fileNames.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         const loadedYaml = js_yaml_1.default.load(fs_1.default.readFileSync(`${dir}/${file}`, 'utf-8'));
         let parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
         if (parsedAlert.type === 'BASELINE') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            client.request(alerts_1.baselineMutation, variables);
+            yield client.rawRequest(alerts_1.baselineMutation, variables);
         }
         else if (parsedAlert.type === 'STATIC') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            client.request(alerts_1.staticMutation, variables);
+            yield client.rawRequest(alerts_1.staticMutation, variables);
         }
         else if (parsedAlert.type === 'OUTLIER') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            client.request(alerts_1.outlierMutation, variables);
+            yield client.rawRequest(alerts_1.outlierMutation, variables);
         }
-    });
+    }));
 });
 const transformData = (incomingFile) => {
-    console.log('Name: ', incomingFile.name);
     if (!incomingFile.enabled) {
         incomingFile.enabled = false;
     }
-    // if(!incomingFile.terms.operator) { // remove this section and throw an error
-    //   incomingFile.terms.forEach((term: { operator: string; }) => {
-    //     term.operator = 'ABOVE';
-    //   });
-    // }
+    if (incomingFile.type === 'BASELINE') {
+        incomingFile.terms.forEach((term) => {
+            term.operator = 'ABOVE';
+        });
+    }
     if (incomingFile.type) {
         delete incomingFile.type;
     }

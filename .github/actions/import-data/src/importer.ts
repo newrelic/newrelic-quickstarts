@@ -114,40 +114,43 @@ const createAlertLocal = async (accountId: number, pack: string, policyId: numbe
 
   const fileNames: Array<string> = fs
     .readdirSync(dir)
-    .filter(name => path.extname(name) === '.yml')
+    .filter(name => path.extname(name) === '.yml');
 
-  fileNames.forEach(file => {
+  fileNames.forEach(async file => {
     const loadedYaml = yaml.load(fs.readFileSync(`${dir}/${file}`, 'utf-8'));
     let parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
+
     if(parsedAlert.type === 'BASELINE') {
       let filledFile = transformData(parsedAlert);
       variables.condition = filledFile;
-      client.request(baselineMutation, variables);
+      await client.rawRequest(baselineMutation, variables);
     } else if (parsedAlert.type === 'STATIC') {
       let filledFile = transformData(parsedAlert);
       variables.condition = filledFile;
-      client.request(staticMutation, variables);
+      await client.rawRequest(staticMutation, variables);
     } else if (parsedAlert.type === 'OUTLIER') {
       let filledFile = transformData(parsedAlert);
       variables.condition = filledFile;
-      client.request(outlierMutation, variables);
+      await client.rawRequest(outlierMutation, variables);
     }
   });
 };
 
 const transformData = (incomingFile: any) => {
-  console.log('Name: ', incomingFile.name);
   if(!incomingFile.enabled) {
     incomingFile.enabled = false;
   }
-  // if(!incomingFile.terms.operator) { // remove this section and throw an error
-  //   incomingFile.terms.forEach((term: { operator: string; }) => {
-  //     term.operator = 'ABOVE';
-  //   });
-  // }
+
+  if(incomingFile.type === 'BASELINE') {
+    incomingFile.terms.forEach((term: { operator: string; }) => {
+      term.operator = 'ABOVE'
+    });
+  }
+
   if(incomingFile.type) {
     delete incomingFile.type
   }
+
   if(incomingFile.details) {
     delete incomingFile.details
   }
