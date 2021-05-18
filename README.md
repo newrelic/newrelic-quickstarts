@@ -11,7 +11,7 @@ All of this is available through an open ecosystem where New Relic developers, p
 
 ## Getting Started
 
-Do you have some great dashboards to share? Follow the steps below to add them to the library.
+Contribute your own observability pack to the New Relic One catalog by following the steps below:
 
 1. [Fork the Github repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)
 
