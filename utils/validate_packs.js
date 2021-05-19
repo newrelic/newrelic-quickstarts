@@ -135,6 +135,7 @@ const main = () => {
 			console.log(`\t ${e.message}`);
 		}
 	}
+	console.log('');
 
 	if (filesWithErrors.length > 0) {
 		process.exit(1);
