@@ -37,7 +37,6 @@ const validateAgainstSchema = (content, schema) => {
 	return [];
 }
 
-
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
@@ -76,6 +75,7 @@ const validateFile = (file) => {
 	const filePath = file.path;
 	let errors = [];
 
+	console.log(`Validating ${removePathPrefix(filePath)}`);
 	switch(true) {
 		case(filePath.includes('/alerts/')): // validate using alert schema
 			errors = validateAgainstSchema(file.contents[0], alertSchema);
@@ -121,10 +121,10 @@ const getPackFilePaths = (basePath) => {
 	return [ ...yamlFilePaths, ...jsonFilePaths ];
 }
 
-const removePathPrefix = (filePath) => filePath.split('newrelic-observability-packs/')[1];
+const removePathPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
 
 const main = () => {
-	const filePaths = getPackFilePaths(process.cwd());
+	const filePaths = getPackFilePaths(process.cwd()).sort();
 	const files = filePaths.map(readFile);
 
 	const filesWithErrors = files.map(validateFile).filter(file => file.errors.length > 0);
