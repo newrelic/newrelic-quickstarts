@@ -36,14 +36,14 @@ This process is similar for all other entity directories. Also, if you don't wan
 
 5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
 
-6. Commit your changes:
+6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
 ```sh
 git add -A
-git commit -m "Added [name]"
+git commit -m "feat([name]): Added [name]"
 ```
 
-Change the `[name]` with a description of the dashboard you've added.
+Change the `[name]` and add a description of the dashboard you've added.
 
 7. Push your changes to Github: 
 
