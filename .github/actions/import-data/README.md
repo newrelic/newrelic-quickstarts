@@ -97,9 +97,15 @@ See the [actions tab](https://github.com/actions/typescript-action/actions) for 
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
 
-### Import dashboard:
+### Import dashboard & alerts:
 
-To run the import dashboard function from cli, enter the following command:
+To run the import function from cli, enter the following command:
+
+``` bash
+npm run import -- --accountId=number --nrApiKey=string --pack=string
 ```
-npm run import-dashboard -- --accountId=number --nrApiKey=string --pack=string
-```
+
+where:
+accountId is the newrelic account id
+nrApiKey is the personal new relic api key
+pack is the name of the dashboard/alerts pack you want to import, for example: --pack=mysql
