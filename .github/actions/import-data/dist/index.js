@@ -53,7 +53,6 @@ const client = new graphql_request_1.GraphQLClient(url, {
     headers: { 'Content-Type': 'application/json' }
 });
 const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 0, void 0, function* () {
-    let usingActions = true;
     if (!accountId && !nrApiKey && !dashboardPack) {
         const args = yargs.options({
             accountId: {
@@ -78,16 +77,13 @@ const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 
         accountId = args.accountId;
         nrApiKey = args.nrApiKey;
         dashboardPack = args.dashboardPack;
-        usingActions = false;
     }
     ;
     client.setHeader('API-Key', nrApiKey);
     dashboardPack = dashboardPack.toLowerCase();
     const policyId = yield createPolicy(accountId, dashboardPack);
-    if (!usingActions) {
-        yield createDashboardLocal(accountId, dashboardPack);
-        yield createAlertLocal(accountId, dashboardPack, policyId);
-    }
+    yield createDashboardLocal(accountId, dashboardPack);
+    yield createAlertLocal(accountId, dashboardPack, policyId);
 });
 exports.importer = importer;
 const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
@@ -102,11 +98,17 @@ const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, func
 const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
     const replacer = new RegExp('"accountId":0', 'g');
     const dir = `${__dirname}/../../../../${pack}/dashboards`;
-    const importedFiles = fs_1.default
-        .readdirSync(dir)
-        .filter(name => path_1.default.extname(name) === '.json')
-        .map(name => require(path_1.default.join(dir, name)));
-    importedFiles.forEach(file => {
+    let importedFiles = [];
+    try {
+        importedFiles = fs_1.default
+            .readdirSync(dir)
+            .filter(name => path_1.default.extname(name) === '.json')
+            .map(name => require(path_1.default.join(dir, name)));
+    }
+    catch (error) {
+        console.error('Dashboard files not found. Did you provide the correct pack name?');
+    }
+    importedFiles.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         file.permissions = 'PUBLIC_READ_WRITE';
         let stringifiedDashboard = JSON.stringify(file);
         stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
@@ -115,8 +117,13 @@ const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void
             accountId: accountId,
             dashboard: parsedDashboard
         };
-        client.request(dashboard_1.default, variables);
-    });
+        try {
+            yield client.request(dashboard_1.default, variables);
+        }
+        catch (error) {
+            console.error('Dashboard Failure: ', error.response.errors[0].message);
+        }
+    }));
 });
 const createAlertLocal = (accountId, pack, policyId) => __awaiter(void 0, void 0, void 0, function* () {
     let variables = {
@@ -125,26 +132,49 @@ const createAlertLocal = (accountId, pack, policyId) => __awaiter(void 0, void 0
         policyId: policyId
     };
     const dir = `${__dirname}/../../../../${pack}/alerts`;
-    const fileNames = fs_1.default
-        .readdirSync(dir)
-        .filter(name => path_1.default.extname(name) === '.yml');
+    let fileNames = [];
+    try {
+        fileNames = fs_1.default
+            .readdirSync(dir)
+            .filter(name => path_1.default.extname(name) === '.yml');
+    }
+    catch (error) {
+        console.error('Alert files not found. Did you provide the correct pack name?');
+    }
     fileNames.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         const loadedYaml = js_yaml_1.default.load(fs_1.default.readFileSync(`${dir}/${file}`, 'utf-8'));
         let parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
         if (parsedAlert.type === 'BASELINE') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            yield client.rawRequest(alerts_1.baselineMutation, variables);
+            try {
+                yield client.rawRequest(alerts_1.baselineMutation, variables);
+            }
+            catch (error) {
+                console.error('Alert Failure: ', error.response.errors[0].message);
+            }
+            ;
         }
         else if (parsedAlert.type === 'STATIC') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            yield client.rawRequest(alerts_1.staticMutation, variables);
+            try {
+                yield client.rawRequest(alerts_1.staticMutation, variables);
+            }
+            catch (error) {
+                console.error('Alert Failure: ', error.response.errors[0].message);
+            }
+            ;
         }
         else if (parsedAlert.type === 'OUTLIER') {
             let filledFile = transformData(parsedAlert);
             variables.condition = filledFile;
-            yield client.rawRequest(alerts_1.outlierMutation, variables);
+            try {
+                yield client.rawRequest(alerts_1.outlierMutation, variables);
+            }
+            catch (error) {
+                console.error('Alert Failure: ', error.response.errors[0].message);
+            }
         }
     }));
 });
@@ -152,17 +182,22 @@ const transformData = (incomingFile) => {
     if (!incomingFile.enabled) {
         incomingFile.enabled = false;
     }
+    ;
     if (incomingFile.type === 'BASELINE') {
         incomingFile.terms.forEach((term) => {
-            term.operator = 'ABOVE';
+            if (!term.operator)
+                term.operator = 'ABOVE';
         });
     }
+    ;
     if (incomingFile.type) {
         delete incomingFile.type;
     }
+    ;
     if (incomingFile.details) {
         delete incomingFile.details;
     }
+    ;
     return incomingFile;
 };
 exports.default = exports.importer;

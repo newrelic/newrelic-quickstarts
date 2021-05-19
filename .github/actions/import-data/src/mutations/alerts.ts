@@ -1,28 +1,28 @@
 import { gql } from 'graphql-request';
 
 export const baselineMutation = gql`
-    mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionBaselineInput!){
-      alertsNrqlConditionBaselineCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
-        runbookUrl
-        policyId
-      }
-    }  
-`
+	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionBaselineInput!) {
+		alertsNrqlConditionBaselineCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
+			runbookUrl
+			policyId
+		}
+	}
+`;
 
 export const staticMutation = gql`
-    mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionStaticInput!){
-        alertsNrqlConditionStaticCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
-            runbookUrl
-            policyId
-        }
-    }
-`
+	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionStaticInput!) {
+		alertsNrqlConditionStaticCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
+			runbookUrl
+			policyId
+		}
+	}
+`;
 
 export const outlierMutation = gql`
-    mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionOutlierInput!){
-        alertsNrqlConditionOutlierCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
-            policyId
-            runbookUrl
-        }
-    }
-`
+	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionOutlierInput!) {
+		alertsNrqlConditionOutlierCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
+			policyId
+			runbookUrl
+		}
+	}
+`;
