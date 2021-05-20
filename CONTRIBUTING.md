@@ -14,9 +14,41 @@ Before submitting an Issue, please search for similar ones in the
 
 ## Pull Requests
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-3. You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+1. Ensure that all new commits follow the [Conventional Commit](#using-conventional-commits) syntax.
+2. Provide a short description of the changes and screenshots of any visual changes.
+3. Ensure that all status checks are passing.
+4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+
+## Using Conventional Commits
+
+Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
+standards in your pull request title and commit messages.
+
+#### Use `chore`
+
+- for minor changes / additions / corrections to content.
+- for minor changes / additions / corrections to images.
+- for minor non-functional changes / additions to github actions, github templates, package or config updates, etc
+
+```bash
+git commit -m "chore: adjusting config and content"
+```
+
+#### Use `fix`
+
+- for minor functional corrections to code.
+
+```bash
+git commit -m "fix: typo and prop error in the code of conduct"
+```
+
+#### Use `feat`
+
+- for major functional changes or additions to code.
+
+```bash
+git commit -m "feat(media): creating a video landing page"
+```
 
 ## Contributor License Agreement
 
