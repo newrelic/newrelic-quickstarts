@@ -85,7 +85,7 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 	importedFiles.forEach(async file => {
 		let existingDashboards = await checkForExistingDashboards(file.name, accountId);
 	
-		if(existingDashboards.length > 1){
+		if(existingDashboards.length > 0){
 			existingDashboards.forEach(async dashboardGuid => {
 				await deleteDashboard(dashboardGuid);
 			});
@@ -197,7 +197,7 @@ const checkForExistingDashboards = async (name: string, accountId: number): Prom
 		response = await client.request(checkIfDashboardExists, variables);
 
 		response.actor.entitySearch.results.entities.forEach((entity: any) => {
-			if(entity.name.toLowerCase().includes(name))
+			if(entity.name.toLowerCase().includes(name.toLowerCase()))
 				dashboardList.push(entity.guid)
 		});
 	}}
