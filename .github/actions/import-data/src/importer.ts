@@ -1,7 +1,7 @@
 import { dashboardBody, importedDashboardBody } from './types/dashboardInput';
 import { GraphQLClient } from 'graphql-request';
-import addDashboard from './mutations/dashboard';
-import addPolicy from './mutations/policy';
+import { addDashboard, checkIfDashboardExists, removeDashboard } from './mutations/dashboard';
+import { addPolicy, checkIfPolicyExists, removePolicy } from './mutations/policy';
 import { baselineMutation, outlierMutation, staticMutation } from './mutations/alerts';
 import * as yargs from 'yargs';
 import fs from 'fs';
@@ -42,6 +42,7 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 	client.setHeader('API-Key', nrApiKey);
 
 	dashboardPack = dashboardPack.toLowerCase();
+	
 	const policyId = await createPolicy(accountId, dashboardPack);
 
 	await createDashboardLocal(accountId, dashboardPack);
@@ -50,6 +51,13 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 
 const createPolicy = async (accountId: number, pack: string) => {
 	const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
+	let policyExists = await checkForExistingPolicy(policyName, accountId);
+
+	if(policyExists.length > 1) {
+		policyExists.forEach(async policyId => {
+			await deletePolicy(policyId, accountId);
+		});
+	}
 
 	const variables = {
 		accountId,
@@ -75,6 +83,14 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 	}
 
 	importedFiles.forEach(async file => {
+		let existingDashboards = await checkForExistingDashboards(file.name, accountId);
+	
+		if(existingDashboards.length > 1){
+			existingDashboards.forEach(async dashboardGuid => {
+				await deleteDashboard(dashboardGuid);
+			});
+		};
+		
 		file.permissions = 'PUBLIC_READ_WRITE';
 		let stringifiedDashboard = JSON.stringify(file);
 		stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
@@ -165,5 +181,68 @@ const transformData = (incomingFile: any) => {
 
 	return incomingFile;
 };
+
+const checkForExistingDashboards = async (name: string, accountId: number): Promise<Array<string>> => {
+	let variables = {
+		query: `type = 'DASHBOARD' and accountId = ${accountId}`,
+		cursor: null
+	}
+
+	const dashboardList: Array<string> = [];
+
+	let response = await client.request(checkIfDashboardExists, variables);
+
+	do {{
+		variables.cursor = response.actor.entitySearch.results.nextCursor;
+		response = await client.request(checkIfDashboardExists, variables);
+
+		response.actor.entitySearch.results.entities.forEach((entity: any) => {
+			if(entity.name.toLowerCase().includes(name))
+				dashboardList.push(entity.guid)
+		});
+	}}
+	while(response.actor.entitySearch.results.nextCursor !== null) 
+
+	return dashboardList;
+}
+
+const deleteDashboard = async (guid: string) => {
+	const variable = {
+		guid: guid
+	}
+	await client.request(removeDashboard, variable);
+}
+
+const checkForExistingPolicy = async (policyName: string, accountId: number) => {
+	let variables = {
+		accountId: accountId,
+		cursor: null
+	}
+
+	const policyExists : Array<string> = [];
+
+	let response = await client.request(checkIfPolicyExists, variables);
+
+	do {{
+		variables.cursor = response.actor.account.alerts.policiesSearch.nextCursor;
+		response = await client.request(checkIfPolicyExists, variables);
+
+		response.actor.account.alerts.policiesSearch.policies.forEach((policy: any) => {
+			if(policy.name.includes(policyName))
+			policyExists.push(policy.id)
+		});
+	}}
+	while(response.actor.account.alerts.policiesSearch.nextCursor !== null)
+
+	return policyExists;
+}
+
+const deletePolicy = async (policyId: string, accountId: number) => {
+	const variables = {
+		accountId: accountId,
+		id: policyId
+	}
+	await client.request(removePolicy, variables);
+}
 
 export default importer;
