@@ -53,7 +53,7 @@ const createPolicy = async (accountId: number, pack: string) => {
 	const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
 	let policyExists = await checkForExistingPolicy(policyName, accountId);
 
-	if(policyExists.length > 1) {
+	if(policyExists.length > 0) {
 		policyExists.forEach(async policyId => {
 			await deletePolicy(policyId, accountId);
 		});
