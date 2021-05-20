@@ -29,17 +29,15 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 				type: 'string',
 				description: 'NR API Key',
 			},
-			dashboardPack: {
-				alias: 'pack',
-				demandOption: true,
-				type: 'string',
-				description: 'NR API Key',
-			},
-		}).argv;
+		}).example("npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql", "Import mysql package to account with id 0000000").argv;
 
+		if(args._.length < 1) {
+			console.error("Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql");
+			process.exit(0);
+		}
 		accountId = args.accountId;
 		nrApiKey = args.nrApiKey;
-		dashboardPack = args.dashboardPack;
+		dashboardPack = args._[0] as string;
 	}
 	client.setHeader('API-Key', nrApiKey);
 
@@ -73,7 +71,7 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 			.filter(name => path.extname(name) === '.json')
 			.map(name => require(path.join(dir, name)));
 	} catch (error) {
-		console.error('Dashboard files not found. Did you provide the correct pack name?');
+		console.error(`Dashboard files for the name ${pack} not found. Did you provide the correct pack name?`);
 	}
 
 	importedFiles.forEach(async file => {
@@ -108,7 +106,7 @@ const createAlertLocal = async (accountId: number, pack: string, policyId: numbe
 	try {
 		fileNames = fs.readdirSync(dir).filter(name => path.extname(name) === '.yml');
 	} catch (error) {
-		console.error('Alert files not found. Did you provide the correct pack name?');
+		console.error(`Alert files for the name ${pack} not found. Did you provide the correct pack name?`);
 	}
 
 	fileNames.forEach(async file => {
