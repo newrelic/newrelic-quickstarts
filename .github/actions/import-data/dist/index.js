@@ -86,7 +86,7 @@ exports.importer = importer;
 const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
     const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
     let policyExists = yield checkForExistingPolicy(policyName, accountId);
-    if (policyExists.length > 1) {
+    if (policyExists.length > 0) {
         policyExists.forEach((policyId) => __awaiter(void 0, void 0, void 0, function* () {
             yield deletePolicy(policyId, accountId);
         }));
