@@ -1,12 +1,13 @@
 import { dashboardBody, importedDashboardBody } from './types/dashboardInput';
 import { GraphQLClient } from 'graphql-request';
-import addDashboard from './mutations/dashboard';
-import addPolicy from './mutations/policy';
+import { addDashboard, checkIfDashboardExists, removeDashboard } from './mutations/dashboard';
+import { addPolicy, checkIfPolicyExists, removePolicy } from './mutations/policy';
 import { baselineMutation, outlierMutation, staticMutation } from './mutations/alerts';
 import * as yargs from 'yargs';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+const prompts = require('prompts');
 
 const url = 'https://api.newrelic.com/graphql';
 
@@ -29,21 +30,20 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 				type: 'string',
 				description: 'NR API Key',
 			},
-			dashboardPack: {
-				alias: 'pack',
-				demandOption: true,
-				type: 'string',
-				description: 'NR API Key',
-			},
-		}).argv;
+		}).example("npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql", "Import mysql package to account with id 0000000").argv;
 
+		if(args._.length < 1) {
+			console.error("Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql");
+			process.exit(0);
+		}
 		accountId = args.accountId;
 		nrApiKey = args.nrApiKey;
-		dashboardPack = args.dashboardPack;
+		dashboardPack = args._[0] as string;
 	}
 	client.setHeader('API-Key', nrApiKey);
 
 	dashboardPack = dashboardPack.toLowerCase();
+	
 	const policyId = await createPolicy(accountId, dashboardPack);
 
 	await createDashboardLocal(accountId, dashboardPack);
@@ -52,6 +52,21 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 
 const createPolicy = async (accountId: number, pack: string) => {
 	const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
+	let policyExists = await checkForExistingPolicy(policyName, accountId);
+
+	if(policyExists.length > 0) {
+		const response = await prompts({
+			type: 'text',
+			name: 'overwrite',
+			message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`
+		});
+
+		if(response.overwrite === 'Yes'){
+			policyExists.forEach(async policyId => {
+				await deletePolicy(policyId, accountId);
+			});
+		}
+	}
 
 	const variables = {
 		accountId,
@@ -73,10 +88,26 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 			.filter(name => path.extname(name) === '.json')
 			.map(name => require(path.join(dir, name)));
 	} catch (error) {
-		console.error('Dashboard files not found. Did you provide the correct pack name?');
+		console.error(`Dashboard files for the name ${pack} not found. Did you provide the correct pack name?`);
 	}
 
 	importedFiles.forEach(async file => {
+		let existingDashboards = await checkForExistingDashboards(file.name, accountId);
+	
+		if(existingDashboards.length > 0){
+			const response = await prompts({
+				type: 'text',
+				name: 'overwrite',
+				message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`
+			});
+
+			if(response.overwrite === 'Yes'){
+				existingDashboards.forEach(async dashboardGuid => {
+					await deleteDashboard(dashboardGuid);
+				});
+			}
+		};
+		
 		file.permissions = 'PUBLIC_READ_WRITE';
 		let stringifiedDashboard = JSON.stringify(file);
 		stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
@@ -108,7 +139,7 @@ const createAlertLocal = async (accountId: number, pack: string, policyId: numbe
 	try {
 		fileNames = fs.readdirSync(dir).filter(name => path.extname(name) === '.yml');
 	} catch (error) {
-		console.error('Alert files not found. Did you provide the correct pack name?');
+		console.error(`Alert files for the name ${pack} not found. Did you provide the correct pack name?`);
 	}
 
 	fileNames.forEach(async file => {
@@ -167,5 +198,68 @@ const transformData = (incomingFile: any) => {
 
 	return incomingFile;
 };
+
+const checkForExistingDashboards = async (name: string, accountId: number): Promise<Array<string>> => {
+	let variables = {
+		query: `type = 'DASHBOARD' and accountId = ${accountId}`,
+		cursor: null
+	}
+
+	const dashboardList: Array<string> = [];
+
+	let response = await client.request(checkIfDashboardExists, variables);
+
+	do {{
+		variables.cursor = response.actor.entitySearch.results.nextCursor;
+		response = await client.request(checkIfDashboardExists, variables);
+
+		response.actor.entitySearch.results.entities.forEach((entity: any) => {
+			if(entity.name.includes(name))
+				dashboardList.push(entity.guid)
+		});
+	}}
+	while(response.actor.entitySearch.results.nextCursor !== null) 
+
+	return dashboardList;
+}
+
+const deleteDashboard = async (guid: string) => {
+	const variable = {
+		guid: guid
+	}
+	await client.request(removeDashboard, variable);
+}
+
+const checkForExistingPolicy = async (policyName: string, accountId: number) => {
+	let variables = {
+		accountId: accountId,
+		cursor: null
+	}
+
+	const policyExists : Array<string> = [];
+
+	let response = await client.request(checkIfPolicyExists, variables);
+
+	do {{
+		variables.cursor = response.actor.account.alerts.policiesSearch.nextCursor;
+		response = await client.request(checkIfPolicyExists, variables);
+
+		response.actor.account.alerts.policiesSearch.policies.forEach((policy: any) => {
+			if(policy.name.includes(policyName))
+			policyExists.push(policy.id)
+		});
+	}}
+	while(response.actor.account.alerts.policiesSearch.nextCursor !== null)
+
+	return policyExists;
+}
+
+const deletePolicy = async (policyId: string, accountId: number) => {
+	const variables = {
+		accountId: accountId,
+		id: policyId
+	}
+	await client.request(removePolicy, variables);
+}
 
 export default importer;
