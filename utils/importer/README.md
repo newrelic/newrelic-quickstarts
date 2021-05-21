@@ -8,10 +8,10 @@ The GitHub Action located in `.github/actions/import-data` validates the definit
 2. Execute the following command from the root of the project:
 
 ```bash
-docker-compose run import-util -- --accountId XXXXXXX --nrApiKey NRAK-... mysql
+docker-compose run importer -- --accountId XXXXXXX --nrApiKey NRAK-... mysql
 ```
 
-The import-util expects 3 arguments, so you must supply those yourself:
+The importer expects 3 arguments, so you must supply those yourself:
 
 * accountId
 * nrApiKey
