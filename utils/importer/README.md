@@ -16,3 +16,22 @@ The importer expects 3 arguments, so you must supply those yourself:
 * accountId
 * nrApiKey
 * Name of the pack to install
+
+## Runnig via import.sh script
+
+To run via import.sh script you need to fill out the importer-config.sh file, so it'd look like:
+
+``` bash
+#!/usr/bin/env bash
+
+accountId=0000000
+apiKey='NRAK-EXAMPLE'
+```
+
+after that just run the import.sh like so:
+
+```bash
+./import.sh pack
+```
+
+### Where **pack** is the name of the pack to install
