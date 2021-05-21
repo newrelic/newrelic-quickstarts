@@ -7,6 +7,7 @@ import * as yargs from 'yargs';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+const prompts = require('prompts');
 
 const url = 'https://api.newrelic.com/graphql';
 
@@ -54,9 +55,17 @@ const createPolicy = async (accountId: number, pack: string) => {
 	let policyExists = await checkForExistingPolicy(policyName, accountId);
 
 	if(policyExists.length > 0) {
-		policyExists.forEach(async policyId => {
-			await deletePolicy(policyId, accountId);
+		const response = await prompts({
+			type: 'text',
+			name: 'overwrite',
+			message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`
 		});
+
+		if(response.overwrite === 'Yes'){
+			policyExists.forEach(async policyId => {
+				await deletePolicy(policyId, accountId);
+			});
+		}
 	}
 
 	const variables = {
@@ -86,9 +95,17 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 		let existingDashboards = await checkForExistingDashboards(file.name, accountId);
 	
 		if(existingDashboards.length > 0){
-			existingDashboards.forEach(async dashboardGuid => {
-				await deleteDashboard(dashboardGuid);
+			const response = await prompts({
+				type: 'text',
+				name: 'overwrite',
+				message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`
 			});
+
+			if(response.overwrite === 'Yes'){
+				existingDashboards.forEach(async dashboardGuid => {
+					await deleteDashboard(dashboardGuid);
+				});
+			}
 		};
 		
 		file.permissions = 'PUBLIC_READ_WRITE';
@@ -197,7 +214,7 @@ const checkForExistingDashboards = async (name: string, accountId: number): Prom
 		response = await client.request(checkIfDashboardExists, variables);
 
 		response.actor.entitySearch.results.entities.forEach((entity: any) => {
-			if(entity.name.toLowerCase().includes(name.toLowerCase()))
+			if(entity.name.includes(name))
 				dashboardList.push(entity.guid)
 		});
 	}}

@@ -11,26 +11,28 @@ export const addPolicy = gql`
 	}
 `;
 
-export const checkIfPolicyExists = gql`query policiesSearch($accountId: Int!, $cursor: String) {
-	actor {
-	  account(id: $accountId) {
-		alerts {
-		  policiesSearch(cursor: $cursor) {
-			nextCursor
-			policies {
-			  name
-			  id
+export const checkIfPolicyExists = gql`
+	query policiesSearch($accountId: Int!, $cursor: String) {
+		actor {
+			account(id: $accountId) {
+				alerts {
+					policiesSearch(cursor: $cursor) {
+						nextCursor
+						policies {
+							name
+							id
+						}
+					}
+				}
 			}
-		  }
 		}
-	  }
 	}
-  }
-`
+`;
 
-export const removePolicy = gql`mutation ($accountId: Int!, $id: ID!){
-	alertsPolicyDelete(accountId: $accountId, id: $id) {
-	  id
+export const removePolicy = gql`
+	mutation ($accountId: Int!, $id: ID!) {
+		alertsPolicyDelete(accountId: $accountId, id: $id) {
+			id
+		}
 	}
-  }  
-`
+`;

@@ -14,28 +14,30 @@ export const addDashboard = gql`
 	}
 `;
 
-export const checkIfDashboardExists = gql`query dashboardSearch($query:String, $cursor:String) {
-	actor {
-	  entitySearch(query: $query) {
-		results(cursor: $cursor) {
-		  entities {
-			... on DashboardEntityOutline {
-			  guid
-			  name
+export const checkIfDashboardExists = gql`
+	query dashboardSearch($query: String, $cursor: String) {
+		actor {
+			entitySearch(query: $query) {
+				results(cursor: $cursor) {
+					entities {
+						... on DashboardEntityOutline {
+							guid
+							name
+						}
+					}
+					nextCursor
+				}
 			}
-		  }
-		  nextCursor
 		}
-	  }
 	}
-  }
-`
-export const removeDashboard = gql`mutation ($guid: EntityGuid!) {
-	dashboardDelete(guid: $guid) {
-	  errors {
-		description
-	  }
-	  status
+`;
+export const removeDashboard = gql`
+	mutation ($guid: EntityGuid!) {
+		dashboardDelete(guid: $guid) {
+			errors {
+				description
+			}
+			status
+		}
 	}
-  }
-`  
+`;
