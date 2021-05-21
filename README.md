@@ -1,11 +1,14 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
+
 # New Relic One Observability Packs
 
-New Relic One observability packs jump start your New Relic journey by providing immediate value for your specific use cases. They include: 
+> 🧪 This project is currently in an `ALPHA` state 🧪
 
-- Clear steps for instrumenting your services 
-- Observability building blocks like dashboards and alerts 
+New Relic One observability packs jump start your New Relic journey by providing immediate value for your specific use cases. They include:
+
+- Clear steps for instrumenting your services
+- Observability building blocks like dashboards and alerts
 
 All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
 
@@ -69,9 +72,9 @@ We've included an `importer` utility for testing packs on your account. You can 
 2. Run [import.sh](./import.sh) from the root of this project:
 
    ```bash
-   # Usage: 
+   # Usage:
    ./import.sh $PACK_NAME
-   
+
    # Example
    > ./import.sh mysql
    ```
