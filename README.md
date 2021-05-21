@@ -21,35 +21,35 @@ Contribute your own observability pack to the New Relic One catalog by following
 
 4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your observability pack.
 
-For example, to add an existing dashboard to your new observability pack, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
+    For example, to add an existing dashboard to your new observability pack, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
-> **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
+    > **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
-- `rabbitmq.json` 
-- `rabbitmq.png` or `rabbitmq.jpeg`
-- `rabbitmq01.png`
-- `rabbitmq02.png` 
+      - `rabbitmq.json`
+      - `rabbitmq.png` or `rabbitmq.jpeg`
+      - `rabbitmq01.png`
+      - `rabbitmq02.png`
 
-Finally, rename the `config.yaml` file to the same name as the JSON file, and update its contents. This is where you provide a clear name and description for your dashboard.
+    Finally, rename the `config.yaml` file to the same name as the JSON file, and update its contents. This is where you provide a clear name and description for your dashboard.
 
-This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, you can simply delete the corresponding directory.
+    This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, you can simply delete the corresponding directory.
 
 5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
 
 6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
-```sh
-git add -A
-git commit -m "feat([name]): Added [name]"
-```
+    ```sh
+    git add -A
+    git commit -m "feat([name]): Added [name]"
+    ```
 
-Change the `[name]` and add a description of the dashboard you've added.
+    Change the `[name]` and add a description of the dashboard you've added.
 
-7. Push your changes to Github: 
+7. Push your changes to Github:
 
-```sh
-git push
-```
+    ```sh
+    git push
+    ```
 
 8. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-observability-packs/compare?expand=1).
 
@@ -57,17 +57,24 @@ git push
 
 Thanks a lot for your submission!
 
-## Usage
->[**Optional** - Include more thorough instructions on how to use the software. This section might not be needed if the Getting Started section is enough. Remove this section if it's not needed.]
-
-
-## Building
-
->[**Optional** - Include this section if users will need to follow specific instructions to build the software from source. Be sure to include any third party build dependencies that need to be installed separately. Remove this section if it's not needed.]
-
 ## Testing
 
->[**Optional** - Include instructions on how to run tests if we include tests with the codebase. Remove this section if it's not needed.]
+### Importer
+
+We've included an `importer` utility for testing packs on your account. You can run this using the included [import.sh](./import.sh) script.
+
+> Note: The importer spins up a docker container, so you must have docker installed and running for this to function
+
+1. Modify [importer-config.sh](./importer-config.sh) with your account number and New Relic API Key
+2. Run [import.sh](./import.sh) from the root of this project:
+
+   ```bash
+   # Usage: 
+   ./import.sh $PACK_NAME
+   
+   # Example
+   > ./import.sh mysql
+   ```
 
 ## Support
 
@@ -92,5 +99,5 @@ If you would like to contribute to this project, review [these guidelines](./CON
 To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic One observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
 
 ## License
+
 New Relic One observability packs is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
->[If applicable: The New Relic One observability packs also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
