@@ -118,6 +118,7 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 			accountId,
 			dashboard: parsedDashboard,
 		};
+		
 		try {
 			await client.request(addDashboard, variables);
 		} catch (error) {
