@@ -1,0 +1,147 @@
+{
+  "name": "Troubleshooting",
+  "description": "Troubleshooting dashboard for a static site.",
+  "pages": [
+    {
+      "name": "Cloud Adoption - Plan",
+      "description": "",
+      "widgets": [
+	{
+	  "visualization": {
+	    "id": "viz.markdown"
+	  },
+	  "layout": {
+	    "column": 1,
+	    "row": 1,
+	    "height": 8,
+	    "width": 4
+	  },
+	  "title": "Troubleshooting",
+	  "rawConfiguration": {
+	    "text": "This dashboard can be used to gain some basic insights into your static website."
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.line"
+	  },
+	  "layout": {
+	    "column": 5,
+	    "row": 1,
+	    "height": 4,
+	    "width": 4
+	  },
+	  "title": "JS error count",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountId": 0,
+		"query": "SELECT count(*) FROM JavascriptError WHERE appName = 'yoursite.com' TIMESERIES 5 minutes"
+	      }
+	    ]
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.line"
+	  },
+	  "layout": {
+	    "column": 9,
+	    "row": 1,
+	    "height": 4,
+	    "width": 4
+	  },
+	  "title": "JS errors over time",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountId": 0,
+		"query": "SELECT count(*) FROM JavascriptError WHERE appName = 'yoursite.com' SINCE 1 week AGO COMPARE WITH 1 week AGO TIMESERIES"
+	      }
+	    ]
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.line"
+	  },
+	  "layout": {
+	    "column": 5,
+	    "row": 5,
+	    "height": 4,
+	    "width": 4
+	  },
+	  "title": "Total page load",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountId": 0,
+		"query": "SELECT average(duration) AS 'Duration', 3 AS 'Warning', 5 AS 'Critical' FROM BrowserInteraction WHERE appName = 'yoursite.com' SINCE 1 hour ago TIMESERIES 1 minute"
+	      }
+	    ]
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.line"
+	  },
+	  "layout": {
+	    "column": 9,
+	    "row": 5,
+	    "height": 4,
+	    "width": 4
+	  },
+	  "title": "Average page load duration",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountId": 0,
+		"query": "SELECT average(duration) FROM BrowserInteraction WHERE appName = 'yoursite.com' AND category IN('Initial page load', 'Route change') TIMESERIES FACET CASES (WHERE category = 'Initial page load' As 'Initial page load', WHERE category = 'Route change' AS 'Route Change') SINCE 1 month AGO"
+	      }
+	    ]
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.pie"
+	  },
+	  "layout": {
+	    "column": 1,
+	    "row": 9,
+	    "width": 6,
+	    "height" 4
+	  },
+	  "title": "Page views by browser",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountid": 0,
+		"query": "SELECT count(*) FROM BrowserInteraction WHERE appName = 'yoursite.com' SINCE 1 week AGO FACET userAgentName"
+	      }
+	    ]
+	  }
+	},
+	{
+	  "visualization": {
+	    "id": "viz.pie"
+	  },
+	  "layout": {
+	    "column": 7,
+	    "row": 9,
+	    "width": 6,
+	    "height" 4
+	  },
+	  "title": "Recent JS errors",
+	  "rawConfiguration": {
+	    "nrqlQueries": [
+	      {
+		"accountid": 0,
+		"query": "SELECT errorMessage AS 'Error', pageUrl AS 'URL' FROM JavaScriptError WHERE appName = 'yoursite.com'"
+	      }
+	    ]
+	  }
+	}
+      ]
+    }
+  ]
+}
