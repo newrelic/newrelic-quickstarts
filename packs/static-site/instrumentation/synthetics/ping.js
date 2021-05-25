@@ -1,5 +1,3 @@
-const Q = require('q');
-
 const URL = "https://google.com" // TODO: update this with the correct url
 const RETRY_DURATION = 5000; // 5 seconds
 const RETRIES = 3;
