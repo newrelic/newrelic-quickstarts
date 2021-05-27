@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.0...v0.2.1) (2021-05-27)
+
+
+### Bug Fixes
+
+* **release:** update branch protections w/ correct restrictions ([6b4eb41](https://github.com/newrelic/newrelic-observability-packs/commit/6b4eb41acc8ec8caa16d4fe38f3da722e6de394f))
+
 # [0.2.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.1.0...v0.2.0) (2021-05-27)
 
 
