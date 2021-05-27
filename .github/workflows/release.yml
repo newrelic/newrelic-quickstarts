@@ -189,24 +189,24 @@ jobs:
       # - name: Install dependencies
       #   run: npm ci
 
-      # - name: Temporarily disable "required_pull_request_reviews" branch protection
-      #   id: disable-branch-protection
-      #   if: always()
-      #   uses: actions/github-script@v1
-      #   with:
-      #     github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-      #     previews: luke-cage-preview
-      #     script: |
-      #       const result = await github.repos.updateBranchProtection({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         branch: 'main',
-      #         required_status_checks: null,
-      #         restrictions: null,
-      #         enforce_admins: null,
-      #         required_pull_request_reviews: null
-      #       })
-      #       console.log("Result:", result)
+      - name: Temporarily disable branch protections
+        id: disable-branch-protection
+        if: always()
+        uses: actions/github-script@v1
+        with:
+          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
+          previews: luke-cage-preview
+          script: |
+            const result = await github.repos.updateBranchProtection({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'main',
+              required_status_checks: null,
+              restrictions: null,
+              enforce_admins: null,
+              required_pull_request_reviews: null
+            })
+            console.log("Result:", result)
 
       - name: Run semantic-release
         env:
@@ -219,23 +219,31 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
         run: npx semantic-release
 
-      # - name: Re-enable "required_pull_request_reviews" branch protection
-      #   id: enable-branch-protection
-      #   if: always()
-      #   uses: actions/github-script@v1
-      #   with:
-      #     github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-      #     previews: luke-cage-preview
-      #     script: |
-      #       const result = await github.repos.updateBranchProtection({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         branch: 'main',
-      #         required_status_checks: null,
-      #         restrictions: null,
-      #         enforce_admins: null,
-      #         required_pull_request_reviews: {
-      #           required_approving_review_count: 1
-      #         }
-      #       })
-      #       console.log("Result:", result)
+      - name: Re-enable branch protections
+        id: enable-branch-protection
+        if: always()
+        uses: actions/github-script@v1
+        with:
+          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
+          previews: luke-cage-preview
+          script: |
+            const result = await github.repos.updateBranchProtection({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'main',
+              required_status_checks: {
+                strict: true,
+                contexts: []
+              },
+              restrictions: {
+                "users":[],
+                "teams":[],
+                "apps":[]
+              },
+              enforce_admins: null,
+              required_pull_request_reviews: {
+                dismiss_stale_reviews: true,
+                required_approving_review_count: 1
+              }
+            })
+            console.log("Result:", result)
