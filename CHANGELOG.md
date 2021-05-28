@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.2...v0.3.0) (2021-05-28)
+
+
+### Features
+
+* **prometheus-node-exporter-macos:** added pack to monitor Mac OS through Node exporter ([#49](https://github.com/newrelic/newrelic-observability-packs/issues/49)) ([89df4d7](https://github.com/newrelic/newrelic-observability-packs/commit/89df4d761315fc12ad0f7f00cd382508bb4f1acb))
+
 ## [0.2.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.1...v0.2.2) (2021-05-28)
 
 
