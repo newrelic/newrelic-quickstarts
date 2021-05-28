@@ -1,3 +1,10 @@
+## [0.2.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.1...v0.2.2) (2021-05-28)
+
+
+### Bug Fixes
+
+* **browser:** add level ([7750f29](https://github.com/newrelic/newrelic-observability-packs/commit/7750f29d9ee6f4e383c8b32727fc972a548c495c))
+
 ## [0.2.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.0...v0.2.1) (2021-05-27)
 
 
