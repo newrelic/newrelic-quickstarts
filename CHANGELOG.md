@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.3.0...v0.3.1) (2021-05-28)
+
+
+### Bug Fixes
+
+* **browser:** description cannot be null ([4ef2d5b](https://github.com/newrelic/newrelic-observability-packs/commit/4ef2d5b2a541ed91a87498fb8628963c411cbf25))
+
 # [0.3.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.2.2...v0.3.0) (2021-05-28)
 
 
