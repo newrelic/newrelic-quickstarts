@@ -62,6 +62,8 @@ Thanks a lot for your submission!
 
 ### Importer
 
+> WARNING: The importer is deprecated and will be removed in the future. You can still use it today, but be aware that it can be removed at any time.
+
 We've included an `importer` utility for testing packs on your account. You can run this using the included [import.sh](./import.sh) script.
 
 > Note: The importer spins up a docker container, so you must have docker installed and running for this to function
