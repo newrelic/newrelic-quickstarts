@@ -20,7 +20,7 @@ Contribute your own observability pack to the New Relic One catalog by following
 
 2. [Clone your own repository to your local machine](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
-3. Copy the `_template` directory and its content to a new directory within the root folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
+3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
 4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `flex`, and `synthetics`. Each folder contains a template that you can use to create entities for your observability pack.
 
@@ -32,8 +32,6 @@ Contribute your own observability pack to the New Relic One catalog by following
       - `rabbitmq.png` or `rabbitmq.jpeg`
       - `rabbitmq01.png`
       - `rabbitmq02.png`
-
-    Finally, rename the `config.yaml` file to the same name as the JSON file, and update its contents. This is where you provide a clear name and description for your dashboard.
 
     This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, you can simply delete the corresponding directory.
 
