@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.3.1...v0.4.0) (2021-06-02)
+
+
+### Features
+
+* **elasticsearch:** Added elasticsearch pack ([5e11551](https://github.com/newrelic/newrelic-observability-packs/commit/5e11551422fd21db6212d7abd610e2151441f566))
+
 ## [0.3.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.3.0...v0.3.1) (2021-05-28)
 
 
