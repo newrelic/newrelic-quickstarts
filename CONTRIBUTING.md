@@ -1,3 +1,4 @@
+
 # Contributing
 
 Contributions are always welcome. Before contributing please read the
@@ -5,6 +6,29 @@ Contributions are always welcome. Before contributing please read the
 [fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
 
 Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md) applies to all platforms and venues related to this project; please follow it in all your interactions with the project and its participants.
+
+---
+
+## Observability Pack Guidelines
+
+We encourage all contributors to actively engage in the creation and maintenance of Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+
+> Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
+
+If you decide to create a new Observability Pack or review a PR please keep the following in mind.
+
+### Observability Pack Name & Descriptions
+
+| Pack Configuration  | Rule  | Limits  |Required |
+|---|---|---|---|
+| `name`  | pack name should be concise and explicit  |limited to 100 characters   | Yes|
+|`description` |Descriptions should be checked for grammar and spelling errors   | limited to 1000 characters  | Yes|
+|`icon`   |.png or .jpeg format   |   | No|
+|`logo`   | .png or .jpeg format  |   |No|
+|`website`   | A valid website    |Valid URL only (https://www.newrelic.com) | No|
+|`author`   |  The creator of the pack |max 10   |Yes|
+|`instrumentation`   | Defines which instrumentation is needed|   |No   |
+|`references`   | References to other packs  ||No   |
 
 ## Feature Requests
 
@@ -49,6 +73,12 @@ git commit -m "fix: typo and prop error in the code of conduct"
 ```bash
 git commit -m "feat(media): creating a video landing page"
 ```
+
+
+
+
+
+### YAML definitions
 
 ## Contributor License Agreement
 
