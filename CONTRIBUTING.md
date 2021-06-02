@@ -1,3 +1,15 @@
+<!-- toc -->
+- [Contributing](#contributing)
+  - [Observability Pack Guidelines](#observability-pack-guidelines)
+  - [Feature Requests](#feature-requests)
+  - [Pull Requests](#pull-requests)
+  - [Using Conventional Commits](#using-conventional-commits)
+      - [Use `chore`](#use-chore)
+      - [Use `fix`](#use-fix)
+      - [Use `feat`](#use-feat)
+  - [Contributor License Agreement](#contributor-license-agreement)
+  - [Slack](#slack)
+<!-- tocstop -->
 
 # Contributing
 
@@ -7,7 +19,6 @@ Contributions are always welcome. Before contributing please read the
 
 Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md) applies to all platforms and venues related to this project; please follow it in all your interactions with the project and its participants.
 
----
 
 ## Observability Pack Guidelines
 
@@ -16,8 +27,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 > Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
 
 If you decide to create a new Observability Pack or review a PR please keep the following in mind.
-
-### Observability Pack Name & Descriptions
 
 | Pack Configuration  | Rule  | Limits  |Required |
 |---|---|---|---|
@@ -73,12 +82,6 @@ git commit -m "fix: typo and prop error in the code of conduct"
 ```bash
 git commit -m "feat(media): creating a video landing page"
 ```
-
-
-
-
-
-### YAML definitions
 
 ## Contributor License Agreement
 
