@@ -54,9 +54,10 @@ const client = new graphql_request_1.GraphQLClient(url, {
     headers: { 'Content-Type': 'application/json' },
 });
 const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 0, void 0, function* () {
-    console.warn('WARNING: The importer is deprecated and will be removed in the future. You can still use it today, but be aware that it can be removed at any time.');
+    console.warn('WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.');
     if (!accountId && !nrApiKey && !dashboardPack) {
-        const args = yargs.options({
+        const args = yargs
+            .options({
             accountId: {
                 alias: 'id',
                 demandOption: true,
@@ -69,9 +70,10 @@ const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 
                 type: 'string',
                 description: 'NR API Key',
             },
-        }).example("npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql", "Import mysql package to account with id 0000000").argv;
+        })
+            .example('npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql', 'Import mysql package to account with id 0000000').argv;
         if (args._.length < 1) {
-            console.error("Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql");
+            console.error('Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql');
             process.exit(0);
         }
         accountId = args.accountId;
@@ -92,7 +94,7 @@ const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, func
         const response = yield prompts({
             type: 'text',
             name: 'overwrite',
-            message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`
+            message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`,
         });
         if (response.overwrite === 'Yes') {
             policyExists.forEach((policyId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -126,7 +128,7 @@ const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void
             const response = yield prompts({
                 type: 'text',
                 name: 'overwrite',
-                message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`
+                message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`,
             });
             if (response.overwrite === 'Yes') {
                 existingDashboards.forEach((dashboardGuid) => __awaiter(void 0, void 0, void 0, function* () {
@@ -134,7 +136,6 @@ const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void
                 }));
             }
         }
-        ;
         file.permissions = 'PUBLIC_READ_WRITE';
         let stringifiedDashboard = JSON.stringify(file);
         stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
@@ -221,7 +222,7 @@ const transformData = (incomingFile) => {
 const checkForExistingDashboards = (name, accountId) => __awaiter(void 0, void 0, void 0, function* () {
     let variables = {
         query: `type = 'DASHBOARD' and accountId = ${accountId}`,
-        cursor: null
+        cursor: null,
     };
     const dashboardList = [];
     let response = yield client.request(dashboard_1.checkIfDashboardExists, variables);
@@ -239,14 +240,14 @@ const checkForExistingDashboards = (name, accountId) => __awaiter(void 0, void 0
 });
 const deleteDashboard = (guid) => __awaiter(void 0, void 0, void 0, function* () {
     const variable = {
-        guid: guid
+        guid: guid,
     };
     yield client.request(dashboard_1.removeDashboard, variable);
 });
 const checkForExistingPolicy = (policyName, accountId) => __awaiter(void 0, void 0, void 0, function* () {
     let variables = {
         accountId: accountId,
-        cursor: null
+        cursor: null,
     };
     const policyExists = [];
     let response = yield client.request(policy_1.checkIfPolicyExists, variables);
@@ -265,7 +266,7 @@ const checkForExistingPolicy = (policyName, accountId) => __awaiter(void 0, void
 const deletePolicy = (policyId, accountId) => __awaiter(void 0, void 0, void 0, function* () {
     const variables = {
         accountId: accountId,
-        id: policyId
+        id: policyId,
     };
     yield client.request(policy_1.removePolicy, variables);
 });

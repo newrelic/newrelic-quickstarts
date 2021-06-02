@@ -62,7 +62,7 @@ Thanks a lot for your submission!
 
 ### Importer
 
-> WARNING: The importer is deprecated and will be removed in the future. You can still use it today, but be aware that it can be removed at any time.
+> WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.
 
 We've included an `importer` utility for testing packs on your account. You can run this using the included [import.sh](./import.sh) script.
 

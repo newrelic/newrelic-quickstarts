@@ -17,7 +17,7 @@ const client = new GraphQLClient(url, {
 
 export const importer = async (accountId: number, nrApiKey: string, dashboardPack: string): Promise<void> => {
 	console.warn(
-		'WARNING: The importer is deprecated and will be removed in the future. You can still use it today, but be aware that it can be removed at any time.',
+		'WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.',
 	);
 	if (!accountId && !nrApiKey && !dashboardPack) {
 		const args = yargs
