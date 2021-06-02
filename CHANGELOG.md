@@ -1,3 +1,15 @@
+# [0.5.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.4.0...v0.5.0) (2021-06-02)
+
+
+### Bug Fixes
+
+* to align with guidelines ([eb0215d](https://github.com/newrelic/newrelic-observability-packs/commit/eb0215dcda1d562ce10c03ade40c337eccd71335))
+
+
+### Features
+
+* **gatsby-build:** Added gatsby-build pack ([40b5c11](https://github.com/newrelic/newrelic-observability-packs/commit/40b5c11bdaa3414d3b6ec51e867fce2faf49ac3e))
+
 # [0.4.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.3.1...v0.4.0) (2021-06-02)
 
 
