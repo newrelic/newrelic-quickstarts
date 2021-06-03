@@ -33,8 +33,6 @@ Contribute your own observability pack to the New Relic One catalog by following
       - `rabbitmq01.png`
       - `rabbitmq02.png`
 
-    Finally, rename the `config.yaml` file to the same name as the JSON file, and update its contents. This is where you provide a clear name and description for your dashboard.
-
     This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, you can simply delete the corresponding directory.
 
 5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.

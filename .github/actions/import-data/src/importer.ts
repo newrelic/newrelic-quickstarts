@@ -79,7 +79,7 @@ const createPolicy = async (accountId: number, pack: string) => {
 const createDashboardLocal = async (accountId: number, pack: string) => {
 	const replacer = new RegExp('"accountId":0', 'g');
 
-	const dir = `${__dirname}/../../../../${pack}/dashboards`;
+	const dir = `${__dirname}/../../../../packs/${pack}/dashboards`;
 	let importedFiles: importedDashboardBody[] = [];
 
 	try {
@@ -134,7 +134,7 @@ const createAlertLocal = async (accountId: number, pack: string, policyId: numbe
 		policyId,
 	};
 
-	const dir = `${__dirname}/../../../../${pack}/alerts`;
+	const dir = `${__dirname}/../../../../packs/${pack}/alerts`;
 	let fileNames: string[] = [];
 
 	try {

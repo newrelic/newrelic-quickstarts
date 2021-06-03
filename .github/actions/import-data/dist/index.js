@@ -108,7 +108,7 @@ const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, func
 });
 const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
     const replacer = new RegExp('"accountId":0', 'g');
-    const dir = `${__dirname}/../../../../${pack}/dashboards`;
+    const dir = `${__dirname}/../../../../packs/${pack}/dashboards`;
     let importedFiles = [];
     try {
         importedFiles = fs_1.default
@@ -156,7 +156,7 @@ const createAlertLocal = (accountId, pack, policyId) => __awaiter(void 0, void 0
         condition: undefined,
         policyId,
     };
-    const dir = `${__dirname}/../../../../${pack}/alerts`;
+    const dir = `${__dirname}/../../../../packs/${pack}/alerts`;
     let fileNames = [];
     try {
         fileNames = fs_1.default.readdirSync(dir).filter(name => path_1.default.extname(name) === '.yml');
