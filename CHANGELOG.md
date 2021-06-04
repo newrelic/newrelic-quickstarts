@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.5.0...v0.5.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* **gatsby-build:** dashboard json issues ([ba09e85](https://github.com/newrelic/newrelic-observability-packs/commit/ba09e8548a31eb07ebb2416e2309816c694ec59d))
+
 # [0.5.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.4.0...v0.5.0) (2021-06-02)
 
 
