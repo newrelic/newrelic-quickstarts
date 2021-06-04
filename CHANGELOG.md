@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.6.0...v0.7.0) (2021-06-04)
+
+
+### Features
+
+* Added lamp stack pack ([d64ec45](https://github.com/newrelic/newrelic-observability-packs/commit/d64ec4528b7472b7035e29e3c487d3976fc8fc01))
+
 # [0.6.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.5.1...v0.6.0) (2021-06-04)
 
 
