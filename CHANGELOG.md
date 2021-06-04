@@ -1,3 +1,15 @@
+# [0.6.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.5.1...v0.6.0) (2021-06-04)
+
+
+### Bug Fixes
+
+* typos ([d47d270](https://github.com/newrelic/newrelic-observability-packs/commit/d47d27023ab22ec343dcfb11b3895265f998cbe1))
+
+
+### Features
+
+* add golden signals pack ([c376a4c](https://github.com/newrelic/newrelic-observability-packs/commit/c376a4c7ad3bf02f88aa84686e9d1f59e99d7ec4))
+
 ## [0.5.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.5.0...v0.5.1) (2021-06-04)
 
 
