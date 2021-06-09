@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.7.0...v0.8.0) (2021-06-09)
+
+
+### Features
+
+* **import-data:** Added deprecation notice ([#48](https://github.com/newrelic/newrelic-observability-packs/issues/48)) ([6f756bb](https://github.com/newrelic/newrelic-observability-packs/commit/6f756bb1365982daec2cb4c95ff9707cb40fa6bb))
+
 # [0.7.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.6.0...v0.7.0) (2021-06-04)
 
 
