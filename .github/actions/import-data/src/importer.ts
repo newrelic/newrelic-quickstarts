@@ -16,24 +16,34 @@ const client = new GraphQLClient(url, {
 });
 
 export const importer = async (accountId: number, nrApiKey: string, dashboardPack: string): Promise<void> => {
+	console.warn(
+		'WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.',
+	);
 	if (!accountId && !nrApiKey && !dashboardPack) {
-		const args = yargs.options({
-			accountId: {
-				alias: 'id',
-				demandOption: true,
-				type: 'number',
-				description: 'NR account id',
-			},
-			nrApiKey: {
-				alias: 'key',
-				demandOption: true,
-				type: 'string',
-				description: 'NR API Key',
-			},
-		}).example("npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql", "Import mysql package to account with id 0000000").argv;
+		const args = yargs
+			.options({
+				accountId: {
+					alias: 'id',
+					demandOption: true,
+					type: 'number',
+					description: 'NR account id',
+				},
+				nrApiKey: {
+					alias: 'key',
+					demandOption: true,
+					type: 'string',
+					description: 'NR API Key',
+				},
+			})
+			.example(
+				'npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql',
+				'Import mysql package to account with id 0000000',
+			).argv;
 
-		if(args._.length < 1) {
-			console.error("Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql");
+		if (args._.length < 1) {
+			console.error(
+				'Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql',
+			);
 			process.exit(0);
 		}
 		accountId = args.accountId;
@@ -43,7 +53,7 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 	client.setHeader('API-Key', nrApiKey);
 
 	dashboardPack = dashboardPack.toLowerCase();
-	
+
 	const policyId = await createPolicy(accountId, dashboardPack);
 
 	await createDashboardLocal(accountId, dashboardPack);
@@ -54,14 +64,14 @@ const createPolicy = async (accountId: number, pack: string) => {
 	const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
 	let policyExists = await checkForExistingPolicy(policyName, accountId);
 
-	if(policyExists.length > 0) {
+	if (policyExists.length > 0) {
 		const response = await prompts({
 			type: 'text',
 			name: 'overwrite',
-			message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`
+			message: `We've found ${policyExists.length} policies with "${policyName}" name, do you want to delete them? Yes/No`,
 		});
 
-		if(response.overwrite === 'Yes'){
+		if (response.overwrite === 'Yes') {
 			policyExists.forEach(async policyId => {
 				await deletePolicy(policyId, accountId);
 			});
@@ -93,21 +103,21 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 
 	importedFiles.forEach(async file => {
 		let existingDashboards = await checkForExistingDashboards(file.name, accountId);
-	
-		if(existingDashboards.length > 0){
+
+		if (existingDashboards.length > 0) {
 			const response = await prompts({
 				type: 'text',
 				name: 'overwrite',
-				message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`
+				message: `We've found ${existingDashboards.length} dashboards with "${file.name}" name, do you want to delete them? Yes/No`,
 			});
 
-			if(response.overwrite === 'Yes'){
+			if (response.overwrite === 'Yes') {
 				existingDashboards.forEach(async dashboardGuid => {
 					await deleteDashboard(dashboardGuid);
 				});
 			}
-		};
-		
+		}
+
 		file.permissions = 'PUBLIC_READ_WRITE';
 		let stringifiedDashboard = JSON.stringify(file);
 		stringifiedDashboard = stringifiedDashboard.replace(replacer, `"accountId": ${accountId}`);
@@ -118,7 +128,7 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 			accountId,
 			dashboard: parsedDashboard,
 		};
-		
+
 		try {
 			await client.request(addDashboard, variables);
 		} catch (error) {
@@ -203,64 +213,64 @@ const transformData = (incomingFile: any) => {
 const checkForExistingDashboards = async (name: string, accountId: number): Promise<Array<string>> => {
 	let variables = {
 		query: `type = 'DASHBOARD' and accountId = ${accountId}`,
-		cursor: null
-	}
+		cursor: null,
+	};
 
 	const dashboardList: Array<string> = [];
 
 	let response = await client.request(checkIfDashboardExists, variables);
 
-	do {{
-		variables.cursor = response.actor.entitySearch.results.nextCursor;
-		response = await client.request(checkIfDashboardExists, variables);
+	do {
+		{
+			variables.cursor = response.actor.entitySearch.results.nextCursor;
+			response = await client.request(checkIfDashboardExists, variables);
 
-		response.actor.entitySearch.results.entities.forEach((entity: any) => {
-			if(entity.name.includes(name))
-				dashboardList.push(entity.guid)
-		});
-	}}
-	while(response.actor.entitySearch.results.nextCursor !== null) 
+			response.actor.entitySearch.results.entities.forEach((entity: any) => {
+				if (entity.name.includes(name)) dashboardList.push(entity.guid);
+			});
+		}
+	} while (response.actor.entitySearch.results.nextCursor !== null);
 
 	return dashboardList;
-}
+};
 
 const deleteDashboard = async (guid: string) => {
 	const variable = {
-		guid: guid
-	}
+		guid: guid,
+	};
 	await client.request(removeDashboard, variable);
-}
+};
 
 const checkForExistingPolicy = async (policyName: string, accountId: number) => {
 	let variables = {
 		accountId: accountId,
-		cursor: null
-	}
+		cursor: null,
+	};
 
-	const policyExists : Array<string> = [];
+	const policyExists: Array<string> = [];
 
 	let response = await client.request(checkIfPolicyExists, variables);
 
-	do {{
-		variables.cursor = response.actor.account.alerts.policiesSearch.nextCursor;
-		response = await client.request(checkIfPolicyExists, variables);
+	do {
+		{
+			variables.cursor = response.actor.account.alerts.policiesSearch.nextCursor;
+			response = await client.request(checkIfPolicyExists, variables);
 
-		response.actor.account.alerts.policiesSearch.policies.forEach((policy: any) => {
-			if(policy.name.includes(policyName))
-			policyExists.push(policy.id)
-		});
-	}}
-	while(response.actor.account.alerts.policiesSearch.nextCursor !== null)
+			response.actor.account.alerts.policiesSearch.policies.forEach((policy: any) => {
+				if (policy.name.includes(policyName)) policyExists.push(policy.id);
+			});
+		}
+	} while (response.actor.account.alerts.policiesSearch.nextCursor !== null);
 
 	return policyExists;
-}
+};
 
 const deletePolicy = async (policyId: string, accountId: number) => {
 	const variables = {
 		accountId: accountId,
-		id: policyId
-	}
+		id: policyId,
+	};
 	await client.request(removePolicy, variables);
-}
+};
 
 export default importer;

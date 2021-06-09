@@ -62,6 +62,8 @@ Thanks a lot for your submission!
 
 ### Importer
 
+> WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.
+
 We've included an `importer` utility for testing packs on your account. You can run this using the included [import.sh](./import.sh) script.
 
 > Note: The importer spins up a docker container, so you must have docker installed and running for this to function
