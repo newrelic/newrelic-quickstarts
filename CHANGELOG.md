@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.0...v0.8.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* update couchbase logo filename in config ([e743ae0](https://github.com/newrelic/newrelic-observability-packs/commit/e743ae092d7b91553b9248a53636a6d24fb4802b))
+
 # [0.8.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.7.0...v0.8.0) (2021-06-09)
 
 
