@@ -1,3 +1,12 @@
+## [0.8.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.1...v0.8.2) (2021-06-11)
+
+
+### Bug Fixes
+
+* added all options available for static conditions ([e223ba2](https://github.com/newrelic/newrelic-observability-packs/commit/e223ba2f6c87dded415025f42f5c9c92d262c59c))
+* typo fixes on outlier alert template ([a8ea8e5](https://github.com/newrelic/newrelic-observability-packs/commit/a8ea8e58c22973ffc787da810f565f2543435474))
+* update baseline alert template to support facets ([b596cb0](https://github.com/newrelic/newrelic-observability-packs/commit/b596cb0965b9dbd7d991346320ab7beeb410fb9d))
+
 ## [0.8.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.0...v0.8.1) (2021-06-10)
 
 
