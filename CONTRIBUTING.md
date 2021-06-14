@@ -28,17 +28,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 
 If you decide to create a new Observability Pack or review a PR please keep the following in mind.
 
-| Pack Configuration  | Rule  | Limits  |Required |
-|---|---|---|---|
-| `name`  | pack name should be concise and explicit  |limited to 100 characters   | Yes|
-|`description` |Descriptions should be checked for grammar and spelling errors   | limited to 1000 characters  | Yes|
-|`icon`   |.png or .jpeg format   |   | No|
-|`logo`   | .png or .jpeg format  |   |No|
-|`website`   | A valid website    |Valid URL only (https://www.newrelic.com) | No|
-|`author`   |  The creator of the pack |max 10   |Yes|
-|`instrumentation`   | Defines which instrumentation is needed|   |No   |
-|`references`   | References to other packs  ||No   |
-
 ## Feature Requests
 
 Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
