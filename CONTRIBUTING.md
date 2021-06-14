@@ -1,3 +1,16 @@
+<!-- toc -->
+- [Contributing](#contributing)
+  - [Observability Pack Guidelines](#observability-pack-guidelines)
+  - [Feature Requests](#feature-requests)
+  - [Pull Requests](#pull-requests)
+  - [Using Conventional Commits](#using-conventional-commits)
+      - [Use `chore`](#use-chore)
+      - [Use `fix`](#use-fix)
+      - [Use `feat`](#use-feat)
+  - [Contributor License Agreement](#contributor-license-agreement)
+  - [Slack](#slack)
+<!-- tocstop -->
+
 # Contributing
 
 Contributions are always welcome. Before contributing please read the
@@ -5,6 +18,15 @@ Contributions are always welcome. Before contributing please read the
 [fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
 
 Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md) applies to all platforms and venues related to this project; please follow it in all your interactions with the project and its participants.
+
+
+## Observability Pack Guidelines
+
+We encourage all contributors to actively engage in the creation and maintenance of Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+
+> Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
+
+If you decide to create a new Observability Pack or review a PR please keep the following in mind.
 
 ## Feature Requests
 
