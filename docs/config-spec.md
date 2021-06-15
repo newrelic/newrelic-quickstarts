@@ -13,16 +13,25 @@ For example:
 ## Schema definition
 
 ```yaml
-
 #####################
 # Metadata
 #####################
-# Unique name for observability pack
-# Example: ApacheThat's
+
+# Unique identifier for this observability pack
+uuid: guid, required
+
+# Display name for observability pack
+# Example: Apache
 name: string, required
 
+# Deprecate in favor of short-description?
 # A short form description for this Observability Pack. Used throughout the platform when displaying the pack.
 description: string, required
+
+# url slug for linking on public website
+# recommended format: make this a lowercase and hyphenated version
+# of the `name` field
+slug: string, required
 
 # Level categorization of Observability Pack
 level: enum, required # One of [ New Relic, Verified, Community ]
