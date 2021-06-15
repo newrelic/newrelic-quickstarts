@@ -78,9 +78,9 @@ children: list(object), optional
 
 # Contains avatar, GitHub username, and link to GitHub profile for each contributor
 contributors: list(object), optional
-  - github-username:
-    profile-url:
-    avatar-url:
+  - github-username: string, required
+    profile-url: string, required
+    avatar-url: string, required
 
 # path to icon for this Observability Pack
 icon: string, optional
