@@ -53,10 +53,9 @@ async function getFiles(dir) {
 try {
   getFiles(process.argv[2]).then(() => {
     if(!valid) {
-        typeErrors.length > 0 && console.warn(`Wrong type`)
-        typeErrors.map((file) => console.warn(file))
-        sizeErrors.length > 0 && console.warn(`Wrong size`)
-        sizeErrors.map((file) => console.warn(file))
+        typeErrors.length > 0 && console.warn(`Images should be of format ${...ALLOWED_IMG_EXT}`) && typeErrors.map((file) => console.warn(file))
+        sizeErrors.length > 0 && console.warn(`Images should be below ${MAX_SIZE/100000}MB`) && sizeErrors.map((file) => console.warn(file))
+        core.setFailed('Check image formats and sizes')
     }
   })
 } catch(e) {
