@@ -27,7 +27,7 @@ async function getFiles(dir) {
         const fileExt = path.extname(filePath);
         const fileSize = statSync(filePath)['size']
         if (fileSize < MAX_SIZE){
-            sizeErrors.push(filePath)
+            sizeErrors.push({filePath, fileSize})
             valid = false
         }
         if (!ALLOWED_IMG_EXT.includes(fileExt)){
@@ -56,7 +56,7 @@ try {
         typeErrors.length > 0 && console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`)
         typeErrors.map((file) => console.warn(file))
         sizeErrors.length > 0 && console.warn(`Images should be below ${MAX_SIZE/1000000}MB`)
-        sizeErrors.map((file) => console.warn(file))
+        sizeErrors.map((file) => console.warn(JSON.stringify(file)))
         core.setFailed('Check image formats and sizes')
     }
   })
