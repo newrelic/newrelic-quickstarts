@@ -1,4 +1,4 @@
-const fs = require("fs");
+const {promises:fs, statSync} = require("fs");
 const path = require('path');
 const core = require('@actions/core');
 const isImage = require('is-image');
@@ -9,9 +9,9 @@ const ALLOWED_IMG_EXT = [
   '.svg',
 ]
 let valid = true;  
-function getFiles(dir) {
+async function getFiles(dir) {
   
-  const entries = fs.readdir(dir, { withFileTypes: true });
+  const entries = await fs.readdir(dir, { withFileTypes: true });
 
   // Get files within the current directory and add a path key to the file objects
   const files = entries
@@ -21,7 +21,7 @@ function getFiles(dir) {
         // console.log(file.name)
         const filePath = dir + file.name
         const fileExt = path.extname(filePath);
-        const fileSize = fs.statSync(filePath)['size']
+        const fileSize = statSync(filePath)['size']
         fileSize < MAX_SIZE && console.warn(`Image too large: ${filePath}`) && (valid = false)
         !ALLOWED_IMG_EXT.includes(fileExt) && console.warn(`Not a valid image type: ${filePath}`) && (valid = false)    
       })
@@ -36,9 +36,9 @@ function getFiles(dir) {
         current function itself
       */
     
-      files.push(...getFiles(`${dir}${folder.name}/`));
-  return files;
+      files.push(...await getFiles(`${dir}${folder.name}/`));
+  return valid;
 }
 
-getFiles(process.argv[2]);
-!valid && core.setFailed('Failured');
+const result = await getFiles(process.argv[2]);
+!result && core.setFailed('Failured');
