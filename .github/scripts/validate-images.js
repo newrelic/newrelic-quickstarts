@@ -50,17 +50,17 @@ async function getFiles(dir) {
   return files;
 }
 
-try {
-  getFiles(process.argv[2]).then(() => {
-    if(!valid) {
-        typeErrors.length > 0 && console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`)
+getFiles(process.argv[2]).then(() => {
+  if(!valid) {
+      if (typeErrors.length > 0) {
+        console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`)
         typeErrors.map((file) => console.warn(file))
-        sizeErrors.length > 0 && console.warn(`Images should be below ${MAX_SIZE/1000000}MB`)
+      }
+      if (sizeErrors.length > 0) {
+        console.warn(`Images should be below ${MAX_SIZE/1000000}MB`)
         sizeErrors.map((file) => console.warn(JSON.stringify(file)))
-        core.setFailed('Check image formats and sizes')
-    }
-  })
-} catch(e) {
-  core.setFailed(e)
-}
+      }
+      core.setFailed('Check image formats and sizes')
+  }
+})
 
