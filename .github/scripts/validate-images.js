@@ -1,4 +1,4 @@
-const { promises: fs, statSync } = require("fs");
+const fs = require("fs");
 const path = require('path');
 const core = require('@actions/core');
 const isImage = require('is-image');
@@ -21,7 +21,7 @@ function getFiles(dir) {
         // console.log(file.name)
         const filePath = dir + file.name
         const fileExt = path.extname(filePath);
-        const fileSize = statSync(filePath)['size']
+        const fileSize = fs.statSync(filePath)['size']
         fileSize < MAX_SIZE && console.warn(`Image too large: ${filePath}`) && (valid = false)
         !ALLOWED_IMG_EXT.includes(fileExt) && console.warn(`Not a valid image type: ${filePath}`) && (valid = false)    
       })
