@@ -3,7 +3,7 @@ const path = require('path');
 const isImage = require('is-image');
 const core = require('@actions/core');
 
-const MAX_SIZE = 4194304
+const MAX_SIZE = 4000000
 const ALLOWED_IMG_EXT = [
   '.png',
   '.jpg',
@@ -53,8 +53,10 @@ async function getFiles(dir) {
 try {
   getFiles(process.argv[2]).then(() => {
     if(!valid) {
-        typeErrors.length > 0 && console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`) && typeErrors.map((file) => console.warn(file))
-        sizeErrors.length > 0 && console.warn(`Images should be below ${MAX_SIZE/100000}MB`) && sizeErrors.map((file) => console.warn(file))
+        typeErrors.length > 0 && console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`)
+        typeErrors.map((file) => console.warn(file))
+        sizeErrors.length > 0 && console.warn(`Images should be below ${MAX_SIZE/1000000}MB`)
+        sizeErrors.map((file) => console.warn(file))
         core.setFailed('Check image formats and sizes')
     }
   })
