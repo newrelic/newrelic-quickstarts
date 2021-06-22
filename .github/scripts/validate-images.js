@@ -41,4 +41,4 @@ function getFiles(dir) {
 }
 
 getFiles(process.argv[2]);
-!valid && core.setFailed(error.message);
+!valid && core.setFailed('Failured');
