@@ -6,6 +6,7 @@ const core = require('@actions/core');
 const MAX_SIZE = 4000000
 const ALLOWED_IMG_EXT = [
   '.png',
+  '.jpeg',
   '.jpg',
   '.svg',
 ]
