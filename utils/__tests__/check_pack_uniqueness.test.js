@@ -5,7 +5,7 @@ const helpers = require('../helpers');
 jest.mock('fs');
 jest.spyOn(global.console, 'log');
 jest.spyOn(global.console, 'error');
-jest.mock('../helpers', () => ({
+jest.mock('./../helpers', () => ({
   findMainPackConfigFiles: jest.fn(),
   readFile: jest.fn(),
   removeCWDPrefix: jest.fn()
