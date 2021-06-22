@@ -1,10 +1,10 @@
 'use strict';
-const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 const glob = require('glob');
 const Ajv = require('ajv');
 const ajv = new Ajv();
+
+const { readFile, removeCWDPrefix } = require('./helpers');
 
 // schemas
 const mainConfigSchema = require('./schemas/main_config.json');
@@ -38,35 +38,6 @@ const validateAgainstSchema = (content, schema) => {
 }
 
 /**
- * Read and parse a YAML file
- * @param {String} filePath - The path to the YAML file
- * @returns {Object} An object containing the path and contents of the file
- */
-const readYamlFile = (filePath) => {
-  const file = fs.readFileSync(filePath);
-  const contents = yaml.loadAll(file);
-  return { path: filePath, contents };
-}
-
-/**
- * Read and parse a JSON file
- * @param {String} filePath - The path to the JSON file
- * @returns {Object} An object containing the path and contents of the file
- */
-const readJsonFile = (filePath) => {
-  const file = fs.readFileSync(filePath);
-  const contents = JSON.parse(file);
-  return { path: filePath, contents: [ contents ] }; // Return array here to be consistent with the yaml reading
-}
-
-/**
- * Reads in a JSON or YAML file
- * @param {String} filePath - The path to the JSON or YAML file
- * @returns {Object} An object containing the path and contents of the file
- */
-const readFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile(filePath) : readYamlFile(filePath);
-
-/**
  * Validates a files contents against the appropriate schema
  * @param {Object} file - an object containing the path and contents of a file
  * @returns {Object} the same file object with an array of `errors`
@@ -75,7 +46,7 @@ const validateFile = (file) => {
   const filePath = file.path;
   let errors = [];
 
-  console.log(`Validating ${removePathPrefix(filePath)}`);
+  console.log(`Validating ${removeCWDPrefix(filePath)}`);
   switch(true) {
     case(filePath.includes('/alerts/')): // validate using alert schema
       errors = validateAgainstSchema(file.contents[0], alertSchema);
@@ -121,8 +92,6 @@ const getPackFilePaths = (basePath) => {
   return [ ...yamlFilePaths, ...jsonFilePaths ];
 }
 
-const removePathPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
-
 const main = () => {
   const filePaths = getPackFilePaths(process.cwd()).sort();
   const files = filePaths.map(readFile);
@@ -130,7 +99,7 @@ const main = () => {
   const filesWithErrors = files.map(validateFile).filter(file => file.errors.length > 0);
 
   for (const f of filesWithErrors) {
-    console.log(`\nError: ${removePathPrefix(f.path)}`);
+    console.log(`\nError: ${removeCWDPrefix(f.path)}`);
     for (const e of f.errors) {
       console.log(`\t ${e.message}`);
     }
