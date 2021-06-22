@@ -1,18 +1,21 @@
+const core = require('@actions/core');
 const {promises:fs, statSync} = require("fs");
 const path = require('path');
 const isImage = require('is-image');
-const core = require('@actions/core');
 
-const MAX_SIZE = 4000000
+const MAX_SIZE = 4000000;
+const MAX_NUM_IMG = 1;
 const ALLOWED_IMG_EXT = [
   '.png',
   '.jpeg',
   '.jpg',
   '.svg',
-]
+];
 let valid = true,
     sizeErrors = [],
-    typeErrors = [];
+    typeErrors = [],
+    tooManyImages = [];
+    
 
 async function getFiles(dir) {
   
@@ -28,7 +31,7 @@ async function getFiles(dir) {
         const fileExt = path.extname(filePath);
         const fileSize = statSync(filePath)['size']
         if (fileSize < MAX_SIZE){
-            sizeErrors.push({filePath, fileSize: fileSize/1000000})
+            sizeErrors.push({[filePath]: `${fileSize/1000000}MB`})
             valid = false
         }
         if (!ALLOWED_IMG_EXT.includes(fileExt)){
@@ -36,8 +39,11 @@ async function getFiles(dir) {
             valid = false
         }
       })
-      // .map(file => ({ ...file, path: path + file.name, size: statSync(path + file.name) }));
-  // console.log(files)
+
+  if (files.length > MAX_NUM_IMG) {
+      tooManyImages.push({[dir]: files.length});
+      valid = false;
+  }
   // Get folders within the current directory
   const folders = entries.filter(folder => folder.isDirectory());
   
@@ -54,14 +60,18 @@ async function getFiles(dir) {
 getFiles(process.argv[2]).then(() => {
   if(!valid) {
       if (typeErrors.length > 0) {
-        console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}`)
+        console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`)
         typeErrors.map((file) => console.warn(file))
       }
       if (sizeErrors.length > 0) {
-        console.warn(`Images should be below ${MAX_SIZE/1000000}MB`)
-        sizeErrors.map((file) => console.warn(JSON.stringify(file)))
+        console.warn(`Images should be below ${MAX_SIZE/1000000}MB:`)
+        sizeErrors.map((file) => console.warn(file))
       }
-      core.setFailed('Check image formats and sizes')
+      if (tooManyImages.length > 0) {
+        console.warn(`Components should contain less than 6 images:`)
+        tooManyImages.map((dir) => console.warn(dir))
+      }
+      core.setFailed('Check image requirements!')
   }
 })
 
