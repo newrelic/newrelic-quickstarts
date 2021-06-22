@@ -27,7 +27,7 @@ async function getFiles(dir) {
         const fileExt = path.extname(filePath);
         const fileSize = statSync(filePath)['size']
         if (fileSize < MAX_SIZE){
-            sizeErrors.push({filePath, fileSize})
+            sizeErrors.push({filePath, fileSize: fileSize/1000000})
             valid = false
         }
         if (!ALLOWED_IMG_EXT.includes(fileExt)){
