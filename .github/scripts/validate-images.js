@@ -40,4 +40,4 @@ async function getFiles(dir) {
   return files;
 }
 
-export default getFiles;
+getFiles(process.argv[2]);
