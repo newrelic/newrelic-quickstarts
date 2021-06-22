@@ -1,14 +1,17 @@
 const {promises:fs, statSync} = require("fs");
 const path = require('path');
-const core = require('@actions/core');
 const isImage = require('is-image');
+const core = require('@actions/core');
 
 const MAX_SIZE = 4194304
 const ALLOWED_IMG_EXT = [
   '.jpg',
   '.svg',
 ]
-let valid = true;  
+let valid = true,
+    sizeErrors = [],
+    typeErrors = [];
+
 async function getFiles(dir) {
   
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -22,8 +25,14 @@ async function getFiles(dir) {
         const filePath = dir + file.name
         const fileExt = path.extname(filePath);
         const fileSize = statSync(filePath)['size']
-        fileSize < MAX_SIZE && console.warn(`Image too large: ${filePath}`) && (valid = false)
-        !ALLOWED_IMG_EXT.includes(fileExt) && console.warn(`Not a valid image type: ${filePath}`) && (valid = false)    
+        if (fileSize < MAX_SIZE){
+            sizeErrors.push(filePath)
+            valid = false
+        }
+        if (!ALLOWED_IMG_EXT.includes(fileExt)){
+            typeErrors.push(filePath)
+            valid = false
+        }
       })
       // .map(file => ({ ...file, path: path + file.name, size: statSync(path + file.name) }));
   // console.log(files)
@@ -37,8 +46,15 @@ async function getFiles(dir) {
       */
     
       files.push(...await getFiles(`${dir}${folder.name}/`));
-  return valid;
+  return files;
 }
 
-const result = await getFiles(process.argv[2]);
-!result && core.setFailed('Failured');
+getFiles(process.argv[2]).then(() => {
+    if(!valid) {
+        console.warn(`Wrong type`)
+        typeErrors.map((file) => console.warn(file))
+        console.warn(`Wrong size`)
+        sizeErrors.map((file) => console.warn(file))
+        core.setFailed('Failured')
+    }
+})
