@@ -5,6 +5,7 @@ const core = require('@actions/core');
 
 const MAX_SIZE = 4194304
 const ALLOWED_IMG_EXT = [
+  '.png',
   '.jpg',
   '.svg',
 ]
@@ -49,12 +50,17 @@ async function getFiles(dir) {
   return files;
 }
 
-getFiles(process.argv[2]).then(() => {
+try {
+  getFiles(process.argv[2]).then(() => {
     if(!valid) {
-        console.warn(`Wrong type`)
+        typeErrors.length > 0 && console.warn(`Wrong type`)
         typeErrors.map((file) => console.warn(file))
-        console.warn(`Wrong size`)
+        sizeErrors.length > 0 && console.warn(`Wrong size`)
         sizeErrors.map((file) => console.warn(file))
-        core.setFailed('Failured')
+        core.setFailed()
     }
-})
+  })
+} catch(e) {
+  core.setFailed(e)
+}
+
