@@ -57,7 +57,6 @@ try {
         typeErrors.map((file) => console.warn(file))
         sizeErrors.length > 0 && console.warn(`Wrong size`)
         sizeErrors.map((file) => console.warn(file))
-        core.setFailed()
     }
   })
 } catch(e) {
