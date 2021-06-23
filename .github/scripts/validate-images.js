@@ -7,7 +7,6 @@ const isImage = require('is-image');
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 1;
 const ALLOWED_IMG_EXT = [
-  '.png',
   '.jpeg',
   '.jpg',
   '.svg',
