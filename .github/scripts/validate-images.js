@@ -63,8 +63,7 @@ async function getFiles(dir) {
 }
 
 const main = () => {
-  try {
-    getFiles(BASE_PATH).then(() => {
+ getFiles(BASE_PATH).then(() => {
     if(!valid) {
         if (typeErrors.length > 0) {
           console.warn(`\nImages should be of format ${[...ALLOWED_IMG_EXT]}:`)
@@ -80,10 +79,7 @@ const main = () => {
         }
         core.setFailed('Check image requirements!')
     }
-  })
-  } catch(e) {
-    throw e
-  }
+  }).catch(e => core.setFailed(e)
   
 }
 
