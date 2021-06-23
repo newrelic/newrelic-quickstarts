@@ -8,6 +8,7 @@ const BASE_PATH = './packs/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = [
+  '.png',
   '.jpeg',
   '.jpg',
   '.svg',
