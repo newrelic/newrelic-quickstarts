@@ -79,7 +79,7 @@ const main = () => {
         }
         core.setFailed('Check image requirements!')
     }
-  }).catch(e => core.setFailed(e)
+  }).catch(e => core.setFailed(e))
   
 }
 
