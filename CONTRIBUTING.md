@@ -1,6 +1,7 @@
 <!-- toc -->
 - [Contributing](#contributing)
   - [Observability Pack Guidelines](#observability-pack-guidelines)
+    - [Image requirements](#image-requirements)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
   - [Using Conventional Commits](#using-conventional-commits)
@@ -28,6 +29,14 @@ We encourage all contributors to actively engage in the creation and maintenance
 
 If you decide to create a new Observability Pack or review a PR please keep the following in mind.
 
+### Image requirements
+
+In order for your PR to pass Validation, the images included in your pack must meet the following requirements:
+
+ - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+ - Each image file must be less than `4MB` in size
+ - There should be no more than `6` images in your pack's component folders
+  
 ## Feature Requests
 
 Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
