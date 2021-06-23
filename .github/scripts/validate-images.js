@@ -59,7 +59,7 @@ async function getFiles(dir) {
       */
     
       files.push(...await getFiles(`${dir}${folder.name}/`));
-  return;
+  return files;
 }
 
 const main = () => {
