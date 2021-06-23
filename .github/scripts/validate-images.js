@@ -4,6 +4,7 @@ const {promises:fs, statSync} = require("fs");
 const path = require('path');
 const isImage = require('is-image');
 
+const BASE_PATH = './packs/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 1;
 const ALLOWED_IMG_EXT = [
@@ -16,7 +17,11 @@ let valid = true,
     typeErrors = [],
     tooManyImages = [];
     
-
+/** 
+* Validates an object against a JSON schema
+* @param {String} dir - The directory to parse, set by the command line argument
+* @returns {Object[]} An array of any errors found
+*/
 async function getFiles(dir) {
   
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -54,22 +59,22 @@ async function getFiles(dir) {
       */
     
       files.push(...await getFiles(`${dir}${folder.name}/`));
-  return files;
+  return;
 }
 
 const main = () => {
-  getFiles(process.argv[2]).then(() => {
+  getFiles(BASE_PATH).then(() => {
     if(!valid) {
         if (typeErrors.length > 0) {
-          console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`)
+          console.warn(`\nImages should be of format ${[...ALLOWED_IMG_EXT]}:`)
           typeErrors.map((file) => console.warn(file))
         }
         if (sizeErrors.length > 0) {
-          console.warn(`Images should be below ${MAX_SIZE/1000000}MB:`)
+          console.warn(`\nImages should be below ${MAX_SIZE/1000000}MB:`)
           sizeErrors.map((file) => console.warn(file))
         }
         if (tooManyImages.length > 0) {
-          console.warn(`Components should contain less than 6 images:`)
+          console.warn(`\nComponents should contain less than 6 images:`)
           tooManyImages.map((dir) => console.warn(dir))
         }
         core.setFailed('Check image requirements!')
