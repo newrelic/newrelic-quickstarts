@@ -1,15 +1,16 @@
 'use strict';
 const checkPackUniquess = require('../check_pack_uniqueness');
 const helpers = require('../helpers');
+const glob = require('glob');
 
 jest.mock('fs');
-jest.spyOn(global.console, 'log');
-jest.spyOn(global.console, 'error');
-jest.mock('./../helpers', () => ({
-  findMainPackConfigFiles: jest.fn(),
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
+jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.mock('../helpers', () => ({
   readFile: jest.fn(),
   removeCWDPrefix: jest.fn()
 }))
+jest.mock('glob');
 
 describe('Action: check pack uniqueness', () => {
   afterEach(() => {
@@ -17,7 +18,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds exact match', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]);
+    glob.sync.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]); 
     helpers.readFile
       .mockReturnValueOnce({ path: 'testpath', contents: [{ name: 'exactmatch' }]})
       .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'exactmatch' }]});
@@ -29,7 +30,8 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds match with different punctuation', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]);
+    glob.sync.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]); 
+
     helpers.readFile
       .mockReturnValueOnce({ path: 'testpath', contents: [{ name: 'exact match' }]})
       .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: `e/xa"ct matc'h` }]});
@@ -41,7 +43,9 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds more than 2 matches', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml', 'test/3/path/config.yml']);
+
+    console.dir(glob.sync, { depth: undefined });
+    glob.sync.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml', 'test/3/path/config.yml']);
     helpers.readFile
       .mockReturnValueOnce({ path: 'testpath', contents: [{ name: 'exactmatch' }]})
       .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'exactmatch' }]})
@@ -54,7 +58,9 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('does not find match', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]);
+
+    console.dir(glob.sync, { depth: undefined });
+    glob.sync.mockReturnValueOnce([ 'test/path/config.yml', 'test/2/path/config.yml' ]);
     helpers.readFile
       .mockReturnValueOnce({ path: 'testpath', contents: [{ name: 'exactmatch' }]})
       .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'not a match' }]});

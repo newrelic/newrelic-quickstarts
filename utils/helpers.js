@@ -2,8 +2,6 @@
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
-const glob = require('glob');
-
 
 /**
  * Read and parse a YAML file
@@ -35,15 +33,9 @@ const readJsonFile = (filePath) => {
 const readFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile(filePath) : readYamlFile(filePath);
 
 /**
- * Finds the path to all top level pack configs
- * @returns {String[]} An array of the file paths
- */
-const findMainPackConfigFiles = () => glob.sync(path.resolve(process.cwd(), 'packs/**/config.yml')); 
-
-/**
  * Removes the current working directory from file paths
  * @returns {String} The path without the CWD prefix
  */
 const removeCWDPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
 
-module.exports = { readYamlFile, readJsonFile, readFile, findMainPackConfigFiles, removeCWDPrefix };
+module.exports = { readYamlFile, readJsonFile, readFile, removeCWDPrefix };
