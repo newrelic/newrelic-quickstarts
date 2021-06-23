@@ -1,3 +1,4 @@
+'use strict';
 const core = require('@actions/core');
 const {promises:fs, statSync} = require("fs");
 const path = require('path');
@@ -57,21 +58,24 @@ async function getFiles(dir) {
   return files;
 }
 
-getFiles(process.argv[2]).then(() => {
-  if(!valid) {
-      if (typeErrors.length > 0) {
-        console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`)
-        typeErrors.map((file) => console.warn(file))
-      }
-      if (sizeErrors.length > 0) {
-        console.warn(`Images should be below ${MAX_SIZE/1000000}MB:`)
-        sizeErrors.map((file) => console.warn(file))
-      }
-      if (tooManyImages.length > 0) {
-        console.warn(`Components should contain less than 6 images:`)
-        tooManyImages.map((dir) => console.warn(dir))
-      }
-      core.setFailed('Check image requirements!')
-  }
-})
+const main = () => {
+  getFiles(process.argv[2]).then(() => {
+    if(!valid) {
+        if (typeErrors.length > 0) {
+          console.warn(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`)
+          typeErrors.map((file) => console.warn(file))
+        }
+        if (sizeErrors.length > 0) {
+          console.warn(`Images should be below ${MAX_SIZE/1000000}MB:`)
+          sizeErrors.map((file) => console.warn(file))
+        }
+        if (tooManyImages.length > 0) {
+          console.warn(`Components should contain less than 6 images:`)
+          tooManyImages.map((dir) => console.warn(dir))
+        }
+        core.setFailed('Check image requirements!')
+    }
+  })
+}
 
+main();
