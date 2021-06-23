@@ -52,7 +52,7 @@ const main = () => {
     matches.map(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
     console.error(`Please update your pack's name to be unique`);
 
-    if (process.env.CI) {
+    if (require.main === module) {
       process.exit(1);
     }
   }
@@ -61,7 +61,7 @@ const main = () => {
   }
 }
 
-if (process.env.CI) {
+if (require.main === module) {
   main();
 }
 
