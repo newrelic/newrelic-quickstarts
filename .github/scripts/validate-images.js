@@ -6,7 +6,7 @@ const isImage = require('is-image');
 
 const BASE_PATH = './packs/';
 const MAX_SIZE = 4000000;
-const MAX_NUM_IMG = 1;
+const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = [
   '.jpeg',
   '.jpg',
@@ -35,7 +35,7 @@ async function getFiles(dir) {
         const filePath = dir + file.name
         const fileExt = path.extname(filePath);
         const fileSize = statSync(filePath)['size']
-        if (fileSize < MAX_SIZE){
+        if (fileSize > MAX_SIZE){
             sizeErrors.push({[filePath]: `${fileSize/1000000}MB`})
             valid = false
         }
