@@ -1,4 +1,5 @@
-const { validateFile } = require('../validate_packs');
+const { expect } = require('@jest/globals');
+const { validateFile, convertErrors } = require('../validate_packs');
 
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -58,7 +59,7 @@ const getTestFile = (schemaType) => {
   return files[schemaType];
 };
 
-describe('test schema validation', () => {
+describe('test validateFile', () => {
   describe('alert validation', () => {
     test.each`
       type
@@ -136,7 +137,6 @@ describe('test schema validation', () => {
 
       const { errors } = validateFile(alertTestFile);
 
-      console.dir(errors);
       expect(errors.length).toBe(3);
     });
   });
@@ -292,5 +292,74 @@ describe('test schema validation', () => {
 
       expect(errors.length).toBe(1);
     });
+  });
+});
+
+describe('test converErrors', () => {
+  test('converts enum error message', () => {
+    const mockAjvErrors = [
+      {
+        instancePath: '/type',
+        schemaPath: '#/properties/type/enum',
+        keyword: 'enum',
+        params: { allowedValues: ['STATIC', 'BASELINE', 'OUTLIER'] },
+        message: 'must be equal to one of the allowed values',
+      },
+    ];
+
+    const convertedErrors = convertErrors(mockAjvErrors);
+
+    expect(convertedErrors[0].message).toBe(
+      '[/type] must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]'
+    );
+  });
+
+  test('doesnt convert message for non-enum error types', () => {
+    const mockAjvErrors = [
+      {
+        instancePath: '',
+        schemaPath: '#/required',
+        keyword: 'required',
+        params: { missingProperty: 'name' },
+        message: "must have required property 'name'",
+      },
+    ];
+
+    const convertedErrors = convertErrors(mockAjvErrors);
+
+    expect(convertedErrors[0].message).toBe(
+      "must have required property 'name'"
+    );
+  });
+
+  test('removes fields that are not message', () => {
+    const mockAjvErrors = [
+      {
+        instancePath: '/type',
+        schemaPath: '#/properties/type/enum',
+        keyword: 'enum',
+        params: { allowedValues: ['STATIC', 'BASELINE', 'OUTLIER'] },
+        message: 'must be equal to one of the allowed values',
+      },
+      {
+        instancePath: '',
+        schemaPath: '#/required',
+        keyword: 'required',
+        params: { missingProperty: 'name' },
+        message: "must have required property 'name'",
+      },
+    ];
+
+    const convertedErrors = convertErrors(mockAjvErrors);
+
+    expect(convertedErrors).toEqual([
+      {
+        message:
+          '[/type] must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]',
+      },
+      {
+        message: "must have required property 'name'",
+      },
+    ]);
   });
 });
