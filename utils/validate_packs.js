@@ -2,7 +2,7 @@
 const path = require('path');
 const glob = require('glob');
 const Ajv = require('ajv');
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true });
 
 const { readPackFile, removeCWDPrefix } = require('./helpers');
 
