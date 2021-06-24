@@ -48,7 +48,7 @@ const main = () => {
   if (matches.length > 0) {
     console.error(`ERROR: Found matching Observability Pack names`);
     console.error(`Punctuation and white space are removed before comparison`);
-    matches.map(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
+    matches.forEach(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
     console.error(`Please update your pack's name to be unique`);
 
     // `require.main` is equal to `module` when the file is being executed directly
