@@ -30,23 +30,12 @@ const cleanPackName = (str) =>
  * @returns {Object[]} an array of matching values 
  */
 const getMatchingNames = (namesAndPaths) => {
-  const namesAndMatches = namesAndPaths.reduce((matches, pack) => {
-    const existingEntry = matches.get(pack.name);
-    if (existingEntry) {
-      matches.set(pack.name, [...existingEntry, pack]);
-    }
-    else {
-      matches.set(pack.name, [pack]);
-    }
+  return namesAndPaths.reduce((acc, { name, path }) => {
+    const duplicates = namesAndPaths.filter(
+      (pack) => pack.name === name && pack.path !== path
+    );
 
-    return matches;
-  }, new Map());
-
-  return Array.from(namesAndMatches.values()).reduce((allMatches, current) => {
-    if (current.length > 1) {
-      return [...allMatches, ...current];
-    }
-    return allMatches;
+    return [...new Set([...acc, ...duplicates])];
   }, []);
 };
 
@@ -62,6 +51,8 @@ const main = () => {
     matches.map(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
     console.error(`Please update your pack's name to be unique`);
 
+    // `require.main` is equal to `module` when the file is being executed directly
+    // if it isn't, the file is being import/required
     if (require.main === module) {
       process.exit(1);
     }

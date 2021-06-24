@@ -76,11 +76,11 @@ describe('Action: check pack uniqueness', () => {
       'test/5/path/config.yml'
     ]);
     helpers.readPackFile
-      .mockReturnValueOnce({ path: 'testpath', contents: [{ name: 'match1' }]})
-      .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'match2' }]})
-      .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'match1' }]})
-      .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'match2' }]})
-      .mockReturnValueOnce({ path: 'testpathother', contents: [{ name: 'match3' }]});
+      .mockReturnValueOnce({ path: 'test/path/config.yml', contents: [{ name: 'match1' }]})
+      .mockReturnValueOnce({ path: 'test/2/path/config.yml', contents: [{ name: 'match2' }]})
+      .mockReturnValueOnce({ path: 'test/3/path/config.yml', contents: [{ name: 'match1' }]})
+      .mockReturnValueOnce({ path: 'test/4/path/config.yml', contents: [{ name: 'match2' }]})
+      .mockReturnValueOnce({ path: 'test/5/path/config.yml', contents: [{ name: 'match3' }]});
 
     checkPackUniquess();
 
