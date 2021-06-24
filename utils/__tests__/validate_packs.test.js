@@ -1,0 +1,296 @@
+const { validateFile } = require('../validate_packs');
+
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
+jest.spyOn(global.console, 'error').mockImplementation(() => {});
+
+const getTestFile = (schemaType) => {
+  const files = {
+    alert: {
+      path: '/alerts/',
+      contents: [
+        {
+          name: 'fakealert',
+          type: 'STATIC',
+          nrql: {
+            query:
+              "FROM ElasticsearchClusterSample SELECT uniqueCount(displayName) WHERE cluster.status = 'red' FACET displayName",
+          },
+        },
+      ],
+    },
+    dashboard: {
+      path: '/dashboards/',
+      contents: [
+        {
+          name: 'fakedashboard',
+        },
+      ],
+    },
+    flex: {
+      path: '/instrumentation/flex/',
+      contents: [
+        {
+          name: 'fakeflexconfig',
+        },
+        {
+          integrations: [],
+        },
+      ],
+    },
+    synthetic: {
+      path: '/instrumentation/synthetics',
+      contents: [
+        {
+          name: 'fakesynthetic',
+        },
+      ],
+    },
+    main_config: {
+      path: '/main_config/', // this can be any path
+      contents: [
+        {
+          name: 'fakeobservabilitypack',
+        },
+      ],
+    },
+  };
+
+  return files[schemaType];
+};
+
+describe('test schema validation', () => {
+  describe('alert validation', () => {
+    test.each`
+      type
+      ${'STATIC'}
+      ${'BASELINE'}
+      ${'OUTLIER'}
+    `('doesnt fail for a valid alert definition', ({ type }) => {
+      const alertTestFile = getTestFile('alert');
+      alertTestFile.contents[0].type = type;
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('detects empty alert definition', () => {
+      const alertTestFile = getTestFile('alert');
+      alertTestFile.contents = [{}];
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects alert definition that is missing name', () => {
+      const alertTestFile = getTestFile('alert');
+      delete alertTestFile.contents[0].name;
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects alert definition that is missing type', () => {
+      const alertTestFile = getTestFile('alert');
+      delete alertTestFile.contents[0].type;
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects alert definition with non-allowed type', () => {
+      const alertTestFile = getTestFile('alert');
+      alertTestFile.contents[0].type = 'INVALID_TYPE';
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects alert definition that is missing nrql', () => {
+      const alertTestFile = getTestFile('alert');
+      delete alertTestFile.contents[0].nrql;
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects alert definition that is missing nrql.query', () => {
+      const alertTestFile = getTestFile('alert');
+      delete alertTestFile.contents[0].nrql.query;
+
+      const { errors } = validateFile(alertTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects alert definition that is missing multiple fields', () => {
+      const alertTestFile = getTestFile('alert');
+      delete alertTestFile.contents[0].name;
+      delete alertTestFile.contents[0].type;
+      delete alertTestFile.contents[0].nrql;
+
+      const { errors } = validateFile(alertTestFile);
+
+      console.dir(errors);
+      expect(errors.length).toBe(3);
+    });
+  });
+
+  describe('dashboard validation', () => {
+    test('doesnt fail for valid dashboard definition', () => {
+      const dashboardTestFile = getTestFile('dashboard');
+
+      const { errors } = validateFile(dashboardTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('detects empty dashboard definition', () => {
+      const dashboardTestFile = getTestFile('dashboard');
+      dashboardTestFile.contents = [{}];
+
+      const { errors } = validateFile(dashboardTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects dashboard definition that is missing name', () => {
+      const dashboardTestFile = getTestFile('dashboard');
+      delete dashboardTestFile.contents[0].name;
+
+      const { errors } = validateFile(dashboardTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+  });
+
+  describe('flex validation', () => {
+    test('doesnt fail for valid flex definition', () => {
+      const flexTestFile = getTestFile('flex');
+
+      const { errors } = validateFile(flexTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('detects empty flex config', () => {
+      const flexTestFile = getTestFile('flex');
+      flexTestFile.contents[0] = {}; // contents[0] is the config
+
+      const { errors } = validateFile(flexTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects empty flex integration', () => {
+      const flexTestFile = getTestFile('flex');
+      flexTestFile.contents[1] = {}; // contents[1] is the integration
+
+      const { errors } = validateFile(flexTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects flex config definition that is missing name', () => {
+      const flexTestFile = getTestFile('flex');
+      delete flexTestFile.contents[0].name;
+
+      const { errors } = validateFile(flexTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects flex integration definition that is missing integrations', () => {
+      const flexTestFile = getTestFile('flex');
+      delete flexTestFile.contents[1].integrations;
+
+      const { errors } = validateFile(flexTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+  });
+
+  describe('synthetic validation', () => {
+    test('doesnt fail for valid synthetic definition', () => {
+      const syntheticTestFile = getTestFile('synthetic');
+
+      const { errors } = validateFile(syntheticTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('detects empty synthetic definition', () => {
+      const syntheticTestFile = getTestFile('synthetic');
+      syntheticTestFile.contents = [{}];
+
+      const { errors } = validateFile(syntheticTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects synthetic definition that is missing name', () => {
+      const syntheticTestFile = getTestFile('synthetic');
+      delete syntheticTestFile.contents[0].name;
+
+      const { errors } = validateFile(syntheticTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+  });
+
+  describe('main config validation', () => {
+    test.each`
+      level
+      ${'New Relic'}
+      ${'Verified'}
+      ${'Community'}
+    `('doesnt fail for a valid alert definition', ({ level }) => {
+      const mainConfigTestFile = getTestFile('main_config');
+      mainConfigTestFile.contents[0].level = level;
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('doesnt fail for valid alert definition w/o non-required fields', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors).toEqual([]);
+    });
+
+    test('detects empty main config definition', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+      mainConfigTestFile.contents = [{}];
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    test('detects main config definition that is missing name', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+      delete mainConfigTestFile.contents[0].name;
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+
+    test('detects invalid values for level field', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+      mainConfigTestFile.contents[0].level = 'INVALID_TYPE';
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBe(1);
+    });
+  });
+});
