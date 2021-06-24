@@ -30,7 +30,7 @@ const readJsonFile = (filePath) => {
  * @param {String} filePath - The path to the JSON or YAML file
  * @returns {Object} An object containing the path and contents of the file
  */
-const readFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile(filePath) : readYamlFile(filePath);
+const readPackFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile(filePath) : readYamlFile(filePath);
 
 /**
  * Removes the current working directory from file paths
@@ -38,4 +38,4 @@ const readFile = (filePath) => path.extname(filePath) === '.json' ? readJsonFile
  */
 const removeCWDPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
 
-module.exports = { readYamlFile, readJsonFile, readFile, removeCWDPrefix };
+module.exports = { readYamlFile, readJsonFile, readPackFile, removeCWDPrefix };

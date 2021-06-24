@@ -4,7 +4,7 @@ const glob = require('glob');
 const Ajv = require('ajv');
 const ajv = new Ajv();
 
-const { readFile, removeCWDPrefix } = require('./helpers');
+const { readPackFile, removeCWDPrefix } = require('./helpers');
 
 // schemas
 const mainConfigSchema = require('./schemas/main_config.json');
@@ -94,7 +94,7 @@ const getPackFilePaths = (basePath) => {
 
 const main = () => {
   const filePaths = getPackFilePaths(process.cwd()).sort();
-  const files = filePaths.map(readFile);
+  const files = filePaths.map(readPackFile);
 
   const filesWithErrors = files.map(validateFile).filter(file => file.errors.length > 0);
 

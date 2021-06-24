@@ -2,7 +2,7 @@
 const path = require('path');
 const glob = require('glob');
 const { 
-  readFile, 
+  readPackFile, 
   removeCWDPrefix 
 } = require('./helpers');
 
@@ -27,26 +27,36 @@ const cleanPackName = (str) =>
 /**
  * Returns any packs with matching names
  * @param {Object[]} namesAndPaths an array of objects containing the path and name of a pack
- * @returns {Object[]|undefined} an array of matching values or undefined if there are none
+ * @returns {Object[]} an array of matching values 
  */
 const getMatchingNames = (namesAndPaths) => {
-  const nameSet = new Set();
-  for (const p of namesAndPaths) {
-    if (nameSet.has(p.name)) {
-      return namesAndPaths.filter(pack => pack.name === p.name);
+  const namesAndMatches = namesAndPaths.reduce((matches, pack) => {
+    const existingEntry = matches.get(pack.name);
+    if (existingEntry) {
+      matches.set(pack.name, [...existingEntry, pack]);
+    }
+    else {
+      matches.set(pack.name, [pack]);
     }
 
-    nameSet.add(p.name);
-  }
+    return matches;
+  }, new Map());
+
+  return Array.from(namesAndMatches.values()).reduce((allMatches, current) => {
+    if (current.length > 1) {
+      return [...allMatches, ...current];
+    }
+    return allMatches;
+  }, []);
 };
 
 const main = () => {
   const configPaths = findMainPackConfigFiles();
-  const configs = configPaths.map(readFile);
+  const configs = configPaths.map(readPackFile);
   const nameAndPaths = configs.map(c => ({ name: cleanPackName(c.contents[0].name), path: c.path }));
   const matches = getMatchingNames(nameAndPaths);
 
-  if (matches) {
+  if (matches.length > 0) {
     console.error(`ERROR: Found matching Observability Pack names`);
     console.error(`Punctuation and white space are removed before comparison`);
     matches.map(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
