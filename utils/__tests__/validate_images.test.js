@@ -36,7 +36,7 @@ describe('Action: validate images', () => {
   it('Should return correct file size', () => {
     helpers.globFiles.mockReturnValueOnce([ 'test/path/config.png' ]);
     isImage('test/path/config.png')
-    helpers.getFileSize.mockReturnValueOnce(1000)
+    helpers.getFileSize.mockReturnValueOnce(1000).mockReturnValueOnce(1000)
     helpers.isDirectory.mockReturnValueOnce(true)
     fs.statSync.mockReturnValueOnce('test/path/config.yml')
 
