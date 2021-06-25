@@ -1,4 +1,8 @@
-const { validateFile, convertErrors } = require('../validate_packs');
+const {
+  validateFile,
+  convertErrors,
+  printErrors,
+} = require('../validate_packs');
 
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -383,5 +387,49 @@ describe('test converErrors', () => {
         message: "must have required property 'name'",
       },
     ]);
+  });
+});
+
+describe('test printErrors', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('displays correct output', () => {
+    const mockFileErrors = [
+      {
+        path: `${process.cwd()}/fake_path`,
+        errors: [
+          {
+            message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
+          },
+          {
+            message: "must have required property 'name'",
+          },
+        ],
+      },
+      {
+        path: `${process.cwd()}/fake_path_2`,
+        errors: [
+          {
+            message: `'/type' must be equal to one of the allowed values: ["RED","BLUE","GREEN"]`,
+          },
+          {
+            message: "must have required property 'ball'",
+          },
+        ],
+      },
+    ];
+
+    printErrors(mockFileErrors);
+
+    expect(global.console.log).toHaveBeenNthCalledWith(
+      1,
+      `\nError: fake_path\n\t '/type' must be equal to one of the allowed values: [\"STATIC\",\"BASELINE\",\"OUTLIER\"]\n\t must have required property 'name'`
+    );
+    expect(global.console.log).toHaveBeenNthCalledWith(
+      2,
+      `\nError: fake_path_2\n\t '/type' must be equal to one of the allowed values: [\"RED\",\"BLUE\",\"GREEN\"]\n\t must have required property 'ball'`
+    );
   });
 });

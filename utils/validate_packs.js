@@ -74,7 +74,6 @@ const validateFile = (file) => {
   const filePath = file.path;
   let errors = [];
 
-  console.log(`Validating ${removeCWDPrefix(filePath)}`);
   switch(true) {
     case(filePath.includes('/alerts/')): // validate using alert schema
       errors = validateAgainstSchema(file.contents[0], alertSchema);
@@ -152,4 +151,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { validateFile, convertErrors };
+module.exports = { validateFile, convertErrors, printErrors };
