@@ -47,8 +47,6 @@ const findSupportLevel = async (url) => {
     return acc;
   }, []);
 
-  console.log("packNames", packNames);
-
   const supportLevelSet = new Set();
 
   packNames.forEach((packName) => {
@@ -70,8 +68,6 @@ const findSupportLevel = async (url) => {
   const supportLevelArray = Array.from(supportLevelSet);
 
   process.env.ADDITION = packAddition;
-
-  console.log("label array", supportLevelArray);
 
   if (supportLevelArray.includes("New Relic")) {
     process.env.NEWRELIC = true;
