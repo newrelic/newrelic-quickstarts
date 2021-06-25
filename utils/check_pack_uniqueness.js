@@ -3,14 +3,14 @@ const path = require('path');
 const glob = require('glob');
 const { 
   readPackFile, 
-  removeCWDPrefix 
+  removeRepoPathPrefix
 } = require('./helpers');
 
 /**
  * Finds the path to all top level pack configs
  * @returns {String[]} An array of the file paths
  */
-const findMainPackConfigFiles = () => glob.sync(path.resolve(process.cwd(), 'packs/**/config.+(yml|yaml)')); 
+const findMainPackConfigFiles = () => glob.sync(path.resolve(process.cwd(), '../packs/**/config.+(yml|yaml)')); 
 
 /**
  * Removes whitespace and punctuation from a string
@@ -48,7 +48,7 @@ const main = () => {
   if (matches.length > 0) {
     console.error(`ERROR: Found matching Observability Pack names`);
     console.error(`Punctuation and white space are removed before comparison`);
-    matches.forEach(m => console.error(`${m.name} in ${removeCWDPrefix(m.path)}`)); 
+    matches.forEach(m => console.error(`${m.name} in ${removeRepoPathPrefix(m.path)}`)); 
     console.error(`Please update your pack's name to be unique`);
 
     // `require.main` is equal to `module` when the file is being executed directly
