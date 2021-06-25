@@ -46,7 +46,7 @@ const checkFileSizes = (globbedFiles) => {
   const sizes = globbedFiles
     .filter(file => isImage(file))
     .filter(file => {
-      return getFileSize(file) < MAX_SIZE
+      return getFileSize(file) > MAX_SIZE
     })
     .map(file => {
       return {[file]: `${getFileSize(file)/1000000}MB`}
