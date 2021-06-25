@@ -1,3 +1,11 @@
+# [0.9.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.2...v0.9.0) (2021-06-25)
+
+
+### Features
+
+* add CI check to ensure unique pack names ([ef11ca8](https://github.com/newrelic/newrelic-observability-packs/commit/ef11ca841aa80f5fbf99aeb9d5e129f12867aa29))
+* add job to run unit tests ([fd3a9a3](https://github.com/newrelic/newrelic-observability-packs/commit/fd3a9a3bb067a30335b31fd581d85d9eeb6ed4b5))
+
 ## [0.8.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.1...v0.8.2) (2021-06-11)
 
 
