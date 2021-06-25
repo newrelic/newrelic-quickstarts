@@ -1,10 +1,8 @@
-const fs = require("fs");
 const path = require("path");
-const yaml = require("js-yaml");
 const fetch = require("node-fetch");
 const parseLinkHeader = require("parse-link-header");
 const glob = require("glob");
-const readYamlFile = require("../utils/helpers");
+const { readYamlFile, checkArgs } = require("./helpers");
 
 const fetchFilesFromGH = async (url) => {
   let files = [];
@@ -39,15 +37,14 @@ const findSupportLevel = async (url) => {
   let packAddition = false;
 
   const files = await fetchFilesFromGH(url);
-
   const packNames = files.reduce((acc, file) => {
     if (file.filename.includes("config.yml") && file.status === "added") {
       packAddition = true;
     }
-    if (file.filename.includes("pack")) {
+    if (file.filename.includes("packs/")) {
       acc.push(file.filename.replace("packs/", "").split("/")[0]);
-      return acc;
     }
+    return acc;
   }, []);
 
   console.log("packNames", packNames);
@@ -72,7 +69,8 @@ const findSupportLevel = async (url) => {
 
   const supportLevelArray = Array.from(supportLevelSet);
 
-  process.env.ADDITION = true;
+  process.env.ADDITION = packAddition;
+
   console.log("label array", supportLevelArray);
 
   if (supportLevelArray.includes("New Relic")) {
@@ -93,7 +91,6 @@ const main = async () => {
   try {
     checkArgs(3);
     const url = process.argv[2];
-
     await findSupportLevel(url);
     process.exit(0);
   } catch (error) {
@@ -101,5 +98,9 @@ const main = async () => {
     process.exit(1);
   }
 };
+
+if (require.main === module) {
+  main();
+}
 
 module.exports = main;
