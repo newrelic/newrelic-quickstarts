@@ -12,7 +12,7 @@ const {
 
 const BASE_PATH = './packs/';
 const MAX_SIZE = 4000000;
-const MAX_NUM_IMG = 3;
+const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = [
   '.png',
   '.jpeg',
@@ -27,7 +27,7 @@ const ALLOWED_IMG_EXT = [
 */
 const checkImageCounts = (files) => {
   const directories = files
-    .filter(file => isDirectory(fs.statSync(file)))
+    .filter(file => isDirectory(file))
     .filter(folder => {
       return getImageCount(folder) > MAX_NUM_IMG
     })
@@ -46,7 +46,7 @@ const checkFileSizes = (globbedFiles) => {
   const sizes = globbedFiles
     .filter(file => isImage(file))
     .filter(file => {
-      return getFileSize(file) > MAX_SIZE
+      return getFileSize(file) < MAX_SIZE
     })
     .map(file => {
       return {[file]: `${getFileSize(file)/1000000}MB`}
@@ -82,7 +82,7 @@ const main = () => {
   }
 
   if (fileSizes.length > 0) {
-    console.warn(`\nImages should be below ${MAX_SIZE/1000000}MB:`)
+    console.warn(`\nImages should be under ${MAX_SIZE/1000000}MB:`)
     fileSizes.map((file) => console.warn(file))
     valid = false
   }
