@@ -67,19 +67,19 @@ const findSupportLevel = async (url) => {
 
   const supportLevelArray = Array.from(supportLevelSet);
 
-  process.env.ADDITION = packAddition;
+  console.log(`::set-output name=addition::${packAddition}`);
 
   if (supportLevelArray.includes("New Relic")) {
-    process.env.NEWRELIC = true;
+    console.log("::set-output name=newrelic::true");
   }
   if (supportLevelArray.includes("Verified")) {
-    proccess.env.VERIFIED = true;
+    ("::set-output name=verified::true");
   }
   if (
     supportLevelArray.includes("Community") ||
     supportLevelArray.length === 0
   ) {
-    process.env.COMMUNITY = true;
+    ("::set-output name=community::true");
   }
 };
 
