@@ -4,6 +4,11 @@ const path = require('path');
 const isImage = require('is-image');
 const glob = require('glob');
 
+/** 
+* Checks if a path is a direectory
+* @param {string} dir - The path to check
+* @returns {boolean} Whether path is a directory or not
+*/
 const isDirectory = (dir) =>
   fs.statSync(dir).isDirectory();
 
