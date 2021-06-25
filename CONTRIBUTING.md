@@ -37,6 +37,11 @@ In order for your PR to pass Validation, the images included in your pack must m
  - Each image file must be less than `4MB` in size
  - There should be no more than `6` images in your pack's component folders
   
+### Pack Naming
+* Your new pack must have a unique name
+  * The `Validate Packs / Ensure pack names are unique` job handles verifying that there are no collisions when you create a pull request
+  * **Note:** Names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons
+
 ## Feature Requests
 
 Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
