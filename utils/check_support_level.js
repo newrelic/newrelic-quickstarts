@@ -35,7 +35,7 @@ const getNextLink = (linkHeader) => {
   return null;
 };
 
-const findSupportLevel = async () => {
+const findSupportLevel = async (url) => {
   let packAddition = false;
 
   const files = await fetchFilesFromGH(url);
@@ -89,4 +89,17 @@ const findSupportLevel = async () => {
   }
 };
 
-findSupportLevel();
+const main = async () => {
+  try {
+    checkArgs(3);
+    const url = process.argv[2];
+
+    await findSupportLevel(url);
+    process.exit(0);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+module.exports = main;
