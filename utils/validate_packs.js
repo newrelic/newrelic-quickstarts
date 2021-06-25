@@ -2,6 +2,7 @@
 const path = require('path');
 const glob = require('glob');
 const Ajv = require('ajv');
+const { ErrorObject } = require('ajv');
 const ajv = new Ajv({ allErrors: true });
 
 const { readPackFile, removeCWDPrefix } = require('./helpers');
@@ -20,6 +21,26 @@ const EXCLUDED_DIRECTORY_PATTERNS = [
   '*',
 ];
 
+/**
+ * Converts errors generated from ajv into 'general errors' we want to display to the user.
+ * @param {ErrorObject[]} ajvErrors - Errors generated from ajv validation.
+ * @return {Object[]} Array of our own internal error objects.
+ */
+const convertErrors = (ajvErrors) => {
+  const errors = ajvErrors.map((e) => {
+    if (e.keyword === 'enum') {
+      const message = `[${e.instancePath}] ${e.message}: ${JSON.stringify(
+        e.params.allowedValues
+      )}`;
+      return { message };
+    } else {
+      return { message: e.message };
+    }
+  });
+
+  return errors;
+};
+
 /** 
 * Validates an object against a JSON schema
 * @param {Object} content - The object to validate
@@ -31,7 +52,7 @@ const validateAgainstSchema = (content, schema) => {
   const valid = validate(content);
 
   if (!valid) {
-    return validate.errors;
+    return convertErrors(validate.errors);
   }
 
   return [];
@@ -115,5 +136,5 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { validateFile };
+module.exports = { validateFile, convertErrors };
 
