@@ -28,13 +28,20 @@ const EXCLUDED_DIRECTORY_PATTERNS = [
  */
 const convertErrors = (ajvErrors) => {
   const errors = ajvErrors.map((e) => {
-    if (e.keyword === 'enum') {
-      const message = `[${e.instancePath}] ${e.message}: ${JSON.stringify(
-        e.params.allowedValues
-      )}`;
-      return { message };
-    } else {
-      return { message: e.message };
+    console.log(e);
+
+    let message = '';
+    switch(true) {
+      case (e.keyword === 'enum'):
+        message = `'${e.instancePath}' ${e.message}: ${JSON.stringify(
+          e.params.allowedValues
+        )}`;
+        return { message };
+      case (e.keyword === 'required' && e.instancePath != ''):
+        message = `'${e.instancePath}' ${e.message}`;
+        return { message };
+      default:
+        return { message: e.message };
     }
   });
 
@@ -113,19 +120,28 @@ const getPackFilePaths = (basePath) => {
   return [ ...yamlFilePaths, ...jsonFilePaths ];
 }
 
+/**
+ * Format and print out errors for a list of files.
+ * @param {Object[]} filesWithErrors - each element is an object containing a path, and errors associated with that path.
+ */
+const printErrors = (filesWithErrors) => {
+  for(const f of filesWithErrors){
+    let outputMessage = `\nError: ${removeCWDPrefix(f.path)}`;
+    for(const e of f.errors){
+      outputMessage += `\n\t ${e.message}`;
+    }
+    console.log(outputMessage);
+  }
+  console.log('');
+}
+
 const main = () => {
   const filePaths = getPackFilePaths(process.cwd()).sort();
   const files = filePaths.map(readPackFile);
 
   const filesWithErrors = files.map(validateFile).filter(file => file.errors.length > 0);
 
-  for (const f of filesWithErrors) {
-    console.log(`\nError: ${removeCWDPrefix(f.path)}`);
-    for (const e of f.errors) {
-      console.log(`\t ${e.message}`);
-    }
-  }
-  console.log('');
+  printErrors(filesWithErrors);
 
   if (filesWithErrors.length > 0) {
     process.exit(1);
@@ -137,4 +153,3 @@ if (require.main === module) {
 }
 
 module.exports = { validateFile, convertErrors };
-

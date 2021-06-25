@@ -1,4 +1,3 @@
-const { expect } = require('@jest/globals');
 const { validateFile, convertErrors } = require('../validate_packs');
 
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
@@ -307,14 +306,40 @@ describe('test converErrors', () => {
       },
     ];
 
-    const convertedErrors = convertErrors(mockAjvErrors);
+    const [convertedError, ..._] = convertErrors(mockAjvErrors);
 
-    expect(convertedErrors[0].message).toBe(
-      '[/type] must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]'
+    expect(convertedError.message).toBe(
+      `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`
     );
   });
 
-  test('doesnt convert message for non-enum error types', () => {
+  test('converts missing required field error message on a nested property', () => {
+    /* 
+      previously if a field 'nrql' has a required field 'query', the message was: "must have required property 'query'".
+      there was no information about what level 'query' lived at (i.e, where does it go).
+      now it should look something like: "'/nrql' must have required property 'query'".
+      this should also be the case for fields nested beyond one level deep.
+    */
+
+    const mockAjvErrors = [
+      {
+        instancePath: '/nrql',
+        schemaPath: '#/required',
+        keyword: 'required',
+        params: { missingProperty: 'query' },
+        message: "must have required property 'query'",
+      },
+    ];
+
+    const [convertedError, ..._] = convertErrors(mockAjvErrors);
+
+    expect(convertedError.message).toBe(
+      `'/nrql' must have required property 'query'`
+    );
+  });
+
+  // 'default' is anything except enum, and a missing required field on a nested field.
+  test('returns exact message for default case', () => {
     const mockAjvErrors = [
       {
         instancePath: '',
@@ -325,11 +350,9 @@ describe('test converErrors', () => {
       },
     ];
 
-    const convertedErrors = convertErrors(mockAjvErrors);
+    const [convertedError, ..._] = convertErrors(mockAjvErrors);
 
-    expect(convertedErrors[0].message).toBe(
-      "must have required property 'name'"
-    );
+    expect(convertedError.message).toBe("must have required property 'name'");
   });
 
   test('removes fields that are not message', () => {
@@ -354,8 +377,7 @@ describe('test converErrors', () => {
 
     expect(convertedErrors).toEqual([
       {
-        message:
-          '[/type] must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]',
+        message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
       },
       {
         message: "must have required property 'name'",
