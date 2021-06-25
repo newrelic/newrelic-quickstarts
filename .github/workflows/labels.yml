@@ -29,8 +29,17 @@ jobs:
         run: yarn check-support-level
 
       - name: Add new-pack label
-        if: ${{env.PACK_ADDITION === true}}
+        if: ${{steps.support.outputs.addition === true}}
         run: gh issue edit ${{github.event.pull_request.number}} --add-label "new-pack"
 
-      - name: Add support-level label
-        run: ${{ steps.support.outputs.levels.forEach(level => gh issue edit github.event.pull_request.number --add-label) }}
+      - name: Add support-level New Relic
+        if: ${{steps.support.outputs.newrelic === true}}
+        run: gh issue edit github.event.pull_request.number --add-label "support-level:newrelic"
+
+      - name: Add support-level Verified
+        if: ${{steps.support.outputs.verified === true}}
+        run: gh issue edit github.event.pull_request.number --add-label "support-level:verified"
+
+      - name: Add support-level Community
+        if: ${{steps.support.outputs.community === true}}
+        run: gh issue edit github.event.pull_request.number --add-label "support-level:community"

@@ -79,7 +79,18 @@ const findSupportLevel = async () => {
 
   console.log(`::set-output name=addition::${packAddition}`);
 
-  console.log(`::set-output name=levels::${supportLevelArray}`);
+  if (supportLevelArray.includes("New Relic")) {
+    console.log(`::set-output name=addition::newrelic`);
+  }
+  if (supportLevelArray.includes("Verified")) {
+    console.log(`::set-output name=addition::verified`);
+  }
+  if (
+    supportLevelArray.includes("Community") ||
+    supportLevelArray.length === 0
+  ) {
+    console.log(`::set-output name=addition::community`);
+  }
 };
 
 findSupportLevel();
