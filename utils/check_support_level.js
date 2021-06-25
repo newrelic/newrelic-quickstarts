@@ -4,15 +4,8 @@ const yaml = require("js-yaml");
 const fetch = require("node-fetch");
 const parseLinkHeader = require("parse-link-header");
 const glob = require("glob");
+const readYamlFile = require("../utils/helpers");
 
-// pull in from helper file alec moved
-const readYamlFile = (filePath) => {
-  const file = fs.readFileSync(filePath);
-  const contents = yaml.loadAll(file);
-  return { path: filePath, contents };
-};
-
-// make helper?
 const fetchFilesFromGH = async (url) => {
   let files = [];
   let nextPageLink = url;
