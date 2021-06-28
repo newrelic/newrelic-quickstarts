@@ -28,7 +28,6 @@ const EXCLUDED_DIRECTORY_PATTERNS = [
  */
 const convertErrors = (ajvErrors) => {
   const errors = ajvErrors.map((e) => {
-    console.log(e);
 
     let message = '';
     switch(true) {
