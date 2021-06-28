@@ -24,15 +24,14 @@ const EXCLUDED_DIRECTORY_PATTERNS = ['node_modules/**', 'utils/**', '*'];
  */
 const convertErrors = (ajvErrors) => {
   const errors = ajvErrors.map((e) => {
-
     let message = '';
-    switch(true) {
-      case (e.keyword === 'enum'):
+    switch (true) {
+      case e.keyword === 'enum':
         message = `'${e.instancePath}' ${e.message}: ${JSON.stringify(
           e.params.allowedValues
         )}`;
         return { message };
-      case (e.keyword === 'required' && e.instancePath != ''):
+      case e.keyword === 'required' && e.instancePath != '':
         message = `'${e.instancePath}' ${e.message}`;
         return { message };
       default:
@@ -43,12 +42,12 @@ const convertErrors = (ajvErrors) => {
   return errors;
 };
 
-/** 
-* Validates an object against a JSON schema
-* @param {Object} content - The object to validate
-* @param {Object} schema - Json schema used for validation.
-* @returns {Object[]} An array of any errors found
-*/
+/**
+ * Validates an object against a JSON schema
+ * @param {Object} content - The object to validate
+ * @param {Object} schema - Json schema used for validation.
+ * @returns {Object[]} An array of any errors found
+ */
 const validateAgainstSchema = (content, schema) => {
   const validate = ajv.compile(schema);
   const valid = validate(content);
@@ -121,15 +120,15 @@ const getPackFilePaths = (basePath) => {
  * @param {Object[]} filesWithErrors - each element is an object containing a path, and errors associated with that path.
  */
 const printErrors = (filesWithErrors) => {
-  for(const f of filesWithErrors){
+  for (const f of filesWithErrors) {
     let outputMessage = `\nError: ${removeCWDPrefix(f.path)}`;
-    for(const e of f.errors){
+    for (const e of f.errors) {
       outputMessage += `\n\t ${e.message}`;
     }
     console.log(outputMessage);
   }
   console.log('');
-}
+};
 
 const main = () => {
   const filePaths = getPackFilePaths(process.cwd()).sort();
