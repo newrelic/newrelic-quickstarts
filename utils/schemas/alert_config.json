@@ -13,7 +13,12 @@
       "type": "string",
       "enum": ["STATIC", "BASELINE", "OUTLIER"]
     },
+    "details": {
+      "description": "Description of the alert",
+      "type": "string"
+    },
     "nrql": {
+      "description": "NRQL Query",
       "type": "object",
       "properties": {
         "query": {
@@ -21,7 +26,152 @@
         }
       },
       "required": ["query"]
+    },
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "description": "Priority of threshold",
+            "type": "string",
+            "enum": ["CRITICAL", "WARNING"]
+          },
+          "operator": {
+            "description": "Operator used to compare against the threshold",
+            "type": "string",
+            "enum": ["ABOVE", "BELOW", "EQUALS"]
+          },
+          "threshold": {
+            "description": "Value that triggers a violation",
+            "type": "integer"
+          },
+          "thresholdDuration": {
+            "description": "Time in seconds",
+            "type": "integer",
+            "minimum": 60,
+            "exclusiveMaximum": 3600
+          },
+          "thresholdOccurrences": {
+            "description": "How many data points must be in violation for the duration",
+            "type": "string",
+            "enum": ["ALL", "AT_LEAST_ONCE"]
+          }
+        }
+      }
+    },
+    "expiration": {
+      "type": "object",
+      "properties": {
+        "closeViolationsOnExpiration": {
+          "description": "Close open violations if signal is lost",
+          "type": "boolean"
+        },
+        "openViolationOnExpiration": {
+          "description": "COpen 'Loss of Signal' violation if signal is lost",
+          "type": "boolean"
+        },
+        "expirationDuration": {
+          "type": "integer",
+          "exclusiveMaximum": 172800
+        }
+      }
+    },
+    "signal": {
+      "type": "object",
+      "properties": {
+        "aggregationWindow": {
+          "description": "Duration of the time window used to evaluate the NRQL Condition",
+          "type": "integer",
+          "minimum": 30,
+          "exclusiveMaximum": 900
+        },
+        "evaluationOffset": {
+          "description": "The number of windows we look back at the aggregated data",
+          "type": "integer",
+          "minimum": 0,
+          "exclusiveMaximum": 20
+        },
+        "fillOption": {
+          "description": "Type of value that should be used to fill gaps",
+          "type": "string",
+          "enum": ["LAST_VALUE", "NONE", "STATIC"]
+        },
+        "fillValue": {
+          "description": "Used in conjunction with STATIC fillOption",
+          "type": "integer"
+        }
+      }
+    },
+    "runbookUrl": {
+      "description": "URL of runbook to be sent with notification",
+      "type": "string"
+    },
+    "description": {
+      "description": "Custom violation description sent with JSON payload",
+      "type": "string"
+    },
+    "violationTimeLimitSeconds": {
+      "description": "Duration after which a violation automatically closes",
+      "type": "integer",
+      "minimum": 300,
+      "exclusiveMaximum": 2592000
     }
   },
-  "required": [ "name", "type", "nrql" ]
+  "allOf": [
+    {
+      "if": {
+        "properties": { 
+          "type": { 
+            "const": "STATIC" 
+          } 
+        }
+      },
+      "then": {
+        "properties": { 
+          "valueFunction": { 
+            "description": "Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold",
+            "type": "string",
+            "enum": ["SINGLE_VALUE", "SUM"]
+          } 
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { 
+          "type": { 
+            "const": "OUTLIER" 
+          } 
+        }
+      },
+      "then": {
+        "properties": { 
+          "expectedGroups": { 
+            "description": "Number of groups expected in the returned values for the condition",
+            "type": "integer"
+          } 
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { 
+          "type": { 
+            "const": "BASELINE" 
+          } 
+        }
+      },
+      "then": {
+        "properties": { 
+          "baselineDirection": { 
+            "description": "Direction in which baseline is set",
+            "type": "string",
+            "enum": ["LOWER_ONLY", "UPPER_AND_LOWER", "UPPER_ONLY"]
+          } 
+        }
+      }
+    }
+  ],
+  "required": [ "name", "type", "nrql", "terms" ]
 }
