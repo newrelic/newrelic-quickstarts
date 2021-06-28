@@ -298,7 +298,7 @@ describe('test validateFile', () => {
   });
 });
 
-describe('test converErrors', () => {
+describe('test convertErrors', () => {
   test('converts enum error message', () => {
     const mockAjvErrors = [
       {
