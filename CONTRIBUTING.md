@@ -45,6 +45,12 @@ Before submitting an Issue, please search for similar ones in the
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
 
+### Status Checks
+
+#### Schema Validation
+
+One of the required checks is ensuring that submitted packs and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
+
 ## Using Conventional Commits
 
 Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)

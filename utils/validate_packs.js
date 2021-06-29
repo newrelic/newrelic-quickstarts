@@ -2,7 +2,8 @@
 const path = require('path');
 const glob = require('glob');
 const Ajv = require('ajv');
-const ajv = new Ajv();
+const { ErrorObject } = require('ajv');
+const ajv = new Ajv({ allErrors: true });
 
 const { readPackFile, removeRepoPathPrefix } = require('./helpers');
 
@@ -17,6 +18,31 @@ const syntheticSchema = require('./schemas/synthetic_config.json');
 const EXCLUDED_DIRECTORY_PATTERNS = ['node_modules/**', 'utils/**', '*'];
 
 /**
+ * Converts errors generated from ajv into 'general errors' we want to display to the user.
+ * @param {ErrorObject[]} ajvErrors - Errors generated from ajv validation.
+ * @return {Object[]} Array of our own internal error objects.
+ */
+const convertErrors = (ajvErrors) => {
+  const errors = ajvErrors.map((e) => {
+    let message = '';
+    switch (true) {
+      case e.keyword === 'enum':
+        message = `'${e.instancePath}' ${e.message}: ${JSON.stringify(
+          e.params.allowedValues
+        )}`;
+        return { message };
+      case e.keyword === 'required' && e.instancePath != '':
+        message = `'${e.instancePath}' ${e.message}`;
+        return { message };
+      default:
+        return { message: e.message };
+    }
+  });
+
+  return errors;
+};
+
+/**
  * Validates an object against a JSON schema
  * @param {Object} content - The object to validate
  * @param {Object} schema - Json schema used for validation.
@@ -27,7 +53,7 @@ const validateAgainstSchema = (content, schema) => {
   const valid = validate(content);
 
   if (!valid) {
-    return validate.errors;
+    return convertErrors(validate.errors);
   }
 
   return [];
@@ -43,8 +69,8 @@ const validateFile = (file) => {
   let errors = [];
 
   console.log(`Validating ${removeRepoPathPrefix(filePath)}`);
-  switch(true) {
-    case(filePath.includes('/alerts/')): // validate using alert schema
+  switch (true) {
+    case filePath.includes('/alerts/'): // validate using alert schema
       errors = validateAgainstSchema(file.contents[0], alertSchema);
       break;
     case filePath.includes('/dashboards/'): // validate using dashboard schema
@@ -80,13 +106,31 @@ const getPackFilePaths = (basePath) => {
   };
 
   const yamlFilePaths = [
-    ...glob.sync(path.resolve(basePath, '../packs/**/*.yaml'), options), 
-    ...glob.sync(path.resolve(basePath, '../packs/**/*.yml'), options)
+    ...glob.sync(path.resolve(basePath, '../packs/**/*.yaml'), options),
+    ...glob.sync(path.resolve(basePath, '../packs/**/*.yml'), options),
   ];
 
-  const jsonFilePaths = glob.sync(path.resolve(basePath, '../packs/**/*.json'), options);
+  const jsonFilePaths = glob.sync(
+    path.resolve(basePath, '../packs/**/*.json'),
+    options
+  );
 
   return [...yamlFilePaths, ...jsonFilePaths];
+};
+
+/**
+ * Format and print out errors for a list of files.
+ * @param {Object[]} filesWithErrors - each element is an object containing a path, and errors associated with that path.
+ */
+const printErrors = (filesWithErrors) => {
+  for (const f of filesWithErrors) {
+    let outputMessage = `\nError: ${removeRepoPathPrefix(f.path)}`;
+    for (const e of f.errors) {
+      outputMessage += `\n\t ${e.message}`;
+    }
+    console.log(outputMessage);
+  }
+  console.log('');
 };
 
 const main = () => {
@@ -97,17 +141,20 @@ const main = () => {
     .map(validateFile)
     .filter((file) => file.errors.length > 0);
 
-  for (const f of filesWithErrors) {
-    console.log(`\nError: ${removeRepoPathPrefix(f.path)}`);
-    for (const e of f.errors) {
-      console.log(`\t ${e.message}`);
-    }
-  }
-  console.log('');
+  printErrors(filesWithErrors);
 
   if (filesWithErrors.length > 0) {
     process.exit(1);
   }
 };
 
-main();
+/**
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_packs.js', or if it was imported.
+ * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
+ * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
+ */
+if (require.main === module) {
+  main();
+}
+
+module.exports = { validateFile, convertErrors, printErrors };
