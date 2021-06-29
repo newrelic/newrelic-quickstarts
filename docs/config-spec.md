@@ -17,21 +17,24 @@ For example:
 # Metadata
 #####################
 
+# NOT USING RIGHT NOW
 # Unique identifier for this observability pack
-uuid: guid, required
+# uuid: guid, required
 
-# Display name for observability pack
-# Example: Apache
+# Name acts as a unique identifier for this observability pack
+# Formatted as hyphenated lowercase
+# Example: apache, golden-signals-for-web-servers
 name: string, required
 
 # Deprecate in favor of short-description?
 # A short form description for this Observability Pack. Used throughout the platform when displaying the pack.
 description: string, required
 
+# NOT USING RIGHT NOW
 # url slug for linking on public website
 # recommended format: make this a lowercase and hyphenated version
 # of the `name` field
-slug: string, required
+# slug: string, required
 
 # Level categorization of Observability Pack
 level: enum, required # One of [ New Relic, Verified, Community ]
@@ -63,12 +66,6 @@ full-description: string, optional
 
 # Tags for filtering / searching criteria
 tags: list(string), optional
-
-# Displayed in listings and in "my packs"
-thumbnail: string, optional
-
-# Only used if pack has a Nerdpack or a Dashboard
-screenshots: list(string), optional
 
 # Displaying related child packs
 children: list(object), optional
