@@ -4,7 +4,7 @@ const glob = require('glob');
 const Ajv = require('ajv');
 const ajv = new Ajv();
 
-const { readPackFile, removeCWDPrefix } = require('./helpers');
+const { readPackFile, removeRepoPathPrefix } = require('./helpers');
 
 // schemas
 const mainConfigSchema = require('./schemas/main_config.json');
@@ -42,9 +42,9 @@ const validateFile = (file) => {
   const filePath = file.path;
   let errors = [];
 
-  console.log(`Validating ${removeCWDPrefix(filePath)}`);
-  switch (true) {
-    case filePath.includes('/alerts/'): // validate using alert schema
+  console.log(`Validating ${removeRepoPathPrefix(filePath)}`);
+  switch(true) {
+    case(filePath.includes('/alerts/')): // validate using alert schema
       errors = validateAgainstSchema(file.contents[0], alertSchema);
       break;
     case filePath.includes('/dashboards/'): // validate using dashboard schema
@@ -80,11 +80,11 @@ const getPackFilePaths = (basePath) => {
   };
 
   const yamlFilePaths = [
-    ...glob.sync(path.resolve(basePath, '**/*.yaml'), options),
-    ...glob.sync(path.resolve(basePath, '**/*.yml'), options),
+    ...glob.sync(path.resolve(basePath, '../packs/**/*.yaml'), options), 
+    ...glob.sync(path.resolve(basePath, '../packs/**/*.yml'), options)
   ];
 
-  const jsonFilePaths = glob.sync(path.resolve(basePath, '**/*.json'), options);
+  const jsonFilePaths = glob.sync(path.resolve(basePath, '../packs/**/*.json'), options);
 
   return [...yamlFilePaths, ...jsonFilePaths];
 };
@@ -98,7 +98,7 @@ const main = () => {
     .filter((file) => file.errors.length > 0);
 
   for (const f of filesWithErrors) {
-    console.log(`\nError: ${removeCWDPrefix(f.path)}`);
+    console.log(`\nError: ${removeRepoPathPrefix(f.path)}`);
     for (const e of f.errors) {
       console.log(`\t ${e.message}`);
     }
