@@ -27,7 +27,7 @@ const cleanPackName = (str) =>
 /**
  * Returns any packs with matching names
  * @param {Object[]} namesAndPaths an array of objects containing the path and name of a pack
- * @returns {Object[]} an array of matching values 
+ * @returns {Object[]} an array of matching values
  */
 const getMatchingNames = (namesAndPaths) => {
   return namesAndPaths.reduce((acc, { name, path }) => {
@@ -42,7 +42,10 @@ const getMatchingNames = (namesAndPaths) => {
 const main = () => {
   const configPaths = findMainPackConfigFiles();
   const configs = configPaths.map(readPackFile);
-  const nameAndPaths = configs.map(c => ({ name: cleanPackName(c.contents[0].name), path: c.path }));
+  const nameAndPaths = configs.map((c) => ({
+    name: cleanPackName(c.contents[0].name),
+    path: c.path,
+  }));
   const matches = getMatchingNames(nameAndPaths);
 
   if (matches.length > 0) {
@@ -56,11 +59,10 @@ const main = () => {
     if (require.main === module) {
       process.exit(1);
     }
-  }
-  else {
+  } else {
     console.log(`All Observability Pack names are unique`);
   }
-}
+};
 
 if (require.main === module) {
   main();
