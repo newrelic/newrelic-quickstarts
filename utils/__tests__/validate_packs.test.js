@@ -398,7 +398,7 @@ describe('test printErrors', () => {
   test('displays correct output', () => {
     const mockFileErrors = [
       {
-        path: `${process.cwd()}/fake_path`,
+        path: `newrelic-observability-packs/fake_path`,
         errors: [
           {
             message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
@@ -409,7 +409,7 @@ describe('test printErrors', () => {
         ],
       },
       {
-        path: `${process.cwd()}/fake_path_2`,
+        path: `newrelic-observability-packs/fake_path_2`,
         errors: [
           {
             message: `'/type' must be equal to one of the allowed values: ["RED","BLUE","GREEN"]`,
