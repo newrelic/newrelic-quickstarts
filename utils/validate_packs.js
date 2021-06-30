@@ -14,8 +14,14 @@ const dashboardSchema = require('./schemas/dashboard_config.json');
 const flexConfigSchema = require('./schemas/flex_config.json');
 const flexIntegrationsSchema = require('./schemas/flex_integrations.json');
 const syntheticSchema = require('./schemas/synthetic_config.json');
+const loggingSchema = require('./schemas/logging_config.json');
 
-const EXCLUDED_DIRECTORY_PATTERNS = ['node_modules/**', 'utils/**', '*'];
+const EXCLUDED_DIRECTORY_PATTERNS = [
+  'node_modules/**',
+  'utils/**',
+  'docs/**',
+  '*',
+];
 
 /**
  * Converts errors generated from ajv into 'general errors' we want to display to the user.
@@ -79,7 +85,10 @@ const validateFile = (file) => {
     case filePath.includes('/instrumentation/synthetics/'): // validate using synthetics schema
       errors = validateAgainstSchema(file.contents[0], syntheticSchema);
       break;
-    case filePath.includes('/instrumentation/flex/'): // validate using flex config schema.
+    case(filePath.includes('/instrumentation/logging/')): // validate using logging schema
+      errors = validateAgainstSchema(file.contents[0], loggingSchema);
+      break;
+    case(filePath.includes('/instrumentation/flex/')): // validate using flex config schema. 
       // The flex YAML is two documents, validate each of them
       errors = [
         ...validateAgainstSchema(file.contents[0], flexConfigSchema),
