@@ -46,6 +46,8 @@ const getTestFile = (schemaType) => {
       contents: [
         {
           name: 'fakesynthetic',
+          description: 'fakeDescription',
+          level: 'Verified'
         },
       ],
     },
@@ -54,6 +56,8 @@ const getTestFile = (schemaType) => {
       contents: [
         {
           name: 'fakeobservabilitypack',
+          level: 'Verified',
+          description: 'fake description'
         },
       ],
     },
@@ -252,7 +256,7 @@ describe('test validateFile', () => {
       ${'New Relic'}
       ${'Verified'}
       ${'Community'}
-    `('doesnt fail for a valid alert definition', ({ level }) => {
+    `('doesnt fail for a valid main configuration file', ({ level }) => {
       const mainConfigTestFile = getTestFile('main_config');
       mainConfigTestFile.contents[0].level = level;
 
@@ -261,7 +265,7 @@ describe('test validateFile', () => {
       expect(errors).toEqual([]);
     });
 
-    test('doesnt fail for valid alert definition w/o non-required fields', () => {
+    test('doesnt fail for valid main configuration file w/o non-required fields', () => {
       const mainConfigTestFile = getTestFile('main_config');
 
       const { errors } = validateFile(mainConfigTestFile);
