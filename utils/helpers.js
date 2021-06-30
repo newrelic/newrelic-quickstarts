@@ -1,7 +1,7 @@
-"use strict";
-const fs = require("fs");
-const path = require("path");
-const yaml = require("js-yaml");
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
 
 /**
  * Read and parse a YAML file
@@ -31,7 +31,7 @@ const readJsonFile = (filePath) => {
  * @returns {Object} An object containing the path and contents of the file
  */
 const readPackFile = (filePath) =>
-  path.extname(filePath) === ".json"
+  path.extname(filePath) === '.json'
     ? readJsonFile(filePath)
     : readYamlFile(filePath);
 
@@ -62,10 +62,19 @@ const checkArgs = (length) => {
   }
 };
 
+/**
+ * Removes the `newrelic-observability-packs/` path prefix from a string
+ * @param {String} filePath the path to change
+ * @returns {String} The path with the prefix
+ */
+const removeRepoPathPrefix = (filePath) =>
+  filePath.split(`newrelic-observability-packs/`).pop();
+
 module.exports = {
   readYamlFile,
   readJsonFile,
   readPackFile,
   removeCWDPrefix,
-  checkArgs
+  removeRepoPathPrefix,
+  checkArgs,
 };
