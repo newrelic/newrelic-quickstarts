@@ -86,6 +86,10 @@ const validateFile = (file) => {
         ...validateAgainstSchema(file.contents[1], flexIntegrationsSchema),
       ];
       break;
+    case filePath.includes('/instrumentation/logging/'): // validate using logging config schema.
+      // There is currently no logging schema so skip for now
+      
+      break;
     default:
       // use main config schema
       errors = validateAgainstSchema(file.contents[0], mainConfigSchema);
