@@ -27,6 +27,12 @@ const getTestFile = (schemaType) => {
       contents: [
         {
           name: 'fakedashboard',
+          description: 'fake description',
+          pages: [{
+            name: "",
+            description: "",
+            widgets: [{}]
+          }]
         },
       ],
     },
@@ -42,7 +48,7 @@ const getTestFile = (schemaType) => {
       ],
     },
     synthetic: {
-      path: '/instrumentation/synthetics',
+      path: '/instrumentation/synthetics/',
       contents: [
         {
           name: 'fakesynthetic',
@@ -54,6 +60,9 @@ const getTestFile = (schemaType) => {
       contents: [
         {
           name: 'fakeobservabilitypack',
+          description: 'fake description',
+          authors: [],
+          level: 'New Relic'
         },
       ],
     },
