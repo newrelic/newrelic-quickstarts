@@ -61,7 +61,7 @@ const getTestFile = (schemaType) => {
         {
           name: 'fakeobservabilitypack',
           description: 'fakeDescription',
-          authors: [],
+          authors: ['fakeAuthor'],
           level: 'New Relic'
         },
       ],
