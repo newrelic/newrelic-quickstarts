@@ -1,8 +1,25 @@
+# Contributing
+
 <!-- toc -->
 - [Contributing](#contributing)
+  - [Welcome 👋](#welcome-)
   - [Observability Pack Guidelines](#observability-pack-guidelines)
+    - [Required field best practices](#required-field-best-practices)
+      - [Name](#name)
+      - [Description](#description)
+      - [Level](#level)
+      - [Author](#author)
+    - [Optional field best practices](#optional-field-best-practices)
+      - [Short Description](#short-description)
+    - [Images or screenshots](#images-or-screenshots)
+      - [Image recommended for best results](#image-recommended-for-best-results)
+    - [Logos](#logos)
+      - [logo recommendations or best results](#logo-recommendations-or-best-results)
+    - [Website URLs](#website-urls)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
+    - [Status Checks](#status-checks)
+      - [Schema Validation](#schema-validation)
   - [Using Conventional Commits](#using-conventional-commits)
       - [Use `chore`](#use-chore)
       - [Use `fix`](#use-fix)
@@ -11,26 +28,118 @@
   - [Slack](#slack)
 <!-- tocstop -->
 
-# Contributing
+## Welcome 👋
 
 Contributions are always welcome. Before contributing please read the
-[code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md) and [search the issue tracker](../../issues); your issue may have already been discussed or fixed in `main`. To contribute,
-[fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
+[code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md)
+and [search the issue tracker](../../issues); your issue may have already been discussed or fixed in `main`. To contribute,
+[fork](https://help.github.com/articles/fork-a-repo/) this repository, commit your
+changes, and [send a Pull Request](https://help.github.com/articles/using-pull-requests/).
 
-Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md) applies to all platforms and venues related to this project; please follow it in all your interactions with the project and its participants.
-
+Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md)
+applies to all platforms and venues related to this project; please follow it in all
+your interactions with the project and its participants.
 
 ## Observability Pack Guidelines
 
-We encourage all contributors to actively engage in the creation and maintenance of Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+We encourage all contributors to actively engage in the creation and maintenance of
+Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-> Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
+- `Step 1`: Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
+- `Step 2`: Review the [Pack Config File Schema](https://github.com/newrelic/newrelic-observability-packs/blob/f3acfd3efc34899c088c01b48c2e2f2210dd2657/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 3`: Create your pack!
+- `Step 4`: Submit a PR.
+- `Step 5`: resolve feedback from code reviews
+- `Step 6`: after approval, merge your PR
 
-If you decide to create a new Observability Pack or review a PR please keep the following in mind.
+When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
+[Packs validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for up to date validations.
 
-* Your new pack must have a unique name
-  * The `Validate Packs / Ensure pack names are unique` job handles verifying that there are no collisions when you create a pull request
-  * **Note:** Names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons
+### Required field best practices
+
+#### Name
+
+> The official name of the pack.
+
+- Required
+- limited to 100 characters
+- The `Validate Packs / Ensure pack names are unique` job verifies name uniqueness.
+- Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
+- Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
+
+#### Description
+
+> A detailed description of the pack and why it's useful.
+
+- Required
+- Plain text only
+- limited to 2000 characters
+- The `TBD` job verifies pack descriptions
+
+#### Level
+
+> The support level provided for the pack.
+
+- Required
+- set to `Community` level by default
+- Can only be modified by New Relic employees to set another level type
+- The `TBD` job verifies pack level
+
+#### Author
+
+> The creator(s) of the pack
+
+- Required
+- No limit to the amount of authors
+- The `TBD` job verifies pack level
+
+### Optional field best practices
+
+Other fields in a pack are optional but it's recommended you consider the following to offer the best possible pack
+experience for users.
+
+#### Short Description
+
+> A brief summary of the pack functionality.
+
+- Optional
+- Plain text only
+- limited to 250 characters
+
+### Images or screenshots
+
+> Images of dashboards, visualizations, or nerdpacks.
+
+- Optional
+- jpeg or png format
+- 4MB or smaller
+- 6 max images
+
+#### Image recommended for best results
+
+- Aspect ratio: 3:2
+- 800 px (width)
+- 1600 px (height)
+
+### Logos
+
+> The logo or brand image of the pack.
+
+- Optional
+- .png or .jpeg or .svg format
+- Max 1
+
+#### logo recommendations or best results
+
+- Aspect ratio: 1:1
+- 250px (width) x 100px (height)
+
+### Website URLs
+
+> a reference to a website relating tot he pack.
+
+- Optional
+- Valid URL only https://www.newrelic.com
 
 ## Feature Requests
 
