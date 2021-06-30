@@ -17,7 +17,7 @@ For example:
 # Metadata
 #####################
 
-# NOT USING RIGHT NOW
+# TBD
 # Unique identifier for this observability pack
 # uuid: guid, required
 
@@ -26,11 +26,11 @@ For example:
 # Example: apache, golden-signals-for-web-servers
 name: string, required
 
-# Deprecate in favor of short-description?
-# A short form description for this Observability Pack. Used throughout the platform when displaying the pack.
+# Displayed on the pack overview/details page formatted into rich text.
+# Standardized to a template for the New Relic packs.
 description: string, required
 
-# NOT USING RIGHT NOW
+# TBD
 # url slug for linking on public website
 # recommended format: make this a lowercase and hyphenated version
 # of the `name` field
@@ -54,15 +54,12 @@ instrumentation: list(object), optional
 #####################
 # Content/Design
 #####################
-# The name of the pack displayed every the pack is referenced
+# The name of the pack displayed everywhere the pack is referenced
 title: string, optional
 
-# Displayed in search results and recommendations
-short-description: string, optional
-
-# Displayed on the pack overview/details page formatted into rich text.
-# Standardized to a template for the New Relic packs.
-full-description: string, optional
+# Displayed in search results and recommendations. Summarizes a packs functionality.
+# A short form description for this Observability Pack.
+summary: string, optional
 
 # Tags for filtering / searching criteria
 tags: list(string), optional
