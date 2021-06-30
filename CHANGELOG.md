@@ -1,3 +1,10 @@
+## [0.9.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.9.0...v0.9.1) (2021-06-30)
+
+
+### Bug Fixes
+
+* **packs:** address all validation errors ([#95](https://github.com/newrelic/newrelic-observability-packs/issues/95)) ([32beff2](https://github.com/newrelic/newrelic-observability-packs/commit/32beff2b4eb8f583c4cf83e4fd25a72f9d444c39))
+
 # [0.9.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.8.2...v0.9.0) (2021-06-25)
 
 
