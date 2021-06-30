@@ -46,6 +46,13 @@ const removeCWDPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
  * @param {String} filePath the path to change
  * @returns {String} The path with the prefix
  */
-const removeRepoPathPrefix = (filePath) => filePath.split(`newrelic-observability-packs/`).pop();
+const removeRepoPathPrefix = (filePath) =>
+  filePath.split(`newrelic-observability-packs/`).pop();
 
-module.exports = { readYamlFile, readJsonFile, readPackFile, removeCWDPrefix, removeRepoPathPrefix };
+module.exports = {
+  readYamlFile,
+  readJsonFile,
+  readPackFile,
+  removeCWDPrefix,
+  removeRepoPathPrefix,
+};

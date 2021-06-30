@@ -88,7 +88,7 @@ const validateFile = (file) => {
       break;
     case filePath.includes('/instrumentation/logging/'): // validate using logging config schema.
       // There is currently no logging schema so skip for now
-      
+
       break;
     default:
       // use main config schema
