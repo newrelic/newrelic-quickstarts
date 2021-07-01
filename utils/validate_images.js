@@ -17,9 +17,8 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 /**
  * Validate all folders contain no more than MAX_NUM_IMG images
  * @param {Array} files - The array of globbed file names
- * @returns {boolean} Whether there are directories with more than MAX_NUM_IMG
  */
-const checkImageCounts = (files) => {
+const validateImageCounts = (files) => {
   const directories = files
     .filter((file) => isDirectory(file))
     .filter((folder) => {
@@ -35,17 +34,14 @@ const checkImageCounts = (files) => {
     core.setFailed('Components should contain less than 6 images');
     console.warn(`\nPlease check the following directories:`);
     directories.map((dir) => console.warn(dir));
-    return false;
   }
-  return true;
 };
 
 /**
  * Validates that files are below MAX_SIZE
  * @param {Array} globbedFiles - The array of globbed file names
- * @returns {boolean} Whether there are any files over MAX_SIZE
  */
-const checkFileSizes = (globbedFiles) => {
+const validateFileSizes = (globbedFiles) => {
   const sizes = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {
@@ -61,17 +57,14 @@ const checkFileSizes = (globbedFiles) => {
     core.setFailed(`Images should be under ${MAX_SIZE / 1000000}MB:`);
     console.warn(`\nPlease check the following images:`);
     sizes.map((file) => console.warn(file));
-    return false;
   }
-  return true;
 };
 
 /**
  * Validates images are one of the ALLOWED_IMG_EXT
  * @param {Array} globbedFiles - The array of globbed file names
- * @returns {boolean} Whether there are files not in ALLOWED_IMG_EXT
  */
-const checkImageExtensions = (globbedFiles) => {
+const validateImageExtensions = (globbedFiles) => {
   const extensions = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {
@@ -81,20 +74,14 @@ const checkImageExtensions = (globbedFiles) => {
     core.setFailed(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`);
     console.warn(`\nPlease check the following images:`);
     extensions.map((file) => console.warn(file));
-    return false;
   }
-  return true;
 };
 
 const main = () => {
   const globbedFiles = globFiles(BASE_PATH);
-  const imageCounts = checkImageCounts(globbedFiles);
-  const fileSizes = checkFileSizes(globbedFiles);
-  const imageExtensions = checkImageExtensions(globbedFiles);
-
-  if (!imageCounts || !fileSizes || !imageExtensions) {
-    process.exit(1);
-  }
+  validateImageCounts(globbedFiles);
+  validateFileSizes(globbedFiles);
+  validateImageExtensions(globbedFiles);
 };
 
 /**
@@ -106,4 +93,8 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { checkImageCounts, checkImageExtensions, checkFileSizes };
+module.exports = {
+  validateImageCounts,
+  validateImageExtensions,
+  validateFileSizes,
+};

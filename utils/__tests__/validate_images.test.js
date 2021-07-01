@@ -1,13 +1,15 @@
 'use strict';
-const { checkImageCounts, checkImageExtensions, checkFileSizes } = require('../validate_images');
+const {
+  validateImageCounts,
+  validateImageExtensions,
+  validateFileSizes,
+} = require('../validate_images');
 const helpers = require('../helpers');
-const glob = require('glob');
-const path = require('path');
-const isImage = require('is-image');
-const fs = require("fs");
+const core = require('@actions/core');
+const fs = require('fs');
 
-
-jest.mock('fs')
+jest.mock('@actions/core');
+jest.mock('fs');
 jest.mock('glob');
 jest.spyOn(global.console, 'warn').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
@@ -15,74 +17,71 @@ jest.mock('../helpers', () => ({
   getImageCount: jest.fn(),
   getFileSize: jest.fn(),
   globFiles: jest.fn(),
-  isDirectory: jest.fn()
-}))
+  isDirectory: jest.fn(),
+}));
 
-const globMockSize = [ 'test/path/icon.png' ];
+const globMockSize = ['test/path/icon.png'];
 
 describe('Action: validate images', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  test('Given a file path, returns the extension of the file', () => {
-    const input = 'test/file/ext.png'
-    expect(helpers.getFileExtension(input)).toBe('.png');
-  });
+  test('validateFileSizes, given an image size of <= 4MB, does not throw an error', () => {
+    helpers.getFileSize.mockReturnValueOnce(1000).mockReturnValueOnce(1000);
+    helpers.isDirectory.mockReturnValueOnce(true);
+    fs.statSync.mockReturnValueOnce('test/path/config.yml');
 
-  test('Given a directory path, returns empty for file extension', () => {
-    const input = 'test/file/ext'
-    expect(helpers.getFileExtension(input)).toBe('');
-  });
-
-  test('Given allowed image size, does not throw an error', () => {
-    isImage('test/path/config.png')
-    helpers.getFileSize.mockReturnValueOnce(1000).mockReturnValueOnce(1000)
-    helpers.isDirectory.mockReturnValueOnce(true)
-    fs.statSync.mockReturnValueOnce('test/path/config.yml')
-
-    checkFileSizes(globMockSize)
+    validateFileSizes(globMockSize);
+    expect(core.setFailed).not.toHaveBeenCalled();
     expect(global.console.warn).not.toHaveBeenCalled();
   });
 
-  test('Given allowed image size, throws an error', () => {
-    isImage('test/path/config.png')
-    helpers.getFileSize.mockReturnValueOnce(500000000).mockReturnValueOnce(500000000)
-    helpers.isDirectory.mockReturnValueOnce(true)
-    fs.statSync.mockReturnValueOnce('test/path/config.yml')
+  test('validateFileSizes, given an image size of > 4MB, throws an error', () => {
+    helpers.getFileSize
+      .mockReturnValueOnce(500000000)
+      .mockReturnValueOnce(500000000);
+    helpers.isDirectory.mockReturnValueOnce(true);
+    fs.statSync.mockReturnValueOnce('test/path/config.yml');
 
-    checkFileSizes(globMockSize)
+    validateFileSizes(globMockSize);
+    expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
-  test('Given allowed image extensions, does not throw an error', () => {
-    const globMock = [ 'test/img/ext.png' ];
-    checkImageExtensions(globMock)
+  test('validateImageExtensions, given an image with extension .png, does not throw an error', () => {
+    const globMock = ['test/img/ext.png'];
+
+    validateImageExtensions(globMock);
+    expect(core.setFailed).not.toHaveBeenCalled();
     expect(global.console.warn).not.toHaveBeenCalled();
   });
 
-  test('Given allowed image extensions, throws an error', () => {
-    const globMock = [ 'test/img/ext.webp' ];
-    checkImageExtensions(globMock)
+  test('validateImageExtensions, given an image with extension .webp, throws an error', () => {
+    const globMock = ['test/img/ext.webp'];
+
+    validateImageExtensions(globMock);
+    expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
-  test('Given allowed number of images in a directory, does not throw an error', () => {
-    const globMock = [ 'test/path/config' ];
-    helpers.isDirectory.mockReturnValueOnce(true)
-    helpers.getImageCount.mockReturnValueOnce(2).mockReturnValueOnce(2)
+  test('validateImageCounts, given <= 6 image files in a directory, does not throw an error', () => {
+    const globMock = ['test/path/config'];
+    helpers.isDirectory.mockReturnValueOnce(true);
+    helpers.getImageCount.mockReturnValueOnce(2).mockReturnValueOnce(2);
 
-    checkImageCounts(globMock)
+    validateImageCounts(globMock);
+    expect(core.setFailed).not.toHaveBeenCalled();
     expect(global.console.warn).not.toHaveBeenCalled();
   });
 
-  test('Given allowed number of images in a directory, throws an error', () => {
-    const globMock = [ 'test/path/' ];
-    helpers.isDirectory.mockReturnValueOnce(true)
-    helpers.getImageCount.mockReturnValueOnce(10).mockReturnValueOnce(10)
+  test('validateImageCounts, given > 6 image files in a directory, throws an error', () => {
+    const globMock = ['test/path/'];
+    helpers.isDirectory.mockReturnValueOnce(true);
+    helpers.getImageCount.mockReturnValueOnce(10).mockReturnValueOnce(10);
 
-    checkImageCounts(globMock)
+    validateImageCounts(globMock);
+    expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
-
 });
