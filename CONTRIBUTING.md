@@ -46,7 +46,7 @@ We encourage all contributors to actively engage in the creation and maintenance
 Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
-- `Step 2`: Review the [Pack Config File Schema](https://github.com/newrelic/newrelic-observability-packs/blob/f3acfd3efc34899c088c01b48c2e2f2210dd2657/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 2`: Review the [Pack Config File Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
 - `Step 3`: Create your pack!
 - `Step 4`: Submit a PR.
 - `Step 5`: resolve feedback from code reviews
