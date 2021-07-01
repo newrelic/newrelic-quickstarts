@@ -1,3 +1,10 @@
+# [0.10.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.9.2...v0.10.0) (2021-07-01)
+
+
+### Features
+
+* **workflow:** image validation and tests ([48240b3](https://github.com/newrelic/newrelic-observability-packs/commit/48240b37241bf617affc913c2de9453768fbb7e7))
+
 ## [0.9.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.9.1...v0.9.2) (2021-06-30)
 
 
