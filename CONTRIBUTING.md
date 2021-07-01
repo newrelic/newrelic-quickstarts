@@ -10,7 +10,7 @@
       - [Level](#level)
       - [Author](#author)
     - [Optional field best practices](#optional-field-best-practices)
-      - [Short Description](#short-description)
+      - [Summary](#summary)
     - [Images or screenshots](#images-or-screenshots)
       - [Image recommended for best results](#image-recommended-for-best-results)
     - [Logos](#logos)
@@ -98,7 +98,7 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 Other fields in a pack are optional but it's recommended you consider the following to offer the best possible pack
 experience for users.
 
-#### Short Description
+#### Summary
 
 > A brief summary of the pack functionality.
 
@@ -136,7 +136,7 @@ experience for users.
 
 ### Website URLs
 
-> a reference to a website relating tot he pack.
+> a reference to a website relating to the pack.
 
 - Optional
 - Valid URL only https://www.newrelic.com
