@@ -1,8 +1,12 @@
 <!-- toc -->
 - [Contributing](#contributing)
   - [Observability Pack Guidelines](#observability-pack-guidelines)
+    - [Pack Naming](#pack-naming)
+    - [Image requirements](#image-requirements)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
+    - [Status Checks](#status-checks)
+      - [Schema Validation](#schema-validation)
   - [Using Conventional Commits](#using-conventional-commits)
       - [Use `chore`](#use-chore)
       - [Use `fix`](#use-fix)
@@ -28,9 +32,18 @@ We encourage all contributors to actively engage in the creation and maintenance
 
 If you decide to create a new Observability Pack or review a PR please keep the following in mind.
 
+### Pack Naming
 * Your new pack must have a unique name
   * The `Validate Packs / Ensure pack names are unique` job handles verifying that there are no collisions when you create a pull request
   * **Note:** Names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons
+
+### Image requirements
+
+In order for your PR to pass Validation, the images included in your pack must meet the following requirements:
+
+ - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+ - Each image file must be less than `4MB` in size
+ - There should be no more than `6` images in your pack's component folders
 
 ## Feature Requests
 
