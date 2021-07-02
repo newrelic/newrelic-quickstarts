@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
+const glob = require('glob');
+const isImage = require('is-image');
 
 /**
  * Read and parse a YAML file
@@ -42,10 +44,89 @@ const readPackFile = (filePath) =>
 const removeCWDPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
 
 /**
+ * Checks the number of arguments passed to the script.
+ * Will exit if the incorrect number of argument is passed in.
+ * @param {number} length The desired number of arguments.
+ */
+const checkArgs = (length) => {
+  const { argv } = process;
+
+  if (argv.length !== length) {
+    console.error(
+      `[!] Expected ${length - 2} argument(s), recieved ${argv.length - 2}:`
+    );
+
+    for (const arg of argv.slice(2)) {
+      console.log(`\t(${argv.indexOf(arg) - 2}) ${arg}`);
+    }
+
+    process.exit(1);
+  }
+};
+
+/**
  * Removes the `newrelic-observability-packs/` path prefix from a string
  * @param {String} filePath the path to change
  * @returns {String} The path with the prefix
  */
-const removeRepoPathPrefix = (filePath) => filePath.split(`newrelic-observability-packs/`).pop();
+const removeRepoPathPrefix = (filePath) =>
+  filePath.split(`newrelic-observability-packs/`).pop();
 
-module.exports = { readYamlFile, readJsonFile, readPackFile, removeCWDPrefix, removeRepoPathPrefix };
+/**
+ * Checks if a path is a direectory
+ * @param {string} dir - The path to check
+ * @returns {boolean} Whether path is a directory or not
+ */
+const isDirectory = (dir) => fs.statSync(dir).isDirectory();
+
+/**
+ * Counts the number of image files in a folder
+ * @param {string} folder - The folder to count the image files from
+ * @returns {number} The number of image type files in the folder
+ */
+const getImageCount = (folder) => {
+  return [...glob.sync(path.resolve(folder, '**/*'))].filter((file) =>
+    isImage(file)
+  ).length;
+};
+
+/**
+ * Gets the size of a file in Bytes
+ * @param {string} file - The file to get the size of
+ * @returns {Array} The file size in Bytes
+ */
+const getFileSize = (file) => {
+  return fs.statSync(file)['size'];
+};
+
+/**
+ * Parses the file extension type from a file path
+ * @param {string} file - The file path to parse an extension from
+ * @returns {string} The extension of the file
+ */
+const getFileExtension = (file) => {
+  return path.extname(file);
+};
+
+/**
+ * Gets an array of all files and directories in a path
+ * @param {string} dir - The directory to parse, set by the BASE_PATH variable
+ * @returns {Array} An array of pathnames of a globbed directory
+ */
+const globFiles = (dir) => {
+  return glob.sync(path.resolve(dir, '**/*'));
+};
+
+module.exports = {
+  readYamlFile,
+  readJsonFile,
+  readPackFile,
+  removeCWDPrefix,
+  removeRepoPathPrefix,
+  checkArgs,
+  getImageCount,
+  getFileSize,
+  getFileExtension,
+  globFiles,
+  isDirectory,
+};

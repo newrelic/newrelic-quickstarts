@@ -8,8 +8,8 @@ jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
   readPackFile: jest.fn(),
-  removeRepoPathPrefix: jest.fn()
-}))
+  removeRepoPathPrefix: jest.fn(),
+}));
 jest.mock('glob');
 
 describe('Action: check pack uniqueness', () => {

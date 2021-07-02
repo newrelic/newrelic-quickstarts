@@ -1,0 +1,55 @@
+name: Add PR support labels
+
+on:
+  pull_request:
+    paths:
+      - "packs/**"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  get-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+
+      - name: Cache dependencies
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          cd utils
+          yarn install --frozen-lockfile
+
+      - name: Check support level
+        id: support
+        run: |
+          cd utils
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          yarn check-support-level $URL
+
+      - name: Add new-pack label
+        if: ${{steps.support.outputs.addition == 'true'}}
+        run: gh pr edit ${{github.event.pull_request.number}} --add-label "new-pack"
+
+      - name: Add support-level New Relic
+        if: ${{steps.support.outputs.newrelic == 'true'}}
+        run: gh pr edit ${{github.event.pull_request.number}} --add-label "support-level:newrelic"
+
+      - name: Add support-level Verified
+        if: ${{steps.support.outputs.verified == 'true'}}
+        run: gh pr edit ${{github.event.pull_request.number}} --add-label "support-level:verified"
+
+      - name: Add support-level Community
+        if: ${{steps.support.outputs.community == 'true'}}
+        run: gh pr edit ${{github.event.pull_request.number}} --add-label "support-level:community"
