@@ -23,11 +23,11 @@ const mockGithubResponse = (result) => {
   });
 };
 
-const mockGlobSync = () => glob.sync.mockReturnValueOnce('burrito');
+const mockGlobSync = () => glob.sync.mockReturnValue('burrito');
 
-const mockReadFileSync = (supportLevel) => {
+const mockReadFileSync = (supportLevel, name = 'Taco') => {
   const yml = `
-name: Taco
+name: ${name}
 level: ${supportLevel}
 `;
 
@@ -65,6 +65,37 @@ describe('Action: Check support level', () => {
     expect(global.console.log).toHaveBeenNthCalledWith(
       2,
       '::set-output name=newrelic::true'
+    );
+  });
+
+  test('should log multiple labels if updating packs of multiple support levels', async () => {
+    mockGithubResponse([
+      {
+        filename: 'packs/taco/config.yml',
+        status: STATUS.MODIFIED,
+      },
+      {
+        filename: 'packs/burrito/config.yml',
+        status: STATUS.MODIFIED,
+      },
+    ]);
+    mockGlobSync();
+    mockReadFileSync('New Relic', 'Taco');
+    mockReadFileSync('Community', 'Burrito');
+
+    await findSupportLevel();
+
+    expect(global.console.log).toHaveBeenNthCalledWith(
+      1,
+      '::set-output name=addition::false'
+    );
+    expect(global.console.log).toHaveBeenNthCalledWith(
+      2,
+      '::set-output name=newrelic::true'
+    );
+    expect(global.console.log).toHaveBeenNthCalledWith(
+      3,
+      '::set-output name=community::true'
     );
   });
 
