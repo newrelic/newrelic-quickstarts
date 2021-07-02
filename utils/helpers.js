@@ -44,6 +44,27 @@ const readPackFile = (filePath) =>
 const removeCWDPrefix = (filePath) => filePath.split(`${process.cwd()}/`)[1];
 
 /**
+ * Checks the number of arguments passed to the script.
+ * Will exit if the incorrect number of argument is passed in.
+ * @param {number} length The desired number of arguments.
+ */
+const checkArgs = (length) => {
+  const { argv } = process;
+
+  if (argv.length !== length) {
+    console.error(
+      `[!] Expected ${length - 2} argument(s), recieved ${argv.length - 2}:`
+    );
+
+    for (const arg of argv.slice(2)) {
+      console.log(`\t(${argv.indexOf(arg) - 2}) ${arg}`);
+    }
+
+    process.exit(1);
+  }
+};
+
+/**
  * Removes the `newrelic-observability-packs/` path prefix from a string
  * @param {String} filePath the path to change
  * @returns {String} The path with the prefix
@@ -95,12 +116,14 @@ const getFileExtension = (file) => {
 const globFiles = (dir) => {
   return glob.sync(path.resolve(dir, '**/*'));
 };
+
 module.exports = {
   readYamlFile,
   readJsonFile,
   readPackFile,
   removeCWDPrefix,
   removeRepoPathPrefix,
+  checkArgs,
   getImageCount,
   getFileSize,
   getFileExtension,
