@@ -45,15 +45,15 @@ your interactions with the project and its participants.
 We encourage all contributors to actively engage in the creation and maintenance of
 Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [pack template config](./_template/config.yml) file for a definition of how to create a pack.
-- `Step 2`: Review the [Pack Config File Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 1`: Review the [Pack Template Config](./_template/config.yml) for a definition of how to create a pack.
+- `Step 2`: Review the [Pack Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
 - `Step 3`: Create your pack!
-- `Step 4`: Submit a PR.
-- `Step 5`: resolve feedback from code reviews
-- `Step 6`: after approval, merge your PR
+- `Step 4`: Submit a PR!
+- `Step 5`: resolve feedback from code reviews.
+- `Step 6`: after approval, merge your PR.
 
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[Packs validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for up to date validations.
+[Packs validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
 ### Required field best practices
 
@@ -61,9 +61,9 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 > The official name of the pack.
 
-- Required
+- `Required`
 - limited to 100 characters
-- The `Validate Packs / Ensure pack names are unique` job verifies name uniqueness.
+- The a Github Action verifies name uniqueness.
 - Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
 - Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
 
@@ -71,27 +71,27 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 > A detailed description of the pack and why it's useful.
 
-- Required
+- `Required`
 - Plain text only
 - limited to 2000 characters
-- The `TBD` job verifies pack descriptions
+- A Github Action verifies pack descriptions
 
 #### Level
 
 > The support level provided for the pack.
 
-- Required
+- `Required`
 - set to `Community` level by default
 - Can only be modified by New Relic employees to set another level type
-- The `TBD` job verifies pack level
+- A Github Action verifies pack level
 
 #### Author
 
 > The creator(s) of the pack
 
-- Required
+- `Required`
 - No limit to the amount of authors
-- The `TBD` job verifies pack level
+- A Github Action job verifies pack level
 
 ### Optional field best practices
 
@@ -102,7 +102,7 @@ experience for users.
 
 > A brief summary of the pack functionality.
 
-- Optional
+- `Optional`
 - Plain text only
 - limited to 250 characters
 
@@ -110,7 +110,7 @@ experience for users.
 
 > Images of dashboards, visualizations, or nerdpacks.
 
-- Optional
+- `Optional`
 - jpeg or png format
 - 4MB or smaller
 - 6 max images
@@ -125,7 +125,7 @@ experience for users.
 
 > The logo or brand image of the pack.
 
-- Optional
+- `Optional`
 - .png or .jpeg or .svg format
 - Max 1
 
@@ -138,7 +138,7 @@ experience for users.
 
 > a reference to a website relating to the pack.
 
-- Optional
+- `Optional`
 - Valid URL only https://www.newrelic.com
 
 ## Feature Requests
