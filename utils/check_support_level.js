@@ -52,7 +52,7 @@ const findSupportLevel = async (url) => {
   packNames.forEach((packName) => {
     const parsedConfig = readYamlFile(
       glob.sync(
-        path.join(process.cwd(), `packs/${packName}/config.+(yml|yaml)`)
+        path.resolve(process.cwd(), `../packs/${packName}/config.+(yml|yaml)`)
       )[0]
     );
     const supportLevel = parsedConfig.contents[0].level;
