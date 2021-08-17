@@ -9,7 +9,130 @@
       "widgets": [
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 5
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "\n![Add Images](https://snipboard.io/O7Lz09.jpg)\n"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "height": 3,
+            "width": 7
+          },
+          "title": "Transactions Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 5
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "![Add Images](https://snipboard.io/8ka2nN.jpg)\n"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "height": 3,
+            "width": 7
+          },
+          "title": "Database Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "FROM Metric SELECT count(apm.service.datastore.operation.duration) as 'Total Database Calls', average(apm.service.datastore.duration) * 1000 as 'Average duration', percentage(count(*), WHERE error.group.message != 'Internal Server Error') AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 5
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "![VM Metrics](https://snipboard.io/tPdD4U.jpg)\n"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "height": 3,
+            "width": 7
+          },
+          "title": "VM Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Database",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
           },
           "layout": {
             "column": 1,
@@ -17,39 +140,22 @@
             "height": 3,
             "width": 8
           },
-          "title": "Top 5 web transactions",
+          "title": "Database Overview",
           "rawConfiguration": {
-            "accountId": 2594082,
-            "compareWith": [],
-            "duration": 10800000,
-            "entityIds": [
-              139394666
-            ],
-            "limit": 5,
-            "metrics": [
+            "dataFormatters": [],
+            "nrqlQueries": [
               {
-                "name": "WebTransaction/%",
-                "scope": "",
-                "values": [
-                  "time_percentage"
-                ]
-              },
-              {
-                "name": "WebTransaction/\\%",
-                "scope": "",
-                "values": [
-                  "time_percentage"
-                ]
+                "accountId": 2594082,
+                "query": "FROM Metric SELECT count(apm.service.datastore.operation.duration) as 'Total Database Calls', average(apm.service.datastore.duration) * 1000 as 'Average duration',  percentage(count(*), WHERE error.group.message != 'Internal Server Error') AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
               }
             ],
-            "orderBy": "time_percentage",
-            "rawMetricName": "WebTransaction/%"
+            "thresholds": []
           },
           "linkedEntityGuids": null
         },
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.bar"
           },
           "layout": {
             "column": 9,
@@ -57,16 +163,44 @@
             "height": 3,
             "width": 4
           },
-          "title": "Error rate",
+          "title": "Top 10 Slowest Database Transactions",
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT count(apm.service.error.count) / count(apm.service.transaction.duration) as 'Non-web errors' FROM Metric WHERE (entity.guid = 'MjU5NDA4MnxBUE18QVBQTElDQVRJT058MTM5Mzk0NjY2') AND (transactionType = 'Other') SINCE 1800 seconds AGO TIMESERIES "
-              },
+                "query": "SELECT sum(apm.service.datastore.operation.duration) * 1000 FROM Metric WHERE (entity.guid = 'MjU5NDA4MnxBUE18QVBQTElDQVRJT058MTM5Mzk0NjY2') FACET `metricTimesliceName` LIMIT 10 SINCE 1800 seconds AGO"
+              }
+            ]
+          },
+          "linkedEntityGuids": [
+            "MjU5NDA4MnxWSVp8REFTSEJPQVJEfDIzNjIxNDA"
+          ]
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Top Databases By Throughput",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT count(apm.service.error.count) / count(apm.service.transaction.duration) AS 'All errors' FROM Metric WHERE (entity.guid = 'MjU5NDA4MnxBUE18QVBQTElDQVRJT058MTM5Mzk0NjY2') SINCE 1800 seconds AGO TIMESERIES "
+                "query": "SELECT rate(count(apm.service.datastore.operation.duration), 1 minute) FROM Metric WHERE (entity.guid = 'MjU5NDA4MnxBUE18QVBQTElDQVRJT058MTM5Mzk0NjY2') FACET `datastoreType` LIMIT 5 SINCE last week TIMESERIES"
               }
             ]
           },
@@ -77,10 +211,66 @@
             "id": "viz.area"
           },
           "layout": {
-            "column": 1,
+            "column": 5,
             "row": 4,
             "height": 3,
-            "width": 6
+            "width": 4
+          },
+          "title": "Top Databases By Query Time",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT average(apm.service.datastore.operation.duration) * 1000 FROM Metric WHERE (entity.guid = 'MjU5NDA4MnxBUE18QVBQTElDQVRJT058MTM5Mzk0NjY2') FACET `datastoreType` LIMIT 5 SINCE last week TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "VM Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 7
+          },
+          "title": "VM Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "height": 3,
+            "width": 5
           },
           "title": "CPU Utilization",
           "rawConfiguration": {
@@ -101,6 +291,39 @@
             "id": "viz.line"
           },
           "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Garbage collection CPU time",
+          "rawConfiguration": {
+            "accountId": 2594082,
+            "compareWith": [],
+            "duration": 1800000,
+            "entityIds": [
+              1579779037
+            ],
+            "limit": 5,
+            "metrics": [
+              {
+                "name": "GC/%",
+                "scope": "",
+                "values": [
+                  "time_percentage"
+                ]
+              }
+            ],
+            "orderBy": "time_percentage",
+            "rawMetricName": "GC/%"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
             "column": 7,
             "row": 4,
             "height": 3,
@@ -112,7 +335,7 @@
             "compareWith": [],
             "duration": 1800000,
             "entityIds": [
-              797960699
+              1579779037
             ],
             "metrics": [
               {
@@ -138,6 +361,244 @@
               }
             ],
             "rawMetricName": "Memory/Heap/Used"
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 7
+          },
+          "title": "Transactions Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' WHERE appName ='JavaApp' SINCE 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Most Popular Transactions",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT count(*) FROM Transaction WHERE appName = 'JavaApp' AND (transactionType = 'Web') SINCE last week EXTRAPOLATE FACET name"
+              }
+            ]
+          },
+          "linkedEntityGuids": [
+            "MjU5NDA4MnxWSVp8REFTSEJPQVJEfDIzNzUyMjY"
+          ]
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Transactions Errors Today Compared With 1 Week Ago",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT count(*) from Transaction where response.status = '404' TIMESERIES 10 minutes since today COMPARE WITH 1 week ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Throughput Today Compared With 1 Week Ago",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT count(*) from Transaction where appName='JavaApp' TIMESERIES 1 hour  since today COMPARE WITH 1 week ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Average Transaction Duration Today Compared With 1 Week Ago",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT average(duration) FROM Transaction WHERE appName ='JavaApp' TIMESERIES SINCE today COMPARE WITH 1 week ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Most Failed Transactions",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "Select percentage(count(*), where error is true) from Transaction where appName = 'JavaApp' and transactionType = 'Web' facet name SINCE last week"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Adpex Score Today Compared With 1 Week Ago",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT apdex(duration,t: 0.4) FROM Transaction TIMESERIES SINCE today COMPARE WITH 1 week ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Slowest Transactions",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT max(duration) FROM Transaction WHERE appName = 'JavaApp' AND (transactionType = 'Web') SINCE last week EXTRAPOLATE FACET name"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Throughput Per Host",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 2594082,
+                "query": "SELECT uniques(request.headers.host) FROM Transaction WHERE appName = 'JavaApp' LIMIT MAX"
+              }
+            ]
           },
           "linkedEntityGuids": null
         }
