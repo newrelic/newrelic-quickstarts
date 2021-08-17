@@ -1,0 +1,50 @@
+# docker stack deploy -c docker-stack-todoapi.yml todoapi
+# URLs:
+# http://localhost:8080/todoapi/api/todo
+# http://localhost:8080/swaggerui/
+# http://localhost:8080/traefik/
+version: '3.7'
+
+services:
+  # Reverse proxy
+  traefik:
+    image: traefik:latest
+    command: ["--api", "--ping", "--accesslog", "--docker", "--docker.swarmmode", "--docker.watch",
+              "--docker.exposedbydefault=false"]
+    ports:
+      - "8080:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=8080"
+        - "traefik.frontend.rule=PathPrefixStrip:/traefik/"
+        - "traefik.docker.network=todoapi_default"
+
+  # Java Microprofile backend
+  todoapi:
+    image: todoapi-microprofile-java
+    environment:
+      # Override default openapi server url (default generated is based on docker service id and not reachable outside Docker network)
+      - MP_OPENAPI_SERVERS=http://localhost:8080/todoapi
+      # New Relic APM configuration (uncomment to report to New Relic)
+      # - NEW_RELIC_AGENT_ENABLED=true
+      # - NEW_RELIC_APP_NAME=Todo API MicroProfile (Prod) # Should be set based on stack name
+      # - NEW_RELIC_LICENSE_KEY # Inherited from the the env set outside (not to be in source code)
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=8080"
+        - "traefik.frontend.rule=PathPrefixStrip:/todoapi/"
+
+  # SwaggerUI to try out REST API
+  swaggerui:
+    image: swaggerapi/swagger-ui
+    environment:
+      - API_URL=http://localhost:8080/todoapi/openapi
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=8080"
+        - "traefik.frontend.rule=PathPrefixStrip:/swaggerui/"
