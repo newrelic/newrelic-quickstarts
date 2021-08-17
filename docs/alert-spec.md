@@ -16,19 +16,23 @@ packs/<pack_name>/alerts/static-alert.yml
 
 ```yaml
 ####################################################################################
-# Metadata - these fields will be removed from the AlertsNrqlConditionInput 
-# definition
+# Metadata - these fields will be removed from the AlertsNrqlConditionInput
 ####################################################################################
 
-# A short form description for this Alert condition
+# the name of the Alert
+name: string, required
+
+# A short description for this Alert condition
 details: string, optional
 
-# Type of alert condition
+# Type of Alert condition
 type: enum, required # One of [ BASELINE, OUTLIER, STATIC ]
 
+# Url of the Alert in this pack
+url: string, required
 
 ####################################################################################
-# Alert Condition Definition - not validating this, as the type is not controlled 
+# Alert Condition Definition - not validating this, as the type is not controlled
 # by us and can change
 ####################################################################################
 
