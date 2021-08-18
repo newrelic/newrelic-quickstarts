@@ -48,6 +48,7 @@ authors: list, required
 tags: list(string), optional
 
 # path to icon for this Observability Pack
+# Not currently used
 icon: string, optional
 
 # path to logo for this Observability Pack
