@@ -45,10 +45,10 @@ authors: list, required
 # Instrumentation Requirements - indicates what's needed in an account
 # for a given pack (and it's components) to work.
 #
-# It's important that we're able to verify whether or not the user's 
-# environment meets the requirements for the use of a given resource. 
+# It's important that we're able to verify whether or not the user's
+# environment meets the requirements for the use of a given resource.
 instrumentation: list(object), optional
-  - type: string, optional 
+  - type: string, optional
     name: string, optional
 
 #####################
@@ -84,6 +84,13 @@ logo: string, optional
 
 # URL of website for this Observability Pack
 website: string, optional
+
+# List of docs for this Observability Pack
+documentation: list(object), optional
+  - name: string, required
+    url: string, required
+    description: string, optional
+
 ```
 
 ## Schema Validator
