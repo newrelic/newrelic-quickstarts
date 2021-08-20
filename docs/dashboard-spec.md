@@ -14,7 +14,6 @@ packs/<pack_name>/dashboards/apache.json
 
 The schema adheres to the `DashboardInput` used in the [dashboardCreate](https://docs.newrelic.com/docs/new-relic-one/use-new-relic-one/core-concepts/dashboards-api-migration-insights-api-nerdgraph/#dashboard-create) mutation in NerdGraph.
 
-
 ```yaml
 ####################################################################################
 # Metadata

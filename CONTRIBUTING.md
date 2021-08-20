@@ -77,7 +77,7 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 > A detailed description of the pack and why it's useful.
 
 - `Required`
-- Plain text only
+- Markdown or plain text
 - limited to 2000 characters
 - A Github Action verifies pack descriptions
 

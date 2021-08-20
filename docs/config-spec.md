@@ -17,9 +17,6 @@ For example:
 # Metadata
 #####################
 
-# A unique Observability Pack identifier
-uuid: guid, required
-
 # The name of the pack displayed everywhere the pack is referenced
 title: string, optional
 
@@ -36,6 +33,7 @@ description: string, required
 summary: string, required
 
 # URL to link to the location of this Observability Pack in the open source repo
+# This is a only field in the API and will not be present in the pack config
 packUrl: string, optional
 
 # Level categorization of Observability Pack
