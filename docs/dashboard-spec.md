@@ -25,12 +25,6 @@ name: string, required
 # A short description for this Dashboard
 description: string, required
 
-# List of screenshot URLs related to this Dashboard
-type: list, required
-
-# URL of Dashboard JSON definition
-url: string, required
-
 ####################################################################################
 # Alert Condition Definition - not validating this, as the type is not controlled
 # by us and can change

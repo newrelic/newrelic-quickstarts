@@ -28,9 +28,6 @@ details: string, optional
 # Type of Alert condition
 type: enum, required # One of [ BASELINE, OUTLIER, STATIC ]
 
-# Url of the Alert JSON definition
-url: string, required
-
 ####################################################################################
 # Alert Condition Definition - not validating this, as the type is not controlled
 # by us and can change

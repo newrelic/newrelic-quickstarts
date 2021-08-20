@@ -12,7 +12,6 @@
       - [Summary](#summary)
     - [Optional field best practices](#optional-field-best-practices)
       - [Title](#title)
-      - [PackUrl](#packurl)
     - [Images or screenshots](#images-or-screenshots)
       - [Image recommended for best results](#image-recommended-for-best-results)
     - [Logos](#logos)
@@ -114,12 +113,6 @@ experience for users.
 #### Title
 
 > an option field used when the pack is referenced.
-
-- `Optional`
-
-#### PackUrl
-
-> URL to link to the location of this Observability Pack in the open source repo
 
 - `Optional`
 
