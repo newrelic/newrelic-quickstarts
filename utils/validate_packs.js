@@ -85,10 +85,10 @@ const validateFile = (file) => {
     case filePath.includes('/instrumentation/synthetics/'): // validate using synthetics schema
       errors = validateAgainstSchema(file.contents[0], syntheticSchema);
       break;
-    case(filePath.includes('/instrumentation/logging/')): // validate using logging schema
+    case filePath.includes('/instrumentation/logging/'): // validate using logging schema
       errors = validateAgainstSchema(file.contents[0], loggingSchema);
       break;
-    case(filePath.includes('/instrumentation/flex/')): // validate using flex config schema. 
+    case filePath.includes('/instrumentation/flex/'): // validate using flex config schema.
       // The flex YAML is two documents, validate each of them
       errors = [
         ...validateAgainstSchema(file.contents[0], flexConfigSchema),

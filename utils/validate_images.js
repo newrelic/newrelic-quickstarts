@@ -2,17 +2,15 @@
 const core = require('@actions/core');
 const isImage = require('is-image');
 const {
+  getImageCount,
   getFileSize,
   getFileExtension,
   globFiles,
   isDirectory,
-  findMainPackConfigFiles,
-  readPackFile,
 } = require('./helpers');
 
 const glob = require('glob');
 const path = require('path');
-
 const BASE_PATH = '../packs/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
@@ -22,6 +20,7 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
  * Validate all folders contain no more than MAX_NUM_IMG images
  * @param {Array} files - The array of globbed file names
  */
+
 const validateImageCounts = (packDirs) => {
   const directories = packDirs
     .map((pack) => {

@@ -117,13 +117,6 @@ const globFiles = (dir) => {
   return glob.sync(path.resolve(dir, '**/*'));
 };
 
-/**
- * Finds the path to all top level pack configs
- * @returns {String[]} An array of the file paths
- */
-const findMainPackConfigFiles = () =>
-  glob.sync(path.resolve(process.cwd(), '../packs/**/config.+(yml|yaml)'));
-
 module.exports = {
   readYamlFile,
   readJsonFile,
@@ -136,5 +129,4 @@ module.exports = {
   getFileExtension,
   globFiles,
   isDirectory,
-  findMainPackConfigFiles,
 };

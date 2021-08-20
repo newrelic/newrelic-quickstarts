@@ -28,11 +28,13 @@ const getTestFile = (schemaType) => {
         {
           name: 'fakedashboard',
           description: 'fakeDescription',
-          pages: [{
-            name: "",
-            description: "",
-            widgets: [{}]
-          }]
+          pages: [
+            {
+              name: '',
+              description: '',
+              widgets: [{}],
+            },
+          ],
         },
       ],
     },
@@ -62,7 +64,7 @@ const getTestFile = (schemaType) => {
           name: 'fakeobservabilitypack',
           description: 'fakeDescription',
           authors: ['fakeAuthor'],
-          level: 'New Relic'
+          level: 'New Relic',
         },
       ],
     },
@@ -303,6 +305,50 @@ describe('test validateFile', () => {
       const { errors } = validateFile(mainConfigTestFile);
 
       expect(errors.length).toBe(1);
+    });
+
+    test('doesnt fail for valid documentation fields', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+
+      mainConfigTestFile.contents[0].documentation = [
+        {
+          name: 'Doc name',
+          url: 'https://example.com',
+          description: 'Description of doc',
+        },
+      ];
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBe(0);
+    });
+
+    test('detects missing documentation name field', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+
+      mainConfigTestFile.contents[0].documentation = [
+        {
+          url: 'https://example.com',
+        },
+      ];
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBe(2);
+    });
+
+    test('detects missing documentation url field', () => {
+      const mainConfigTestFile = getTestFile('main_config');
+
+      mainConfigTestFile.contents[0].documentation = [
+        {
+          name: 'Name of doc',
+        },
+      ];
+
+      const { errors } = validateFile(mainConfigTestFile);
+
+      expect(errors.length).toBe(2);
     });
   });
 });
