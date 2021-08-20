@@ -11,7 +11,6 @@ const {
 } = require('./helpers');
 
 const glob = require('glob');
-const fs = require('fs');
 const path = require('path');
 
 const BASE_PATH = '../packs/';
@@ -19,72 +18,44 @@ const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 
-const isPackDirectory = (dir) => fs.existsSync(path.resolve(dir, 'config.yml'));
-// packs/**/(dashboards|alerts)/*.(png|jpeg|jpg|svg)*/
-
-/**
- * Counts the number of image files in a folder
- * @param {string} folder - The folder to count the image files from
- * @returns {number} The number of image type files in the folder
- */
-// if image file path matches pack dirname, ignore
-const getImageCount = (folder) => {
-  return [...glob.sync(path.resolve(folder, '**/*'))].filter((file) =>
-    isImage(file)
-  ).length;
-};
-
 /**
  * Validate all folders contain no more than MAX_NUM_IMG images
  * @param {Array} files - The array of globbed file names
  */
-const validateImageCounts = (files) => {
-  // get each pack dir
-  const packDirs = findMainPackConfigFiles();
+const validateImageCounts = (packDirs) => {
+  const directories = packDirs
+    .map((pack) => {
+      const packDirName = path.dirname(pack);
+      // get all images for pack
+      const imagePaths = glob.sync(
+        path.resolve(path.dirname(pack), '**/*.+(png|jpeg|jpg|svg)')
+      );
+      const packConfig = readPackFile(pack).contents[0];
+      const iconPath = packConfig.icon
+        ? path.resolve(path.dirname(pack), packConfig.icon)
+        : null;
+      const logoPath = packConfig.logo
+        ? path.resolve(path.dirname(pack), packConfig.logo)
+        : null;
 
-  for (const pack of packDirs) {
-    // get all images for pack
-    const imagePaths = glob.sync(
-      path.resolve(path.dirname(pack), '**/*.+(png|jpeg|jpg|svg)')
-    );
-    const packConfig = readPackFile(pack).contents[0];
+      const screenshotPaths = imagePaths.filter(
+        (p) => p !== iconPath && p !== logoPath
+      );
 
-    const iconPath = packConfig.icon;
-    const logoPath = packConfig.logo;
-    if (iconPath && logoPath) {
-    }
-    const screenshotPaths = imagePaths.filter(
-      (p) => p !== iconPath && p !== logoPath
-    );
+      if (screenshotPaths.length > MAX_NUM_IMG) {
+        return {
+          folder: packDirName,
+          imageCount: screenshotPaths.length,
+        };
+      }
+    })
+    .filter(Boolean);
 
-    if (screenshotPaths.length > 6) {
-      core.setFailed('Components should contain less than 6 images');
-      console.warn(`\nPlease check the following directories:`);
-      console.warn(pack);
-    }
-
-    // parse config for references to icons or logos
-    // remove icon/logo paths from array of all pack images
-    // count array
+  if (directories.length) {
+    core.setFailed('Components should contain less than 6 images');
+    console.warn(`\nPlease check the following directories:`);
+    directories.map((dir) => console.warn(dir));
   }
-  // const directories = files.filter((file) => isDirectory(file));
-  // const packDirs = directories.filter
-  //   .filter((file) => isPackDirectory(file))
-
-  //   .filter((folder) => {
-  //     return getImageCount(folder) > MAX_NUM_IMG;
-  //   })
-  //   .map((folder) => {
-  //     return {
-  //       folder,
-  //       imageCount: getImageCount(folder),
-  //     };
-  //   });
-  // if (directories.length > 0) {
-  //   core.setFailed('Components should contain less than 6 images');
-  //   console.warn(`\nPlease check the following directories:`);
-  //   directories.map((dir) => console.warn(dir));
-  //  }
 };
 
 /**
@@ -128,8 +99,10 @@ const validateImageExtensions = (globbedFiles) => {
 };
 
 const main = () => {
+  const packDirs = findMainPackConfigFiles();
+  validateImageCounts(packDirs);
+
   const globbedFiles = globFiles(BASE_PATH);
-  validateImageCounts(globbedFiles);
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };
