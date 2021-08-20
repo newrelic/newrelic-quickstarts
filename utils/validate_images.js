@@ -2,11 +2,10 @@
 const core = require('@actions/core');
 const isImage = require('is-image');
 const {
-  getImageCount,
   getFileSize,
   getFileExtension,
   globFiles,
-  isDirectory,
+  readPackFile,
 } = require('./helpers');
 
 const glob = require('glob');
