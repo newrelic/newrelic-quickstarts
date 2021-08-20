@@ -1,7 +1,6 @@
 'use strict';
 const checkPackUniquess = require('../check_pack_uniqueness');
 const helpers = require('../helpers');
-const glob = require('glob');
 
 jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
@@ -9,8 +8,8 @@ jest.spyOn(global.console, 'error').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
   readPackFile: jest.fn(),
   removeRepoPathPrefix: jest.fn(),
+  findMainPackConfigFiles: jest.fn(),
 }));
-jest.mock('glob');
 
 describe('Action: check pack uniqueness', () => {
   afterEach(() => {
@@ -18,7 +17,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds exact match', () => {
-    glob.sync.mockReturnValueOnce([
+    helpers.findMainPackConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
@@ -39,7 +38,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds match with different punctuation', () => {
-    glob.sync.mockReturnValueOnce([
+    helpers.findMainPackConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
@@ -61,7 +60,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds more than 2 matches', () => {
-    glob.sync.mockReturnValueOnce([
+    helpers.findMainPackConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
       'test/3/path/config.yml',
@@ -87,7 +86,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('does not find match', () => {
-    glob.sync.mockReturnValueOnce([
+    helpers.findMainPackConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
@@ -108,7 +107,7 @@ describe('Action: check pack uniqueness', () => {
   });
 
   test('finds and returns separate matches', () => {
-    glob.sync.mockReturnValueOnce([
+    helpers.findMainPackConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
       'test/3/path/config.yml',
