@@ -32,10 +32,6 @@ description: string, required
 # A short form description for this Observability Pack.
 summary: string, required
 
-# URL to link to the location of this Observability Pack in the open source repo
-# This is a only field in the API and will not be present in the pack config
-packUrl: string, optional
-
 # Level categorization of Observability Pack
 level: enum, required # One of [ New Relic, Verified, Community ]
 
