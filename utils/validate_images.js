@@ -6,6 +6,7 @@ const {
   getFileExtension,
   globFiles,
   readPackFile,
+  findMainPackConfigFiles,
 } = require('./helpers');
 
 const glob = require('glob');
