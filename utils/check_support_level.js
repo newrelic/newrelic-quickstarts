@@ -40,11 +40,7 @@ const getNextLink = (linkHeader) => {
 const findSupportLevel = async (url) => {
   let newPack = false;
 
-  const files = [
-    { filename: 'packs/python/python/config.yml', status: 'added' },
-    { filename: 'packs/java/java/dashboards/boop.js', status: 'modified' },
-    { filename: 'packs/apache/config.yml', status: 'modified' },
-  ];
+  const files = await fetchFilesFromGH(url);
 
   const configFiles = findMainPackConfigFiles();
   files.forEach((file) => {
@@ -57,7 +53,6 @@ const findSupportLevel = async (url) => {
     .map((config) => {
       const configRelativePath = removeRepoPathPrefix(config);
       const regex = new RegExp(`^${path.dirname(configRelativePath)}.*`);
-      console.log(regex);
       const fileMatch = files.find((file) => file.filename.match(regex));
 
       return fileMatch !== undefined && config;
@@ -69,7 +64,6 @@ const findSupportLevel = async (url) => {
   configFilesToRead.forEach((configFile) => {
     const parsedConfig = readYamlFile(configFile);
     const supportLevel = parsedConfig.contents[0].level;
-    console.log(supportLevel, configFile);
     if (supportLevel) {
       const validSupportLevels = ['New Relic', 'Verified', 'Community'];
       if (validSupportLevels.includes(supportLevel)) {
