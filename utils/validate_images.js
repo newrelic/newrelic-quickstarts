@@ -2,13 +2,15 @@
 const core = require('@actions/core');
 const isImage = require('is-image');
 const {
-  getImageCount,
   getFileSize,
   getFileExtension,
   globFiles,
-  isDirectory,
+  readPackFile,
+  findMainPackConfigFiles,
 } = require('./helpers');
 
+const glob = require('glob');
+const path = require('path');
 const BASE_PATH = '../packs/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
@@ -18,19 +20,37 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
  * Validate all folders contain no more than MAX_NUM_IMG images
  * @param {Array} files - The array of globbed file names
  */
-const validateImageCounts = (files) => {
-  const directories = files
-    .filter((file) => isDirectory(file))
-    .filter((folder) => {
-      return getImageCount(folder) > MAX_NUM_IMG;
+
+const validateImageCounts = (packDirs) => {
+  const directories = packDirs
+    .map((pack) => {
+      const packDirName = path.dirname(pack);
+      // get all images for pack
+      const imagePaths = glob.sync(
+        path.resolve(path.dirname(pack), '**/*.+(png|jpeg|jpg|svg)')
+      );
+      const packConfig = readPackFile(pack).contents[0];
+      const iconPath = packConfig.icon
+        ? path.resolve(path.dirname(pack), packConfig.icon)
+        : null;
+      const logoPath = packConfig.logo
+        ? path.resolve(path.dirname(pack), packConfig.logo)
+        : null;
+
+      const screenshotPaths = imagePaths.filter(
+        (p) => p !== iconPath && p !== logoPath
+      );
+
+      if (screenshotPaths.length > MAX_NUM_IMG) {
+        return {
+          folder: packDirName,
+          imageCount: screenshotPaths.length,
+        };
+      }
     })
-    .map((folder) => {
-      return {
-        folder,
-        imageCount: getImageCount(folder),
-      };
-    });
-  if (directories.length > 0) {
+    .filter(Boolean);
+
+  if (directories.length) {
     core.setFailed('Components should contain less than 6 images');
     console.warn(`\nPlease check the following directories:`);
     directories.map((dir) => console.warn(dir));
@@ -78,8 +98,10 @@ const validateImageExtensions = (globbedFiles) => {
 };
 
 const main = () => {
+  const packDirs = findMainPackConfigFiles();
+  validateImageCounts(packDirs);
+
   const globbedFiles = globFiles(BASE_PATH);
-  validateImageCounts(globbedFiles);
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };

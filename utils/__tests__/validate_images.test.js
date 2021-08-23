@@ -7,10 +7,13 @@ const {
 const helpers = require('../helpers');
 const core = require('@actions/core');
 const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
 
 jest.mock('@actions/core');
 jest.mock('fs');
 jest.mock('glob');
+jest.mock('path');
 jest.spyOn(global.console, 'warn').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
   ...jest.requireActual('../helpers'),
@@ -18,9 +21,14 @@ jest.mock('../helpers', () => ({
   getFileSize: jest.fn(),
   globFiles: jest.fn(),
   isDirectory: jest.fn(),
+  readPackFile: jest.fn(),
 }));
 
 const globMockSize = ['test/path/icon.png'];
+const mockGlobSync = (files) => glob.sync.mockReturnValueOnce(files);
+const mockPathResolve = (returnPath) =>
+  path.resolve.mockReturnValue(returnPath);
+const mockPathExtName = (ext) => path.extname.mockReturnValue(ext);
 
 describe('Action: validate images', () => {
   afterEach(() => {
@@ -31,6 +39,7 @@ describe('Action: validate images', () => {
     helpers.getFileSize.mockReturnValueOnce(1000).mockReturnValueOnce(1000);
     helpers.isDirectory.mockReturnValueOnce(true);
     fs.statSync.mockReturnValueOnce('test/path/config.yml');
+    mockPathExtName('.png');
 
     validateFileSizes(globMockSize);
     expect(core.setFailed).not.toHaveBeenCalled();
@@ -43,6 +52,7 @@ describe('Action: validate images', () => {
       .mockReturnValueOnce(500000000);
     helpers.isDirectory.mockReturnValueOnce(true);
     fs.statSync.mockReturnValueOnce('test/path/config.yml');
+    mockPathExtName('.png');
 
     validateFileSizes(globMockSize);
     expect(core.setFailed).toHaveBeenCalled();
@@ -51,6 +61,7 @@ describe('Action: validate images', () => {
 
   test('validateImageExtensions, given an image with extension .png, does not throw an error', () => {
     const globMock = ['test/img/ext.png'];
+    mockPathExtName('.png');
 
     validateImageExtensions(globMock);
     expect(core.setFailed).not.toHaveBeenCalled();
@@ -59,6 +70,7 @@ describe('Action: validate images', () => {
 
   test('validateImageExtensions, given an image with extension .webp, throws an error', () => {
     const globMock = ['test/img/ext.webp'];
+    mockPathExtName('.webp');
 
     validateImageExtensions(globMock);
     expect(core.setFailed).toHaveBeenCalled();
@@ -67,8 +79,8 @@ describe('Action: validate images', () => {
 
   test('validateImageCounts, given <= 6 image files in a directory, does not throw an error', () => {
     const globMock = ['test/path/config'];
-    helpers.isDirectory.mockReturnValueOnce(true);
-    helpers.getImageCount.mockReturnValueOnce(2).mockReturnValueOnce(2);
+    mockGlobSync(['pineapple']);
+    helpers.readPackFile.mockReturnValue({ contents: [{}] });
 
     validateImageCounts(globMock);
     expect(core.setFailed).not.toHaveBeenCalled();
@@ -77,8 +89,32 @@ describe('Action: validate images', () => {
 
   test('validateImageCounts, given > 6 image files in a directory, throws an error', () => {
     const globMock = ['test/path/'];
-    helpers.isDirectory.mockReturnValueOnce(true);
-    helpers.getImageCount.mockReturnValueOnce(10).mockReturnValueOnce(10);
+    mockGlobSync(['I', 'have', 'too', 'many', 'images', '>:)', '>:(']);
+    helpers.readPackFile.mockReturnValue({ contents: [{}] });
+
+    validateImageCounts(globMock);
+    expect(core.setFailed).toHaveBeenCalled();
+    expect(global.console.warn).toHaveBeenCalledTimes(2);
+  });
+
+  test('validateImageCounts, given an icon, does not include the icon in image count', () => {
+    const globMock = ['test/path/'];
+    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
+    helpers.readPackFile.mockReturnValue({ contents: [{ icon: 'icon' }] });
+    mockPathResolve('icon');
+
+    validateImageCounts(globMock);
+    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(global.console.warn).not.toHaveBeenCalled();
+  });
+
+  test('validateImageCounts, given an icon, includes icon in count if config path does not match', () => {
+    const globMock = ['test/path/'];
+    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
+    helpers.readPackFile.mockReturnValue({
+      contents: [{ icon: 'wrong/icon/path' }],
+    });
+    mockPathResolve('wrong/icon/path');
 
     validateImageCounts(globMock);
     expect(core.setFailed).toHaveBeenCalled();
