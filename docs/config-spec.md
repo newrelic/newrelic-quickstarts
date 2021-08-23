@@ -73,6 +73,13 @@ contributors: list(object), optional
   - github-username: string, required
     profile-url: string, required
     avatar-url: string, required
+
+# List of docs for this Observability Pack
+documentation: list(object), optional
+  - name: string, required
+    url: string, required
+    description: string, optional
+
 ```
 
 ## Schema Validator

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
 const glob = require('glob');
+const helpers = require('../helpers');
 
 const findSupportLevel = require('../check_support_level');
 
@@ -10,6 +11,7 @@ jest.mock('fs');
 jest.mock('../helpers', () => ({
   ...jest.requireActual('../helpers'),
   checkArgs: jest.fn(),
+  findMainPackConfigFiles: jest.fn(),
 }));
 
 global.process.exit = jest.fn();
@@ -54,6 +56,7 @@ describe('Action: Check support level', () => {
       },
     ]);
     mockGlobSync();
+    helpers.findMainPackConfigFiles.mockReturnValue(['packs/taco/config.yml']);
     mockReadFileSync('New Relic');
 
     await findSupportLevel();
@@ -80,6 +83,11 @@ describe('Action: Check support level', () => {
       },
     ]);
     mockGlobSync();
+    helpers.findMainPackConfigFiles.mockReturnValue([
+      'packs/taco/config.yml',
+      'packs/burrito/config.yml',
+    ]);
+
     mockReadFileSync('New Relic', 'Taco');
     mockReadFileSync('Community', 'Burrito');
 
@@ -113,6 +121,7 @@ describe('Action: Check support level', () => {
       },
     ]);
     mockGlobSync();
+    helpers.findMainPackConfigFiles.mockReturnValue(['packs/taco/config.yml']);
     mockReadFileSync(level);
 
     await findSupportLevel();
