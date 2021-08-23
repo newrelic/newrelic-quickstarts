@@ -1,3 +1,15 @@
+# [0.11.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.10.0...v0.11.0) (2021-08-23)
+
+
+### Bug Fixes
+
+* fix type typo ([ade0052](https://github.com/newrelic/newrelic-observability-packs/commit/ade0052041a36f301bb50e25749f6e03fe580068))
+
+
+### Features
+
+* add documentation packs ([31dad17](https://github.com/newrelic/newrelic-observability-packs/commit/31dad17670a0d6820cb3f86a51b5e176e7271688))
+
 # [0.10.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.9.2...v0.10.0) (2021-07-01)
 
 
