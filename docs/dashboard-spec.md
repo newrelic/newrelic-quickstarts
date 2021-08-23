@@ -14,6 +14,24 @@ packs/<pack_name>/dashboards/apache.json
 
 The schema adheres to the `DashboardInput` used in the [dashboardCreate](https://docs.newrelic.com/docs/new-relic-one/use-new-relic-one/core-concepts/dashboards-api-migration-insights-api-nerdgraph/#dashboard-create) mutation in NerdGraph.
 
+```yaml
+####################################################################################
+# Metadata
+####################################################################################
+
+# the name of the Dashboard
+name: string, required
+
+# A short description for this Dashboard
+description: string, required
+
+####################################################################################
+# Alert Condition Definition - not validating this, as the type is not controlled
+# by us and can change
+####################################################################################
+
+```
+
 There are two other requirements:
 
 * The top level `description` cannot be null
@@ -22,3 +40,4 @@ There are two other requirements:
 ## Schema Validator
 
 See [newrelic-observability-packs/utils/validate_packs.js](../utils/validate_packs.js).
+
