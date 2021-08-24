@@ -8,7 +8,7 @@ const isImage = require('is-image');
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
- * @returns {Object} An object containing the path and contents of the file
+ * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
 const readYamlFile = (filePath) => {
   const file = fs.readFileSync(filePath);
@@ -19,7 +19,7 @@ const readYamlFile = (filePath) => {
 /**
  * Read and parse a JSON file
  * @param {String} filePath - The path to the JSON file
- * @returns {Object} An object containing the path and contents of the file
+ * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
 const readJsonFile = (filePath) => {
   const file = fs.readFileSync(filePath);

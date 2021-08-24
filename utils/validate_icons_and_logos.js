@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('fs');
+const path = require('path');
 
 const { readPackFile, findMainPackConfigFiles } = require('./helpers');
 
@@ -11,20 +12,25 @@ const validateIconAndLogo = () => {
   const errorMessages = [];
 
   for (const configPath of findMainPackConfigFiles()) {
-    var config = readPackFile(configPath);
+    const {
+      contents: [config],
+    } = readPackFile(configPath);
 
     if ('icon' in config) {
-      if (fs.existsSync(config.icon) === false) {
+      // icon and logo will be supplied as relative paths, so we path.join on the directory of where the main config lives.
+      const iconPath = path.join(path.dirname(configPath), config.icon);
+      if (fs.existsSync(iconPath) === false) {
         errorMessages.push(
-          `Icon for ${configPath} is supplied but does not exist at ${config.icon}`
+          `Icon for ${configPath} is supplied but does not exist at ${iconPath}`
         );
       }
     }
 
     if ('logo' in config) {
-      if (fs.existsSync(config.logo) === false) {
+      const logoPath = path.join(path.dirname(configPath), config.logo);
+      if (fs.existsSync(logoPath) === false) {
         errorMessages.push(
-          `Logo for ${configPath} is supplied but does not exist at ${config.logo}`
+          `Logo for ${configPath} is supplied but does not exist at ${logoPath}`
         );
       }
     }

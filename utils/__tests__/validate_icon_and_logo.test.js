@@ -20,7 +20,7 @@ describe('validate icon and logo tests', () => {
   describe('validateIconAndLogo', () => {
     test('returns no errors when icon and logo are not supplied', () => {
       helpers.findMainPackConfigFiles.mockReturnValueOnce(['fake_config_path']);
-      helpers.readPackFile.mockReturnValueOnce({});
+      helpers.readPackFile.mockReturnValueOnce({ contents: [{}] });
 
       const errorMessages = validateIconAndLogo();
 
@@ -30,8 +30,12 @@ describe('validate icon and logo tests', () => {
     test('returns no errors when icon and logo are supplied and exist', () => {
       helpers.findMainPackConfigFiles.mockReturnValueOnce(['fake_config_path']);
       helpers.readPackFile.mockReturnValueOnce({
-        icon: 'fake_icon_path',
-        logo: 'fake_logo_path',
+        contents: [
+          {
+            icon: 'fake_icon_path',
+            logo: 'fake_logo_path',
+          },
+        ],
       });
       fs.existsSync.mockReturnValue(true);
 
@@ -43,7 +47,11 @@ describe('validate icon and logo tests', () => {
     test('returns icon errors when icon errors are detected', () => {
       helpers.findMainPackConfigFiles.mockReturnValueOnce(['fake_config_path']);
       helpers.readPackFile.mockReturnValueOnce({
-        icon: 'fake_icon_path',
+        contents: [
+          {
+            icon: 'fake_icon_path',
+          },
+        ],
       });
       fs.existsSync.mockReturnValue(false);
 
@@ -57,7 +65,11 @@ describe('validate icon and logo tests', () => {
     test('returns logo errors when logo errors are detected', () => {
       helpers.findMainPackConfigFiles.mockReturnValueOnce(['fake_config_path']);
       helpers.readPackFile.mockReturnValueOnce({
-        logo: 'fake_logo_path',
+        contents: [
+          {
+            logo: 'fake_logo_path',
+          },
+        ],
       });
       fs.existsSync.mockReturnValue(false);
 
@@ -75,8 +87,12 @@ describe('validate icon and logo tests', () => {
         'fake_config_path_3',
       ]);
       helpers.readPackFile.mockReturnValue({
-        icon: 'fake_icon_path',
-        logo: 'fake_logo_path',
+        contents: [
+          {
+            icon: 'fake_icon_path',
+            logo: 'fake_logo_path',
+          },
+        ],
       });
       fs.existsSync.mockReturnValue(false);
 
