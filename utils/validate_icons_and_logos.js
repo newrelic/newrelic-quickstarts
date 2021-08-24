@@ -51,7 +51,7 @@ const handleErrors = (errorMessages) => {
   if (errorMessages.length > 0) {
     process.exitCode = 1; // fail the workflow
 
-    for (const errorMessage in errorMessages) {
+    for (const errorMessage of errorMessages) {
       console.log(errorMessage);
     }
   }
