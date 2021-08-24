@@ -58,6 +58,7 @@ const handleErrors = (errorMessages) => {
 };
 
 const main = () => {
+  console.log(''); // add an extra new line for more visual separation in the workflow
   var errorMessages = validateIconAndLogo();
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
