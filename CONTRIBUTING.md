@@ -185,6 +185,10 @@ Before submitting an Issue, please search for similar ones in the
 
 One of the required checks is ensuring that submitted packs and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
 
+#### Icon and Logo Validation
+
+If icon and logo are supplied in the config, this check ensures that the referenced images exist.
+
 ## Using Conventional Commits
 
 Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
