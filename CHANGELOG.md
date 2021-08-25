@@ -1,3 +1,10 @@
+## [0.11.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.11.0...v0.11.1) (2021-08-25)
+
+
+### Bug Fixes
+
+* update icon image path to correct location ([8bce7bc](https://github.com/newrelic/newrelic-observability-packs/commit/8bce7bc1d242c22d75b9e296f0a4cf26a65eb9d9))
+
 # [0.11.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.10.0...v0.11.0) (2021-08-23)
 
 
