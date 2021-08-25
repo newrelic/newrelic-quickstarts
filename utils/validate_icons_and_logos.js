@@ -6,12 +6,13 @@ const { readPackFile, findMainPackConfigFiles } = require('./helpers');
 
 /**
  * Method to validate icons and logos exist if supplied.
+ * @param {string[]} mainConfigPaths array of absolute paths for each main config
  * @returns {string[]} error messages for errors encountered
  */
-const validateIconAndLogo = () => {
+const validateIconAndLogo = (mainConfigPaths) => {
   const errorMessages = [];
 
-  for (const configPath of findMainPackConfigFiles()) {
+  for (const configPath of mainConfigPaths) {
     const {
       contents: [config],
     } = readPackFile(configPath);
@@ -59,7 +60,8 @@ const handleErrors = (errorMessages) => {
 
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
-  var errorMessages = validateIconAndLogo();
+  var mainConfigPaths = findMainPackConfigFiles();
+  var errorMessages = validateIconAndLogo(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
 };
