@@ -17,6 +17,9 @@ For example:
 # Metadata
 #####################
 
+# A machine-generated unique identifier for the pack, DO NOT MANUALLY ADJUST 
+id: string, required
+
 # The name of the pack displayed everywhere the pack is referenced
 title: string, optional
 
