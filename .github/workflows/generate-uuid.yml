@@ -12,11 +12,14 @@ env:
 
 jobs:
   generate-uuid:
-    name: Generate UUID 
+    name: Generate UUID
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
+          ref: ${{ github.head_ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -41,7 +44,4 @@ jobs:
 
       - name: Push Commit
         if: steps.commit-changes.outputs.commit == 'true'
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          branch: ${{ github.head_ref }}
+        run: git push origin HEAD
