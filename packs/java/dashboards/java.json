@@ -39,7 +39,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Transaction SELECT count(*) as 'Total Transactions', average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' SINCE 1 WEEK AGO"
+                "query": "FROM Transaction SELECT count(*) as 'Total Transactions', average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' SINCE today"
               }
             ],
             "thresholds": []
@@ -78,7 +78,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Transaction SELECT count(*) as 'Total Transactions',percentage(count(*), WHERE error IS true) as 'Failed Transactions In %', count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed Transactions' SINCE 1 week ago"
+                "query": "FROM Transaction SELECT count(*) as 'Total Transactions',percentage(count(*), WHERE error IS true) as 'Failed Transactions In %', count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed Transactions' SINCE today"
               }
             ],
             "thresholds": []
@@ -117,7 +117,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Metric SELECT count(*), average(apm.service.cpu.usertime.utilization) * 100 as 'Average CPU Utilization ', average(apm.service.memory.physical) as 'Average Physical Memory', average(apm.service.memory.heap.used) as 'Average Memory Used' WHERE appName = 'JavaApp' SINCE 1 WEEK AGO"
+                "query": "FROM Metric SELECT count(*), average(apm.service.cpu.usertime.utilization) * 100 as 'Average CPU Utilization ', average(apm.service.memory.physical) as 'Average Physical Memory', average(apm.service.memory.heap.used) as 'Average Memory Used' WHERE appName = 'JavaApp' SINCE today"
               }
             ],
             "thresholds": []
@@ -146,7 +146,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Transaction SELECT count(*) as 'Total Transactions', percentage(count(*), WHERE error IS true) as 'Failed Transactions In %', count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed Transactions' SINCE 1 week ago"
+                "query": "FROM Transaction SELECT count(*) as 'Total Transactions', percentage(count(*), WHERE error IS true) as 'Failed Transactions In %', count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed Transactions' SINCE today"
               }
             ],
             "thresholds": []
@@ -195,7 +195,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT count(*) from Transaction where response.status = '404' and transactionType = 'Web' TIMESERIES 10 minutes since today COMPARE WITH 1 week ago"
+                "query": "SELECT count(*) from TransactionError since today COMPARE WITH 1 week ago TIMESERIES max"
               }
             ],
             "yAxisLeft": {
@@ -229,7 +229,7 @@
         },
         {
           "visualization": {
-            "id": "viz.table"
+            "id": "viz.bar"
           },
           "layout": {
             "column": 9,
@@ -237,22 +237,19 @@
             "height": 3,
             "width": 4
           },
-          "title": "Top 10 Failed Transactions",
+          "title": "Top 10 Transactions With Errors",
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "Select percentage(count(*), WHERE error IS true) from Transaction WHERE transactionType = 'Web' facet name SINCE last week"
+                "query": "select count(*) from TransactionError since today facet aggregateFacet limit 10"
               }
             ]
           },
-          "linkedEntityGuids": [
-            "MjU5NDA4MnxWSVp8REFTSEJPQVJEfDIzODgxMTY"
-          ]
+          "linkedEntityGuids": null
         }
       ]
     },
@@ -276,7 +273,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Metric SELECT count(*), average(apm.service.cpu.usertime.utilization) * 100 as 'Average CPU Utilization ', average(apm.service.memory.physical) as 'Average Physical Memory', average(apm.service.memory.heap.used) as 'Average Memory Used' WHERE appName = 'JavaApp' SINCE 1 WEEK AGO"
+                "query": "FROM Metric SELECT average(apm.service.cpu.usertime.utilization) as 'Average CPU Utilization ', average(apm.service.memory.physical) as 'Average Physical Memory', average(apm.service.memory.heap.used) as 'Average Memory Used' WHERE appName = 'JavaApp' SINCE today"
               }
             ],
             "thresholds": []
@@ -285,7 +282,7 @@
         },
         {
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "layout": {
             "column": 8,
@@ -301,21 +298,24 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT rate(sum(apm.service.cpu.usertime.utilization), 1 second) * 100 as cpuUsage FROM Metric WHERE appName = 'JavaApp' SINCE 3600 seconds AGO TIMESERIES"
+                "query": "SELECT rate(sum(apm.service.cpu.usertime.utilization), 1 second) * 100 as cpuUsage FROM Metric WHERE appName = 'JavaApp' SINCE today COMPARE WITH 1 week ago TIMESERIES MAX"
               }
-            ]
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
           },
           "linkedEntityGuids": null
         },
         {
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "layout": {
             "column": 1,
             "row": 4,
             "height": 3,
-            "width": 4
+            "width": 6
           },
           "title": "Memory Heap Used",
           "rawConfiguration": {
@@ -325,36 +325,12 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT average(`apm.service.memory.heap.used`) as 'Memory Heap Used' FROM Metric WHERE appName LIKE '%' SINCE 30 MINUTES AGO TIMESERIES"
+                "query": "SELECT average(`apm.service.memory.heap.used`) as 'Memory Heap Used' FROM Metric WHERE appName LIKE '%' SINCE today COMPARE WITH 1 week ago TIMESERIES MAX"
               }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.area"
-          },
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "height": 3,
-            "width": 4
-          },
-          "title": "Average Memory Heap Used Based On Instance",
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 2594082,
-                "query": "SELECT average(`apm.service.memory.heap.used`) FROM Metric WHERE appName LIKE 'JavaApp' facet instanceName SINCE today TIMESERIES"
-              }
-            ]
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
           },
           "linkedEntityGuids": null
         },
@@ -363,10 +339,10 @@
             "id": "viz.line"
           },
           "layout": {
-            "column": 9,
+            "column": 7,
             "row": 4,
             "height": 3,
-            "width": 4
+            "width": 6
           },
           "title": "Garbage collection CPU time",
           "rawConfiguration": {
@@ -413,7 +389,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' SINCE 1 WEEK AGO"
+                "query": "FROM Transaction SELECT count(*), average(duration) as 'Average/duration in sec', percentile(duration, 90) as 'Slowest 10%/duration', percentage(count(*), WHERE error is false) AS 'Success Rate' SINCE today"
               }
             ],
             "thresholds": []
@@ -438,7 +414,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT count(*) FROM Transaction WHERE (transactionType = 'Web') SINCE last week EXTRAPOLATE FACET name"
+                "query": "SELECT count(*) FROM Transaction WHERE (transactionType = 'Web') SINCE today EXTRAPOLATE FACET name"
               }
             ]
           },
@@ -448,51 +424,27 @@
         },
         {
           "visualization": {
-            "id": "dc5b694f-9125-4c64-8e4e-c52e604c8088.stacked-bar-chart"
+            "id": "viz.line"
           },
           "layout": {
             "column": 1,
             "row": 4,
-            "height": 6,
+            "height": 3,
             "width": 4
           },
-          "title": "Top 5 Slowest Transactions",
+          "title": "Adpex Score Today Compared With 1 Week Ago",
           "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 2594082,
-                "query": "SELECT max(duration) FROM Transaction WHERE (transactionType = 'Web') SINCE 1 week ago LIMIT 5 EXTRAPOLATE FACET name"
-              }
-            ],
-            "other": {
-              "visible": false
+            "legend": {
+              "enabled": true
             },
-            "yAxis": {
-              "label": "Seconds"
-            }
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "dc5b694f-9125-4c64-8e4e-c52e604c8088.range-chart"
-          },
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "height": 3,
-            "width": 8
-          },
-          "title": "Transactions Day By Day ",
-          "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "FROM Transaction SELECT count(*), percentage(count(*), WHERE error IS false) FACET dateOf(timestamp) SINCE 1 week ago"
+                "query": "SELECT apdex(duration,t: 0.4) FROM Transaction TIMESERIES SINCE today COMPARE WITH 1 week ago"
               }
             ],
-            "other": {
-              "visible": null
+            "yAxisLeft": {
+              "zero": true
             }
           },
           "linkedEntityGuids": null
@@ -503,7 +455,7 @@
           },
           "layout": {
             "column": 5,
-            "row": 7,
+            "row": 4,
             "height": 3,
             "width": 4
           },
@@ -515,7 +467,7 @@
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT count(*) from Transaction TIMESERIES 1 hour  since today COMPARE WITH 1 week ago"
+                "query": "SELECT count(*) from Transaction TIMESERIES 1 hour since today COMPARE WITH 1 week ago"
               }
             ],
             "yAxisLeft": {
@@ -530,7 +482,7 @@
           },
           "layout": {
             "column": 9,
-            "row": 7,
+            "row": 4,
             "height": 3,
             "width": 4
           },
@@ -554,53 +506,52 @@
         },
         {
           "visualization": {
-            "id": "viz.line"
+            "id": "dc5b694f-9125-4c64-8e4e-c52e604c8088.stacked-bar-chart"
           },
           "layout": {
             "column": 1,
-            "row": 10,
-            "height": 3,
+            "row": 7,
+            "height": 4,
             "width": 4
           },
-          "title": "Adpex Score Today Compared With 1 Week Ago",
+          "title": "Top 5 Slowest Transactions",
           "rawConfiguration": {
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT apdex(duration,t: 0.4) FROM Transaction TIMESERIES SINCE today COMPARE WITH 1 week ago"
+                "query": "SELECT max(duration) FROM Transaction WHERE (transactionType = 'Web') SINCE today LIMIT 5 EXTRAPOLATE FACET name"
               }
             ],
-            "yAxisLeft": {
-              "zero": true
+            "other": {
+              "visible": false
+            },
+            "yAxis": {
+              "label": "Seconds"
             }
           },
           "linkedEntityGuids": null
         },
         {
           "visualization": {
-            "id": "viz.table"
+            "id": "dc5b694f-9125-4c64-8e4e-c52e604c8088.range-chart"
           },
           "layout": {
             "column": 5,
-            "row": 10,
-            "height": 3,
-            "width": 4
+            "row": 7,
+            "height": 4,
+            "width": 8
           },
-          "title": "Throughput Per Host",
+          "title": "Transactions Day By Day ",
           "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
             "nrqlQueries": [
               {
                 "accountId": 2594082,
-                "query": "SELECT uniques(request.headers.host) FROM Transaction LIMIT MAX"
+                "query": "FROM Transaction SELECT count(*), percentage(count(*), WHERE error IS false) FACET dateOf(timestamp) SINCE 1 week ago"
               }
-            ]
+            ],
+            "other": {
+              "visible": null
+            }
           },
           "linkedEntityGuids": null
         }
