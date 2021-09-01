@@ -1,3 +1,15 @@
+# [0.12.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.11.1...v0.12.0) (2021-09-01)
+
+
+### Bug Fixes
+
+* **apis:** fixed incorrect doc link ([a2c657e](https://github.com/newrelic/newrelic-observability-packs/commit/a2c657e826ade16fc5a9d71e4fa646405f8c783b))
+
+
+### Features
+
+* **apis:** added event,log,metric and trace API packs ([135a600](https://github.com/newrelic/newrelic-observability-packs/commit/135a6001ea3c978c85491c1bc891c1297005ccc7))
+
 ## [0.11.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.11.0...v0.11.1) (2021-08-25)
 
 
