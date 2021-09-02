@@ -9,13 +9,16 @@
       - [Description](#description)
       - [Level](#level)
       - [Author](#author)
-    - [Optional field best practices](#optional-field-best-practices)
       - [Summary](#summary)
+    - [Optional field best practices](#optional-field-best-practices)
+      - [Title](#title)
     - [Images or screenshots](#images-or-screenshots)
       - [Image recommended for best results](#image-recommended-for-best-results)
     - [Logos](#logos)
       - [logo recommendations or best results](#logo-recommendations-or-best-results)
+    - [Icons](#icons)
     - [Website URLs](#website-urls)
+    - [Image requirements](#image-requirements)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
     - [Status Checks](#status-checks)
@@ -67,12 +70,13 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 - Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
 - Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
 
+
 #### Description
 
 > A detailed description of the pack and why it's useful.
 
 - `Required`
-- Plain text only
+- Markdown or plain text
 - limited to 2000 characters
 - A Github Action verifies pack descriptions
 
@@ -87,24 +91,30 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 #### Author
 
-> The creator(s) of the pack
+> The creator(s) or contributors of the pack
 
 - `Required`
 - No limit to the amount of authors
 - A Github Action job verifies pack level
+
+#### Summary
+
+> A brief summary of the pack functionality.
+
+- `Required`
+- Plain text only
+- limited to 250 characters
 
 ### Optional field best practices
 
 Other fields in a pack are optional but it's recommended you consider the following to offer the best possible pack
 experience for users.
 
-#### Summary
+#### Title
 
-> A brief summary of the pack functionality.
+> an option field used when the pack is referenced.
 
 - `Optional`
-- Plain text only
-- limited to 250 characters
 
 ### Images or screenshots
 
@@ -133,6 +143,13 @@ experience for users.
 
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
+
+### Icons
+
+- `Optional`
+- Not currently used
+- .png or .jpeg or .svg format
+- Max 1
 
 ### Website URLs
 
@@ -167,6 +184,10 @@ Before submitting an Issue, please search for similar ones in the
 #### Schema Validation
 
 One of the required checks is ensuring that submitted packs and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
+
+#### Icon and Logo Validation
+
+If icon and logo are supplied in the config, this check ensures that the referenced images exist.
 
 ## Using Conventional Commits
 

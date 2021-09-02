@@ -1,8 +1,12 @@
 const path = require('path');
 const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
-const glob = require('glob');
-const { readYamlFile, checkArgs } = require('./helpers');
+const {
+  readYamlFile,
+  checkArgs,
+  removeRepoPathPrefix,
+  findMainPackConfigFiles,
+} = require('./helpers');
 
 const fetchFilesFromGH = async (url) => {
   let files = [];
@@ -34,29 +38,32 @@ const getNextLink = (linkHeader) => {
 };
 
 const findSupportLevel = async (url) => {
-  let packAddition = false;
+  let newPack = false;
 
   const files = await fetchFilesFromGH(url);
-  const packNames = files.reduce((acc, file) => {
+
+  const configFiles = findMainPackConfigFiles();
+  files.forEach((file) => {
     if (file.filename.includes('config.yml') && file.status === 'added') {
-      packAddition = true;
+      newPack = true;
     }
-    if (file.filename.includes('packs/')) {
-      acc.push(file.filename.replace('packs/', '').split('/')[0]);
-    }
-    return acc;
-  }, []);
+  });
+
+  const configFilesToRead = configFiles
+    .map((config) => {
+      const configRelativePath = removeRepoPathPrefix(config);
+      const regex = new RegExp(`^${path.dirname(configRelativePath)}.*`);
+      const fileMatch = files.find((file) => file.filename.match(regex));
+
+      return fileMatch !== undefined && config;
+    })
+    .filter(Boolean);
 
   const supportLevelSet = new Set();
 
-  packNames.forEach((packName) => {
-    const parsedConfig = readYamlFile(
-      glob.sync(
-        path.resolve(process.cwd(), `../packs/${packName}/config.+(yml|yaml)`)
-      )[0]
-    );
+  configFilesToRead.forEach((configFile) => {
+    const parsedConfig = readYamlFile(configFile);
     const supportLevel = parsedConfig.contents[0].level;
-
     if (supportLevel) {
       const validSupportLevels = ['New Relic', 'Verified', 'Community'];
       if (validSupportLevels.includes(supportLevel)) {
@@ -67,7 +74,7 @@ const findSupportLevel = async (url) => {
 
   const supportLevelArray = Array.from(supportLevelSet);
 
-  console.log(`::set-output name=addition::${packAddition}`);
+  console.log(`::set-output name=addition::${newPack}`);
 
   if (supportLevelArray.includes('New Relic')) {
     console.log('::set-output name=newrelic::true');
