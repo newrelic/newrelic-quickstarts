@@ -23,6 +23,7 @@
   - [Pull Requests](#pull-requests)
     - [Status Checks](#status-checks)
       - [Schema Validation](#schema-validation)
+      - [Icon and Logo Validation](#icon-and-logo-validation)
   - [Using Conventional Commits](#using-conventional-commits)
       - [Use `chore`](#use-chore)
       - [Use `fix`](#use-fix)
@@ -46,23 +47,23 @@ your interactions with the project and its participants.
 ## Observability Pack Guidelines
 
 We encourage all contributors to actively engage in the creation and maintenance of
-Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+Quick starts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [Pack Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [Pack Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
-- `Step 3`: Create your pack!
+- `Step 1`: Review the [Quick start Template Config](./_template/config.yml) for a definition of how to create a pack.
+- `Step 2`: Review the [Quick start Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 3`: Create your Quick start!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[Packs validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+[Quick start validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
 ### Required field best practices
 
 #### Name
 
-> The official name of the pack.
+> The official name of the Quick start.
 
 - `Required`
 - limited to 100 characters
@@ -73,33 +74,33 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 #### Description
 
-> A detailed description of the pack and why it's useful.
+> A detailed description of the Quick start and why it's useful.
 
 - `Required`
 - Markdown or plain text
 - limited to 2000 characters
-- A Github Action verifies pack descriptions
+- A Github Action verifies Quick start descriptions
 
 #### Level
 
-> The support level provided for the pack.
+> The support level provided for the Quick start.
 
 - `Required`
 - set to `Community` level by default
 - Can only be modified by New Relic employees to set another level type
-- A Github Action verifies pack level
+- A Github Action verifies Quick start level
 
 #### Author
 
-> The creator(s) or contributors of the pack
+> The creator(s) or contributors of the Quick start
 
 - `Required`
 - No limit to the amount of authors
-- A Github Action job verifies pack level
+- A Github Action job verifies Quick start level
 
 #### Summary
 
-> A brief summary of the pack functionality.
+> A brief summary of the Quick start functionality.
 
 - `Required`
 - Plain text only
@@ -107,12 +108,12 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 ### Optional field best practices
 
-Other fields in a pack are optional but it's recommended you consider the following to offer the best possible pack
+Other fields in a Quick start are optional but it's recommended you consider the following to offer the best possible Quick start
 experience for users.
 
 #### Title
 
-> an option field used when the pack is referenced.
+> an option field used when the Quick start is referenced.
 
 - `Optional`
 
@@ -121,6 +122,7 @@ experience for users.
 > Images of dashboards, visualizations, or nerdpacks.
 
 - `Optional`
+- file name should be `quickstart_name01`, `quickstart_name02`, etc
 - jpeg or png format
 - 4MB or smaller
 - 6 max images
@@ -133,7 +135,7 @@ experience for users.
 
 ### Logos
 
-> The logo or brand image of the pack.
+> The logo or brand image of the Quick start.
 
 - `Optional`
 - .png or .jpeg or .svg format
@@ -153,18 +155,18 @@ experience for users.
 
 ### Website URLs
 
-> a reference to a website relating to the pack.
+> a reference to a website relating to the Quick start.
 
 - `Optional`
 - Valid URL only https://www.newrelic.com
 
 ### Image requirements
 
-In order for your PR to pass Validation, the images included in your pack must meet the following requirements:
+In order for your PR to pass Validation, the images included in your Quick start must meet the following requirements:
 
  - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
  - Each image file must be less than `4MB` in size
- - There should be no more than `6` images in your pack's component folders
+ - There should be no more than `6` images in your Quick start's component folders
 
 ## Feature Requests
 
@@ -183,7 +185,7 @@ Before submitting an Issue, please search for similar ones in the
 
 #### Schema Validation
 
-One of the required checks is ensuring that submitted packs and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
+One of the required checks is ensuring that submitted Quick starts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
 
 #### Icon and Logo Validation
 
