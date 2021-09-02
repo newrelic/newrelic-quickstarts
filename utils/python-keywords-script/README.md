@@ -19,7 +19,7 @@ python3 -m venv
 source venv/bin/activate
 ```
 
-#### When inside your venv, run this command to install the required packages:
+#### When inside your venv, run this command to install the required packages.
 ```bash
 python -m pip install -r requirements.txt
 ```
