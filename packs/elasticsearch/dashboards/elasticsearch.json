@@ -1,0 +1,542 @@
+{
+	"name": "Elasticsearch Monitoring",
+	"description": "",
+	"pages": [
+		{
+			"name": "Cluster Overview",
+			"description": "",
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 3
+					},
+					"title": "",
+					"rawConfiguration": {
+						"text": "![Elasticsearch](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Elasticsearch_logo.svg/1024px-Elasticsearch_logo.svg.png)\n\n*Use the clickable entity names on the widgets marked `Filterable` to isolate your target data*\n\nData is from the [New Relic Elasticsearch monitoring integration](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/elasticsearch-monitoring-integration/) and by tailing the JSON log files found in `/var/log/elasticsearch/*.json` using the [embedded log forwarder](https://docs.newrelic.com/docs/logs/enable-log-management-new-relic/enable-log-monitoring-new-relic/forward-your-logs-using-infrastructure-agent/) on the New Relic Infrastructure agent. "
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 4,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Cluster Status (Filterable)",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchClusterSample SELECT latest(cluster.status) AS 'Cluster Status', latest(cluster.nodes) AS 'Cluster Nodes', latest(cluster.dataNodes) AS 'Data Nodes' FACET displayName"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 8,
+						"row": 1,
+						"height": 3,
+						"width": 5
+					},
+					"title": "Current Shards",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchClusterSample SELECT latest(shards.primaryActive) AS 'Primary Active', latest(shards.active) - latest(shards.primaryActive) AS 'Replicas', latest(shards.relocating) AS 'Relocating', latest(shards.initializing) AS 'Initializing', latest(shards.unassigned) AS 'Unassigned' FACET displayName AS 'Cluster Name'"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 4,
+						"width": 12
+					},
+					"title": "Cluster Logs",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM Log SELECT logtype, cluster.name, hostname, level, message WHERE logtype = 'elk-cluster' SINCE 1 DAY AGO LIMIT 1000"
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Nodes",
+			"description": "",
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 5
+					},
+					"title": "File System Metrics (Filterable)",
+					"rawConfiguration": {
+						"dataFormatters": [
+							{
+								"name": "Free GB",
+								"precision": 2,
+								"type": "decimal"
+							},
+							{
+								"name": "Total GB",
+								"precision": 2,
+								"type": "decimal"
+							},
+							{
+								"name": "Read IO Operations",
+								"precision": null,
+								"type": "humanized"
+							},
+							{
+								"name": "Write IO Operations",
+								"precision": null,
+								"type": "humanized"
+							}
+						],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(fs.unallocatedBytesInBYtes)/1024/1024/1024 AS 'Free GB', latest(fs.totalSizeInBytes)/1024/1024/1024 AS 'Total GB', latest(fs.readOperations) AS 'Read IO Operations', latest(fs.writeOperations) AS 'Write IO Operations' FACET hostname"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"layout": {
+						"column": 6,
+						"row": 1,
+						"height": 3,
+						"width": 3
+					},
+					"title": "Total Opened HTTP Connections (Since last start)",
+					"rawConfiguration": {
+						"dataFormatters": [
+							{
+								"name": "Total",
+								"precision": null,
+								"type": "decimal"
+							}
+						],
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(http.openedConnections) AS 'Total' FACET hostname SINCE 10 MINUTES AGO"
+							}
+						],
+						"thresholds": []
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 9,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Current Open HTTP Connections",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(http.currentOpenConnections) AS 'Total' FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 3,
+						"width": 2
+					},
+					"title": "JVM Heap Used Percent",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(jvm.mem.heapUsed) AS 'Percent' FACET hostname SINCE 10 MINUTES AGO COMPARE WITH 1 HOUR AGO"
+							}
+						],
+						"thresholds": []
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 3,
+						"row": 4,
+						"height": 3,
+						"width": 6
+					},
+					"title": "JVM Heap (Bytes)",
+					"rawConfiguration": {
+						"dataFormatters": [
+							{
+								"name": "Max Heap (GB)",
+								"precision": 2,
+								"type": "decimal"
+							},
+							{
+								"name": "Heap Used (GB)",
+								"precision": 2,
+								"type": "decimal"
+							}
+						],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(jvm.mem.heapUsedInBytes)/1024/1024 AS 'Heap Used (GB)', latest(jvm.mem.heapMaxInBytes)/1024/1024 AS 'Max Heap (GB)' FACET hostname SINCE 1 WEEK AGO TIMESERIES"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 9,
+						"row": 4,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Open File Descriptors",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(openFD) FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Indices",
+			"description": "",
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 12
+					},
+					"title": "Indices per Host (Filterable)",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchIndexSample SELECT latest(index.health) AS 'CURRENT HEALTH' FACET hostname, displayName LIMIT MAX"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 4,
+						"width": 12
+					},
+					"title": "Index Metrics",
+					"rawConfiguration": {
+						"dataFormatters": [
+							{
+								"name": "Primary Store (GB)",
+								"precision": 3,
+								"type": "decimal"
+							},
+							{
+								"name": "Replica Store (GB)",
+								"precision": 3,
+								"type": "decimal"
+							}
+						],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchIndexSample SELECT latest(index.docs) AS 'Total Docs', latest(index.docsDeleted) AS 'Deleted Docs', latest(index.primaryShards) AS 'Primary Shards', latest(index.primaryStoreSizeInBytes)/1024/1024/1024 AS 'Primary Store (GB)', latest(index.replicaShards) AS 'Replica Shards', (latest(index.storeSizeInBytes) - latest(index.primaryStoreSizeInBytes))/1024/1024/1024 AS 'Replica Store (GB)' FACET hostname, displayName LIMIT MAX"
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Performance",
+			"description": "",
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Active Search Latency (ms)",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT (latest(activeSearches) - earliest(activeSearches))/(latest(activeSearchesInMilliseconds) - earliest(activeSearchesInMilliseconds)) FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 5,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Get Requests Latency (ms)",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT (latest(get.totalGetRequests) - earliest(get.totalGetRequests))/(latest(get.timeGetRequestsInMilliseconds) - earliest(get.timeGetRequestsInMilliseconds)) AS 'Total', (latest(get.requestsDocumentExists) - earliest(get.requestsDocumentExists))/(latest(get.requestsDocumentExistsInMilliseconds) - earliest(get.requestsDocumentExistsInMilliseconds)) AS 'Document Exists', (latest(get.requestsDocumentMissing) - earliest(get.requestsDocumentMissing))/(latest(get.requestsDocumentMissingInMilliseconds) - earliest(get.requestsDocumentMissingInMilliseconds)) AS 'Document Missing' FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 9,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Failed Indexing Operations per Node (Filterable)",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT latest(indices.indexingOperationsFailed) - earliest(indices.indexingOperationsFailed) AS 'Failed Operations' FACET hostname"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Indexing Latency (ms)",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT (latest(indexing.documentsIndexed) - earliest(indexing.documentsIndexed))/(latest(indexing.timeIndexingDocumentsInMilliseconds) - earliest(indexing.timeIndexingDocumentsInMilliseconds)) FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 5,
+						"row": 4,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Segment Merging Latency (ms)",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT (latest(merges.segmentMerges) - earliest(merges.segmentMerges))/(latest(merges.totalSegmentMergingInMilliseconds) - earliest(merges.totalSegmentMergingInMilliseconds)) FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 9,
+						"row": 4,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Index Refresh Latency (ms)",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM ElasticsearchNodeSample SELECT (latest(refresh.total) - earliest(refresh.total))/(latest(refresh.totalInMilliseconds) - earliest(refresh.totalInMilliseconds)) FACET hostname TIMESERIES SINCE 1 WEEK AGO"
+							}
+						],
+						"yAxisLeft": {
+							"zero": false
+						}
+					}
+				}
+			]
+		}
+	]
+}
