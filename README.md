@@ -11,7 +11,7 @@ New Relic One quickstarts help accelerate your New Relic journey by providing im
 
 All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
 
-## Quick start components
+## Quickstart components
 
 ### 📊 Dashboards
 
@@ -39,9 +39,9 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 2. [Clone your own repository to your local machine](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
-3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your Quick start, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
+3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your quickstart, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your Quick start.
+4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your quickstart.
 
     For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
@@ -54,7 +54,7 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
     This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
-5. In your pack's root directory, you'll find a `config.yml` file where you can configure your Quick start. Refer to our Contributing Guide(./CONTRIBUTING.md) for more details on Quick Start configurations.
+5. In your pack's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our Contributing Guide(./CONTRIBUTING.md) for more details on Quick Start configurations.
 
 6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
