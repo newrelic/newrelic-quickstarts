@@ -47,7 +47,7 @@ your interactions with the project and its participants.
 ## Observability Pack Guidelines
 
 We encourage all contributors to actively engage in the creation and maintenance of
-quick starts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [Quick start Template Config](./_template/config.yml) for a definition of how to create a pack.
 - `Step 2`: Review the [Quick start Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
