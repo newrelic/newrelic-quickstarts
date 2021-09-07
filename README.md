@@ -1,30 +1,49 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-
-# New Relic One Observability Packs
+# New Relic One quickstarts
 
 > 🧪 This project is currently in an `ALPHA` state 🧪
 
-New Relic One observability packs jump start your New Relic journey by providing immediate value for your specific use cases. They include:
+New Relic One quickstarts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
 
-- Clear steps for instrumenting your services
+- Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
 
 All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
 
+## Quickstart components
+
+### 📊 Dashboards
+
+With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards/) you can customize and understand the data you collect. Explore your data and correlate connected sources with tailored, user-friendly charts, and quickly learn the state of your system and applications for faster, more efficient troubleshooting.
+
+> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. You will need to add "permissions": "PUBLIC_READ_WRITE",to the json prior to adding the dashboard to your account.
+
+### 📟 Alerts
+
+[Alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/introduction-alerts/) lets you set up robust and customizable alert policies for anything that you can monitor. Receive notifications for fluctuations in key performance metrics as data streams in from all of our products, including APM, infrastructure, browser, mobile, and NRQL queries.
+
+### 💽 Data Sources
+
+[Data Sources](https://developer.newrelic.com/collect-data/collect-data-from-any-source/) are the many sources of data you can setup with New Relic to collect and monitor data.
+
+### 🔮 Future
+
+Our road map for quickstarts includes the addition of [Synthetics monitoring](https://docs.newrelic.com/docs/synthetics/synthetic-monitoring/getting-started/get-started-synthetic-monitoring/), [NerdPacks](https://developer.newrelic.com/build-apps/) and [Flex configurations](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/flex-integration-tool-build-your-own-integration/).
+
 ## Getting Started
 
-Contribute your own observability pack to the New Relic One catalog by following the steps below:
+Contribute your own quickstart to the New Relic One catalog by following the steps below:
 
 1. [Fork the Github repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)
 
 2. [Clone your own repository to your local machine](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
-3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your pack, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
+3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your quickstart, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your observability pack.
+4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your quickstart.
 
-    For example, to add an existing dashboard to your new observability pack, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
+    For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
     > **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
@@ -35,7 +54,7 @@ Contribute your own observability pack to the New Relic One catalog by following
 
     This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
-5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
+5. In your pack's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our Contributing Guide(./CONTRIBUTING.md) for more details on quickstart configurations.
 
 6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
@@ -43,8 +62,6 @@ Contribute your own observability pack to the New Relic One catalog by following
     git add -A
     git commit -m "feat([name]): Added [name]"
     ```
-
-    Change the `[name]` and add a description of the dashboard you've added.
 
 7. Push your changes to Github:
 
@@ -54,9 +71,7 @@ Contribute your own observability pack to the New Relic One catalog by following
 
 8. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-observability-packs/compare?expand=1).
 
-9. Submit and wait for review. We will review as fast as we can, but it can sometimes take a day or two.
-
-Thanks a lot for your submission!
+9. Submit and wait for review. Please be available to resolve review feedback in a timely manner.
 
 ## Testing
 
@@ -87,19 +102,17 @@ New Relic hosts and moderates an online forum where customers can interact with 
 
 ## Contribute
 
+If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
+
 We encourage your contributions to improve New Relic One observability packs! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 
 If you have any questions, or to execute our corporate CLA (which is required if your contribution is on behalf of a company), drop us an email at opensource@newrelic.com.
 
-**A note about vulnerabilities**
+## A note about vulnerabilities
 
 As noted in our [security policy](../../security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
 
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
-
-If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
-
-To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to New Relic One observability packs(<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
 
 ## License
 
