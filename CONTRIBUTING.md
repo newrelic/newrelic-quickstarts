@@ -3,7 +3,8 @@
 <!-- toc -->
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
-  - [Observability Pack Guidelines](#observability-pack-guidelines)
+  - [Quickstarts style guide](#quickstarts-style-guide)
+  - [Quickstarts Guidelines](#quickstarts-guidelines)
     - [Required field best practices](#required-field-best-practices)
       - [Name](#name)
       - [Description](#description)
@@ -44,26 +45,43 @@ Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CO
 applies to all platforms and venues related to this project; please follow it in all
 your interactions with the project and its participants.
 
-## Observability Pack Guidelines
+## Quickstarts style guide
+
+When writing about a quickstart the following language rules should be followed:
+
+1. Capitalize the term quickstart if the word is at the start of a sentence or header.
+
+> "Quickstarts are a great way to get started with New Relic!"
+
+2. If the term quickstarts is anywhere else in a sentence, use lower case.
+
+> "New Relic offers you a wide range of quickstarts to get you started."
+
+3. Quickstarts is always a single word.
+
+> "Always use quickstarts, not quick starts."
+
+## Quickstarts Guidelines
 
 We encourage all contributors to actively engage in the creation and maintenance of
 quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [Quick start Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [Quick start Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
-- `Step 3`: Create your Quick start!
+- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
+- `Step 2`: Review the [quickstart Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[Quick start validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+[quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+
 
 ### Required field best practices
 
 #### Name
 
-> The official name of the Quick start.
+> The official name of the quickstart.
 
 - `Required`
 - limited to 100 characters
@@ -74,33 +92,33 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 #### Description
 
-> A detailed description of the Quick start and why it's useful.
+> A detailed description of the quickstart and why it's useful.
 
 - `Required`
 - Markdown or plain text
 - limited to 2000 characters
-- A Github Action verifies Quick start descriptions
+- A Github Action verifies quickstart descriptions
 
 #### Level
 
-> The support level provided for the Quick start.
+> The support level provided for the quickstart.
 
 - `Required`
 - set to `Community` level by default
 - Can only be modified by New Relic employees to set another level type
-- A Github Action verifies Quick start level
+- A Github Action verifies quickstart level
 
 #### Author
 
-> The creator(s) or contributors of the Quick start
+> The creator(s) or contributors of the quickstart
 
 - `Required`
 - No limit to the amount of authors
-- A Github Action job verifies Quick start level
+- A Github Action job verifies quickstart level
 
 #### Summary
 
-> A brief summary of the Quick start functionality.
+> A brief summary of the quickstart functionality.
 
 - `Required`
 - Plain text only
@@ -108,12 +126,12 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 ### Optional field best practices
 
-Other fields in a Quick start are optional but it's recommended you consider the following to offer the best possible Quick start
+Other fields in a quickstart are optional but it's recommended you consider the following to offer the best possible quickstart
 experience for users.
 
 #### Title
 
-> an option field used when the Quick start is referenced.
+> an option field used when the quickstart is referenced.
 
 - `Optional`
 
@@ -135,7 +153,7 @@ experience for users.
 
 ### Logos
 
-> The logo or brand image of the Quick start.
+> The logo or brand image of the quickstart.
 
 - `Optional`
 - .png or .jpeg or .svg format
@@ -155,18 +173,18 @@ experience for users.
 
 ### Website URLs
 
-> a reference to a website relating to the Quick start.
+> a reference to a website relating to the quickstart.
 
 - `Optional`
 - Valid URL only https://www.newrelic.com
 
 ### Image requirements
 
-In order for your PR to pass Validation, the images included in your Quick start must meet the following requirements:
+In order for your PR to pass Validation, the images included in your quickstart must meet the following requirements:
 
  - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
  - Each image file must be less than `4MB` in size
- - There should be no more than `6` images in your Quick start's component folders
+ - There should be no more than `6` images in your quickstart's component folders
 
 ## Feature Requests
 
@@ -185,7 +203,7 @@ Before submitting an Issue, please search for similar ones in the
 
 #### Schema Validation
 
-One of the required checks is ensuring that submitted Quick starts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
+One of the required checks is ensuring that submitted quickstarts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
 
 #### Icon and Logo Validation
 
