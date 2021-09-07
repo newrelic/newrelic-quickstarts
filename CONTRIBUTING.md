@@ -3,7 +3,8 @@
 <!-- toc -->
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
-  - [Observability Pack Guidelines](#observability-pack-guidelines)
+  - [Quickstarts style guide](#quickstarts-style-guide)
+  - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
       - [Name](#name)
       - [Description](#description)
@@ -19,10 +20,12 @@
     - [Icons](#icons)
     - [Website URLs](#website-urls)
     - [Image requirements](#image-requirements)
+    - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
     - [Status Checks](#status-checks)
       - [Schema Validation](#schema-validation)
+      - [Icon and Logo Validation](#icon-and-logo-validation)
   - [Using Conventional Commits](#using-conventional-commits)
       - [Use `chore`](#use-chore)
       - [Use `fix`](#use-fix)
@@ -43,26 +46,42 @@ Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CO
 applies to all platforms and venues related to this project; please follow it in all
 your interactions with the project and its participants.
 
-## Observability Pack Guidelines
+## Quickstarts style guide
+
+When writing about a quickstart the following language rules should be followed:
+
+1. Capitalize the term quickstart if the word is at the start of a sentence or header.
+
+> "Quickstarts are a great way to get started with New Relic!"
+
+2. If the term quickstarts is anywhere else in a sentence, use lower case.
+
+> "New Relic offers you a wide range of quickstarts to get you started."
+
+3. Quickstarts is always a single word.
+
+> "Always use quickstarts, not quick starts."
+
+## Quickstarts contributor guidelines
 
 We encourage all contributors to actively engage in the creation and maintenance of
-Observability Packs. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [Pack Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [Pack Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
-- `Step 3`: Create your pack!
+- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
+- `Step 2`: Review the [quickstart Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[Packs validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+[quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
 ### Required field best practices
 
 #### Name
 
-> The official name of the pack.
+> The official name of the quickstart.
 
 - `Required`
 - limited to 100 characters
@@ -73,33 +92,33 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 #### Description
 
-> A detailed description of the pack and why it's useful.
+> A detailed description of the quickstart and why it's useful.
 
 - `Required`
 - Markdown or plain text
 - limited to 2000 characters
-- A Github Action verifies pack descriptions
+- A Github Action verifies quickstart descriptions
 
 #### Level
 
-> The support level provided for the pack.
+> The support level provided for the quickstart.
 
 - `Required`
 - set to `Community` level by default
 - Can only be modified by New Relic employees to set another level type
-- A Github Action verifies pack level
+- A Github Action verifies quickstart level
 
 #### Author
 
-> The creator(s) or contributors of the pack
+> The creator(s) or contributors of the quickstart
 
 - `Required`
 - No limit to the amount of authors
-- A Github Action job verifies pack level
+- A Github Action job verifies quickstart level
 
 #### Summary
 
-> A brief summary of the pack functionality.
+> A brief summary of the quickstart functionality.
 
 - `Required`
 - Plain text only
@@ -107,12 +126,12 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 ### Optional field best practices
 
-Other fields in a pack are optional but it's recommended you consider the following to offer the best possible pack
+Other fields in a quickstart are optional but it's recommended you consider the following to offer the best possible quickstart
 experience for users.
 
 #### Title
 
-> an option field used when the pack is referenced.
+> an option field used when the quickstart is referenced.
 
 - `Optional`
 
@@ -121,6 +140,7 @@ experience for users.
 > Images of dashboards, visualizations, or nerdpacks.
 
 - `Optional`
+- file name should be `quickstart_name01`, `quickstart_name02`, etc
 - jpeg or png format
 - 4MB or smaller
 - 6 max images
@@ -133,7 +153,7 @@ experience for users.
 
 ### Logos
 
-> The logo or brand image of the pack.
+> The logo or brand image of the quickstart.
 
 - `Optional`
 - .png or .jpeg or .svg format
@@ -153,18 +173,30 @@ experience for users.
 
 ### Website URLs
 
-> a reference to a website relating to the pack.
+> a reference to a website relating to the quickstart.
 
 - `Optional`
 - Valid URL only https://www.newrelic.com
 
 ### Image requirements
 
-In order for your PR to pass Validation, the images included in your pack must meet the following requirements:
+In order for your PR to pass Validation, the images included in your quickstart must meet the following requirements:
 
  - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
  - Each image file must be less than `4MB` in size
- - There should be no more than `6` images in your pack's component folders
+ - There should be no more than `6` images in your quickstart's component folders
+
+### Keywords
+
+When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
+the New Relic One I/O Catalog and the External I/O Catalog.
+
+``` yml
+keywords:
+  - a keyword
+  - another keyword
+  - yet another keyword
+```
 
 ## Feature Requests
 
@@ -183,7 +215,7 @@ Before submitting an Issue, please search for similar ones in the
 
 #### Schema Validation
 
-One of the required checks is ensuring that submitted packs and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
+One of the required checks is ensuring that submitted quickstarts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
 
 #### Icon and Logo Validation
 
