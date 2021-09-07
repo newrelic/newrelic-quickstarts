@@ -4,7 +4,7 @@
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
   - [Quickstarts style guide](#quickstarts-style-guide)
-  - [Quickstarts Guidelines](#quickstarts-guidelines)
+  - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
       - [Name](#name)
       - [Description](#description)
@@ -20,6 +20,7 @@
     - [Icons](#icons)
     - [Website URLs](#website-urls)
     - [Image requirements](#image-requirements)
+    - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
     - [Status Checks](#status-checks)
@@ -61,7 +62,7 @@ When writing about a quickstart the following language rules should be followed:
 
 > "Always use quickstarts, not quick starts."
 
-## Quickstarts Guidelines
+## Quickstarts contributor guidelines
 
 We encourage all contributors to actively engage in the creation and maintenance of
 quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
@@ -75,7 +76,6 @@ quickstarts. Whether you work at New Relic or use New Relic as a customer, the c
 
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
-
 
 ### Required field best practices
 
@@ -185,6 +185,18 @@ In order for your PR to pass Validation, the images included in your quickstart 
  - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
  - Each image file must be less than `4MB` in size
  - There should be no more than `6` images in your quickstart's component folders
+
+### Keywords
+
+When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
+the New Relic One I/O Catalog and the External I/O Catalog.
+
+``` yml
+keywords:
+  - a keyword
+  - another keyword
+  - yet another keyword
+```
 
 ## Feature Requests
 
