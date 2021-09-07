@@ -1,10 +1,10 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# New Relic One quick starts
+# New Relic One quickstarts
 
 > 🧪 This project is currently in an `ALPHA` state 🧪
 
-New Relic One quick starts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
+New Relic One quickstarts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
 
 - Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
@@ -29,11 +29,11 @@ With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/e
 
 ### 🔮 Future
 
-Our road map for quick starts includes the addition of [Synthetics monitoring](https://docs.newrelic.com/docs/synthetics/synthetic-monitoring/getting-started/get-started-synthetic-monitoring/), [NerdPacks](https://developer.newrelic.com/build-apps/) and [Flex configurations](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/flex-integration-tool-build-your-own-integration/).
+Our road map for quickstarts includes the addition of [Synthetics monitoring](https://docs.newrelic.com/docs/synthetics/synthetic-monitoring/getting-started/get-started-synthetic-monitoring/), [NerdPacks](https://developer.newrelic.com/build-apps/) and [Flex configurations](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/flex-integration-tool-build-your-own-integration/).
 
 ## Getting Started
 
-Contribute your own quick start to the New Relic One catalog by following the steps below:
+Contribute your own quickstart to the New Relic One catalog by following the steps below:
 
 1. [Fork the Github repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)
 
@@ -43,7 +43,7 @@ Contribute your own quick start to the New Relic One catalog by following the st
 
 4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your Quick start.
 
-    For example, to add an existing dashboard to your quick start, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
+    For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
     > **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
@@ -113,8 +113,6 @@ If you have any questions, or to execute our corporate CLA (which is required if
 As noted in our [security policy](../../security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
 
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
-
-
 
 ## License
 
