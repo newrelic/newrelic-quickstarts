@@ -1,3 +1,11 @@
+# [0.13.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.12.0...v0.13.0) (2021-09-08)
+
+
+### Features
+
+* **install:** add initial set of install plans ([75d546c](https://github.com/newrelic/newrelic-observability-packs/commit/75d546cb97996af22552264f690aecbeda2f6269))
+* **schema:** add schema validation for install plans ([ffde666](https://github.com/newrelic/newrelic-observability-packs/commit/ffde6662ad125091f0427a171f8a7ec5fb7ea8b9))
+
 # [0.12.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.11.1...v0.12.0) (2021-09-01)
 
 
