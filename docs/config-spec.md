@@ -41,8 +41,12 @@ level: enum, required # One of [ New Relic, Verified, Community ]
 # List of contributors for this Observability Pack
 authors: list, required
 
+# DEPRECATED: Use keywords instead
 # Tags for filtering / searching criteria
 tags: list(string), optional
+
+# Keywords for filtering / searching criteria
+keywords: list(string), optional
 
 # path to icon for this Observability Pack
 # Not currently used
@@ -54,14 +58,9 @@ logo: string, optional
 # URL of website for this Observability Pack
 website: string, optional
 
-# Instrumentation Requirements - indicates what's needed in an account
-# for a given pack (and it's components) to work.
-#
-# It's important that we're able to verify whether or not the user's
-# environment meets the requirements for the use of a given resource.
-instrumentation: list(object), optional
-  - type: string, optional
-    name: string, optional
+# Reference to install plans located under /install directory
+# Allows us to construct reusable "install plans" and just use their ID in the quickstart config
+installPlans: list(string), optional
 
 # Displaying related child packs
 # Future feature
