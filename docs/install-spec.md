@@ -1,6 +1,6 @@
 # Install Plan File Schema
 
-Install plans define how to install agents, integrations, and instrumentation for a Quickstart. They’re defined once in the /install directory and then are referencable in Quickstart’s config.yml by using the install-plan field.
+Install plans define how to install agents, integrations, and instrumentation for a quickstart. They’re defined once in the /install directory and then are referencable in the quickstart’s config.yml by using the install-plan field.
 
 ## Filename format
 
