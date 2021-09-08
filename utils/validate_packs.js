@@ -13,6 +13,7 @@ const alertSchema = require('./schemas/alert_config.json');
 const dashboardSchema = require('./schemas/dashboard_config.json');
 const flexConfigSchema = require('./schemas/flex_config.json');
 const flexIntegrationsSchema = require('./schemas/flex_integrations.json');
+const installSchema = require('./schemas/install_config.json');
 const syntheticSchema = require('./schemas/synthetic_config.json');
 const loggingSchema = require('./schemas/logging_config.json');
 
@@ -82,6 +83,9 @@ const validateFile = (file) => {
     case filePath.includes('/dashboards/'): // validate using dashboard schema
       errors = validateAgainstSchema(file.contents[0], dashboardSchema);
       break;
+    case filePath.includes('/install/'): // validate using install schema
+      errors = validateAgainstSchema(file.contents[0], installSchema);
+      break;
     case filePath.includes('/instrumentation/synthetics/'): // validate using synthetics schema
       errors = validateAgainstSchema(file.contents[0], syntheticSchema);
       break;
@@ -117,6 +121,7 @@ const getPackFilePaths = (basePath) => {
   const yamlFilePaths = [
     ...glob.sync(path.resolve(basePath, '../packs/**/*.yaml'), options),
     ...glob.sync(path.resolve(basePath, '../packs/**/*.yml'), options),
+    ...glob.sync(path.resolve(basePath, '../install/**/*.yml'), options),
   ];
 
   const jsonFilePaths = glob.sync(
