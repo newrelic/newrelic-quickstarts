@@ -48,6 +48,14 @@ your interactions with the project and its participants.
 
 ## Quickstarts style guide
 
+### Style tips
+- Maintain a strong active voice. Lead sentences with verbs.
+  - Avoid “Allows you to monitor your uptime”
+- Avoid being too formal. Avoid words like `thus` and `lastly`, and feel free to use `we` and `our`.
+- In general, we should only lightly touch on what a given technology does. The user is already using Node, so we don’t need to sell them on it exactly. What we need to focus on is the challenges of monitoring that technology and then sell on that. 
+
+Check out our [doc team's voice and tone guidelines](https://docs.newrelic.com/docs/style-guide/writing-guidelines/voice-strategies-docs-sound-new-relic/).
+### Quickstarts usage
 When writing about a quickstart the following language rules should be followed:
 
 1. Capitalize the term quickstart if the word is at the start of a sentence or header.
@@ -61,6 +69,37 @@ When writing about a quickstart the following language rules should be followed:
 3. Quickstarts is always a single word.
 
 > "Always use quickstarts, not quick starts."
+
+### Quickstarts description template
+
+```
+Brief overview of the technology. Keep this broad enough to inform users who are unaware of the technology, but it should not dive too deep. 1 paragraph.
+
+Helpful questions: 
+- What type of technology is it? 
+- Who are the intended users? 
+- What differentiates it from competitors and similar technologies?
+
+What you get
+Brief overview of visibility provided by key metrics/dashboards/synthetic checks in the kit.. Focus on the specific areas the kit provides visibility to. 1-2 paragraphs.
+
+Helpful questions: 
+- What makes our instrumentation unique or powerful?
+- How does it compare to competitors? 
+- How does the kit enable the user?
+  - A kit for a language may highlight errors while a cloud infrastructure kit might highlight performance or the cluster/node level monitored.
+  - Liberally intertwine the technology and New Relic. 
+
+Description for each “feature” included in the kit. 1-2 lines. 
+
+Dashboards:
+  - Example focus: Monitor your transactions
+Synthetic monitors
+  - Example focus: Proactively monitors your uptime.
+Alerts
+  - Example focus: Alert triggers when latency exceeds a set limit.
+```
+
 
 ## Quickstarts contributor guidelines
 
