@@ -62,25 +62,28 @@ website: string, optional
 # Allows us to construct reusable "install plans" and just use their ID in the quickstart config
 installPlans: list(string), optional
 
-# Displaying related child packs
-# Future feature
-children: list(object), optional
-  - title: string, optional
-    description: string, optional
-    screenshots: string, optional
-
-# Contains avatar, GitHub username, and link to GitHub profile for each contributor
-# Future feature
-contributors: list(object), optional
-  - github-username: string, required
-    profile-url: string, required
-    avatar-url: string, required
-
 # List of docs for this Observability Pack
 documentation: list(object), optional
   - name: string, required
     url: string, required
     description: string, optional
+
+##################################
+# Possible Future Fields
+# # Displaying related child packs
+# # Future feature
+# children: list(object), optional
+#   - title: string, optional
+#     description: string, optional
+#     screenshots: string, optional
+
+# # Contains avatar, GitHub username, and link to GitHub profile for each contributor
+# # Future feature
+# contributors: list(object), optional
+#   - github-username: string, required
+#     profile-url: string, required
+#     avatar-url: string, required
+
 
 ```
 
