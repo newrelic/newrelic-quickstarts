@@ -64,40 +64,36 @@ install_plan_map = {
     "tanzu": []
 }
 
+def dumpToYaml(path, pack_install_key):
+    with open(path, 'r+') as outfile:
+        documents = yaml.load(outfile)
+
+        if pack_install_key in install_plan_map:
+            install_plan_list = install_plan_map[pack_install_key]
+            if len(install_plan_list) > 0:
+                documents['installPlans'] = install_plan_list
+            else:
+                print(f'Install plan {pack_install_key} not found')
+            outfile.seek(0) # Move position in outfile to front. 
+            yaml.indent(sequence=4, offset=2)
+            yaml.dump(documents, outfile)
+        else:
+            print(f'{pack_install_key} not defined')
+    outfile.close()
+
 for index, row in df.iterrows(): # Iterates the csv file.
-    print(row)
-    pack_name = str.lower(row['NAME']) # Name of the pack
+    print('**** Pack ****')
+    pack_path = str.lower(row['PATH']).replace(' ', '-') # Path of the pack
+    pack_name = str.lower(row['NAME']).replace(' ', '-') # Name of the pack
     pack_install_key = row['INSTALL_PLAN'] # Install plan for the pack
 
-    def dumpToYaml():
-        with open(f'../../packs/{pack_name}/config.yml', 'r+') as outfile: # Opens packs folder based on variable value.
-            documents = yaml.load(outfile)
-            print(f'{pack_install_key} not defined')
-            #if pack_install_key == "NaN":
-            #    print(f'{pack_install_key} not defined')
-            #else:
-            if pack_install_key in install_plan_map:
-                install_plan_list = install_plan_map[pack_install_key]
-                if len(install_plan_list) > 0:
-                    install_plan = "installPlans:\n"
-                    for install_plan_item in install_plan_list:
-                        install_plan += "- " + install_plan_item + "\n"
-                    # Example:
-                    # installPlans:
-                    # - infra-agent-targeted
-                    # - cassandra-integration
-                    documents['installPlan'] = install_plan_list
-                else:
-                    print(f'{pack_install_key} not found')
-                outfile.seek(0) # Move position in outfile to front. 
-                yaml.indent(sequence=4, offset=2)
-                yaml.dump(documents, outfile)
-            else:
-                print(f'{pack_install_key} not defined')
-        outfile.close()
-
-    if pack_name and os.path.exists(f'../../packs/{pack_name}/config.yml'): # Check if the pack and path is available.
-        dumpToYaml()
-        print(f'{pack_name} was changed')
+    # Find the pack
+    print(f'Path: {pack_path}')
+    path = f'../../packs/{pack_path}/config.yml'
+    
+    if os.path.exists(path): # Check if the pack exists
+        print(f'Pack {pack_name} was found, updating...')
+        dumpToYaml(path, pack_install_key)        
     else:
-        print(f'{pack_name} was not found')
+        print(f'Pack {pack_name} was not found at {path}')
+    print('\n')
