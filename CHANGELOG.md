@@ -1,3 +1,12 @@
+## [0.16.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.0...v0.16.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* **quickstarts:** remove go-insights quickstart ([2c2b1e1](https://github.com/newrelic/newrelic-observability-packs/commit/2c2b1e100a4af41e733e5733eb367eb55f784955))
+* **quickstarts:** remove unnecessary python-related quickstarts ([8539a98](https://github.com/newrelic/newrelic-observability-packs/commit/8539a9869a1807c3be2aa6b881ff757e83491a4e))
+* **quickstarts:** rename mysql pack with more accurate name ([d0d0dc4](https://github.com/newrelic/newrelic-observability-packs/commit/d0d0dc409499c4bbe7f14345d2e6ec3b6d23f89a))
+
 # [0.16.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.1...v0.16.0) (2021-09-14)
 
 
