@@ -4,15 +4,18 @@
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
   - [Quickstarts style guide](#quickstarts-style-guide)
+    - [Style tips](#style-tips)
+    - [Quickstarts usage](#quickstarts-usage)
+    - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
+      - [Title](#title)
       - [Name](#name)
       - [Description](#description)
       - [Level](#level)
       - [Author](#author)
       - [Summary](#summary)
     - [Optional field best practices](#optional-field-best-practices)
-      - [Title](#title)
     - [Images or screenshots](#images-or-screenshots)
       - [Image recommended for best results](#image-recommended-for-best-results)
     - [Logos](#logos)
@@ -118,6 +121,12 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 
 ### Required field best practices
 
+#### Title
+
+> an option field used when the quickstart is referenced.
+
+- `Required`
+
 #### Name
 
 > The official name of the quickstart.
@@ -168,11 +177,6 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 Other fields in a quickstart are optional but it's recommended you consider the following to offer the best possible quickstart
 experience for users.
 
-#### Title
-
-> an option field used when the quickstart is referenced.
-
-- `Optional`
 
 ### Images or screenshots
 
