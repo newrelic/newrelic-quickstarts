@@ -1,3 +1,13 @@
+## [0.15.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.0...v0.15.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* fixed typos & removed account ID ([0bcdc78](https://github.com/newrelic/newrelic-observability-packs/commit/0bcdc78f5f263a25f13059addcbe55b88c9b06fa))
+* fixing dashboard json and config layout ([65aff4e](https://github.com/newrelic/newrelic-observability-packs/commit/65aff4e37c646c72ba77cf9ff3d18ba8b2b6815c))
+* updating dashboard snapshot ([678352e](https://github.com/newrelic/newrelic-observability-packs/commit/678352eb843a44c16da2bec320c897ca970b95c1))
+* updating detailed description ([ae75df0](https://github.com/newrelic/newrelic-observability-packs/commit/ae75df00aadcd879624c1d8bb147e04f2f93005c))
+
 # [0.15.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.14.0...v0.15.0) (2021-09-10)
 
 
