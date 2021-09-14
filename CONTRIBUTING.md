@@ -4,6 +4,9 @@
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
   - [Quickstarts style guide](#quickstarts-style-guide)
+    - [Style tips](#style-tips)
+    - [Quickstarts usage](#quickstarts-usage)
+    - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
       - [Name](#name)
@@ -49,13 +52,16 @@ your interactions with the project and its participants.
 ## Quickstarts style guide
 
 ### Style tips
+
 - Maintain a strong active voice. Lead sentences with verbs.
   - Avoid “Allows you to monitor your uptime”
 - Avoid being too formal. Avoid words like `thus` and `lastly`, and feel free to use `we` and `our`.
-- In general, we should only lightly touch on what a given technology does. The user is already using Node, so we don’t need to sell them on it exactly. What we need to focus on is the challenges of monitoring that technology and then sell on that. 
+- In general, we should only lightly touch on what a given technology does. The user is already using Node, so we don’t need to sell them on it exactly. What we need to focus on is the challenges of monitoring that technology and then sell on that.
 
 Check out our [doc team's voice and tone guidelines](https://docs.newrelic.com/docs/style-guide/writing-guidelines/voice-strategies-docs-sound-new-relic/).
+
 ### Quickstarts usage
+
 When writing about a quickstart the following language rules should be followed:
 
 1. Capitalize the term quickstart if the word is at the start of a sentence or header.
@@ -72,25 +78,25 @@ When writing about a quickstart the following language rules should be followed:
 
 ### Quickstarts description template
 
-```
+```md
 Brief overview of the technology. Keep this broad enough to inform users who are unaware of the technology, but it should not dive too deep. 1 paragraph.
 
-Helpful questions: 
-- What type of technology is it? 
-- Who are the intended users? 
+Helpful questions:
+- What type of technology is it?
+- Who are the intended users?
 - What differentiates it from competitors and similar technologies?
 
 What you get
 Brief overview of visibility provided by key metrics/dashboards/synthetic checks in the kit.. Focus on the specific areas the kit provides visibility to. 1-2 paragraphs.
 
-Helpful questions: 
+Helpful questions:
 - What makes our instrumentation unique or powerful?
-- How does it compare to competitors? 
+- How does it compare to competitors?
 - How does the kit enable the user?
   - A kit for a language may highlight errors while a cloud infrastructure kit might highlight performance or the cluster/node level monitored.
-  - Liberally intertwine the technology and New Relic. 
+  - Liberally intertwine the technology and New Relic.
 
-Description for each “feature” included in the kit. 1-2 lines. 
+Description for each “feature” included in the kit. 1-2 lines.
 
 Dashboards:
   - Example focus: Monitor your transactions
@@ -99,7 +105,6 @@ Synthetic monitors
 Alerts
   - Example focus: Alert triggers when latency exceeds a set limit.
 ```
-
 
 ## Quickstarts contributor guidelines
 
@@ -127,7 +132,6 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 - The a Github Action verifies name uniqueness.
 - Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
 - Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
-
 
 #### Description
 
@@ -180,6 +184,8 @@ experience for users.
 
 - `Optional`
 - file name should be `quickstart_name01`, `quickstart_name02`, etc
+- Images for dashboards should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
+- Icons and logo files should go in the root quickstart directory, `/quickstarts_name01`
 - jpeg or png format
 - 4MB or smaller
 - 6 max images
