@@ -1,3 +1,24 @@
+# [0.16.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.1...v0.16.0) (2021-09-14)
+
+
+### Bug Fixes
+
+* Fix original input file and add full path ([1ff4228](https://github.com/newrelic/newrelic-observability-packs/commit/1ff4228fecc496bbc46de951dd5c9fb87a122ca9))
+* remove local file ([8ea06b1](https://github.com/newrelic/newrelic-observability-packs/commit/8ea06b19ec51cfff1fc13ee7edf96985cc91d271))
+* remove temp script file and csv ([6db454d](https://github.com/newrelic/newrelic-observability-packs/commit/6db454d4558888653d48c4abd974fccb867b3a98))
+* update packs/datastax-cassandra/config.yml ([e69eb6c](https://github.com/newrelic/newrelic-observability-packs/commit/e69eb6c6098e42877853ce9d3b0acfb6723030f6))
+* update packs/java/jayrock/config.yml ([e4a5933](https://github.com/newrelic/newrelic-observability-packs/commit/e4a5933915d8c895825659b45aac3a4548793dfd))
+* update packs/perfmon/config.yml ([1ca1fdd](https://github.com/newrelic/newrelic-observability-packs/commit/1ca1fdd8c59eed950290bc77df3fc641553b1833))
+* update packs/unix/config.yml ([190ce87](https://github.com/newrelic/newrelic-observability-packs/commit/190ce87edc7a48370fc8635750b48f87d6fa1fbe))
+* Use correct postgres plan ([b2a453f](https://github.com/newrelic/newrelic-observability-packs/commit/b2a453fb6495c1e6509ee8456a05ea3fe3a23f60))
+
+
+### Features
+
+* Add C++ install plan and fix postgres config ([0e5b266](https://github.com/newrelic/newrelic-observability-packs/commit/0e5b2667dd92d5b2941021ec7a4463a99e9c664b))
+* Add install plans ([134c337](https://github.com/newrelic/newrelic-observability-packs/commit/134c337eb1f2419e68a32fa3b28ecf51f40f7b2e))
+* Add script for updating install plans ([db7f9ea](https://github.com/newrelic/newrelic-observability-packs/commit/db7f9eaeec2c4e3f3593569fe9726677c91d8f71))
+
 ## [0.15.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.0...v0.15.1) (2021-09-14)
 
 
