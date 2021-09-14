@@ -149,7 +149,6 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 - `Required`
 - set to `Community` level by default
 - Can only be modified by New Relic employees to set another level type
-- A Github Action verifies quickstart level
 
 #### Author
 
