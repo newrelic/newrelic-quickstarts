@@ -1,3 +1,11 @@
+## [0.18.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.0...v0.18.1) (2021-09-15)
+
+
+### Bug Fixes
+
+* move generate-uuid job under the release wf ([c2a662e](https://github.com/newrelic/newrelic-observability-packs/commit/c2a662e65088406c614bd0d4402e36a5684413d9))
+* update fetch depth ([3bb6502](https://github.com/newrelic/newrelic-observability-packs/commit/3bb6502d77f7592b89eaaf30c385513ed7b5a858))
+
 # [0.18.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.17.0...v0.18.0) (2021-09-15)
 
 
