@@ -61,7 +61,8 @@ const getTestFile = (schemaType) => {
       path: '/main_config/', // this can be any path
       contents: [
         {
-          name: 'fakeobservabilitypack',
+          title: 'Fake Quickstart',
+          name: 'fakequickstart',
           description: 'fakeDescription',
           authors: ['fakeAuthor'],
           level: 'New Relic',
