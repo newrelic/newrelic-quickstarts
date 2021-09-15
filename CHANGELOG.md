@@ -1,3 +1,65 @@
+# [0.18.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.17.0...v0.18.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* fix dashboard schema for dotnet.json ([8af7967](https://github.com/newrelic/newrelic-observability-packs/commit/8af7967dc11908a53840ac6ec31a998bdbecc12e))
+* fix dashboard schema for Java ([0bae987](https://github.com/newrelic/newrelic-observability-packs/commit/0bae987d030f602a506bd7b10ef3f3bbb3f13859))
+* fix dashboard schema for nodejs ([a8cce8f](https://github.com/newrelic/newrelic-observability-packs/commit/a8cce8f4e7db4ec2b9fb6259b6f58f36aa824c32))
+* fix dashboard schema for python ([3161121](https://github.com/newrelic/newrelic-observability-packs/commit/3161121fdca7eee3327c97d42099198cef23fc68))
+
+
+### Features
+
+* **Packs:** Added Java, Nodejs, Python and .NET observability packs ([011c195](https://github.com/newrelic/newrelic-observability-packs/commit/011c195bc5e940ba66adc1a4a1eda0d304a0990b))
+
+# [0.17.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.1...v0.17.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **heroku:** incorrect icon paths ([3f4a1a1](https://github.com/newrelic/newrelic-observability-packs/commit/3f4a1a1821548854415de0cb9ff068466d608320))
+* **mlops:** added description to algorithmia dashboard ([793f311](https://github.com/newrelic/newrelic-observability-packs/commit/793f311c0129bc71b65eaaa9f612a55635298aaf))
+* **mlops:** fixed missing description in algorithmia dashboard ([005205c](https://github.com/newrelic/newrelic-observability-packs/commit/005205cfa41ec1a2b4941365a88d1fa14c94bbfb))
+* **mlops:** removed permissions from dashboard json ([12bf367](https://github.com/newrelic/newrelic-observability-packs/commit/12bf367f56ac9f6bd91e044f5b5601737db41f42))
+* **mlops:** shortened algoritmia summary ([6f5d6c9](https://github.com/newrelic/newrelic-observability-packs/commit/6f5d6c98cf2991da2aa37378c03b7ddd17998ac9))
+
+
+### Features
+
+* **logs:** added heroku ([3de2fbc](https://github.com/newrelic/newrelic-observability-packs/commit/3de2fbcd3095299c2d30249fb36b222f6e8a1f74))
+* **mlops:** added pack for algoritmia ([bab4906](https://github.com/newrelic/newrelic-observability-packs/commit/bab4906132208f0faa2f20441bd3785bb83bc69b))
+
+## [0.16.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.0...v0.16.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* **quickstarts:** remove go-insights quickstart ([2c2b1e1](https://github.com/newrelic/newrelic-observability-packs/commit/2c2b1e100a4af41e733e5733eb367eb55f784955))
+* **quickstarts:** remove unnecessary python-related quickstarts ([8539a98](https://github.com/newrelic/newrelic-observability-packs/commit/8539a9869a1807c3be2aa6b881ff757e83491a4e))
+* **quickstarts:** rename mysql pack with more accurate name ([d0d0dc4](https://github.com/newrelic/newrelic-observability-packs/commit/d0d0dc409499c4bbe7f14345d2e6ec3b6d23f89a))
+
+# [0.16.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.1...v0.16.0) (2021-09-14)
+
+
+### Bug Fixes
+
+* Fix original input file and add full path ([1ff4228](https://github.com/newrelic/newrelic-observability-packs/commit/1ff4228fecc496bbc46de951dd5c9fb87a122ca9))
+* remove local file ([8ea06b1](https://github.com/newrelic/newrelic-observability-packs/commit/8ea06b19ec51cfff1fc13ee7edf96985cc91d271))
+* remove temp script file and csv ([6db454d](https://github.com/newrelic/newrelic-observability-packs/commit/6db454d4558888653d48c4abd974fccb867b3a98))
+* update packs/datastax-cassandra/config.yml ([e69eb6c](https://github.com/newrelic/newrelic-observability-packs/commit/e69eb6c6098e42877853ce9d3b0acfb6723030f6))
+* update packs/java/jayrock/config.yml ([e4a5933](https://github.com/newrelic/newrelic-observability-packs/commit/e4a5933915d8c895825659b45aac3a4548793dfd))
+* update packs/perfmon/config.yml ([1ca1fdd](https://github.com/newrelic/newrelic-observability-packs/commit/1ca1fdd8c59eed950290bc77df3fc641553b1833))
+* update packs/unix/config.yml ([190ce87](https://github.com/newrelic/newrelic-observability-packs/commit/190ce87edc7a48370fc8635750b48f87d6fa1fbe))
+* Use correct postgres plan ([b2a453f](https://github.com/newrelic/newrelic-observability-packs/commit/b2a453fb6495c1e6509ee8456a05ea3fe3a23f60))
+
+
+### Features
+
+* Add C++ install plan and fix postgres config ([0e5b266](https://github.com/newrelic/newrelic-observability-packs/commit/0e5b2667dd92d5b2941021ec7a4463a99e9c664b))
+* Add install plans ([134c337](https://github.com/newrelic/newrelic-observability-packs/commit/134c337eb1f2419e68a32fa3b28ecf51f40f7b2e))
+* Add script for updating install plans ([db7f9ea](https://github.com/newrelic/newrelic-observability-packs/commit/db7f9eaeec2c4e3f3593569fe9726677c91d8f71))
+
 ## [0.15.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.0...v0.15.1) (2021-09-14)
 
 
