@@ -1,3 +1,18 @@
+# [0.18.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.17.0...v0.18.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* fix dashboard schema for dotnet.json ([8af7967](https://github.com/newrelic/newrelic-observability-packs/commit/8af7967dc11908a53840ac6ec31a998bdbecc12e))
+* fix dashboard schema for Java ([0bae987](https://github.com/newrelic/newrelic-observability-packs/commit/0bae987d030f602a506bd7b10ef3f3bbb3f13859))
+* fix dashboard schema for nodejs ([a8cce8f](https://github.com/newrelic/newrelic-observability-packs/commit/a8cce8f4e7db4ec2b9fb6259b6f58f36aa824c32))
+* fix dashboard schema for python ([3161121](https://github.com/newrelic/newrelic-observability-packs/commit/3161121fdca7eee3327c97d42099198cef23fc68))
+
+
+### Features
+
+* **Packs:** Added Java, Nodejs, Python and .NET observability packs ([011c195](https://github.com/newrelic/newrelic-observability-packs/commit/011c195bc5e940ba66adc1a4a1eda0d304a0990b))
+
 # [0.17.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.1...v0.17.0) (2021-09-15)
 
 
