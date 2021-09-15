@@ -1,3 +1,20 @@
+# [0.17.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.1...v0.17.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **heroku:** incorrect icon paths ([3f4a1a1](https://github.com/newrelic/newrelic-observability-packs/commit/3f4a1a1821548854415de0cb9ff068466d608320))
+* **mlops:** added description to algorithmia dashboard ([793f311](https://github.com/newrelic/newrelic-observability-packs/commit/793f311c0129bc71b65eaaa9f612a55635298aaf))
+* **mlops:** fixed missing description in algorithmia dashboard ([005205c](https://github.com/newrelic/newrelic-observability-packs/commit/005205cfa41ec1a2b4941365a88d1fa14c94bbfb))
+* **mlops:** removed permissions from dashboard json ([12bf367](https://github.com/newrelic/newrelic-observability-packs/commit/12bf367f56ac9f6bd91e044f5b5601737db41f42))
+* **mlops:** shortened algoritmia summary ([6f5d6c9](https://github.com/newrelic/newrelic-observability-packs/commit/6f5d6c98cf2991da2aa37378c03b7ddd17998ac9))
+
+
+### Features
+
+* **logs:** added heroku ([3de2fbc](https://github.com/newrelic/newrelic-observability-packs/commit/3de2fbcd3095299c2d30249fb36b222f6e8a1f74))
+* **mlops:** added pack for algoritmia ([bab4906](https://github.com/newrelic/newrelic-observability-packs/commit/bab4906132208f0faa2f20441bd3785bb83bc69b))
+
 ## [0.16.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.0...v0.16.1) (2021-09-14)
 
 
