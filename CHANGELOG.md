@@ -1,3 +1,13 @@
+# [0.15.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.14.0...v0.15.0) (2021-09-10)
+
+
+### Features
+
+* **Trend Micro Cloud One - Conformity:** Added New Relic’s integration with Trend Micro Cloud One - Conformity ([4280fcb](https://github.com/newrelic/newrelic-observability-packs/commit/4280fcb893d37210981ab48d3658d018a0219b72))
+* **Trend Micro Cloud One - Conformity:** aws itself doesn't seem to be a supported instrumentation type, removed from config ([f182a61](https://github.com/newrelic/newrelic-observability-packs/commit/f182a61204bc0f6d191bcf492edbb304ea85621b))
+* **Trend Micro Cloud One - Conformity:** Fix dashboard payload ([4397288](https://github.com/newrelic/newrelic-observability-packs/commit/4397288f903e39b7c9f78ab6776e447628c325af))
+* **Trend Micro Cloud One - Conformity:** Fix icon file name, Fix dashboard payload ([036cfae](https://github.com/newrelic/newrelic-observability-packs/commit/036cfae90c4d9277e43554793d2d6ccaf82ce332))
+
 # [0.14.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.13.0...v0.14.0) (2021-09-10)
 
 
