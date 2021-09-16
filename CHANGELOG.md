@@ -1,3 +1,103 @@
+## [0.18.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.0...v0.18.1) (2021-09-15)
+
+
+### Bug Fixes
+
+* move generate-uuid job under the release wf ([c2a662e](https://github.com/newrelic/newrelic-observability-packs/commit/c2a662e65088406c614bd0d4402e36a5684413d9))
+* update fetch depth ([3bb6502](https://github.com/newrelic/newrelic-observability-packs/commit/3bb6502d77f7592b89eaaf30c385513ed7b5a858))
+
+# [0.18.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.17.0...v0.18.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* fix dashboard schema for dotnet.json ([8af7967](https://github.com/newrelic/newrelic-observability-packs/commit/8af7967dc11908a53840ac6ec31a998bdbecc12e))
+* fix dashboard schema for Java ([0bae987](https://github.com/newrelic/newrelic-observability-packs/commit/0bae987d030f602a506bd7b10ef3f3bbb3f13859))
+* fix dashboard schema for nodejs ([a8cce8f](https://github.com/newrelic/newrelic-observability-packs/commit/a8cce8f4e7db4ec2b9fb6259b6f58f36aa824c32))
+* fix dashboard schema for python ([3161121](https://github.com/newrelic/newrelic-observability-packs/commit/3161121fdca7eee3327c97d42099198cef23fc68))
+
+
+### Features
+
+* **Packs:** Added Java, Nodejs, Python and .NET observability packs ([011c195](https://github.com/newrelic/newrelic-observability-packs/commit/011c195bc5e940ba66adc1a4a1eda0d304a0990b))
+
+# [0.17.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.1...v0.17.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **heroku:** incorrect icon paths ([3f4a1a1](https://github.com/newrelic/newrelic-observability-packs/commit/3f4a1a1821548854415de0cb9ff068466d608320))
+* **mlops:** added description to algorithmia dashboard ([793f311](https://github.com/newrelic/newrelic-observability-packs/commit/793f311c0129bc71b65eaaa9f612a55635298aaf))
+* **mlops:** fixed missing description in algorithmia dashboard ([005205c](https://github.com/newrelic/newrelic-observability-packs/commit/005205cfa41ec1a2b4941365a88d1fa14c94bbfb))
+* **mlops:** removed permissions from dashboard json ([12bf367](https://github.com/newrelic/newrelic-observability-packs/commit/12bf367f56ac9f6bd91e044f5b5601737db41f42))
+* **mlops:** shortened algoritmia summary ([6f5d6c9](https://github.com/newrelic/newrelic-observability-packs/commit/6f5d6c98cf2991da2aa37378c03b7ddd17998ac9))
+
+
+### Features
+
+* **logs:** added heroku ([3de2fbc](https://github.com/newrelic/newrelic-observability-packs/commit/3de2fbcd3095299c2d30249fb36b222f6e8a1f74))
+* **mlops:** added pack for algoritmia ([bab4906](https://github.com/newrelic/newrelic-observability-packs/commit/bab4906132208f0faa2f20441bd3785bb83bc69b))
+
+## [0.16.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.16.0...v0.16.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* **quickstarts:** remove go-insights quickstart ([2c2b1e1](https://github.com/newrelic/newrelic-observability-packs/commit/2c2b1e100a4af41e733e5733eb367eb55f784955))
+* **quickstarts:** remove unnecessary python-related quickstarts ([8539a98](https://github.com/newrelic/newrelic-observability-packs/commit/8539a9869a1807c3be2aa6b881ff757e83491a4e))
+* **quickstarts:** rename mysql pack with more accurate name ([d0d0dc4](https://github.com/newrelic/newrelic-observability-packs/commit/d0d0dc409499c4bbe7f14345d2e6ec3b6d23f89a))
+
+# [0.16.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.1...v0.16.0) (2021-09-14)
+
+
+### Bug Fixes
+
+* Fix original input file and add full path ([1ff4228](https://github.com/newrelic/newrelic-observability-packs/commit/1ff4228fecc496bbc46de951dd5c9fb87a122ca9))
+* remove local file ([8ea06b1](https://github.com/newrelic/newrelic-observability-packs/commit/8ea06b19ec51cfff1fc13ee7edf96985cc91d271))
+* remove temp script file and csv ([6db454d](https://github.com/newrelic/newrelic-observability-packs/commit/6db454d4558888653d48c4abd974fccb867b3a98))
+* update packs/datastax-cassandra/config.yml ([e69eb6c](https://github.com/newrelic/newrelic-observability-packs/commit/e69eb6c6098e42877853ce9d3b0acfb6723030f6))
+* update packs/java/jayrock/config.yml ([e4a5933](https://github.com/newrelic/newrelic-observability-packs/commit/e4a5933915d8c895825659b45aac3a4548793dfd))
+* update packs/perfmon/config.yml ([1ca1fdd](https://github.com/newrelic/newrelic-observability-packs/commit/1ca1fdd8c59eed950290bc77df3fc641553b1833))
+* update packs/unix/config.yml ([190ce87](https://github.com/newrelic/newrelic-observability-packs/commit/190ce87edc7a48370fc8635750b48f87d6fa1fbe))
+* Use correct postgres plan ([b2a453f](https://github.com/newrelic/newrelic-observability-packs/commit/b2a453fb6495c1e6509ee8456a05ea3fe3a23f60))
+
+
+### Features
+
+* Add C++ install plan and fix postgres config ([0e5b266](https://github.com/newrelic/newrelic-observability-packs/commit/0e5b2667dd92d5b2941021ec7a4463a99e9c664b))
+* Add install plans ([134c337](https://github.com/newrelic/newrelic-observability-packs/commit/134c337eb1f2419e68a32fa3b28ecf51f40f7b2e))
+* Add script for updating install plans ([db7f9ea](https://github.com/newrelic/newrelic-observability-packs/commit/db7f9eaeec2c4e3f3593569fe9726677c91d8f71))
+
+## [0.15.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.15.0...v0.15.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* fixed typos & removed account ID ([0bcdc78](https://github.com/newrelic/newrelic-observability-packs/commit/0bcdc78f5f263a25f13059addcbe55b88c9b06fa))
+* fixing dashboard json and config layout ([65aff4e](https://github.com/newrelic/newrelic-observability-packs/commit/65aff4e37c646c72ba77cf9ff3d18ba8b2b6815c))
+* updating dashboard snapshot ([678352e](https://github.com/newrelic/newrelic-observability-packs/commit/678352eb843a44c16da2bec320c897ca970b95c1))
+* updating detailed description ([ae75df0](https://github.com/newrelic/newrelic-observability-packs/commit/ae75df00aadcd879624c1d8bb147e04f2f93005c))
+
+# [0.15.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.14.0...v0.15.0) (2021-09-10)
+
+
+### Features
+
+* **Trend Micro Cloud One - Conformity:** Added New Relic’s integration with Trend Micro Cloud One - Conformity ([4280fcb](https://github.com/newrelic/newrelic-observability-packs/commit/4280fcb893d37210981ab48d3658d018a0219b72))
+* **Trend Micro Cloud One - Conformity:** aws itself doesn't seem to be a supported instrumentation type, removed from config ([f182a61](https://github.com/newrelic/newrelic-observability-packs/commit/f182a61204bc0f6d191bcf492edbb304ea85621b))
+* **Trend Micro Cloud One - Conformity:** Fix dashboard payload ([4397288](https://github.com/newrelic/newrelic-observability-packs/commit/4397288f903e39b7c9f78ab6776e447628c325af))
+* **Trend Micro Cloud One - Conformity:** Fix icon file name, Fix dashboard payload ([036cfae](https://github.com/newrelic/newrelic-observability-packs/commit/036cfae90c4d9277e43554793d2d6ccaf82ce332))
+
+# [0.14.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.13.0...v0.14.0) (2021-09-10)
+
+
+### Features
+
+* **apm:** add apm install plans ([83b9314](https://github.com/newrelic/newrelic-observability-packs/commit/83b93146eba87fce039de241ea5a8b3d9047b22d))
+* **install:** add guided install ([c2a8a60](https://github.com/newrelic/newrelic-observability-packs/commit/c2a8a609f47383b052b881f39da7914ee0b830d8))
+* **install:** add OHI install plans ([940d17a](https://github.com/newrelic/newrelic-observability-packs/commit/940d17ab9e23eb0e1e1a2f01779e3a919c030af3))
+* **install:** add public api performance ([0b1e90f](https://github.com/newrelic/newrelic-observability-packs/commit/0b1e90f4bd54dab93bff9899d58eaa02d14c23f7))
+
 # [0.13.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.12.0...v0.13.0) (2021-09-08)
 
 
