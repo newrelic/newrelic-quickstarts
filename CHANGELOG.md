@@ -1,3 +1,10 @@
+## [0.20.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.0...v0.20.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* **nginx:** removed mentions of cassandra ([ca533c9](https://github.com/newrelic/newrelic-observability-packs/commit/ca533c99a759c338fbdec39583863f51a938675b))
+
 # [0.20.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.19.0...v0.20.0) (2021-09-16)
 
 
