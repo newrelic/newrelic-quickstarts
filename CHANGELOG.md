@@ -1,3 +1,11 @@
+# [0.21.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.1...v0.21.0) (2021-09-16)
+
+
+### Features
+
+* Add dashboards and alerts for node.js ([70a11ab](https://github.com/newrelic/newrelic-observability-packs/commit/70a11ab31932691d7b65226cb761f1a9e0622a91))
+* Add dashboards and alerts for python related quickstarts ([c5f3cbf](https://github.com/newrelic/newrelic-observability-packs/commit/c5f3cbf3ed14a5eae3b04a05615de1eae22462e7))
+
 ## [0.20.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.0...v0.20.1) (2021-09-16)
 
 
