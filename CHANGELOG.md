@@ -1,3 +1,17 @@
+# [0.19.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.1...v0.19.0) (2021-09-16)
+
+
+### Bug Fixes
+
+* Fix alerts for adobe-cq ([23962c1](https://github.com/newrelic/newrelic-observability-packs/commit/23962c15a9194e6bc3bc48ae5668adfbd60d5734))
+* fix alerts for java related quickstarts ([b2ed5c7](https://github.com/newrelic/newrelic-observability-packs/commit/b2ed5c7e0e0ae0963bc19ec1253cf091445a9eef))
+* fix java error thresholds ([41622c9](https://github.com/newrelic/newrelic-observability-packs/commit/41622c96cce388721bd6e4f1e34f71c8c562ce98))
+
+
+### Features
+
+* Add dashboards, alerts, descriptions for Java related quickstarts ([1a7a4ad](https://github.com/newrelic/newrelic-observability-packs/commit/1a7a4ad71234c404f98624049fbea0ea8e753307))
+
 ## [0.18.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.0...v0.18.1) (2021-09-15)
 
 
