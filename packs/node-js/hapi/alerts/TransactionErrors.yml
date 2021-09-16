@@ -1,11 +1,11 @@
 ---
-name: ADPEX Score
+name: Transaction Errors
 
 details: |+
-  This alert is triggered when ADPEX Score is below 0.6 for 5 minutes
+  This alert is triggered when the transactions fail more than 10% of the time in 5 minutes.
 type: STATIC
 nrql:
-  query: "SELECT apdex(apm.service.apdex) as 'App server' FROM Metric WHERE appName like '%'"
+  query: "SELECT count(apm.service.error.count) / count(apm.service.transaction.duration) * 100 as 'Web errors' FROM Metric WHERE appName like '%' AND (transactionType = 'Web')"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -14,9 +14,9 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: BELOW
+    operator: ABOVE
     # Value that triggers a violation
-    threshold: 0.6
+    threshold: 10
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -26,4 +26,3 @@ terms:
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
 violationTimeLimitSeconds: 86400
 ---
-
