@@ -1,3 +1,10 @@
+# [0.20.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.19.0...v0.20.0) (2021-09-16)
+
+
+### Features
+
+* Add dashboards and alerts for .NET quickstarts ([a389fd4](https://github.com/newrelic/newrelic-observability-packs/commit/a389fd4d2e0accf7c146e89b6e91d8b1487b175e))
+
 # [0.19.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.1...v0.19.0) (2021-09-16)
 
 
