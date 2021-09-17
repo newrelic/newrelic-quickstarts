@@ -1,3 +1,16 @@
+# [0.23.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.22.0...v0.23.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* fix again config file ([abd4b94](https://github.com/newrelic/newrelic-observability-packs/commit/abd4b94ed707a4debc3eaa5e478ff277efbf866c))
+* remove config ([b2d17bc](https://github.com/newrelic/newrelic-observability-packs/commit/b2d17bc2e789ec77166e4530fddcebd6205fb5c2))
+
+
+### Features
+
+* **network-flow-devices:** adding network flow pack ([16ce41c](https://github.com/newrelic/newrelic-observability-packs/commit/16ce41c1cadec7476aa5a7a75f5ba1ca1715340a))
+
 # [0.22.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.1...v0.22.0) (2021-09-17)
 
 
