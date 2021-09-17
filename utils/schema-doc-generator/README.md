@@ -18,4 +18,4 @@ pip install -r utils/schema-doc-generator/requirements.txt
 python utils/schema-doc-generator/script.py
 ```
 
-This should produce documentation in [docs](../..docs) based on the schemas you have locally.
+This should produce documentation in [docs](../../docs) based on the schemas you have locally.
