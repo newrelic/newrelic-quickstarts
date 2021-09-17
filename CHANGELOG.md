@@ -1,3 +1,26 @@
+# [0.22.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.1...v0.22.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **apache:** removed incorrect doc links ([3526352](https://github.com/newrelic/newrelic-observability-packs/commit/3526352c61b0963aa6d244c28ee889ca9aed6de0))
+* **browser:** switched type and destination ([726b7b1](https://github.com/newrelic/newrelic-observability-packs/commit/726b7b172df58e3cabe2675b5ea9b3c11b4f047a))
+* removed prometheus-node-exporter-for-mac-os as we now have an agent ([820f8b0](https://github.com/newrelic/newrelic-observability-packs/commit/820f8b0f5cf0f31f1580444ce84822f36de68611))
+* **lamp:** clean up code and added install plan ([448e45e](https://github.com/newrelic/newrelic-observability-packs/commit/448e45e2e9869d12ede6495903718dc7818c7d8c))
+* **synthetics:** removed another keyword ([ca035e5](https://github.com/newrelic/newrelic-observability-packs/commit/ca035e5de026d1d5aeca4e5e57ca4d38c094660a))
+
+
+### Features
+
+* **browser:** added install plan ([691d05b](https://github.com/newrelic/newrelic-observability-packs/commit/691d05b5cb27add0f1890c172dd2c4542f2964ab))
+* **databricks:** added install plan ([105a0f1](https://github.com/newrelic/newrelic-observability-packs/commit/105a0f1471b787614fd870b2d7f9da9317246d75))
+* **golden-signals-web:** added guided install plan ([e785eb1](https://github.com/newrelic/newrelic-observability-packs/commit/e785eb192b973694f1e6124e183d2d3e2b384068))
+* **jmx:** added missing install plan ([199fc0e](https://github.com/newrelic/newrelic-observability-packs/commit/199fc0ec6945c736aeb7a240249f31f42e487845))
+* **kafka:** added installation plan ([d713074](https://github.com/newrelic/newrelic-observability-packs/commit/d7130743101185169c12dacb393010eda1c86045))
+* **synthetics:** tags cleanup ([616b0c8](https://github.com/newrelic/newrelic-observability-packs/commit/616b0c898567a7ee79479f3f07d0354671ac5081))
+* **trendmicro:** added trendmicro-cloudone-conformity install plan ([b617f3a](https://github.com/newrelic/newrelic-observability-packs/commit/b617f3a43ebcd313710f9de487e92faa564aca30))
+* added synthetics ([f9c6963](https://github.com/newrelic/newrelic-observability-packs/commit/f9c6963d9ef2304f928e20f45801e2ed63a0d09d))
+
 ## [0.21.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.0...v0.21.1) (2021-09-16)
 
 
