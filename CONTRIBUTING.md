@@ -112,7 +112,7 @@ We encourage all contributors to actively engage in the creation and maintenance
 quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [quickstart Config Schema](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/config-spec.md) for structure and limits you need to consider.
+- `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs) for structure and limits you need to consider.
 - `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
@@ -122,12 +122,6 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 [quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
 ### Required field best practices
-
-#### Title
-
-> an option field used when the quickstart is referenced.
-
-- `Required`
 
 #### Name
 
