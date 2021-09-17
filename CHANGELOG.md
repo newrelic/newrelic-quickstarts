@@ -1,3 +1,12 @@
+## [0.21.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.0...v0.21.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* capitalization fixes ([938d196](https://github.com/newrelic/newrelic-observability-packs/commit/938d196cfd4e4da86c2a613e63e8e76a6fce1d83))
+* final copyedits ([4c7d7e2](https://github.com/newrelic/newrelic-observability-packs/commit/4c7d7e204556d1230b4a5a61672706abd729ebb8))
+* Remove "kit" ([f86f7fb](https://github.com/newrelic/newrelic-observability-packs/commit/f86f7fbbcc5b75aba30ee5aff7c817aa2b590eb3))
+
 # [0.21.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.1...v0.21.0) (2021-09-16)
 
 
