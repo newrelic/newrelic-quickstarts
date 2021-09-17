@@ -8,21 +8,11 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
-    - [Required field best practices](#required-field-best-practices)
-      - [Title](#title)
-      - [Name](#name)
-      - [Description](#description)
-      - [Level](#level)
-      - [Author](#author)
-      - [Summary](#summary)
-    - [Optional field best practices](#optional-field-best-practices)
-    - [Images or screenshots](#images-or-screenshots)
-      - [Image recommended for best results](#image-recommended-for-best-results)
-    - [Logos](#logos)
-      - [logo recommendations or best results](#logo-recommendations-or-best-results)
+    - [Quick start best practices](#quick-start-best-practices)
+      - [Levels](#levels)
+      - [Images (screenshots)](#images-screenshots)
+      - [Logos](#logos)
     - [Icons](#icons)
-    - [Website URLs](#website-urls)
-    - [Image requirements](#image-requirements)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
@@ -108,8 +98,7 @@ Alerts
 
 ## Quickstarts contributor guidelines
 
-We encourage all contributors to actively engage in the creation and maintenance of
-quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
 - `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs) for structure and limits you need to consider.
@@ -121,109 +110,43 @@ quickstarts. Whether you work at New Relic or use New Relic as a customer, the c
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
-### Required field best practices
+### Quick start best practices
 
-#### Name
+Before getting started, review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs)
+for quickstart structure and limits you need to consider.
 
-> The official name of the quickstart.
+#### Levels
 
-- `Required`
-- limited to 100 characters
-- The a Github Action verifies name uniqueness.
-- Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
-- Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
+- All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
+- Levels can only be modified by New Relic employees.
+- If you have questions on how to increase the level of support please file an [issue](../../issues)
 
-#### Description
+#### Images (screenshots)
 
-> A detailed description of the quickstart and why it's useful.
-
-- `Required`
-- Markdown or plain text
-- limited to 2000 characters
-- A Github Action verifies quickstart descriptions
-
-#### Level
-
-> The support level provided for the quickstart.
-
-- `Required`
-- set to `Community` level by default
-- Can only be modified by New Relic employees to set another level type
-
-#### Author
-
-> The creator(s) or contributors of the quickstart
-
-- `Required`
-- No limit to the amount of authors
-- A Github Action job verifies quickstart level
-
-#### Summary
-
-> A brief summary of the quickstart functionality.
-
-- `Required`
-- Plain text only
-- limited to 250 characters
-
-### Optional field best practices
-
-Other fields in a quickstart are optional but it's recommended you consider the following to offer the best possible quickstart
-experience for users.
-
-
-### Images or screenshots
-
-> Images of dashboards, visualizations, or nerdpacks.
-
-- `Optional`
+- Images are `optional` but highly recommended to preview the visual functionality of a dashboard.
 - file name should be `quickstart_name01`, `quickstart_name02`, etc
 - Images for dashboards should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
-- Icons and logo files should go in the root quickstart directory, `/quickstarts_name01`
-- jpeg or png format
-- 4MB or smaller
-- 6 max images
+- Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+- Each image file must be less than `4MB` in size
+- There should be no more than 6 images in your quickstart's component folder
+- For best results use aspect ratio: 3:2
+- For best results use 800 px (width)
+- For best results use 1600 px (height)
 
-#### Image recommended for best results
+#### Logos
 
-- Aspect ratio: 3:2
-- 800 px (width)
-- 1600 px (height)
-
-### Logos
-
-> The logo or brand image of the quickstart.
-
-- `Optional`
-- .png or .jpeg or .svg format
+- Logo files should go in the root quickstart directory, `/quickstarts_name01`
+- Logos are `optional` but highly recommended to call attention to your quickstart.
+- `.png` or `.jpeg` or `.svg` format
 - Max 1
-
-#### logo recommendations or best results
-
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
 
 ### Icons
 
-- `Optional`
-- Not currently used
-- .png or .jpeg or .svg format
+- Icons are `optional` and not currently used in the UI.
+- `.png` or `.jpeg` or `.svg` format
 - Max 1
-
-### Website URLs
-
-> a reference to a website relating to the quickstart.
-
-- `Optional`
-- Valid URL only https://www.newrelic.com
-
-### Image requirements
-
-In order for your PR to pass Validation, the images included in your quickstart must meet the following requirements:
-
- - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
- - Each image file must be less than `4MB` in size
- - There should be no more than `6` images in your quickstart's component folders
 
 ### Keywords
 
