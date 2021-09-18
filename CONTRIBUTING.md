@@ -9,20 +9,19 @@
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quick start best practices](#quick-start-best-practices)
+      - [InstallPlans](#installplans)
+      - [Documentation](#documentation)
       - [Levels](#levels)
-      - [Images (screenshots)](#images-screenshots)
+      - [Dashboard images (screenshots)](#dashboard-images-screenshots)
       - [Logos](#logos)
     - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
-    - [Status Checks](#status-checks)
-      - [Schema Validation](#schema-validation)
-      - [Icon and Logo Validation](#icon-and-logo-validation)
   - [Using Conventional Commits](#using-conventional-commits)
-      - [Use `chore`](#use-chore)
-      - [Use `fix`](#use-fix)
-      - [Use `feat`](#use-feat)
+    - [Use `chore`](#use-chore)
+    - [Use `fix`](#use-fix)
+    - [Use `feat`](#use-feat)
   - [Contributor License Agreement](#contributor-license-agreement)
   - [Slack](#slack)
 <!-- tocstop -->
@@ -115,25 +114,46 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs)
 for quickstart structure and limits you need to consider.
 
+#### InstallPlans
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
+
+- The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
+- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+
+#### Documentation
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#documentation) for more details on `documentation`
+
+- The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
+- The see installation docs buttons will always link to the primary `documentation URL`.
+- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+
 #### Levels
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#level) for more details on `levels`
 
 - All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
 - Levels can only be modified by New Relic employees.
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
 
-#### Images (screenshots)
+#### Dashboard images (screenshots)
 
-- Images are `optional` but highly recommended to preview the visual functionality of a dashboard.
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
+
+- Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
 - file name should be `quickstart_name01`, `quickstart_name02`, etc
-- Images for dashboards should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
+- Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than 6 images in your quickstart's component folder
+- There should be no more than `6`  dashboard images per dashboard
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
 
 #### Logos
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#logo) for more details `logos`
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
 - Logos are `optional` but highly recommended to call attention to your quickstart.
@@ -144,11 +164,15 @@ for quickstart structure and limits you need to consider.
 
 ### Icons
 
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#icon) for more details on `icon`
+
 - Icons are `optional` and not currently used in the UI.
 - `.png` or `.jpeg` or `.svg` format
 - Max 1
 
 ### Keywords
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#keywords) for more details on `keywords`
 
 When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
 the New Relic One I/O Catalog and the External I/O Catalog.
@@ -173,22 +197,12 @@ Before submitting an Issue, please search for similar ones in the
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
 
-### Status Checks
-
-#### Schema Validation
-
-One of the required checks is ensuring that submitted quickstarts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
-
-#### Icon and Logo Validation
-
-If icon and logo are supplied in the config, this check ensures that the referenced images exist.
-
 ## Using Conventional Commits
 
 Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
 standards in your pull request title and commit messages.
 
-#### Use `chore`
+### Use `chore`
 
 - for minor changes / additions / corrections to content.
 - for minor changes / additions / corrections to images.
@@ -198,7 +212,7 @@ standards in your pull request title and commit messages.
 git commit -m "chore: adjusting config and content"
 ```
 
-#### Use `fix`
+### Use `fix`
 
 - for minor functional corrections to code.
 
@@ -206,7 +220,7 @@ git commit -m "chore: adjusting config and content"
 git commit -m "fix: typo and prop error in the code of conduct"
 ```
 
-#### Use `feat`
+### Use `feat`
 
 - for major functional changes or additions to code.
 
@@ -223,4 +237,4 @@ For more information about CLAs, please check out Alex Russell’s excellent pos
 
 ## Slack
 
-We host a internal project [Slack channel](https://newrelic.slack.com/archives/G01N33Y8P3K) for this project while it's in development. You can contact the teams working on this initiative with any questions here.
+We host an internal help [Slack channel](https://newrelic.slack.com/archives/C02CM0D5QBF). You can contact the teams supporting quickstarts and I/O with any questions here.
