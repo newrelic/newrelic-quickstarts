@@ -184,6 +184,38 @@ keywords:
   - yet another keyword
 ```
 
+Keywords are strictly defined and you should provide a standard set of keywords in your quickstart from the list below. If you submit a keyword
+that is not defined in this list below, it will be reviewed for use after you submit a PR.
+
+- apm
+- automation
+- cms
+- containers
+- content management system
+- database
+- golang
+- infrastructure
+- java
+- kubernetes
+- language agent
+- load balancer
+- messaging
+- mobile
+- .net
+- networking
+- node.js
+- os
+- operating system
+- open source monitoring
+- php
+- python
+- queue
+- ruby
+- synthetics
+- testing
+- tracing
+- windows
+
 ## Feature Requests
 
 Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
