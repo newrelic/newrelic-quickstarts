@@ -1,3 +1,10 @@
+# [0.24.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.23.0...v0.24.0) (2021-09-19)
+
+
+### Features
+
+* cleaned up infra requirement ([a86ec93](https://github.com/newrelic/newrelic-observability-packs/commit/a86ec930d9b74014606fc3a0603e9d4ccb1a96d8))
+
 # [0.23.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.22.0...v0.23.0) (2021-09-17)
 
 
