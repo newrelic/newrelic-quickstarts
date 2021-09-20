@@ -10,6 +10,7 @@
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quick start best practices](#quick-start-best-practices)
       - [InstallPlans](#installplans)
+      - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
       - [Dashboard images (screenshots)](#dashboard-images-screenshots)
@@ -121,6 +122,21 @@ for quickstart structure and limits you need to consider.
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
 
+#### Summary & descriptions
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
+
+- Use the proper YAML formatting `|` for URL `description` and `summary`.
+- Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
+
+```yml
+description: |
+  a description of the quickstart.
+
+summary: |
+  a summary of the quickstart.
+```
+
 #### Documentation
 
 > See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#documentation) for more details on `documentation`
@@ -128,6 +144,18 @@ for quickstart structure and limits you need to consider.
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
 - Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+- Use the proper YAML formatting `>-` for URL documentation references.
+- Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
+
+
+```yml
+documentation:
+  - name: Name of documentation
+    description: >-
+      Description of documentation
+    url: https://docs.newrelic.com/docs/url/
+
+```
 
 #### Levels
 
