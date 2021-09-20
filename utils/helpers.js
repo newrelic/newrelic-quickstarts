@@ -32,7 +32,7 @@ const readJsonFile = (filePath) => {
  * @param {String} filePath - The path to the JSON or YAML file
  * @returns {Object} An object containing the path and contents of the file
  */
-const readPackFile = (filePath) =>
+const readQuickstartFile = (filePath) =>
   path.extname(filePath) === '.json'
     ? readJsonFile(filePath)
     : readYamlFile(filePath);
@@ -65,12 +65,12 @@ const checkArgs = (length) => {
 };
 
 /**
- * Removes the `newrelic-observability-packs/` path prefix from a string
+ * Removes the `newrelic-quickstarts/` path prefix from a string
  * @param {String} filePath the path to change
  * @returns {String} The path with the prefix
  */
 const removeRepoPathPrefix = (filePath) =>
-  filePath.split(`newrelic-observability-packs/`).pop();
+  filePath.split(`newrelic-quickstarts/`).pop();
 
 /**
  * Checks if a path is a direectory
@@ -118,16 +118,16 @@ const globFiles = (dir) => {
 };
 
 /**
- * Finds the path to all top level pack configs
+ * Finds the path to all top level quickstart configs
  * @returns {String[]} An array of the file paths
  */
-const findMainPackConfigFiles = () =>
-  glob.sync(path.resolve(process.cwd(), '../packs/**/config.+(yml|yaml)'));
+const findMainQuickstartConfigFiles = () =>
+  glob.sync(path.resolve(process.cwd(), '../quickstarts/**/config.+(yml|yaml)'));
 
 module.exports = {
   readYamlFile,
   readJsonFile,
-  readPackFile,
+  readQuickstartFile,
   removeCWDPrefix,
   removeRepoPathPrefix,
   checkArgs,
@@ -136,5 +136,5 @@ module.exports = {
   getFileExtension,
   globFiles,
   isDirectory,
-  findMainPackConfigFiles,
+  findMainQuickstartConfigFiles,
 };

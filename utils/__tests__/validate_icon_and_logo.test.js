@@ -19,7 +19,7 @@ describe('validate icon and logo tests', () => {
 
   describe('validateIconAndLogo', () => {
     test('returns no errors when icon and logo are not supplied', () => {
-      helpers.readPackFile.mockReturnValueOnce({ contents: [{}] });
+      helpers.readQuickstartFile.mockReturnValueOnce({ contents: [{}] });
 
       const errorMessages = validateIconAndLogo(['fake_config_path']);
 
@@ -27,7 +27,7 @@ describe('validate icon and logo tests', () => {
     });
 
     test('returns no errors when icon and logo are supplied and exist', () => {
-      helpers.readPackFile.mockReturnValueOnce({
+      helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
             icon: 'fake_icon_path',
@@ -43,7 +43,7 @@ describe('validate icon and logo tests', () => {
     });
 
     test('returns icon errors when icon errors are detected', () => {
-      helpers.readPackFile.mockReturnValueOnce({
+      helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
             icon: 'fake_icon_path',
@@ -60,7 +60,7 @@ describe('validate icon and logo tests', () => {
     });
 
     test('returns logo errors when logo errors are detected', () => {
-      helpers.readPackFile.mockReturnValueOnce({
+      helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
             logo: 'fake_logo_path',
@@ -77,7 +77,7 @@ describe('validate icon and logo tests', () => {
     });
 
     test('returns icon and logo errors across multiple files', () => {
-      helpers.readPackFile.mockReturnValue({
+      helpers.readQuickstartFile.mockReturnValue({
         contents: [
           {
             icon: 'fake_icon_path',

@@ -9,7 +9,6 @@
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
-      - [Title](#title)
       - [Name](#name)
       - [Description](#description)
       - [Level](#level)
@@ -111,15 +110,15 @@ Alerts
 We encourage all contributors to actively engage in the creation and maintenance of
 quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs) for structure and limits you need to consider.
+- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a quickstart.
+- `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs) for structure and limits you need to consider.
 - `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
-When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
+[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Required field best practices
 
@@ -130,8 +129,8 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 - `Required`
 - limited to 100 characters
 - The a Github Action verifies name uniqueness.
-- Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
-- Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
+- Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-quickstarts/pulls) are using the same name you wish to use.
+- Quickstart names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
 
 #### Description
 

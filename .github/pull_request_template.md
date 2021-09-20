@@ -1,7 +1,7 @@
 ## Summary
 
 A concise description of the changes being introduced.
-If this is a new Observability Pack, please provide a description of its use cases and a list of the Pack's components.
+If this is a new quickstart, please provide a description of its use cases and a list of the quickstart's components.
 
 ### Screenshots
 

@@ -2,11 +2,11 @@
 
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const { findMainPackConfigFiles, readYamlFile } = require('./helpers');
+const { findMainQuickstartConfigFiles, readYamlFile } = require('./helpers');
 
 /**
- * Checks for and generates UUIDs for packs
- * @param {String[]} paths an array of pack config paths
+ * Checks for and generates UUIDs for quickstarts
+ * @param {String[]} paths an array of quickstart config paths
  **/
 const main = (paths) => {
   for (const path of paths) {
@@ -22,11 +22,11 @@ const main = (paths) => {
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_packs.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */
 if (require.main === module) {
-  const configPaths = findMainPackConfigFiles();
+  const configPaths = findMainQuickstartConfigFiles();
   main(configPaths);
 }
