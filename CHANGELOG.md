@@ -1,3 +1,10 @@
+## [0.24.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.0...v0.24.1) (2021-09-20)
+
+
+### Bug Fixes
+
+* removed beyond text from OHI dashboards ([676c714](https://github.com/newrelic/newrelic-observability-packs/commit/676c7140a5ebc78d5d43ff73b46acdfa02415300))
+
 # [0.24.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.23.0...v0.24.0) (2021-09-19)
 
 
