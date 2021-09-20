@@ -9,7 +9,6 @@
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Required field best practices](#required-field-best-practices)
-      - [Title](#title)
       - [Name](#name)
       - [Description](#description)
       - [Level](#level)
@@ -138,6 +137,7 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 > A detailed description of the quickstart and why it's useful.
 
 - `Required`
+- Please use `description: |` to maintain formatting
 - Markdown or plain text
 - limited to 2000 characters
 - A Github Action verifies quickstart descriptions
@@ -163,6 +163,7 @@ When creating a new Observability Pack or reviewing a PR please keep the followi
 > A brief summary of the quickstart functionality.
 
 - `Required`
+- Please use `description: |` to maintain formatting
 - Plain text only
 - limited to 250 characters
 
