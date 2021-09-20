@@ -53,9 +53,9 @@ const url = 'https://api.newrelic.com/graphql';
 const client = new graphql_request_1.GraphQLClient(url, {
     headers: { 'Content-Type': 'application/json' },
 });
-const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 0, void 0, function* () {
+const importer = (accountId, nrApiKey, dashboardQuickstart) => __awaiter(void 0, void 0, void 0, function* () {
     console.warn('WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.');
-    if (!accountId && !nrApiKey && !dashboardPack) {
+    if (!accountId && !nrApiKey && !dashboardQuickstart) {
         const args = yargs
             .options({
             accountId: {
@@ -73,22 +73,22 @@ const importer = (accountId, nrApiKey, dashboardPack) => __awaiter(void 0, void 
         })
             .example('npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql', 'Import mysql package to account with id 0000000').argv;
         if (args._.length < 1) {
-            console.error('Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql');
+            console.error('Quickstart name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql');
             process.exit(0);
         }
         accountId = args.accountId;
         nrApiKey = args.nrApiKey;
-        dashboardPack = args._[0];
+        dashboardQuickstart = args._[0];
     }
     client.setHeader('API-Key', nrApiKey);
-    dashboardPack = dashboardPack.toLowerCase();
-    const policyId = yield createPolicy(accountId, dashboardPack);
-    yield createDashboardLocal(accountId, dashboardPack);
-    yield createAlertLocal(accountId, dashboardPack, policyId);
+    dashboardQuickstart = dashboardQuickstart.toLowerCase();
+    const policyId = yield createPolicy(accountId, dashboardQuickstart);
+    yield createDashboardLocal(accountId, dashboardQuickstart);
+    yield createAlertLocal(accountId, dashboardQuickstart, policyId);
 });
 exports.importer = importer;
-const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
-    const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
+const createPolicy = (accountId, quickstart) => __awaiter(void 0, void 0, void 0, function* () {
+    const policyName = `${quickstart.charAt(0).toUpperCase() + quickstart.slice(1)} default alert policy`;
     let policyExists = yield checkForExistingPolicy(policyName, accountId);
     if (policyExists.length > 0) {
         const response = yield prompts({
@@ -109,9 +109,9 @@ const createPolicy = (accountId, pack) => __awaiter(void 0, void 0, void 0, func
     const response = yield client.request(policy_1.addPolicy, variables);
     return response.alertsPolicyCreate.id;
 });
-const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void 0, function* () {
+const createDashboardLocal = (accountId, quickstart) => __awaiter(void 0, void 0, void 0, function* () {
     const replacer = new RegExp('"accountId":0', 'g');
-    const dir = `${__dirname}/../../../../packs/${pack}/dashboards`;
+    const dir = `${__dirname}/../../../../quickstarts/${quickstart}/dashboards`;
     let importedFiles = [];
     try {
         importedFiles = fs_1.default
@@ -120,7 +120,7 @@ const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void
             .map(name => require(path_1.default.join(dir, name)));
     }
     catch (error) {
-        console.error(`Dashboard files for the name ${pack} not found. Did you provide the correct pack name?`);
+        console.error(`Dashboard files for the name ${quickstart} not found. Did you provide the correct quickstart name?`);
     }
     importedFiles.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         let existingDashboards = yield checkForExistingDashboards(file.name, accountId);
@@ -152,19 +152,19 @@ const createDashboardLocal = (accountId, pack) => __awaiter(void 0, void 0, void
         }
     }));
 });
-const createAlertLocal = (accountId, pack, policyId) => __awaiter(void 0, void 0, void 0, function* () {
+const createAlertLocal = (accountId, quickstart, policyId) => __awaiter(void 0, void 0, void 0, function* () {
     const variables = {
         accountId,
         condition: undefined,
         policyId,
     };
-    const dir = `${__dirname}/../../../../packs/${pack}/alerts`;
+    const dir = `${__dirname}/../../../../quickstarts/${quickstart}/alerts`;
     let fileNames = [];
     try {
         fileNames = fs_1.default.readdirSync(dir).filter(name => path_1.default.extname(name) === '.yml');
     }
     catch (error) {
-        console.error(`Alert files for the name ${pack} not found. Did you provide the correct pack name?`);
+        console.error(`Alert files for the name ${quickstart} not found. Did you provide the correct quickstart name?`);
     }
     fileNames.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         const loadedYaml = js_yaml_1.default.load(fs_1.default.readFileSync(`${dir}/${file}`, 'utf-8'));
@@ -316,8 +316,8 @@ function run() {
         try {
             const accountId = core.getInput('nr-account-id');
             const nrApiKey = core.getInput('nr-api-key');
-            const pack = core.getInput('pack-to-import');
-            importer_1.importer(accountId, nrApiKey, pack);
+            const quickstart = core.getInput('quickstart-to-import');
+            importer_1.importer(accountId, nrApiKey, quickstart);
         }
         catch (error) {
             core.setFailed(error.message);

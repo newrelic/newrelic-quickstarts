@@ -5,9 +5,9 @@ async function run(): Promise<void> {
 	try {
 		const accountId = core.getInput('nr-account-id') as unknown as number;
 		const nrApiKey = core.getInput('nr-api-key');
-		const pack = core.getInput('pack-to-import');
+		const quickstart = core.getInput('quickstart-to-import');
 
-		importer(accountId, nrApiKey, pack);
+		importer(accountId, nrApiKey, quickstart);
 	} catch (error) {
 		core.setFailed(error.message);
 	}

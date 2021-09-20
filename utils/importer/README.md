@@ -1,4 +1,4 @@
-# Import observability pack definitions
+# Import quickstart definitions
 
 The GitHub Action located in `.github/actions/import-data` validates the definition files for dashboards and alerts by executing those definitions against an account. The `importer.Dockerfile` wraps that node app for ease in running locally.
 
@@ -15,7 +15,7 @@ The importer expects 3 arguments, so you must supply those yourself:
 
 * accountId
 * nrApiKey
-* Name of the pack to install
+* Name of the quickstart to install
 
 ## Runnig via import.sh script
 
@@ -31,7 +31,7 @@ apiKey='NRAK-EXAMPLE'
 after that just run the import.sh like so:
 
 ```bash
-./import.sh pack
+./import.sh quickstart
 ```
 
-### Where **pack** is the name of the pack to install
+### Where **quickstart** is the name of the quickstart to install
