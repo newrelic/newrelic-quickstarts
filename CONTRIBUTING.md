@@ -8,31 +8,21 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
-    - [Required field best practices](#required-field-best-practices)
-      - [Title](#title)
-      - [Name](#name)
-      - [Description](#description)
-      - [Level](#level)
-      - [Author](#author)
-      - [Summary](#summary)
-    - [Optional field best practices](#optional-field-best-practices)
-    - [Images or screenshots](#images-or-screenshots)
-      - [Image recommended for best results](#image-recommended-for-best-results)
-    - [Logos](#logos)
-      - [logo recommendations or best results](#logo-recommendations-or-best-results)
+    - [Quick start best practices](#quick-start-best-practices)
+      - [InstallPlans](#installplans)
+      - [Summary & descriptions](#summary--descriptions)
+      - [Documentation](#documentation)
+      - [Levels](#levels)
+      - [Dashboard images (screenshots)](#dashboard-images-screenshots)
+      - [Logos](#logos)
     - [Icons](#icons)
-    - [Website URLs](#website-urls)
-    - [Image requirements](#image-requirements)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
-    - [Status Checks](#status-checks)
-      - [Schema Validation](#schema-validation)
-      - [Icon and Logo Validation](#icon-and-logo-validation)
   - [Using Conventional Commits](#using-conventional-commits)
-      - [Use `chore`](#use-chore)
-      - [Use `fix`](#use-fix)
-      - [Use `feat`](#use-feat)
+    - [Use `chore`](#use-chore)
+    - [Use `fix`](#use-fix)
+    - [Use `feat`](#use-feat)
   - [Contributor License Agreement](#contributor-license-agreement)
   - [Slack](#slack)
 <!-- tocstop -->
@@ -108,8 +98,7 @@ Alerts
 
 ## Quickstarts contributor guidelines
 
-We encourage all contributors to actively engage in the creation and maintenance of
-quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
+We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
 - `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs) for structure and limits you need to consider.
@@ -121,111 +110,98 @@ quickstarts. Whether you work at New Relic or use New Relic as a customer, the c
 When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
-### Required field best practices
+### Quick start best practices
 
-#### Name
+Before getting started, review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs)
+for quickstart structure and limits you need to consider.
 
-> The official name of the quickstart.
+#### InstallPlans
 
-- `Required`
-- limited to 100 characters
-- The a Github Action verifies name uniqueness.
-- Avoid PR collisions by checking if any [open PRs](https://github.com/newrelic/newrelic-observability-packs/pulls) are using the same name you wish to use.
-- Pack names are stripped of any punctuation and white space is replaced by `-` before doing any comparisons.
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
 
-#### Description
+- The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
+- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
 
-> A detailed description of the quickstart and why it's useful.
+#### Summary & descriptions
 
-- `Required`
-- Markdown or plain text
-- limited to 2000 characters
-- A Github Action verifies quickstart descriptions
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
-#### Level
+- Use the proper YAML formatting `|` for URL `description` and `summary`.
+- Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
 
-> The support level provided for the quickstart.
+```yml
+description: |
+  a description of the quickstart.
 
-- `Required`
-- set to `Community` level by default
-- Can only be modified by New Relic employees to set another level type
+summary: |
+  a summary of the quickstart.
+```
 
-#### Author
+#### Documentation
 
-> The creator(s) or contributors of the quickstart
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#documentation) for more details on `documentation`
 
-- `Required`
-- No limit to the amount of authors
-- A Github Action job verifies quickstart level
+- The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
+- The see installation docs buttons will always link to the primary `documentation URL`.
+- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+- Use the proper YAML formatting `|` for the URL description
+- Use the proper YAML formatting `>-` for documentation URL references.
+- Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
 
-#### Summary
+```yml
+documentation:
+  - name: Name of documentation
+    description: |
+      Description of documentation
+    url: >-
+      https://docs.newrelic.com/docs/url/
 
-> A brief summary of the quickstart functionality.
+```
 
-- `Required`
-- Plain text only
-- limited to 250 characters
+#### Levels
 
-### Optional field best practices
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#level) for more details on `levels`
 
-Other fields in a quickstart are optional but it's recommended you consider the following to offer the best possible quickstart
-experience for users.
+- All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
+- Levels can only be modified by New Relic employees.
+- If you have questions on how to increase the level of support please file an [issue](../../issues)
 
+#### Dashboard images (screenshots)
 
-### Images or screenshots
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
 
-> Images of dashboards, visualizations, or nerdpacks.
-
-- `Optional`
+- Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
 - file name should be `quickstart_name01`, `quickstart_name02`, etc
-- Images for dashboards should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
-- Icons and logo files should go in the root quickstart directory, `/quickstarts_name01`
-- jpeg or png format
-- 4MB or smaller
-- 6 max images
+- Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
+- Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+- Each image file must be less than `4MB` in size
+- There should be no more than `6`  dashboard images per dashboard
+- For best results use aspect ratio: 3:2
+- For best results use 800 px (width)
+- For best results use 1600 px (height)
 
-#### Image recommended for best results
+#### Logos
 
-- Aspect ratio: 3:2
-- 800 px (width)
-- 1600 px (height)
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#logo) for more details `logos`
 
-### Logos
-
-> The logo or brand image of the quickstart.
-
-- `Optional`
-- .png or .jpeg or .svg format
+- Logo files should go in the root quickstart directory, `/quickstarts_name01`
+- Logos are `optional` but highly recommended to call attention to your quickstart.
+- `.png` or `.jpeg` or `.svg` format
 - Max 1
-
-#### logo recommendations or best results
-
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
 
 ### Icons
 
-- `Optional`
-- Not currently used
-- .png or .jpeg or .svg format
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#icon) for more details on `icon`
+
+- Icons are `optional` and not currently used in the UI.
+- `.png` or `.jpeg` or `.svg` format
 - Max 1
 
-### Website URLs
-
-> a reference to a website relating to the quickstart.
-
-- `Optional`
-- Valid URL only https://www.newrelic.com
-
-### Image requirements
-
-In order for your PR to pass Validation, the images included in your quickstart must meet the following requirements:
-
- - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
- - Each image file must be less than `4MB` in size
- - There should be no more than `6` images in your quickstart's component folders
-
 ### Keywords
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#keywords) for more details on `keywords`
 
 When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
 the New Relic One I/O Catalog and the External I/O Catalog.
@@ -236,6 +212,38 @@ keywords:
   - another keyword
   - yet another keyword
 ```
+
+Keywords are strictly defined and you should provide a standard set of keywords in your quickstart from the list below. If you submit a keyword
+that is not defined in this list below, it will be reviewed for use after you submit a PR.
+
+- apm
+- automation
+- cms
+- containers
+- content management system
+- database
+- golang
+- infrastructure
+- java
+- kubernetes
+- language agent
+- load balancer
+- messaging
+- mobile
+- .net
+- networking
+- node.js
+- os
+- operating system
+- open source monitoring
+- php
+- python
+- queue
+- ruby
+- synthetics
+- testing
+- tracing
+- windows
 
 ## Feature Requests
 
@@ -250,22 +258,12 @@ Before submitting an Issue, please search for similar ones in the
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
 
-### Status Checks
-
-#### Schema Validation
-
-One of the required checks is ensuring that submitted quickstarts and their components are valid. To be valid, a configuration file needs to have all required fields filled out, with all fields having appropriate values. The schemas for those checks live in [utils/schemas](./utils/schemas).
-
-#### Icon and Logo Validation
-
-If icon and logo are supplied in the config, this check ensures that the referenced images exist.
-
 ## Using Conventional Commits
 
 Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
 standards in your pull request title and commit messages.
 
-#### Use `chore`
+### Use `chore`
 
 - for minor changes / additions / corrections to content.
 - for minor changes / additions / corrections to images.
@@ -275,7 +273,7 @@ standards in your pull request title and commit messages.
 git commit -m "chore: adjusting config and content"
 ```
 
-#### Use `fix`
+### Use `fix`
 
 - for minor functional corrections to code.
 
@@ -283,7 +281,7 @@ git commit -m "chore: adjusting config and content"
 git commit -m "fix: typo and prop error in the code of conduct"
 ```
 
-#### Use `feat`
+### Use `feat`
 
 - for major functional changes or additions to code.
 
@@ -300,4 +298,4 @@ For more information about CLAs, please check out Alex Russell’s excellent pos
 
 ## Slack
 
-We host a internal project [Slack channel](https://newrelic.slack.com/archives/G01N33Y8P3K) for this project while it's in development. You can contact the teams working on this initiative with any questions here.
+We host an internal help [Slack channel](https://newrelic.slack.com/archives/C02CM0D5QBF). You can contact the teams supporting quickstarts and I/O with any questions here.
