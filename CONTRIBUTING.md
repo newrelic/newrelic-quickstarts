@@ -147,7 +147,6 @@ summary: |
 - Use the proper YAML formatting `>-` for URL documentation references.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
 
-
 ```yml
 documentation:
   - name: Name of documentation
