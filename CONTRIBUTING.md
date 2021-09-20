@@ -144,15 +144,17 @@ summary: |
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
 - Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
-- Use the proper YAML formatting `>-` for URL documentation references.
+- Use the proper YAML formatting `|` for the URL description
+- Use the proper YAML formatting `>-` for documentation URL references.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
 
 ```yml
 documentation:
   - name: Name of documentation
-    description: >-
+    description: |
       Description of documentation
-    url: https://docs.newrelic.com/docs/url/
+    url: >-
+      https://docs.newrelic.com/docs/url/
 
 ```
 
