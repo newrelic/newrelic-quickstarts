@@ -1,3 +1,10 @@
+# [0.26.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.25.0...v0.26.0) (2021-09-20)
+
+
+### Features
+
+* added notice on OHI's that we will install New Relic Infra ([37beb61](https://github.com/newrelic/newrelic-observability-packs/commit/37beb61d25138c89c143c7b2acd181b48589ca85))
+
 # [0.25.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.1...v0.25.0) (2021-09-20)
 
 
