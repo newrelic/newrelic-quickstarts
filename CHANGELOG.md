@@ -1,3 +1,11 @@
+# [0.25.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.1...v0.25.0) (2021-09-20)
+
+
+### Features
+
+* **network-ingest:** adding NPM consumption pack ([8ba6544](https://github.com/newrelic/newrelic-observability-packs/commit/8ba65442f1ca599e3f8994e0ffaa8343736f9f80))
+* **routers-and-switches:** adding network SNMP pack ([c415e32](https://github.com/newrelic/newrelic-observability-packs/commit/c415e3213d64ee07a30082f779c6ff5da0db9171))
+
 ## [0.24.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.0...v0.24.1) (2021-09-20)
 
 
