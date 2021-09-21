@@ -1,3 +1,10 @@
+## [0.26.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.0...v0.26.1) (2021-09-21)
+
+
+### Bug Fixes
+
+* fix Java dashboard screenshot names ([2644099](https://github.com/newrelic/newrelic-observability-packs/commit/26440993538f92ddc73b45c2402b5f24584c0030))
+
 # [0.26.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.25.0...v0.26.0) (2021-09-20)
 
 
