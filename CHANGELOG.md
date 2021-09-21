@@ -1,3 +1,46 @@
+# [0.27.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.1...v0.27.0) (2021-09-21)
+
+
+### Features
+
+* **apm:** use setup nerdlets as fallback ([1ad2656](https://github.com/newrelic/newrelic-observability-packs/commit/1ad2656c373e65f1ea1131d17c899a4d095934b9))
+
+## [0.26.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.0...v0.26.1) (2021-09-21)
+
+
+### Bug Fixes
+
+* fix Java dashboard screenshot names ([2644099](https://github.com/newrelic/newrelic-observability-packs/commit/26440993538f92ddc73b45c2402b5f24584c0030))
+
+# [0.26.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.25.0...v0.26.0) (2021-09-20)
+
+
+### Features
+
+* added notice on OHI's that we will install New Relic Infra ([37beb61](https://github.com/newrelic/newrelic-observability-packs/commit/37beb61d25138c89c143c7b2acd181b48589ca85))
+
+# [0.25.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.1...v0.25.0) (2021-09-20)
+
+
+### Features
+
+* **network-ingest:** adding NPM consumption pack ([8ba6544](https://github.com/newrelic/newrelic-observability-packs/commit/8ba65442f1ca599e3f8994e0ffaa8343736f9f80))
+* **routers-and-switches:** adding network SNMP pack ([c415e32](https://github.com/newrelic/newrelic-observability-packs/commit/c415e3213d64ee07a30082f779c6ff5da0db9171))
+
+## [0.24.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.0...v0.24.1) (2021-09-20)
+
+
+### Bug Fixes
+
+* removed beyond text from OHI dashboards ([676c714](https://github.com/newrelic/newrelic-observability-packs/commit/676c7140a5ebc78d5d43ff73b46acdfa02415300))
+
+# [0.24.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.23.0...v0.24.0) (2021-09-19)
+
+
+### Features
+
+* cleaned up infra requirement ([a86ec93](https://github.com/newrelic/newrelic-observability-packs/commit/a86ec930d9b74014606fc3a0603e9d4ccb1a96d8))
+
 # [0.23.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.22.0...v0.23.0) (2021-09-17)
 
 
