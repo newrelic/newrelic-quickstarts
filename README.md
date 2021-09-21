@@ -41,18 +41,18 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 3. Copy the `_template` directory and its content to a new directory within the `packs` folder. Choose a name which identifies the purpose of your quickstart, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. In your new directory, you'll find the following folders: `dashboards`, `alerts`, `instrumentation`. Each folder contains a template or template directories that you can use to create entities for your quickstart.
+4. In your new directory, you'll find the following folders: `dashboards` and `alerts` . Each folder contains a template or template directories that you can use to create entities for your quickstart.
 
-    For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
+- For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
 
-    > **Note:** You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
+- You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
       - `rabbitmq.json`
       - `rabbitmq.png` or `rabbitmq.jpeg`
       - `rabbitmq01.png`
       - `rabbitmq02.png`
 
-    This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
+- This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
 5. In your pack's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
 
@@ -98,7 +98,7 @@ We've included an `importer` utility for testing packs on your account. You can 
 
 New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find this project's topic/threads here:
 
->Add the url for the support thread here: discuss.newrelic.com
+- [Explorers Hub](https://discuss.newrelic.com/t/new-relic-one-quickstarts/161980)
 
 ## Contribute
 

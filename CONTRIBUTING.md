@@ -25,6 +25,7 @@
     - [Use `feat`](#use-feat)
   - [Contributor License Agreement](#contributor-license-agreement)
   - [Slack](#slack)
+  - [Partnerships](#partnerships)
 <!-- tocstop -->
 
 ## Welcome 👋
@@ -107,7 +108,7 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
-When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
+When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
 
 ### Quick start best practices
@@ -128,6 +129,7 @@ for quickstart structure and limits you need to consider.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
+- Descriptions shouldn't have `H1` headers. Use `H2` and `H3` only.
 
 ```yml
 description: |
@@ -299,3 +301,7 @@ For more information about CLAs, please check out Alex Russell’s excellent pos
 ## Slack
 
 We host an internal help [Slack channel](https://newrelic.slack.com/archives/C02CM0D5QBF). You can contact the teams supporting quickstarts and I/O with any questions here.
+
+## Partnerships
+
+> to be updated
