@@ -1,3 +1,10 @@
+# [0.27.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.1...v0.27.0) (2021-09-21)
+
+
+### Features
+
+* **apm:** use setup nerdlets as fallback ([1ad2656](https://github.com/newrelic/newrelic-observability-packs/commit/1ad2656c373e65f1ea1131d17c899a4d095934b9))
+
 ## [0.26.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.0...v0.26.1) (2021-09-21)
 
 
