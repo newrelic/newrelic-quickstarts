@@ -1,3 +1,128 @@
+## [0.26.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.0...v0.26.1) (2021-09-21)
+
+
+### Bug Fixes
+
+* fix Java dashboard screenshot names ([2644099](https://github.com/newrelic/newrelic-observability-packs/commit/26440993538f92ddc73b45c2402b5f24584c0030))
+
+# [0.26.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.25.0...v0.26.0) (2021-09-20)
+
+
+### Features
+
+* added notice on OHI's that we will install New Relic Infra ([37beb61](https://github.com/newrelic/newrelic-observability-packs/commit/37beb61d25138c89c143c7b2acd181b48589ca85))
+
+# [0.25.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.1...v0.25.0) (2021-09-20)
+
+
+### Features
+
+* **network-ingest:** adding NPM consumption pack ([8ba6544](https://github.com/newrelic/newrelic-observability-packs/commit/8ba65442f1ca599e3f8994e0ffaa8343736f9f80))
+* **routers-and-switches:** adding network SNMP pack ([c415e32](https://github.com/newrelic/newrelic-observability-packs/commit/c415e3213d64ee07a30082f779c6ff5da0db9171))
+
+## [0.24.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.24.0...v0.24.1) (2021-09-20)
+
+
+### Bug Fixes
+
+* removed beyond text from OHI dashboards ([676c714](https://github.com/newrelic/newrelic-observability-packs/commit/676c7140a5ebc78d5d43ff73b46acdfa02415300))
+
+# [0.24.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.23.0...v0.24.0) (2021-09-19)
+
+
+### Features
+
+* cleaned up infra requirement ([a86ec93](https://github.com/newrelic/newrelic-observability-packs/commit/a86ec930d9b74014606fc3a0603e9d4ccb1a96d8))
+
+# [0.23.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.22.0...v0.23.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* fix again config file ([abd4b94](https://github.com/newrelic/newrelic-observability-packs/commit/abd4b94ed707a4debc3eaa5e478ff277efbf866c))
+* remove config ([b2d17bc](https://github.com/newrelic/newrelic-observability-packs/commit/b2d17bc2e789ec77166e4530fddcebd6205fb5c2))
+
+
+### Features
+
+* **network-flow-devices:** adding network flow pack ([16ce41c](https://github.com/newrelic/newrelic-observability-packs/commit/16ce41c1cadec7476aa5a7a75f5ba1ca1715340a))
+
+# [0.22.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.1...v0.22.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **apache:** removed incorrect doc links ([3526352](https://github.com/newrelic/newrelic-observability-packs/commit/3526352c61b0963aa6d244c28ee889ca9aed6de0))
+* **browser:** switched type and destination ([726b7b1](https://github.com/newrelic/newrelic-observability-packs/commit/726b7b172df58e3cabe2675b5ea9b3c11b4f047a))
+* removed prometheus-node-exporter-for-mac-os as we now have an agent ([820f8b0](https://github.com/newrelic/newrelic-observability-packs/commit/820f8b0f5cf0f31f1580444ce84822f36de68611))
+* **lamp:** clean up code and added install plan ([448e45e](https://github.com/newrelic/newrelic-observability-packs/commit/448e45e2e9869d12ede6495903718dc7818c7d8c))
+* **synthetics:** removed another keyword ([ca035e5](https://github.com/newrelic/newrelic-observability-packs/commit/ca035e5de026d1d5aeca4e5e57ca4d38c094660a))
+
+
+### Features
+
+* **browser:** added install plan ([691d05b](https://github.com/newrelic/newrelic-observability-packs/commit/691d05b5cb27add0f1890c172dd2c4542f2964ab))
+* **databricks:** added install plan ([105a0f1](https://github.com/newrelic/newrelic-observability-packs/commit/105a0f1471b787614fd870b2d7f9da9317246d75))
+* **golden-signals-web:** added guided install plan ([e785eb1](https://github.com/newrelic/newrelic-observability-packs/commit/e785eb192b973694f1e6124e183d2d3e2b384068))
+* **jmx:** added missing install plan ([199fc0e](https://github.com/newrelic/newrelic-observability-packs/commit/199fc0ec6945c736aeb7a240249f31f42e487845))
+* **kafka:** added installation plan ([d713074](https://github.com/newrelic/newrelic-observability-packs/commit/d7130743101185169c12dacb393010eda1c86045))
+* **synthetics:** tags cleanup ([616b0c8](https://github.com/newrelic/newrelic-observability-packs/commit/616b0c898567a7ee79479f3f07d0354671ac5081))
+* **trendmicro:** added trendmicro-cloudone-conformity install plan ([b617f3a](https://github.com/newrelic/newrelic-observability-packs/commit/b617f3a43ebcd313710f9de487e92faa564aca30))
+* added synthetics ([f9c6963](https://github.com/newrelic/newrelic-observability-packs/commit/f9c6963d9ef2304f928e20f45801e2ed63a0d09d))
+
+## [0.21.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.21.0...v0.21.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* capitalization fixes ([938d196](https://github.com/newrelic/newrelic-observability-packs/commit/938d196cfd4e4da86c2a613e63e8e76a6fce1d83))
+* final copyedits ([4c7d7e2](https://github.com/newrelic/newrelic-observability-packs/commit/4c7d7e204556d1230b4a5a61672706abd729ebb8))
+* Remove "kit" ([f86f7fb](https://github.com/newrelic/newrelic-observability-packs/commit/f86f7fbbcc5b75aba30ee5aff7c817aa2b590eb3))
+
+# [0.21.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.1...v0.21.0) (2021-09-16)
+
+
+### Features
+
+* Add dashboards and alerts for node.js ([70a11ab](https://github.com/newrelic/newrelic-observability-packs/commit/70a11ab31932691d7b65226cb761f1a9e0622a91))
+* Add dashboards and alerts for python related quickstarts ([c5f3cbf](https://github.com/newrelic/newrelic-observability-packs/commit/c5f3cbf3ed14a5eae3b04a05615de1eae22462e7))
+
+## [0.20.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.20.0...v0.20.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* **nginx:** removed mentions of cassandra ([ca533c9](https://github.com/newrelic/newrelic-observability-packs/commit/ca533c99a759c338fbdec39583863f51a938675b))
+
+# [0.20.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.19.0...v0.20.0) (2021-09-16)
+
+
+### Features
+
+* Add dashboards and alerts for .NET quickstarts ([a389fd4](https://github.com/newrelic/newrelic-observability-packs/commit/a389fd4d2e0accf7c146e89b6e91d8b1487b175e))
+
+# [0.19.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.1...v0.19.0) (2021-09-16)
+
+
+### Bug Fixes
+
+* Fix alerts for adobe-cq ([23962c1](https://github.com/newrelic/newrelic-observability-packs/commit/23962c15a9194e6bc3bc48ae5668adfbd60d5734))
+* fix alerts for java related quickstarts ([b2ed5c7](https://github.com/newrelic/newrelic-observability-packs/commit/b2ed5c7e0e0ae0963bc19ec1253cf091445a9eef))
+* fix java error thresholds ([41622c9](https://github.com/newrelic/newrelic-observability-packs/commit/41622c96cce388721bd6e4f1e34f71c8c562ce98))
+
+
+### Features
+
+* Add dashboards, alerts, descriptions for Java related quickstarts ([1a7a4ad](https://github.com/newrelic/newrelic-observability-packs/commit/1a7a4ad71234c404f98624049fbea0ea8e753307))
+
+## [0.18.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.18.0...v0.18.1) (2021-09-15)
+
+
+### Bug Fixes
+
+* move generate-uuid job under the release wf ([c2a662e](https://github.com/newrelic/newrelic-observability-packs/commit/c2a662e65088406c614bd0d4402e36a5684413d9))
+* update fetch depth ([3bb6502](https://github.com/newrelic/newrelic-observability-packs/commit/3bb6502d77f7592b89eaaf30c385513ed7b5a858))
+
 # [0.18.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.17.0...v0.18.0) (2021-09-15)
 
 
