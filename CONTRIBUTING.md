@@ -13,7 +13,6 @@
       - [Description](#description)
       - [Level](#level)
       - [Author](#author)
-      - [Summary](#summary)
     - [Optional field best practices](#optional-field-best-practices)
     - [Images or screenshots](#images-or-screenshots)
       - [Image recommended for best results](#image-recommended-for-best-results)
@@ -136,10 +135,8 @@ When creating a new quickstart or reviewing a PR please keep the following in mi
 
 > A detailed description of the quickstart and why it's useful.
 
-- `Required`
-- Markdown or plain text
-- limited to 2000 characters
-- A Github Action verifies quickstart descriptions
+
+> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
 #### Level
 
@@ -157,13 +154,14 @@ When creating a new quickstart or reviewing a PR please keep the following in mi
 - No limit to the amount of authors
 - A Github Action job verifies quickstart level
 
-#### Summary
-
-> A brief summary of the quickstart functionality.
-
-- `Required`
-- Plain text only
-- limited to 250 characters
+```yml
+documentation:
+  - name: Name of documentation
+    description: |
+      Description of documentation
+    url: >-
+      https://docs.newrelic.com/docs/url/
+```
 
 ### Optional field best practices
 
