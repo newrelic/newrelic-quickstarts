@@ -1,3 +1,11 @@
+## [0.28.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.0...v0.28.1) (2021-09-22)
+
+
+### Bug Fixes
+
+* final copyedits ([84ac411](https://github.com/newrelic/newrelic-observability-packs/commit/84ac41153f5dea40d7a06ad9f0f47e1e44ddcc67))
+* reduce character count ([15b2c53](https://github.com/newrelic/newrelic-observability-packs/commit/15b2c53ba4929bdb781c327cae2ba1a039f3d772))
+
 # [0.28.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.27.0...v0.28.0) (2021-09-22)
 
 
