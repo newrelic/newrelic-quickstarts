@@ -1,3 +1,12 @@
+## [0.28.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.1...v0.28.2) (2021-09-22)
+
+
+### Bug Fixes
+
+* fix latest merge conflicts ([3215aba](https://github.com/newrelic/newrelic-observability-packs/commit/3215abab2233d2626215e541f49af1e64ef698e9))
+* fix merge conflicts ([116863b](https://github.com/newrelic/newrelic-observability-packs/commit/116863b33106c90e6aa791cfa96ed75a1692c51c))
+* remove dangling char ([5558f5f](https://github.com/newrelic/newrelic-observability-packs/commit/5558f5fffeb977d22ce788cbd1b65140a9cde46e))
+
 ## [0.28.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.0...v0.28.1) (2021-09-22)
 
 
