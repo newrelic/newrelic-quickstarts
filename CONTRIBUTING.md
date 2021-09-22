@@ -125,6 +125,7 @@ for quickstart structure and limits you need to consider.
 
 #### Summary & descriptions
 
+
 > See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
@@ -157,7 +158,6 @@ documentation:
       Description of documentation
     url: >-
       https://docs.newrelic.com/docs/url/
-
 ```
 
 #### Levels
