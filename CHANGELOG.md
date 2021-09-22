@@ -1,3 +1,10 @@
+## [0.28.3](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.2...v0.28.3) (2021-09-22)
+
+
+### Bug Fixes
+
+* fix usage of pipe ([37dd95a](https://github.com/newrelic/newrelic-observability-packs/commit/37dd95a35d1446e3b7dd0eeb84ce7baf733ffbab))
+
 ## [0.28.2](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.1...v0.28.2) (2021-09-22)
 
 
