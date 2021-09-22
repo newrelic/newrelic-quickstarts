@@ -1,3 +1,16 @@
+# [0.28.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.27.0...v0.28.0) (2021-09-22)
+
+
+### Bug Fixes
+
+* Change header sizes ([58a8867](https://github.com/newrelic/newrelic-observability-packs/commit/58a8867afdd3db82af4e02d52c79ca8082f61fe5))
+
+
+### Features
+
+* add dotnet dnn-evoq pack ([0c6fe2c](https://github.com/newrelic/newrelic-observability-packs/commit/0c6fe2cf568e56872d2dd34fd9eaab603b48aa3e))
+* add golang pkg-errors pack ([ddc4c2e](https://github.com/newrelic/newrelic-observability-packs/commit/ddc4c2e4f1b1e35ae76944efc6075d0c6d67b3f5))
+
 # [0.27.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.26.1...v0.27.0) (2021-09-21)
 
 
