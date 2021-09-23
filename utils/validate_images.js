@@ -11,7 +11,7 @@ const {
 
 const glob = require('glob');
 const path = require('path');
-const BASE_PATH = '../packs/';
+const BASE_PATH = '../quickstarts/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
