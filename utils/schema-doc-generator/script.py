@@ -11,7 +11,7 @@ def reword_footer(file_path):
         for line in f:
             search_string = "Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans)"
             if search_string in line:
-                # this line strips off the timestamp, so the file doesn't all change and get picked up by git
+                # this strips off the timestamp part of the line. this should result in less doc commits since the file should be changing less frequently -- as opposed to every time the action runs.
                 line = "Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans)"
             sys.stdout.write(line)
 
