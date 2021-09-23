@@ -102,10 +102,10 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 To run the import function from cli, enter the following command:
 
 ``` bash
-npm run import -- --accountId=number --nrApiKey=string packName
+npm run import -- --accountId=number --nrApiKey=string quickstartName
 ```
 
 where:
 accountId is the newrelic account id
 nrApiKey is the personal new relic api key
-packName is the name of the dashboard/alerts pack you want to import, for example: mysql
+quickstartName is the name of the dashboard/alerts quickstart you want to import, for example: mysql
