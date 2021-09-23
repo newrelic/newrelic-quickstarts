@@ -5,13 +5,13 @@ const {
   getFileSize,
   getFileExtension,
   globFiles,
-  readPackFile,
-  findMainPackConfigFiles,
+  readQuickstartFile,
+  findMainQuickstartConfigFiles,
 } = require('./helpers');
 
 const glob = require('glob');
 const path = require('path');
-const BASE_PATH = '../packs/';
+const BASE_PATH = '../quickstarts/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
@@ -21,20 +21,20 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
  * @param {Array} files - The array of globbed file names
  */
 
-const validateImageCounts = (packDirs) => {
-  const directories = packDirs
-    .map((pack) => {
-      const packDirName = path.dirname(pack);
-      // get all images for pack
+const validateImageCounts = (quickstartDirs) => {
+  const directories = quickstartDirs
+    .map((quickstart) => {
+      const quickstartDirName = path.dirname(quickstart);
+      // get all images for a quickstart
       const imagePaths = glob.sync(
-        path.resolve(path.dirname(pack), '**/*.+(png|jpeg|jpg|svg)')
+        path.resolve(path.dirname(quickstart), '**/*.+(png|jpeg|jpg|svg)')
       );
-      const packConfig = readPackFile(pack).contents[0];
-      const iconPath = packConfig.icon
-        ? path.resolve(path.dirname(pack), packConfig.icon)
+      const quickstartConfig = readQuickstartFile(quickstart).contents[0];
+      const iconPath = quickstartConfig.icon
+        ? path.resolve(path.dirname(quickstart), quickstartConfig.icon)
         : null;
-      const logoPath = packConfig.logo
-        ? path.resolve(path.dirname(pack), packConfig.logo)
+      const logoPath = quickstartConfig.logo
+        ? path.resolve(path.dirname(quickstart), quickstartConfig.logo)
         : null;
 
       const screenshotPaths = imagePaths.filter(
@@ -43,7 +43,7 @@ const validateImageCounts = (packDirs) => {
 
       if (screenshotPaths.length > MAX_NUM_IMG) {
         return {
-          folder: packDirName,
+          folder: quickstartDirName,
           imageCount: screenshotPaths.length,
         };
       }
@@ -98,8 +98,8 @@ const validateImageExtensions = (globbedFiles) => {
 };
 
 const main = () => {
-  const packDirs = findMainPackConfigFiles();
-  validateImageCounts(packDirs);
+  const quickstartDirs = findMainQuickstartConfigFiles();
+  validateImageCounts(quickstartDirs);
 
   const globbedFiles = globFiles(BASE_PATH);
   validateFileSizes(globbedFiles);
@@ -107,7 +107,7 @@ const main = () => {
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_packs.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */
