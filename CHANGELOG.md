@@ -1,3 +1,10 @@
+## [0.29.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.0...v0.29.1) (2021-09-23)
+
+
+### Bug Fixes
+
+* **ruby:** fix reference to agent ([2633c46](https://github.com/newrelic/newrelic-observability-packs/commit/2633c46ffd1fedd2174c13c66069726094b762a0))
+
 # [0.29.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.3...v0.29.0) (2021-09-22)
 
 
