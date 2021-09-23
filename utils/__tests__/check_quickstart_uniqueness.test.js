@@ -1,5 +1,5 @@
 'use strict';
-const checkQuickstartUniquess = require('../check_quickstart_uniqueness');
+const checkQuickstartUniqueness = require('../check_quickstart_uniqueness');
 const helpers = require('../helpers');
 
 jest.mock('fs');
@@ -31,7 +31,7 @@ describe('Action: check quickstart uniqueness', () => {
         contents: [{ name: 'exactmatch' }],
       });
 
-    checkQuickstartUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(5);
@@ -53,7 +53,7 @@ describe('Action: check quickstart uniqueness', () => {
         contents: [{ name: `e/xa"ct matc'h` }],
       });
 
-    checkQuickstartUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(5);
@@ -79,7 +79,7 @@ describe('Action: check quickstart uniqueness', () => {
         contents: [{ name: 'exactmatch' }],
       });
 
-    checkQuickstartUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(6);
@@ -100,7 +100,7 @@ describe('Action: check quickstart uniqueness', () => {
         contents: [{ name: 'not a match' }],
       });
 
-    checkQuickstartUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).toHaveBeenCalled();
     expect(global.console.error).not.toHaveBeenCalled();
@@ -136,7 +136,7 @@ describe('Action: check quickstart uniqueness', () => {
         contents: [{ name: 'match3' }],
       });
 
-    checkQuickstartUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(7);
