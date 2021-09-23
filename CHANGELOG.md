@@ -1,3 +1,23 @@
+# [0.31.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.30.0...v0.31.0) (2021-09-23)
+
+
+### Bug Fixes
+
+* explicitly check `main` during release ([c3ae7c8](https://github.com/newrelic/newrelic-quickstarts/commit/c3ae7c8bb5baddb85c709a1ebea4c0994a364a1d))
+* **grafana:** added authors to pack ([607f759](https://github.com/newrelic/newrelic-quickstarts/commit/607f759702c733f2153cbf61e9d48f15a8736954))
+* set fetch depth and lock semantic release ver ([943a066](https://github.com/newrelic/newrelic-quickstarts/commit/943a0663ed9dbafb7ef24a21204dbca2c1815df2))
+* update directory for release workflow ([9d21bf9](https://github.com/newrelic/newrelic-quickstarts/commit/9d21bf93533e10e13acbfb62324d32e1531f7eed))
+
+
+### Features
+
+* **grafana:** added Grafana integration and migration toolkit quickstarts ([ef667a2](https://github.com/newrelic/newrelic-quickstarts/commit/ef667a2b3a60e6048d4fad1d08c331098d39ef5f))
+* **rename:** catch all updates ([448ba62](https://github.com/newrelic/newrelic-quickstarts/commit/448ba6253eb5ea9edafef0a64c5f41ceab6cfa4d))
+* **rename:** move `/packs` to `/quickstarts` ([d7706f6](https://github.com/newrelic/newrelic-quickstarts/commit/d7706f6fe58edb36d1a578c9e6b83cf294b2d1fe))
+* **rename:** update scripts ([337c1dc](https://github.com/newrelic/newrelic-quickstarts/commit/337c1dc01ff55bdc30a0b4002024492f399bc80f))
+* **rename:** update unit tests ([b10cfec](https://github.com/newrelic/newrelic-quickstarts/commit/b10cfecc77532b365a2f1237f262a3a4e8faefed))
+* **xamarin:** Added xamarin instructions in the observability-packs ([1c65900](https://github.com/newrelic/newrelic-quickstarts/commit/1c65900c974554694b6d4cb30d979e9df4fd63af))
+
 # [0.30.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.1...v0.30.0) (2021-09-23)
 
 
