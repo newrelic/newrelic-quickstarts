@@ -38,11 +38,18 @@ const convertErrors = (ajvErrors) => {
           e.params.allowedValues
         )}`;
         return { message };
-      case e.keyword === 'required' && e.instancePath != '':
+      case e.keyword === 'required':
+        message =
+          e.instancePath === ''
+            ? `${e.message}`
+            : `'${e.instancePath}' ${e.message}`;
+        return { message };
+      case e.instancePath !== '':
         message = `'${e.instancePath}' ${e.message}`;
         return { message };
       default:
-        return { message: e.message };
+        message = `'${e.schemaPath}' ${e.message}`;
+        return { message };
     }
   });
 

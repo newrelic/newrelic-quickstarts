@@ -182,6 +182,16 @@ describe('test validateFile', () => {
 
       expect(errors.length).toBe(1);
     });
+
+    test('ensure error output is correct for null description', () => {
+      const dashboardTestFile = getTestFile('dashboard');
+      dashboardTestFile.contents[0].description = null;
+
+      const { errors } = validateFile(dashboardTestFile);
+
+      expect(errors.length).toBe(1);
+      expect(errors[0].message).toBe("'/description' must be string");
+    });
   });
 
   describe('flex validation', () => {
