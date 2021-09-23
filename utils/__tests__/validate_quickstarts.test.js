@@ -2,7 +2,7 @@ const {
   validateFile,
   convertErrors,
   printErrors,
-} = require('../validate_packs');
+} = require('../validate_quickstarts');
 
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -464,7 +464,7 @@ describe('test printErrors', () => {
   test('displays correct output', () => {
     const mockFileErrors = [
       {
-        path: `newrelic-observability-packs/fake_path`,
+        path: `newrelic-quickstarts/fake_path`,
         errors: [
           {
             message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
@@ -475,7 +475,7 @@ describe('test printErrors', () => {
         ],
       },
       {
-        path: `newrelic-observability-packs/fake_path_2`,
+        path: `newrelic-quickstarts/fake_path_2`,
         errors: [
           {
             message: `'/type' must be equal to one of the allowed values: ["RED","BLUE","GREEN"]`,

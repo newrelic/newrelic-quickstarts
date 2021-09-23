@@ -1,27 +1,27 @@
 'use strict';
-const checkPackUniquess = require('../check_pack_uniqueness');
+const checkQuickstartUniqueness = require('../check_quickstart_uniqueness');
 const helpers = require('../helpers');
 
 jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
-  readPackFile: jest.fn(),
+  readQuickstartFile: jest.fn(),
   removeRepoPathPrefix: jest.fn(),
-  findMainPackConfigFiles: jest.fn(),
+  findMainQuickstartConfigFiles: jest.fn(),
 }));
 
-describe('Action: check pack uniqueness', () => {
+describe('Action: check quickstart uniqueness', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   test('finds exact match', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
-    helpers.readPackFile
+    helpers.readQuickstartFile
       .mockReturnValueOnce({
         path: 'testpath',
         contents: [{ name: 'exactmatch' }],
@@ -31,19 +31,19 @@ describe('Action: check pack uniqueness', () => {
         contents: [{ name: 'exactmatch' }],
       });
 
-    checkPackUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(5);
   });
 
   test('finds match with different punctuation', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
 
-    helpers.readPackFile
+    helpers.readQuickstartFile
       .mockReturnValueOnce({
         path: 'testpath',
         contents: [{ name: 'exact match' }],
@@ -53,19 +53,19 @@ describe('Action: check pack uniqueness', () => {
         contents: [{ name: `e/xa"ct matc'h` }],
       });
 
-    checkPackUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(5);
   });
 
   test('finds more than 2 matches', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
       'test/3/path/config.yml',
     ]);
-    helpers.readPackFile
+    helpers.readQuickstartFile
       .mockReturnValueOnce({
         path: 'testpath',
         contents: [{ name: 'exactmatch' }],
@@ -79,18 +79,18 @@ describe('Action: check pack uniqueness', () => {
         contents: [{ name: 'exactmatch' }],
       });
 
-    checkPackUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(6);
   });
 
   test('does not find match', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
     ]);
-    helpers.readPackFile
+    helpers.readQuickstartFile
       .mockReturnValueOnce({
         path: 'testpath',
         contents: [{ name: 'exactmatch' }],
@@ -100,21 +100,21 @@ describe('Action: check pack uniqueness', () => {
         contents: [{ name: 'not a match' }],
       });
 
-    checkPackUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).toHaveBeenCalled();
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
   test('finds and returns separate matches', () => {
-    helpers.findMainPackConfigFiles.mockReturnValueOnce([
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
       'test/path/config.yml',
       'test/2/path/config.yml',
       'test/3/path/config.yml',
       'test/4/path/config.yml',
       'test/5/path/config.yml',
     ]);
-    helpers.readPackFile
+    helpers.readQuickstartFile
       .mockReturnValueOnce({
         path: 'test/path/config.yml',
         contents: [{ name: 'match1' }],
@@ -136,7 +136,7 @@ describe('Action: check pack uniqueness', () => {
         contents: [{ name: 'match3' }],
       });
 
-    checkPackUniquess();
+    checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
     expect(global.console.error).toHaveBeenCalledTimes(7);
