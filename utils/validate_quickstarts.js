@@ -5,7 +5,7 @@ const Ajv = require('ajv');
 const { ErrorObject } = require('ajv');
 const ajv = new Ajv({ allErrors: true });
 
-const { readPackFile, removeRepoPathPrefix } = require('./helpers');
+const { readQuickstartFile, removeRepoPathPrefix } = require('./helpers');
 
 // schemas
 const mainConfigSchema = require('./schemas/main_config.json');
@@ -120,19 +120,19 @@ const validateFile = (file) => {
  * @param {String} basePath - the base path to search under, usually the current working directory
  * @returns {String[]} An array containing the file paths
  */
-const getPackFilePaths = (basePath) => {
+const getQuickstartFilePaths = (basePath) => {
   const options = {
     ignore: EXCLUDED_DIRECTORY_PATTERNS.map((d) => path.resolve(basePath, d)),
   };
 
   const yamlFilePaths = [
-    ...glob.sync(path.resolve(basePath, '../packs/**/*.yaml'), options),
-    ...glob.sync(path.resolve(basePath, '../packs/**/*.yml'), options),
+    ...glob.sync(path.resolve(basePath, '../quickstarts/**/*.yaml'), options),
+    ...glob.sync(path.resolve(basePath, '../quickstarts/**/*.yml'), options),
     ...glob.sync(path.resolve(basePath, '../install/**/*.yml'), options),
   ];
 
   const jsonFilePaths = glob.sync(
-    path.resolve(basePath, '../packs/**/*.json'),
+    path.resolve(basePath, '../quickstarts/**/*.json'),
     options
   );
 
@@ -155,8 +155,8 @@ const printErrors = (filesWithErrors) => {
 };
 
 const main = () => {
-  const filePaths = getPackFilePaths(process.cwd()).sort();
-  const files = filePaths.map(readPackFile);
+  const filePaths = getQuickstartFilePaths(process.cwd()).sort();
+  const files = filePaths.map(readQuickstartFile);
 
   const filesWithErrors = files
     .map(validateFile)
@@ -170,7 +170,7 @@ const main = () => {
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_packs.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */
