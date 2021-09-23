@@ -1,7 +1,7 @@
 # Summary
 
 A concise description of the changes being introduced. If you are submitting a PR for a
-new quickstart please review the Pre merge checklist section to validate this PR is ready for review.
+new quickstart please review the pre merge checklist section to validate this PR is ready for review.
 
 <!-- DON'T DELETE THIS SECTION BELOW IF SUBMITTING A NEW QUICKSTART -->
 ## Pre merge checklist
