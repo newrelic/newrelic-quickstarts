@@ -116,6 +116,8 @@ When creating a new quickstart or reviewing a PR please keep the following in mi
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs)
 for quickstart structure and limits you need to consider.
 
+You should also review the API limits for [dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-api/#limits)) and [alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/rules-limits-alerts/) to help you build your quickstart.
+
 #### InstallPlans
 
 > See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
