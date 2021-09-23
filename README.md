@@ -90,7 +90,7 @@ We've included an `importer` utility for testing quickstarts on your account. Yo
 
    ```bash
    # Usage:
-   ./import.sh $PACK_NAME
+   ./import.sh $QUICKSTART_NAME
 
    # Example
    > ./import.sh mysql
