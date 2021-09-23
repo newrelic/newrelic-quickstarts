@@ -1,3 +1,19 @@
+# [0.30.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.1...v0.30.0) (2021-09-23)
+
+
+### Bug Fixes
+
+* fix java screenshot filenames ([6c9b3f7](https://github.com/newrelic/newrelic-observability-packs/commit/6c9b3f75384964383143b6972392d1f5b41c78c0))
+
+
+### Features
+
+* **dotnet:** add apm snippet and improvements for .net dashboards ([67216bf](https://github.com/newrelic/newrelic-observability-packs/commit/67216bf847cc5340eaff3113e2c3e17d700b4237))
+* **java:** add apm snippet to java dashboards and other improvements ([5e21110](https://github.com/newrelic/newrelic-observability-packs/commit/5e21110f864bcf8e83399db41bfbf33a5a93a818))
+* **node.js:** Add apm snippet and improve dashboards ([76b1939](https://github.com/newrelic/newrelic-observability-packs/commit/76b193993aaa89d2deecb9fba266134d14f64e92))
+* **php:** add php dashboards with APM snippet and alerts ([065418c](https://github.com/newrelic/newrelic-observability-packs/commit/065418c0a8af8692fa916febfb2c885b1c063d15))
+* **python:** Add apm snippet and improve dashboards for python ([42c3737](https://github.com/newrelic/newrelic-observability-packs/commit/42c3737655528d63ef093ba7f88d71a7c6346d99))
+
 ## [0.29.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.0...v0.29.1) (2021-09-23)
 
 
