@@ -1,3 +1,10 @@
+# [0.29.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.3...v0.29.0) (2021-09-22)
+
+
+### Features
+
+* **[cribl-logstream]:** Added [cribl-logstreak-pack] ([fc862e3](https://github.com/newrelic/newrelic-observability-packs/commit/fc862e32dfe10b877da70f0faa2b8a3832cf6683))
+
 ## [0.28.3](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.2...v0.28.3) (2021-09-22)
 
 
