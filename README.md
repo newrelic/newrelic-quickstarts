@@ -56,7 +56,7 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 - This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
-5. In your pack's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
+5. In your quickstart's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
 
 6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
