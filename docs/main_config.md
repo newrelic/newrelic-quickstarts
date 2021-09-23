@@ -8,30 +8,30 @@
 
 **Description:** A minimal schema definition for quickstarts
 
-| Property                           | Pattern | Type             | Deprecated | Definition | Title/Description              |
-| ---------------------------------- | ------- | ---------------- | ---------- | ---------- | ------------------------------ |
-| + [name](#name )                   | No      | string           | No         | -          | The name schema                |
-| + [description](#description )     | No      | string           | No         | -          | The description schema         |
-| + [level](#level )                 | No      | enum (of string) | No         | -          | The level schema               |
-| + [authors](#authors )             | No      | array            | No         | -          | The authors schema             |
-| - [installPlans](#installPlans )   | No      | array            | No         | -          | The installPlans schema        |
-| + [title](#title )                 | No      | string           | No         | -          | The title schema               |
-| - [summary](#summary )             | No      | string           | No         | -          | The summary schema             |
-| - [keywords](#keywords )           | No      | array            | No         | -          | The keywords schema            |
-| - [children](#children )           | No      | object           | No         | -          | Displaying related child packs |
-| - [contributors](#contributors )   | No      | array            | No         | -          | The contributors schema        |
-| - [icon](#icon )                   | No      | string           | No         | -          | The icon schema                |
-| - [logo](#logo )                   | No      | string           | No         | -          | The logo schema                |
-| - [website](#website )             | No      | string           | No         | -          | The website schema             |
-| - [documentation](#documentation ) | No      | array            | No         | -          | The documentation schema       |
-|                                    |         |                  |            |            |                                |
+| Property                           | Pattern | Type             | Deprecated | Definition | Title/Description                    |
+| ---------------------------------- | ------- | ---------------- | ---------- | ---------- | ------------------------------------ |
+| + [name](#name )                   | No      | string           | No         | -          | The name schema                      |
+| + [description](#description )     | No      | string           | No         | -          | The description schema               |
+| + [level](#level )                 | No      | enum (of string) | No         | -          | The level schema                     |
+| + [authors](#authors )             | No      | array            | No         | -          | The authors schema                   |
+| - [installPlans](#installPlans )   | No      | array            | No         | -          | The installPlans schema              |
+| + [title](#title )                 | No      | string           | No         | -          | The title schema                     |
+| - [summary](#summary )             | No      | string           | No         | -          | The summary schema                   |
+| - [keywords](#keywords )           | No      | array            | No         | -          | The keywords schema                  |
+| - [children](#children )           | No      | object           | No         | -          | Displaying related child quickstarts |
+| - [contributors](#contributors )   | No      | array            | No         | -          | The contributors schema              |
+| - [icon](#icon )                   | No      | string           | No         | -          | The icon schema                      |
+| - [logo](#logo )                   | No      | string           | No         | -          | The logo schema                      |
+| - [website](#website )             | No      | string           | No         | -          | The website schema                   |
+| - [documentation](#documentation ) | No      | array            | No         | -          | The documentation schema             |
+|                                    |         |                  |            |            |                                      |
 
 **Example:** 
 
 ```json
 {
     "name": "apache",
-    "description": "The template pack allows you to get visibilility into the performance and available of your example service and dependencies. Use this pack together with the mock up integrations.",
+    "description": "The template quickstart allows you to get visibilility into the performance and available of your example service and dependencies. Use this quickstart together with the mock up integrations.",
     "level": "New Relic",
     "authors": [
         "New Relic"
@@ -41,17 +41,17 @@
         "id-2"
     ],
     "title": "Apache",
-    "short-description": "Short description of pack",
-    "full-description": "Full description of pack",
+    "short-description": "Short description of quickstart",
+    "full-description": "Full description of quickstart",
     "keywords": [
         "filters",
         "for",
         "searching"
     ],
     "children": {
-        "title": "Title of Pack",
-        "description": "Description of child pack",
-        "screenshots": "Screenshots of child pack"
+        "title": "Title of Quickstart",
+        "description": "Description of child quickstart",
+        "screenshots": "Screenshots of child quickstart"
     },
     "contributors": [
         {
@@ -65,7 +65,7 @@
     "website": "https://www.newrelic.com",
     "documentation": [
         {
-            "name": "How to use this pack",
+            "name": "How to use this quickstart",
             "url": "https://example.com",
             "description": "A brief summary of what this doc entails."
         }
@@ -112,7 +112,7 @@
 **Example:** 
 
 ```json
-"The template pack allows you to get visibilility into the performance and available of your example service and dependencies. Use this pack together with the mock up integrations."
+"The template quickstart allows you to get visibilility into the performance and available of your example service and dependencies. Use this quickstart together with the mock up integrations."
 ```
 
 ## <a name="level"></a>3. [Required] Property `root > level`
@@ -281,12 +281,12 @@ Must be one of:
 | **Default**               | `""`                                                                      |
 |                           |                                                                           |
 
-**Description:** The name of the pack displayed everywhere the pack is referenced
+**Description:** The name of the quickstart displayed everywhere the quickstart is referenced
 
 **Example:** 
 
 ```json
-"Title of Pack"
+"Title of Quickstart"
 ```
 
 ## <a name="summary"></a>7. [Optional] Property `root > summary`
@@ -299,7 +299,7 @@ Must be one of:
 | **Default**               | `""`                                                                      |
 |                           |                                                                           |
 
-**Description:** # Displayed in search results and recommendations. Summarizes a packs functionality.
+**Description:** # Displayed in search results and recommendations. Summarizes a quickstarts functionality.
 
 | Restrictions   |     |
 | -------------- | --- |
@@ -310,7 +310,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"Short description of pack"
+"Short description of quickstart"
 ```
 
 ## <a name="keywords"></a>8. [Optional] Property `root > keywords`
@@ -385,7 +385,7 @@ Must be one of:
 | **Default**               | `{}`                                                                      |
 |                           |                                                                           |
 
-**Description:** Displaying related child packs
+**Description:** Displaying related child quickstarts
 
 | Property                                | Pattern | Type   | Deprecated | Definition | Title/Description      |
 | --------------------------------------- | ------- | ------ | ---------- | ---------- | ---------------------- |
@@ -398,9 +398,9 @@ Must be one of:
 
 ```json
 {
-    "title": "Title of Pack",
-    "description": "Description of child pack",
-    "screenshots": "Screenshots of child pack"
+    "title": "Title of Quickstart",
+    "description": "Description of child quickstart",
+    "screenshots": "Screenshots of child quickstart"
 }
 ```
 
@@ -419,7 +419,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"Title of Pack"
+"Title of Quickstart"
 ```
 
 ### <a name="children_description"></a>9.2. [Optional] Property `root > children > description`
@@ -437,7 +437,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"Description of child pack"
+"Description of child quickstart"
 ```
 
 ### <a name="children_screenshots"></a>9.3. [Optional] Property `root > children > screenshots`
@@ -455,7 +455,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"Screenshots of child pack"
+"Screenshots of child quickstart"
 ```
 
 ## <a name="contributors"></a>10. [Optional] Property `root > contributors`
@@ -655,7 +655,7 @@ Must be one of:
 | **Default**               | `[]`                                                                      |
 |                           |                                                                           |
 
-**Description:** List of documentation links for this pack.
+**Description:** List of documentation links for this quickstart.
 
 |                      | Array restrictions |
 | -------------------- | ------------------ |
@@ -706,7 +706,7 @@ Must be one of:
 
 ```json
 {
-    "name": "How to use this pack",
+    "name": "How to use this quickstart",
     "url": "https://example.com",
     "description": "A brief summary of what this doc entails."
 }
@@ -727,7 +727,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"How to use this pack"
+"How to use this quickstart"
 ```
 
 ##### <a name="documentation_items_anyOf_i0_url"></a>14.1.1.2. Property `root > documentation > items > anyOf > The first anyOf schema > url`
@@ -763,7 +763,7 @@ Must be one of:
 **Example:** 
 
 ```json
-"How to install, enable, and use this pack."
+"How to install, enable, and use this quickstart."
 ```
 
 **Example:** 
@@ -771,7 +771,7 @@ Must be one of:
 ```json
 [
     {
-        "name": "How to use this pack",
+        "name": "How to use this quickstart",
         "url": "https://example.com",
         "description": "A brief summary of what this doc entails."
     }
@@ -779,4 +779,4 @@ Must be one of:
 ```
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-23 at 16:52:01 +0000
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-23 at 18:34:23 +0000
