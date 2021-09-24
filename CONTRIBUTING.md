@@ -127,12 +127,13 @@ You should also review the API limits for [dashboards](https://docs.newrelic.com
 
 #### Summary & descriptions
 
-
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
-- Descriptions shouldn't have `H1` headers. Use `H2` and `H3` only.
+- Descriptions shouldn't have `H1` `#` headers, and all `H1` `#` headers will be rendered to `H2` `##` by default.
+- Use only 1 `H2` `##` as your top header.
+- Use `H3` `###` only throughout the rest of your description. As the markdown only supports up to `H3` `###`.
 
 ```yml
 description: |
