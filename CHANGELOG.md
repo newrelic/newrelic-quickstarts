@@ -1,3 +1,10 @@
+## [0.31.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.0...v0.31.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* reduce nginx quickstart description length ([7538d78](https://github.com/newrelic/newrelic-quickstarts/commit/7538d7868cd56f8e7d348c5f71c0fcd157e288c2))
+
 # [0.31.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.30.0...v0.31.0) (2021-09-23)
 
 
