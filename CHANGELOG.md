@@ -1,3 +1,19 @@
+# [0.32.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.2...v0.32.0) (2021-09-24)
+
+
+### Bug Fixes
+
+* added missing install plans ([757a19e](https://github.com/newrelic/newrelic-quickstarts/commit/757a19e1339b296cd618013b7f6e153b83a7a167))
+* added missing tags to mac os and windows ([be06380](https://github.com/newrelic/newrelic-quickstarts/commit/be063805f3fdcf49f29a9bede134bcf1503e458b))
+* **fastly:** moved from packs to quickstarts ([fb12090](https://github.com/newrelic/newrelic-quickstarts/commit/fb1209021582f6ac2f7488a4efa4ef426e4e1e28))
+* fix null description ([55a63a0](https://github.com/newrelic/newrelic-quickstarts/commit/55a63a0667fc51f3bb61e0d275b838b7cac04485))
+
+
+### Features
+
+* added Mac OS ([6fa58ae](https://github.com/newrelic/newrelic-quickstarts/commit/6fa58aef5f0cbce910b8e1801fd44d558deea47f))
+* **windows:** added windows desktop and server ([91fcb55](https://github.com/newrelic/newrelic-quickstarts/commit/91fcb55912349a0d64e4017e565e4cc5e519f8b1))
+
 ## [0.31.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.1...v0.31.2) (2021-09-24)
 
 
