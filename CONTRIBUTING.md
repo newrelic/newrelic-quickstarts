@@ -116,21 +116,25 @@ When creating a new quickstart or reviewing a PR please keep the following in mi
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs)
 for quickstart structure and limits you need to consider.
 
+You should also review the API limits for [dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-api/#limits)) and [alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/rules-limits-alerts/) to help you build your quickstart.
+
 #### InstallPlans
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+- You can view all the available `installPlans` in the [Install](https://github.com/newrelic/newrelic-quickstarts/tree/main/install) directory.
 
 #### Summary & descriptions
-
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
-- Descriptions shouldn't have `H1` headers. Use `H2` and `H3` only.
+- Descriptions shouldn't have `H1` `#` headers, and all `H1` `#` headers will be rendered to `H2` `##` by default.
+- Use only 1 `H2` `##` as your top header.
+- Use `H3` `###` only throughout the rest of your description. As the markdown only supports up to `H3` `###`.
 
 ```yml
 description: |
