@@ -1,3 +1,11 @@
+## [0.32.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.32.0...v0.32.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* incorrect description for mac Os ([7858a80](https://github.com/newrelic/newrelic-quickstarts/commit/7858a8048b0e7ae95c7ec06bfe3dca7c3d1e952b))
+* **kubernetes:** add pixie to keywords ([462a891](https://github.com/newrelic/newrelic-quickstarts/commit/462a8915aecbbd26347bb47e7b8a8d4943ba104a))
+
 # [0.32.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.2...v0.32.0) (2021-09-24)
 
 
