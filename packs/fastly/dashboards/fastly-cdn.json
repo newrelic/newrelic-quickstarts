@@ -1,0 +1,227 @@
+{
+  "name": "Fastly",
+  "description": "",
+  "pages": [
+    {
+      "name": "Fastly I/O Launch Dashboard",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Fastly CDN Logs\n\n\n![Add Images](https://www.fastly.com/cimages/6pk8mg3yh2ee/1KOvYgrOJeCUndOpjcDOwJ/17832ecfed4f651168232c263cf6bcfd/og-image.jpg?canvas=1200:630&width=1200&height=630&fit=bounds&bg-color=FFFFFF)"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Total Bandwidth (All POPs)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Requests",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) AS 'Request Count', filter(count(*), WHERE response != 'OK') AS 'Error Count' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Response Status (Count)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status  "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 8,
+            "width": 4
+          },
+          "title": "Bandwidth by POP",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO FACET fastly_datacenter LIMIT MAX ORDER BY 'Total MB'"
+              }
+            ]
+          },
+          "linkedEntityGuids": ["MXxWSVp8REFTSEJPQVJEfDI1MTc0Mjk"]
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Top 5 URLs (503)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(url) AS 'Url Count' WHERE fastly_datacenter IS NOT NULL AND resp_status = '503' SINCE 1 day AGO FACET url LIMIT 5"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Top 5 URLs (2xx)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(url) AS 'Url Count' WHERE fastly_datacenter IS NOT NULL AND resp_status LIKE '2%' SINCE 1 day AGO FACET url LIMIT 5"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 4,
+            "width": 4
+          },
+          "title": "Client TTFB",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(client_resp_ttfb) AS 'Avg. Client TTFB (ms)', percentile(client_resp_ttfb,95) AS '95th Pct. Client TTFB (ms)' WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status TIMESERIES "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 4,
+            "width": 4
+          },
+          "title": "Duration by Response Status",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Avg. Duration (ms)', percentile(time_elapsed,95)/1000 AS '95th Pct. Duration (ms)' WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status TIMESERIES LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}
