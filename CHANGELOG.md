@@ -1,3 +1,10 @@
+## [0.31.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.1...v0.31.2) (2021-09-24)
+
+
+### Bug Fixes
+
+* **heroku:** reverted to docs only install as nerdlet is out of scope for launch ([6a75c09](https://github.com/newrelic/newrelic-quickstarts/commit/6a75c0984b18a756dd8bbbaca5172d20f9e0c1f0))
+
 ## [0.31.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.0...v0.31.1) (2021-09-24)
 
 
