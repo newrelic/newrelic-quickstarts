@@ -2,7 +2,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const { readPackFile, findMainPackConfigFiles } = require('./helpers');
+const {
+  readQuickstartFile,
+  findMainQuickstartConfigFiles,
+} = require('./helpers');
 
 /**
  * Method to validate icons and logos exist if supplied.
@@ -15,7 +18,7 @@ const validateIconAndLogo = (mainConfigPaths) => {
   for (const configPath of mainConfigPaths) {
     const {
       contents: [config],
-    } = readPackFile(configPath);
+    } = readQuickstartFile(configPath);
 
     if ('icon' in config) {
       // icon and logo will be supplied as relative paths, so we path.join on the directory of where the main config lives.
@@ -60,14 +63,14 @@ const handleErrors = (errorMessages) => {
 
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
-  var mainConfigPaths = findMainPackConfigFiles();
+  var mainConfigPaths = findMainQuickstartConfigFiles();
   var errorMessages = validateIconAndLogo(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_packs.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */

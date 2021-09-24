@@ -1,3 +1,76 @@
+# [0.32.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.2...v0.32.0) (2021-09-24)
+
+
+### Bug Fixes
+
+* added missing install plans ([757a19e](https://github.com/newrelic/newrelic-quickstarts/commit/757a19e1339b296cd618013b7f6e153b83a7a167))
+* added missing tags to mac os and windows ([be06380](https://github.com/newrelic/newrelic-quickstarts/commit/be063805f3fdcf49f29a9bede134bcf1503e458b))
+* **fastly:** moved from packs to quickstarts ([fb12090](https://github.com/newrelic/newrelic-quickstarts/commit/fb1209021582f6ac2f7488a4efa4ef426e4e1e28))
+* fix null description ([55a63a0](https://github.com/newrelic/newrelic-quickstarts/commit/55a63a0667fc51f3bb61e0d275b838b7cac04485))
+
+
+### Features
+
+* added Mac OS ([6fa58ae](https://github.com/newrelic/newrelic-quickstarts/commit/6fa58aef5f0cbce910b8e1801fd44d558deea47f))
+* **windows:** added windows desktop and server ([91fcb55](https://github.com/newrelic/newrelic-quickstarts/commit/91fcb55912349a0d64e4017e565e4cc5e519f8b1))
+
+## [0.31.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.1...v0.31.2) (2021-09-24)
+
+
+### Bug Fixes
+
+* **heroku:** reverted to docs only install as nerdlet is out of scope for launch ([6a75c09](https://github.com/newrelic/newrelic-quickstarts/commit/6a75c0984b18a756dd8bbbaca5172d20f9e0c1f0))
+
+## [0.31.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.31.0...v0.31.1) (2021-09-24)
+
+
+### Bug Fixes
+
+* reduce nginx quickstart description length ([7538d78](https://github.com/newrelic/newrelic-quickstarts/commit/7538d7868cd56f8e7d348c5f71c0fcd157e288c2))
+
+# [0.31.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.30.0...v0.31.0) (2021-09-23)
+
+
+### Bug Fixes
+
+* explicitly check `main` during release ([c3ae7c8](https://github.com/newrelic/newrelic-quickstarts/commit/c3ae7c8bb5baddb85c709a1ebea4c0994a364a1d))
+* **grafana:** added authors to pack ([607f759](https://github.com/newrelic/newrelic-quickstarts/commit/607f759702c733f2153cbf61e9d48f15a8736954))
+* set fetch depth and lock semantic release ver ([943a066](https://github.com/newrelic/newrelic-quickstarts/commit/943a0663ed9dbafb7ef24a21204dbca2c1815df2))
+* update directory for release workflow ([9d21bf9](https://github.com/newrelic/newrelic-quickstarts/commit/9d21bf93533e10e13acbfb62324d32e1531f7eed))
+
+
+### Features
+
+* **grafana:** added Grafana integration and migration toolkit quickstarts ([ef667a2](https://github.com/newrelic/newrelic-quickstarts/commit/ef667a2b3a60e6048d4fad1d08c331098d39ef5f))
+* **rename:** catch all updates ([448ba62](https://github.com/newrelic/newrelic-quickstarts/commit/448ba6253eb5ea9edafef0a64c5f41ceab6cfa4d))
+* **rename:** move `/packs` to `/quickstarts` ([d7706f6](https://github.com/newrelic/newrelic-quickstarts/commit/d7706f6fe58edb36d1a578c9e6b83cf294b2d1fe))
+* **rename:** update scripts ([337c1dc](https://github.com/newrelic/newrelic-quickstarts/commit/337c1dc01ff55bdc30a0b4002024492f399bc80f))
+* **rename:** update unit tests ([b10cfec](https://github.com/newrelic/newrelic-quickstarts/commit/b10cfecc77532b365a2f1237f262a3a4e8faefed))
+* **xamarin:** Added xamarin instructions in the observability-packs ([1c65900](https://github.com/newrelic/newrelic-quickstarts/commit/1c65900c974554694b6d4cb30d979e9df4fd63af))
+
+# [0.30.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.1...v0.30.0) (2021-09-23)
+
+
+### Bug Fixes
+
+* fix java screenshot filenames ([6c9b3f7](https://github.com/newrelic/newrelic-observability-packs/commit/6c9b3f75384964383143b6972392d1f5b41c78c0))
+
+
+### Features
+
+* **dotnet:** add apm snippet and improvements for .net dashboards ([67216bf](https://github.com/newrelic/newrelic-observability-packs/commit/67216bf847cc5340eaff3113e2c3e17d700b4237))
+* **java:** add apm snippet to java dashboards and other improvements ([5e21110](https://github.com/newrelic/newrelic-observability-packs/commit/5e21110f864bcf8e83399db41bfbf33a5a93a818))
+* **node.js:** Add apm snippet and improve dashboards ([76b1939](https://github.com/newrelic/newrelic-observability-packs/commit/76b193993aaa89d2deecb9fba266134d14f64e92))
+* **php:** add php dashboards with APM snippet and alerts ([065418c](https://github.com/newrelic/newrelic-observability-packs/commit/065418c0a8af8692fa916febfb2c885b1c063d15))
+* **python:** Add apm snippet and improve dashboards for python ([42c3737](https://github.com/newrelic/newrelic-observability-packs/commit/42c3737655528d63ef093ba7f88d71a7c6346d99))
+
+## [0.29.1](https://github.com/newrelic/newrelic-observability-packs/compare/v0.29.0...v0.29.1) (2021-09-23)
+
+
+### Bug Fixes
+
+* **ruby:** fix reference to agent ([2633c46](https://github.com/newrelic/newrelic-observability-packs/commit/2633c46ffd1fedd2174c13c66069726094b762a0))
+
 # [0.29.0](https://github.com/newrelic/newrelic-observability-packs/compare/v0.28.3...v0.29.0) (2021-09-22)
 
 

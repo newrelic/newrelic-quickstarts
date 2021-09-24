@@ -1,27 +1,27 @@
-# Observability Pack Configuration
+# Quickstart Flex Configuration
 
-**Title:** Observability Pack Configuration
+**Title:** Quickstart Flex Configuration
 
 | Type                      | `object`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 |                           |                                                                           |
 
-**Description:** A minimal schema definition for Observability Packs
+**Description:** A minimal schema definition for quickstart flex configurations
 
-| Property         | Pattern | Type   | Deprecated | Definition | Title/Description                          |
-| ---------------- | ------- | ------ | ---------- | ---------- | ------------------------------------------ |
-| + [name](#name ) | No      | string | No         | -          | The overall name of the Observability Pack |
-|                  |         |        |            |            |                                            |
+| Property         | Pattern | Type   | Deprecated | Definition | Title/Description                  |
+| ---------------- | ------- | ------ | ---------- | ---------- | ---------------------------------- |
+| + [name](#name ) | No      | string | No         | -          | The overall name of the quickstart |
+|                  |         |        |            |            |                                    |
 
-## <a name="name"></a>1. [Required] Property `Observability Pack Configuration > name`
+## <a name="name"></a>1. [Required] Property `Quickstart Flex Configuration > name`
 
 | Type                      | `string`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 |                           |                                                                           |
 
-**Description:** The overall name of the Observability Pack
+**Description:** The overall name of the quickstart
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-17 at 03:22:08 +0000
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-24 at 12:43:58 +0000

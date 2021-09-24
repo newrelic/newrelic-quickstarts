@@ -25,6 +25,7 @@
     - [Use `feat`](#use-feat)
   - [Contributor License Agreement](#contributor-license-agreement)
   - [Slack](#slack)
+  - [Partnerships](#partnerships)
 <!-- tocstop -->
 
 ## Welcome 👋
@@ -100,24 +101,24 @@ Alerts
 
 We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
-- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a pack.
-- `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs) for structure and limits you need to consider.
+- `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a quickstart.
+- `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs) for structure and limits you need to consider.
 - `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
 - `Step 5`: resolve feedback from code reviews.
 - `Step 6`: after approval, merge your PR.
 
-When creating a new Observability Pack or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-observability-packs/blob/main/.github/workflows/validate_packs.yml) for current validations.
+When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
+[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Quick start best practices
 
-Before getting started, review the [documentation](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs)
+Before getting started, review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs)
 for quickstart structure and limits you need to consider.
 
 #### InstallPlans
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
@@ -125,10 +126,11 @@ for quickstart structure and limits you need to consider.
 #### Summary & descriptions
 
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
+- Descriptions shouldn't have `H1` headers. Use `H2` and `H3` only.
 
 ```yml
 description: |
@@ -140,7 +142,7 @@ summary: |
 
 #### Documentation
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#documentation) for more details on `documentation`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#documentation) for more details on `documentation`
 
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
@@ -160,7 +162,7 @@ documentation:
 
 #### Levels
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#level) for more details on `levels`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#level) for more details on `levels`
 
 - All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
 - Levels can only be modified by New Relic employees.
@@ -168,7 +170,7 @@ documentation:
 
 #### Dashboard images (screenshots)
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
 
 - Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
 - file name should be `quickstart_name01`, `quickstart_name02`, etc
@@ -182,7 +184,7 @@ documentation:
 
 #### Logos
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#logo) for more details `logos`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details `logos`
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
 - Logos are `optional` but highly recommended to call attention to your quickstart.
@@ -193,7 +195,7 @@ documentation:
 
 ### Icons
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#icon) for more details on `icon`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#icon) for more details on `icon`
 
 - Icons are `optional` and not currently used in the UI.
 - `.png` or `.jpeg` or `.svg` format
@@ -201,7 +203,7 @@ documentation:
 
 ### Keywords
 
-> See the [docs](https://github.com/newrelic/newrelic-observability-packs/blob/main/docs/main_config.md#keywords) for more details on `keywords`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#keywords) for more details on `keywords`
 
 When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
 the New Relic One I/O Catalog and the External I/O Catalog.
@@ -299,3 +301,7 @@ For more information about CLAs, please check out Alex Russell’s excellent pos
 ## Slack
 
 We host an internal help [Slack channel](https://newrelic.slack.com/archives/C02CM0D5QBF). You can contact the teams supporting quickstarts and I/O with any questions here.
+
+## Partnerships
+
+> to be updated

@@ -21,7 +21,7 @@ jest.mock('../helpers', () => ({
   getFileSize: jest.fn(),
   globFiles: jest.fn(),
   isDirectory: jest.fn(),
-  readPackFile: jest.fn(),
+  readQuickstartFile: jest.fn(),
 }));
 
 const globMockSize = ['test/path/icon.png'];
@@ -80,7 +80,7 @@ describe('Action: validate images', () => {
   test('validateImageCounts, given <= 6 image files in a directory, does not throw an error', () => {
     const globMock = ['test/path/config'];
     mockGlobSync(['pineapple']);
-    helpers.readPackFile.mockReturnValue({ contents: [{}] });
+    helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
 
     validateImageCounts(globMock);
     expect(core.setFailed).not.toHaveBeenCalled();
@@ -90,7 +90,7 @@ describe('Action: validate images', () => {
   test('validateImageCounts, given > 6 image files in a directory, throws an error', () => {
     const globMock = ['test/path/'];
     mockGlobSync(['I', 'have', 'too', 'many', 'images', '>:)', '>:(']);
-    helpers.readPackFile.mockReturnValue({ contents: [{}] });
+    helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
 
     validateImageCounts(globMock);
     expect(core.setFailed).toHaveBeenCalled();
@@ -100,7 +100,9 @@ describe('Action: validate images', () => {
   test('validateImageCounts, given an icon, does not include the icon in image count', () => {
     const globMock = ['test/path/'];
     mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readPackFile.mockReturnValue({ contents: [{ icon: 'icon' }] });
+    helpers.readQuickstartFile.mockReturnValue({
+      contents: [{ icon: 'icon' }],
+    });
     mockPathResolve('icon');
 
     validateImageCounts(globMock);
@@ -111,7 +113,7 @@ describe('Action: validate images', () => {
   test('validateImageCounts, given an icon, includes icon in count if config path does not match', () => {
     const globMock = ['test/path/'];
     mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readPackFile.mockReturnValue({
+    helpers.readQuickstartFile.mockReturnValue({
       contents: [{ icon: 'wrong/icon/path' }],
     });
     mockPathResolve('wrong/icon/path');

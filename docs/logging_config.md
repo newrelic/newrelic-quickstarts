@@ -1,27 +1,27 @@
-# Observability Pack Synthetics Configuration
+# Quickstart Logging Configuration
 
-**Title:** Observability Pack Synthetics Configuration
+**Title:** Quickstart Logging Configuration
 
 | Type                      | `object`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 |                           |                                                                           |
 
-**Description:** Logging config for Observability Packs
+**Description:** Logging configuration for quickstarts
 
-| Property         | Pattern | Type   | Deprecated | Definition | Title/Description                     |
-| ---------------- | ------- | ------ | ---------- | ---------- | ------------------------------------- |
-| + [name](#name ) | No      | string | No         | -          | A descriptive name for the Synthetic. |
-|                  |         |        |            |            |                                       |
+| Property         | Pattern | Type   | Deprecated | Definition | Title/Description                                 |
+| ---------------- | ------- | ------ | ---------- | ---------- | ------------------------------------------------- |
+| + [name](#name ) | No      | string | No         | -          | A descriptive name for the logging configuration. |
+|                  |         |        |            |            |                                                   |
 
-## <a name="name"></a>1. [Required] Property `Observability Pack Synthetics Configuration > name`
+## <a name="name"></a>1. [Required] Property `Quickstart Logging Configuration > name`
 
 | Type                      | `string`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 |                           |                                                                           |
 
-**Description:** A descriptive name for the Synthetic.
+**Description:** A descriptive name for the logging configuration.
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-17 at 03:22:08 +0000
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-24 at 12:43:58 +0000

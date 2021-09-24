@@ -1,13 +1,13 @@
-# Observability Pack Alert Configuration
+# Quickstart Alert Configuration
 
-**Title:** Observability Pack Alert Configuration
+**Title:** Quickstart Alert Configuration
 
 | Type                      | `object`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 |                           |                                                                           |
 
-**Description:** Alert configuration schema for Observability Packs
+**Description:** Alert configuration schema for Quickstart
 
 | Property         | Pattern | Type             | Deprecated | Definition | Title/Description      |
 | ---------------- | ------- | ---------------- | ---------- | ---------- | ---------------------- |
@@ -16,7 +16,7 @@
 | + [nrql](#nrql ) | No      | object           | No         | -          | -                      |
 |                  |         |                  |            |            |                        |
 
-## <a name="name"></a>1. [Required] Property `Observability Pack Alert Configuration > name`
+## <a name="name"></a>1. [Required] Property `Quickstart Alert Configuration > name`
 
 | Type                      | `string`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -25,7 +25,7 @@
 
 **Description:** The name of the Alert.
 
-## <a name="type"></a>2. [Required] Property `Observability Pack Alert Configuration > type`
+## <a name="type"></a>2. [Required] Property `Quickstart Alert Configuration > type`
 
 | Type                      | `enum (of string)`                                                        |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -39,7 +39,7 @@ Must be one of:
 * "BASELINE"
 * "OUTLIER"
 
-## <a name="nrql"></a>3. [Required] Property `Observability Pack Alert Configuration > nrql`
+## <a name="nrql"></a>3. [Required] Property `Quickstart Alert Configuration > nrql`
 
 | Type                      | `object`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -51,7 +51,7 @@ Must be one of:
 | + [query](#nrql_query ) | No      | string | No         | -          | -                 |
 |                         |         |        |            |            |                   |
 
-### <a name="nrql_query"></a>3.1. [Required] Property `Observability Pack Alert Configuration > nrql > query`
+### <a name="nrql_query"></a>3.1. [Required] Property `Quickstart Alert Configuration > nrql > query`
 
 | Type                      | `string`                                                                  |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -59,4 +59,4 @@ Must be one of:
 |                           |                                                                           |
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-17 at 03:22:08 +0000
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2021-09-24 at 12:43:58 +0000
