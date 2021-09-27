@@ -1,3 +1,12 @@
+# [0.35.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.34.1...v0.35.0) (2021-09-27)
+
+
+### Features
+
+* added install plan for ibmmq ([40fa216](https://github.com/newrelic/newrelic-quickstarts/commit/40fa2166351e3d628ca319ebbe5791bfa3cf44e1))
+* added install plan for silex ([0a07dd6](https://github.com/newrelic/newrelic-quickstarts/commit/0a07dd6980c3073e03c1e59e29ad8f8a4e22727a))
+* added network flow docs installation plan ([b392d0f](https://github.com/newrelic/newrelic-quickstarts/commit/b392d0f0c571343dc6f4373dfb47c802107f9ab5))
+
 ## [0.34.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.34.0...v0.34.1) (2021-09-27)
 
 
