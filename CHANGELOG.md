@@ -1,3 +1,10 @@
+## [0.34.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.34.0...v0.34.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* move EJB to java directory ([a578cd0](https://github.com/newrelic/newrelic-quickstarts/commit/a578cd0480bf7002db5d04b00ba431277db19f28))
+
 # [0.34.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.33.0...v0.34.0) (2021-09-27)
 
 
