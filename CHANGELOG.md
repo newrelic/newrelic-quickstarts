@@ -1,3 +1,10 @@
+## [0.35.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.0...v0.35.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* build importer and update readme ([251a2a6](https://github.com/newrelic/newrelic-quickstarts/commit/251a2a67b7d9c10b6111f0e659399f74534d01a1))
+
 # [0.35.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.34.1...v0.35.0) (2021-09-27)
 
 
