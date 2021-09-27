@@ -1,3 +1,11 @@
+# [0.34.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.33.0...v0.34.0) (2021-09-27)
+
+
+### Features
+
+* Add featured keyword to partner quickstarts ([1490a00](https://github.com/newrelic/newrelic-quickstarts/commit/1490a00de840e8de875b24f8a6b467f041421957))
+* Add featured to Fastly ([f2917f4](https://github.com/newrelic/newrelic-quickstarts/commit/f2917f42537ae3453d29576bd83c929668661b6b))
+
 # [0.33.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.32.1...v0.33.0) (2021-09-27)
 
 
