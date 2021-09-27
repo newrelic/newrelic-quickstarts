@@ -104,8 +104,11 @@ To run the import function from cli, enter the following command:
 ``` bash
 npm run import -- --accountId=number --nrApiKey=string quickstartName
 ```
+If your quickstart is in a sub-directory please include that too for example `python/flask`
 
 where:
 accountId is the newrelic account id
 nrApiKey is the personal new relic api key
 quickstartName is the name of the dashboard/alerts quickstart you want to import, for example: mysql
+
+
