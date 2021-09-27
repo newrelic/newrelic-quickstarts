@@ -1,3 +1,10 @@
+# [0.33.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.32.1...v0.33.0) (2021-09-27)
+
+
+### Features
+
+* add documentation data source to gatsby build ([9528a2e](https://github.com/newrelic/newrelic-quickstarts/commit/9528a2e1628aecb320c803dd369878b1447e590a))
+
 ## [0.32.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.32.0...v0.32.1) (2021-09-24)
 
 
