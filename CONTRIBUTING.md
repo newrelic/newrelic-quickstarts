@@ -78,7 +78,7 @@ When writing about a quickstart the following language rules should be followed:
 
   Describe the specific features of your quickstart. Mentions things such as dashboard visuals, alerts, and the type of instrumentation. We recommend the following format:
 
-  Quick intro sentance:
+  Quick intro sentence:
   - First highlight
   - Second highlight
   - Third highlight
