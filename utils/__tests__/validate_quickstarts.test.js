@@ -183,14 +183,14 @@ describe('test validateFile', () => {
       expect(errors.length).toBe(1);
     });
 
-    test('ensure error output is correct for null description', () => {
+    test('ensure error output is correct for description thats not null or string', () => {
       const dashboardTestFile = getTestFile('dashboard');
-      dashboardTestFile.contents[0].description = null;
+      dashboardTestFile.contents[0].description = 1;
 
       const { errors } = validateFile(dashboardTestFile);
 
       expect(errors.length).toBe(1);
-      expect(errors[0].message).toBe("'/description' must be string");
+      expect(errors[0].message).toBe("'/description' must be string,null");
     });
   });
 
