@@ -1,3 +1,11 @@
+## [0.35.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.1...v0.35.2) (2021-09-28)
+
+
+### Bug Fixes
+
+* typo fix ([6e53786](https://github.com/newrelic/newrelic-quickstarts/commit/6e53786ce33b7caa458edd56c76ee010f7f38870))
+* update description template ([90b1c92](https://github.com/newrelic/newrelic-quickstarts/commit/90b1c921b251ec68e0355826daf4d9885699b899))
+
 ## [0.35.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.0...v0.35.1) (2021-09-27)
 
 
