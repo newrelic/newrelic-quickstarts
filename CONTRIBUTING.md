@@ -171,7 +171,7 @@ documentation:
 - All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
 - Levels can only be modified by New Relic employees.
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
-- The verified icon is only applied to those quickstarts with `Author` New Relic.
+- The verified icon is only applied to those quickstarts with `Support Level` New Relic.
 
 #### Dashboard images (screenshots)
 
