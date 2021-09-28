@@ -1,3 +1,10 @@
+## [0.35.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.2...v0.35.3) (2021-09-28)
+
+
+### Bug Fixes
+
+* allow null for dashboard description ([56b99c3](https://github.com/newrelic/newrelic-quickstarts/commit/56b99c324131878d3af50a5bd03b47d0203ab181))
+
 ## [0.35.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.1...v0.35.2) (2021-09-28)
 
 
