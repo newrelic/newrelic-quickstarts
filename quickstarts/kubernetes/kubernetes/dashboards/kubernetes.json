@@ -2,7 +2,7 @@
 	"name": "Kubernetes Dashboard",
 	"description": "Get a high level overview of your Kubernetes instances",
 	"pages": [
-	 {
+	   {
             "name": "Kubernetes",
             "description": "This dashboard provides an overview of your Kubernetes platform health. Apply filters to focus on a specific cluster or namespace.",
             "widgets": [
@@ -905,6 +905,198 @@
 					}
 				}
 			]
-		}
+		},
+                {
+            "name": "Kubernetes Cluster Events",
+            "description": "Visualize Cluster Events",
+            "widgets": [
+              {
+                "visualization": {
+                  "id": "viz.markdown"
+                },
+                "layout": {
+                  "column": 1,
+                  "row": 1,
+                  "height": 4,
+                  "width": 1
+                },
+                "title": "",
+                "rawConfiguration": {
+                  "text": "![Logo](https://constructionlinks.ca/wp-content/uploads/2020/07/procore-logo-2020.jpg)"
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.pie"
+                },
+                "layout": {
+                  "column": 2,
+                  "row": 1,
+                  "height": 4,
+                  "width": 7
+                },
+                "title": "Event Breakdown",
+                "rawConfiguration": {
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent select max(event.count) as 'Event Count' where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason limit 1000 since 1 day ago"
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.billboard"
+                },
+                "layout": {
+                  "column": 9,
+                  "row": 1,
+                  "height": 2,
+                  "width": 2
+                },
+                "title": "Murders",
+                "rawConfiguration": {
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent SELECT count(event.count) as 'Murders' WHERE category = 'kubernetes' AND event.reason like '%Kill%'"
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.billboard"
+                },
+                "layout": {
+                  "column": 11,
+                  "row": 1,
+                  "height": 2,
+                  "width": 2
+                },
+                "title": "Backoffs",
+                "rawConfiguration": {
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent SELECT count(event.count) as 'Backoffs' WHERE category = 'kubernetes' AND event.reason like '%BackOff%'"
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.billboard"
+                },
+                "layout": {
+                  "column": 9,
+                  "row": 3,
+                  "height": 2,
+                  "width": 2
+                },
+                "title": "Evictions",
+                "rawConfiguration": {
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent select count(event.count) as 'Evictions' where category = 'kubernetes' AND event.reason like '%Evicted%' "
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.billboard"
+                },
+                "layout": {
+                  "column": 11,
+                  "row": 3,
+                  "height": 2,
+                  "width": 2
+                },
+                "title": "Pod Failures",
+                "rawConfiguration": {
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent select count(event.count) as 'Pod Fails' where category = 'kubernetes' AND event.reason like '%Fail%' "
+                    }
+                  ],
+                  "thresholds": [
+                    {
+                      "alertSeverity": "CRITICAL",
+                      "value": 0
+                    },
+                    {
+                      "alertSeverity": "WARNING",
+                      "value": 0
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.table"
+                },
+                "layout": {
+                  "column": 1,
+                  "row": 5,
+                  "height": 4,
+                  "width": 6
+                },
+                "title": "Cluster Events",
+                "rawConfiguration": {
+                  "dataFormatters": [],
+                  "facet": {
+                    "showOtherSeries": false
+                  },
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent select max(event.count) as 'Event Count', latest(event.lastTimestamp), latest(entityName) where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason, clusterName, event.involvedObject.name, event.involvedObject.kind  limit 1000 since 1 day ago where clusterName = 'pixie-auto-telemetry'"
+                    }
+                  ]
+                },
+                "linkedEntityGuids": null
+              },
+              {
+                "visualization": {
+                  "id": "viz.line"
+                },
+                "layout": {
+                  "column": 7,
+                  "row": 5,
+                  "height": 4,
+                  "width": 6
+                },
+                "title": "Timeseries of Kubernetes Cluster Events",
+                "rawConfiguration": {
+                  "facet": {
+                    "showOtherSeries": false
+                  },
+                  "legend": {
+                    "enabled": true
+                  },
+                  "nrqlQueries": [
+                    {
+                      "accountId": 0,
+                      "query": "FROM InfrastructureEvent select count(event.count) as 'Event Count' where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason limit 1000 since 1 day ago TIMESERIES AUTO "
+                    }
+                  ],
+                  "yAxisLeft": {
+                    "zero": true
+                  }
+                },
+                "linkedEntityGuids": null
+              }
+            ]
+          }
 	]
 }
