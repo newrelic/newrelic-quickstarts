@@ -70,31 +70,22 @@ When writing about a quickstart the following language rules should be followed:
 ### Quickstarts description template
 
 ```md
-Brief overview of the technology. Keep this broad enough to inform users who are unaware of the technology, but it should not dive too deep. 1 paragraph.
+  ## Why monitor <QUICKSTART_TECHNOLOGY>
 
-Helpful questions:
-- What type of technology is it?
-- Who are the intended users?
-- What differentiates it from competitors and similar technologies?
+  Explain the role and purpose of monitoring your technology. What are some specific difficulties about the technology? What are useful metrics to monitor?
+  
+  ### <QUICKSTART_TECHNOLOGY> quickstart highlights
 
-What you get
-Brief overview of visibility provided by key metrics/dashboards/synthetic checks in the kit.. Focus on the specific areas the kit provides visibility to. 1-2 paragraphs.
+  Describe the specific features of your quickstart. Mentions things such as dashboard visuals, alerts, and the type of instrumentation. We recommend the following format:
 
-Helpful questions:
-- What makes our instrumentation unique or powerful?
-- How does it compare to competitors?
-- How does the kit enable the user?
-  - A kit for a language may highlight errors while a cloud infrastructure kit might highlight performance or the cluster/node level monitored.
-  - Liberally intertwine the technology and New Relic.
+  Quick intro sentence:
+  - First highlight
+  - Second highlight
+  - Third highlight
 
-Description for each “feature” included in the kit. 1-2 lines.
-
-Dashboards:
-  - Example focus: Monitor your transactions
-Synthetic monitors
-  - Example focus: Proactively monitors your uptime.
-Alerts
-  - Example focus: Alert triggers when latency exceeds a set limit.
+  ### New Relic + <QUICKSTART_TECHNOLOGY> (Optional)
+  
+  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilies such as errors inbox, transaction traces, etc.
 ```
 
 ## Quickstarts contributor guidelines
