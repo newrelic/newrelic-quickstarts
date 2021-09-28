@@ -1,0 +1,149 @@
+{
+  "name": "Kentik Synthetics",
+  "description": null,
+  "pages": [
+    {
+      "name": "Kentik Synthetics",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Synthetic Paths (Filterable)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(agent_name) AS 'Qty' FACET test_name, agent_name, src_addr, src_geo, dst_addr, dst_geo, test_url WHERE provider = 'kentik-network-synthetic' LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Synthetics Estimate (GB)",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "1 MONTH",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "1 DAY",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT bytecountestimate()/10e8 AS '1 DAY', rate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH' WHERE metricName LIKE 'kentik.synth%' SINCE 24 HOURS AGO"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 4,
+            "width": 4
+          },
+          "title": "Top 10 - P95 Latency (ms)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT percentile(kentik.synth.avg_rtt, 95) / 1000 FROM Metric FACET test_name, agent_name, src_addr, dst_addr LIMIT 10 TIMESERIES 1 MINUTE"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 4,
+            "width": 4
+          },
+          "title": "Top 10 - P95 Jitter (ms)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT percentile(kentik.synth.jit_rtt, 95) / 1000 FROM Metric FACET test_name, agent_name, src_addr, dst_addr LIMIT 10 TIMESERIES 1 MINUTE"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 4,
+            "width": 4
+          },
+          "title": "Packet Loss (%)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(kentik.synth.lost) FACET test_name, agent_name, src_addr, dst_addr LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}
