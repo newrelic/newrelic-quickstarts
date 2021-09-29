@@ -4,14 +4,26 @@
 
 # New Relic One quickstarts
 
-> 🧪 This project is currently in an `ALPHA` state 🧪
-
 New Relic One quickstarts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
 
 - Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
 
-All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observability) open source ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+
+## New Relic One Instant Observability
+
+> Looking for inspiration?
+
+You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observability).
+
+## BETA Announcement
+
+> 🧪 This project is currently in `BETA`  🧪
+
+During this beta period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts included in the quickstart.
+
+When the beta ends, only users with full platform access can use the dashboards installed with the quickstart.
 
 ## Quickstart components
 
