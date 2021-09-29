@@ -35,53 +35,7 @@ Contribute your own observability pack to the New Relic One catalog by following
 
     This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
-    ## Using NerdGraph for existing alerts
-
-    When adding alerts to your quickstart, if you want to start from an existing alert, you can use the [Graphql API](https://api.newrelic.com/graphiql) to get json object that can assit you populating your `alerts.yaml` file.
-
-    For example, to add an existing alert policy with a `NrqlBaselineCondition`, the following NerdGraph query will assist in `alerts.yaml` file:
-
-    ```
-    {
-        actor {
-            account(id: 123456) {
-                alerts {
-                    nrqlCondition(id: 123456) {
-                        ... on AlertsNrqlBaselineCondition {
-                        id
-                        name
-                        nrql {
-                            query
-                        }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    ```
-
-    After running the query in GraphiQL, you will see a response similar to the one bellow with the details of your alert condition that can be used to update your quickstarts alerts configurations.
-
-    ```
-    {
-    "data": {
-        "actor": {
-        "account": {
-            "alerts": {
-            "nrqlCondition": {
-                "id": "123456",
-                "name": "Login 95th Percentile baseline",
-                "nrql": {
-                "query": "SELECT percentile(duration, 95) from Transaction where appName = 'WebPortal' and name = 'WebTransaction/JSP/login.jsp'"
-                }
-            }
-            }
-        }
-        }
-    }
-    ```
-
+    > **Note:**  When adding alerts to your quickstart, [using NerdGraph](#using-nerdGraph-for-existing-alerts) can assist you with adding existing alert configurtions to your yaml files.
 
 5. In your pack's root directory, you'll find a `config.yaml` file. Set the name of your pack. Everything else is optional.
 
@@ -105,6 +59,53 @@ Contribute your own observability pack to the New Relic One catalog by following
 9. Submit and wait for review. We will review as fast as we can, but it can sometimes take a day or two.
 
 Thanks a lot for your submission!
+
+## Using NerdGraph for existing alerts
+
+When adding alerts to your quickstart, if you want to start from an existing alert, you can use our [GraphQL API](https://api.newrelic.com/graphiql) to get a json object that can help you populate your `alerts.yaml` file.
+
+For example, the following NerdGraph query returns a json object that you can use to populate the `alerts.yaml` file:
+
+```
+{
+    actor {
+        account(id: REPLACE_ACCOUNT_ID) {
+            alerts {
+                nrqlCondition(id: REPLACE_CONDITION_ID) {
+                    ... on AlertsNrqlBaselineCondition {
+                    id
+                    name
+                    nrql {
+                        query
+                    }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+After running the query, you will see a response similar to the one below with the details of your alert condition that you can use to update your quickstarts alerts configurations:
+
+```
+{
+"data": {
+    "actor": {
+    "account": {
+        "alerts": {
+        "nrqlCondition": {
+            "id": "123456",
+            "name": "Login 95th Percentile baseline",
+            "nrql": {
+            "query": "SELECT percentile(duration, 95) from Transaction where appName = 'WebPortal' and name = 'WebTransaction/JSP/login.jsp'"
+            }
+        }
+        }
+    }
+    }
+}
+```
 
 ## Testing
 
