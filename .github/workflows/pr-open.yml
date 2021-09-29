@@ -21,12 +21,50 @@ jobs:
           gh pr comment ${{github.event.pull_request.number}} --body "Thank you for your contribution, our team will be reviewing this shortly, please be available for any follow up questions or code review feedback!"
           gh pr edit ${{github.event.pull_request.number}} --add-label "triage-needed"
 
-  automate-project-columns:
-    if: "!contains( github.event.pull_request.labels.*.name, 'eng')"
+  check_files:
+    name: Check files
+    outputs:
+      run_job: ${{ steps.check_files.outputs.move_to_project }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+
+      - name: check modified files
+        id: check_files
+        run: |
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+          
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD > files.txt
+          while IFS= read -r file
+          do
+            echo $file
+            if [[ $file != quickstarts/* ]]; then
+              echo "This modified file is not under the 'quickstarts' folder."
+              echo "::set-output name=move_to_project::false"
+              break
+            else
+              echo "::set-output name=move_to_project::true"
+            fi
+          done < files.txt
+
+  move-to-project:
+    name: Move PR to Project
+    needs: check_files
+    if: needs.check_files.outputs.move_to_project == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Move to Project Board
+        run: |
+          echo "This job runs only when all the modified files are under the 'quickstarts' folder."
           gh pr edit ${{github.event.pull_request.number}} --add-project "NR1 Quickstarts Community"
+
