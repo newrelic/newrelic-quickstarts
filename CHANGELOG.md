@@ -1,3 +1,16 @@
+# [0.37.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.36.0...v0.37.0) (2021-09-29)
+
+
+### Bug Fixes
+
+* Fixed a few typos ([2c30acc](https://github.com/newrelic/newrelic-quickstarts/commit/2c30acceadce55af59fce3ff1415c5c11d46979b))
+* titlecase headers ([fb23332](https://github.com/newrelic/newrelic-quickstarts/commit/fb23332a05d446f30636bd23d6913e033df0b219))
+
+
+### Features
+
+* **Kentik:** Added Firehose quickstart and updated NPM logos ([b9725cb](https://github.com/newrelic/newrelic-quickstarts/commit/b9725cb3e683eb00aa499a67c7549082e4f45f65))
+
 # [0.36.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.35.3...v0.36.0) (2021-09-28)
 
 
