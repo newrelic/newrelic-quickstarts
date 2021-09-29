@@ -15,11 +15,11 @@ const client = new GraphQLClient(url, {
 	headers: { 'Content-Type': 'application/json' },
 });
 
-export const importer = async (accountId: number, nrApiKey: string, dashboardPack: string): Promise<void> => {
+export const importer = async (accountId: number, nrApiKey: string, dashboardQuickstart: string): Promise<void> => {
 	console.warn(
 		'WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.',
 	);
-	if (!accountId && !nrApiKey && !dashboardPack) {
+	if (!accountId && !nrApiKey && !dashboardQuickstart) {
 		const args = yargs
 			.options({
 				accountId: {
@@ -42,26 +42,26 @@ export const importer = async (accountId: number, nrApiKey: string, dashboardPac
 
 		if (args._.length < 1) {
 			console.error(
-				'Pack name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql',
+				'Quickstart name is required. Example command: npm run import -- --id 0000000 --key NRAK-EXAMPLEVALUE11 mysql',
 			);
 			process.exit(0);
 		}
 		accountId = args.accountId;
 		nrApiKey = args.nrApiKey;
-		dashboardPack = args._[0] as string;
+		dashboardQuickstart = args._[0] as string;
 	}
 	client.setHeader('API-Key', nrApiKey);
 
-	dashboardPack = dashboardPack.toLowerCase();
+	dashboardQuickstart = dashboardQuickstart.toLowerCase();
 
-	const policyId = await createPolicy(accountId, dashboardPack);
+	const policyId = await createPolicy(accountId, dashboardQuickstart);
 
-	await createDashboardLocal(accountId, dashboardPack);
-	await createAlertLocal(accountId, dashboardPack, policyId);
+	await createDashboardLocal(accountId, dashboardQuickstart);
+	await createAlertLocal(accountId, dashboardQuickstart, policyId);
 };
 
-const createPolicy = async (accountId: number, pack: string) => {
-	const policyName = `${pack.charAt(0).toUpperCase() + pack.slice(1)} default alert policy`;
+const createPolicy = async (accountId: number, quickstart: string) => {
+	const policyName = `${quickstart.charAt(0).toUpperCase() + quickstart.slice(1)} default alert policy`;
 	let policyExists = await checkForExistingPolicy(policyName, accountId);
 
 	if (policyExists.length > 0) {
@@ -86,10 +86,10 @@ const createPolicy = async (accountId: number, pack: string) => {
 	return response.alertsPolicyCreate.id;
 };
 
-const createDashboardLocal = async (accountId: number, pack: string) => {
+const createDashboardLocal = async (accountId: number, quickstart: string) => {
 	const replacer = new RegExp('"accountId":0', 'g');
 
-	const dir = `${__dirname}/../../../../packs/${pack}/dashboards`;
+	const dir = `${__dirname}/../../../../quickstarts/${quickstart}/dashboards`;
 	let importedFiles: importedDashboardBody[] = [];
 
 	try {
@@ -98,7 +98,7 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 			.filter(name => path.extname(name) === '.json')
 			.map(name => require(path.join(dir, name)));
 	} catch (error) {
-		console.error(`Dashboard files for the name ${pack} not found. Did you provide the correct pack name?`);
+		console.error(`Dashboard files for the name ${quickstart} not found. Did you provide the correct quickstart name?`);
 	}
 
 	importedFiles.forEach(async file => {
@@ -137,24 +137,24 @@ const createDashboardLocal = async (accountId: number, pack: string) => {
 	});
 };
 
-const createAlertLocal = async (accountId: number, pack: string, policyId: number) => {
+const createAlertLocal = async (accountId: number, quickstart: string, policyId: number) => {
 	const variables = {
 		accountId,
 		condition: undefined,
 		policyId,
 	};
 
-	const dir = `${__dirname}/../../../../packs/${pack}/alerts`;
+	const dir = `${__dirname}/../../../../quickstarts/${quickstart}/alerts`;
 	let fileNames: string[] = [];
 
 	try {
 		fileNames = fs.readdirSync(dir).filter(name => path.extname(name) === '.yml');
 	} catch (error) {
-		console.error(`Alert files for the name ${pack} not found. Did you provide the correct pack name?`);
+		console.error(`Alert files for the name ${quickstart} not found. Did you provide the correct quickstart name?`);
 	}
 
 	fileNames.forEach(async file => {
-		const loadedYaml = yaml.load(fs.readFileSync(`${dir}/${file}`, 'utf-8'));
+		const loadedYaml = yaml.loadAll(fs.readFileSync(`${dir}/${file}`, 'utf-8'));
 		const parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
 
 		if (parsedAlert.type === 'BASELINE') {
