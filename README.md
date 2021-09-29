@@ -9,7 +9,7 @@ New Relic One quickstarts help accelerate your New Relic journey by providing im
 - Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
 
-All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observabilty) open source ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observability) open source ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
 
 ## New Relic One Instant Observability
 
