@@ -15,7 +15,7 @@ All of this is available through our [Instant Observability](https://developer.n
 
 > Looking for inspiration?
 
-You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observabilty).
+You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observability).
 
 ## BETA Announcement
 
