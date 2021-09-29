@@ -16,7 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Comment and label
+      - name: Comment, label and move to project board
         run: |
           gh pr comment ${{github.event.pull_request.number}} --body "Thank you for your contribution, our team will be reviewing this shortly, please be available for any follow up questions or code review feedback!"
           gh pr edit ${{github.event.pull_request.number}} --add-label "triage-needed"
+
+  automate-project-columns:
+    if: "!contains( github.event.pull_request.labels.*.name, 'eng')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Move to Project Board
+          gh pr edit ${{github.event.pull_request.number}} --add-project "NR1 Quickstarts Community"
