@@ -21,7 +21,7 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 > 🧪 This project is currently in `BETA`  🧪
 
-During this beta period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts including in the quickstart.
+During this beta period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts included in the quickstart.
 
 When the beta ends, only users with full platform access can use the dashboards installed with the quickstart.
 
