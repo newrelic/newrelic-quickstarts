@@ -1,3 +1,15 @@
+# [0.38.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.37.0...v0.38.0) (2021-09-30)
+
+
+### Bug Fixes
+
+* added infrastructure tag to network quickstarts ([d22b000](https://github.com/newrelic/newrelic-quickstarts/commit/d22b000f43a4499a6db7d3b4d9ebf8bd5240e535))
+
+
+### Features
+
+* added install plan for snmp ([ed279d6](https://github.com/newrelic/newrelic-quickstarts/commit/ed279d6d6bce80fe3161bb83470a1fa47167c7d4))
+
 # [0.37.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.36.0...v0.37.0) (2021-09-29)
 
 
