@@ -12,6 +12,7 @@ const {
 const glob = require('glob');
 const path = require('path');
 const BASE_PATH = '../quickstarts/';
+const DASHBOARD_IMAGES_PATH = '/images/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 6;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
@@ -27,24 +28,35 @@ const validateImageCounts = (quickstartDirs) => {
       const quickstartDirName = path.dirname(quickstart);
       // get all images for a quickstart
       const imagePaths = glob.sync(
-        path.resolve(path.dirname(quickstart), '**/*.+(png|jpeg|jpg|svg)')
+        path.resolve(quickstartDirName, '**/*.+(png|jpeg|jpg|svg)')
       );
       const quickstartConfig = readQuickstartFile(quickstart).contents[0];
       const iconPath = quickstartConfig.icon
-        ? path.resolve(path.dirname(quickstart), quickstartConfig.icon)
+        ? path.resolve(quickstartDirName, quickstartConfig.icon)
         : null;
       const logoPath = quickstartConfig.logo
-        ? path.resolve(path.dirname(quickstart), quickstartConfig.logo)
+        ? path.resolve(quickstartDirName, quickstartConfig.logo)
         : null;
 
       const screenshotPaths = imagePaths.filter(
-        (p) => p !== iconPath && p !== logoPath
+        (p) => p !== iconPath && p !== logoPath && !p.includes(DASHBOARD_IMAGES_PATH)
       );
 
+      const dashboardImagePaths = imagePaths.filter(
+        (p) => p !== iconPath && p !== logoPath && p.includes(DASHBOARD_IMAGES_PATH)
+      );
+      
       if (screenshotPaths.length > MAX_NUM_IMG) {
         return {
           folder: quickstartDirName,
           imageCount: screenshotPaths.length,
+        };
+      }
+
+      if (dashboardImagePaths.length > MAX_NUM_IMG) {
+        return {
+          folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
+          imageCount: dashboardImagePaths.length,
         };
       }
     })

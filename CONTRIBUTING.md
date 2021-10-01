@@ -14,6 +14,7 @@
       - [Documentation](#documentation)
       - [Levels](#levels)
       - [Dashboard images (screenshots)](#dashboard-images-screenshots)
+      - [Images directory](#images-directory)
       - [Logos](#logos)
     - [Icons](#icons)
     - [Keywords](#keywords)
@@ -169,7 +170,7 @@ documentation:
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
 
 - Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
-- file name should be `quickstart_name01`, `quickstart_name02`, etc
+- File name should be `quickstart_name01`, `quickstart_name02`, etc
 - Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
@@ -177,6 +178,20 @@ documentation:
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
+
+#### Images directory
+
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/README.md#getting-started) for more details `dashboards`
+
+- These images are `optional` and should contain images you want to display within a markdown widget on your Dashboard.
+- File name should be `quickstart_name01`, `quickstart_name02`, etc
+- These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
+- Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+- Each image file must be less than `4MB` in size
+- There should be no more than `6`  dashboard images per dashboard
+- See our Python quickstart for examples:
+  - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
+  - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
 
 #### Logos
 

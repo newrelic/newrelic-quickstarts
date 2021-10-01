@@ -97,6 +97,16 @@ describe('Action: validate images', () => {
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
+  test('validateImageCounts, given > 6 image files in the images directory, throws an error', () => {
+    const globMock = ['test/path/images/'];
+    mockGlobSync(['I', 'have', 'too', 'many', 'images', '>:)', '>:(']);
+    helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
+
+    validateImageCounts(globMock);
+    expect(core.setFailed).toHaveBeenCalled();
+    expect(global.console.warn).toHaveBeenCalledTimes(2);
+  });
+
   test('validateImageCounts, given an icon, does not include the icon in image count', () => {
     const globMock = ['test/path/'];
     mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
