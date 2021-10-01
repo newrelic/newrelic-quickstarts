@@ -17,13 +17,13 @@ All of this is available through our [Instant Observability](https://developer.n
 
 You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observability).
 
-## BETA Announcement
+## Preview Announcement
 
-> 🧪 This project is currently in `BETA`  🧪
+> 🧪 This project is currently in `Preview`  🧪
 
-During this beta period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts included in the quickstart.
+During this preview period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts included in the quickstart.
 
-When the beta ends, only users with full platform access can use the dashboards installed with the quickstart.
+When the preview period ends, only users with full platform access can use the dashboards installed with the quickstart.
 
 ## Quickstart components
 
