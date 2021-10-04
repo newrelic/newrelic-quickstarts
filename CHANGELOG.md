@@ -1,3 +1,15 @@
+# [0.39.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.38.0...v0.39.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* remove dupe uuid to generate fresh ([813ba43](https://github.com/newrelic/newrelic-quickstarts/commit/813ba4396a309b0afbf79b528ee90b6909643b66))
+
+
+### Features
+
+* check for uuid uniqueness ([ce21b2d](https://github.com/newrelic/newrelic-quickstarts/commit/ce21b2dc743b2e6f3de5ab37e5d0a2cc4a013ed6))
+
 # [0.38.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.37.0...v0.38.0) (2021-09-30)
 
 
