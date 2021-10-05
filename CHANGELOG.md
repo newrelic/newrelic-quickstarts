@@ -1,3 +1,10 @@
+# [0.40.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.39.0...v0.40.0) (2021-10-05)
+
+
+### Features
+
+* **elixir:** Added elixir quickstart and install plan ([888d75e](https://github.com/newrelic/newrelic-quickstarts/commit/888d75eae5892f652b76655672ad5e86f09a3d60))
+
 # [0.39.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.38.0...v0.39.0) (2021-10-04)
 
 
