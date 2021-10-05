@@ -1,3 +1,12 @@
+# [0.41.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.40.0...v0.41.0) (2021-10-05)
+
+
+### Features
+
+* add additional documentation link ([f17a97e](https://github.com/newrelic/newrelic-quickstarts/commit/f17a97ea7bbf2fb48243559e2fdeceacf8146738))
+* add deeper network install plan ([6fbcde4](https://github.com/newrelic/newrelic-quickstarts/commit/6fbcde45da5d64fc4735f0cb3d157ef9882e66af))
+* add deeper network quickstart ([61b1762](https://github.com/newrelic/newrelic-quickstarts/commit/61b1762ed87475c4f3999fa6171d145b4660b236))
+
 # [0.40.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.39.0...v0.40.0) (2021-10-05)
 
 
