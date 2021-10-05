@@ -37,7 +37,12 @@ const validateImageCounts = (quickstartDirs) => {
       const logoPath = quickstartConfig.logo
         ? path.resolve(quickstartDirName, quickstartConfig.logo)
         : null;
-
+      
+      // Max images is per dashboard so we need to account for this by getting the number of dashboards
+      const dashboardCount = glob.sync(
+        path.resolve(quickstartDirName, 'dashboards/*.json')
+      ).length;
+      
       const screenshotPaths = imagePaths.filter(
         (p) => p !== iconPath && p !== logoPath && !p.includes(DASHBOARD_IMAGES_PATH)
       );
@@ -46,24 +51,29 @@ const validateImageCounts = (quickstartDirs) => {
         (p) => p !== iconPath && p !== logoPath && p.includes(DASHBOARD_IMAGES_PATH)
       );
       
-      if (screenshotPaths.length > MAX_NUM_IMG) {
+      // Each dashboard is allowed MAX_NUM_IMG dashboards
+      if (screenshotPaths.length > (MAX_NUM_IMG * dashboardCount)) {
         return {
           folder: quickstartDirName,
+          dashboardCount,
           imageCount: screenshotPaths.length,
+          maxImages: MAX_NUM_IMG * dashboardCount,
         };
       }
 
-      if (dashboardImagePaths.length > MAX_NUM_IMG) {
+      if (dashboardImagePaths.length > (MAX_NUM_IMG * dashboardCount)) {
         return {
           folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
+          dashboardCount,
           imageCount: dashboardImagePaths.length,
+          maxImages: MAX_NUM_IMG * dashboardCount,
         };
       }
     })
     .filter(Boolean);
 
   if (directories.length) {
-    core.setFailed('Components should contain less than 6 images');
+    core.setFailed('Components should contain less than 6 images each');
     console.warn(`\nPlease check the following directories:`);
     directories.map((dir) => console.warn(dir));
   }
