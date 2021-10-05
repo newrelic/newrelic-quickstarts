@@ -1,3 +1,39 @@
+# [0.42.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.41.0...v0.42.0) (2021-10-05)
+
+
+### Features
+
+* **tdp data ingest:** Added Sri Shetty ([b8c7fd8](https://github.com/newrelic/newrelic-quickstarts/commit/b8c7fd833ac3bd8b8fc99b0a932017ea0eb9a37b))
+* **updated config.yml:** Added Sri Shetty ([564ee08](https://github.com/newrelic/newrelic-quickstarts/commit/564ee084b04369024523cc9c2ff10c4cdeab15a3))
+
+# [0.41.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.40.0...v0.41.0) (2021-10-05)
+
+
+### Features
+
+* add additional documentation link ([f17a97e](https://github.com/newrelic/newrelic-quickstarts/commit/f17a97ea7bbf2fb48243559e2fdeceacf8146738))
+* add deeper network install plan ([6fbcde4](https://github.com/newrelic/newrelic-quickstarts/commit/6fbcde45da5d64fc4735f0cb3d157ef9882e66af))
+* add deeper network quickstart ([61b1762](https://github.com/newrelic/newrelic-quickstarts/commit/61b1762ed87475c4f3999fa6171d145b4660b236))
+
+# [0.40.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.39.0...v0.40.0) (2021-10-05)
+
+
+### Features
+
+* **elixir:** Added elixir quickstart and install plan ([888d75e](https://github.com/newrelic/newrelic-quickstarts/commit/888d75eae5892f652b76655672ad5e86f09a3d60))
+
+# [0.39.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.38.0...v0.39.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* remove dupe uuid to generate fresh ([813ba43](https://github.com/newrelic/newrelic-quickstarts/commit/813ba4396a309b0afbf79b528ee90b6909643b66))
+
+
+### Features
+
+* check for uuid uniqueness ([ce21b2d](https://github.com/newrelic/newrelic-quickstarts/commit/ce21b2dc743b2e6f3de5ab37e5d0a2cc4a013ed6))
+
 # [0.38.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.37.0...v0.38.0) (2021-09-30)
 
 
