@@ -1,3 +1,11 @@
+# [0.42.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.41.0...v0.42.0) (2021-10-05)
+
+
+### Features
+
+* **tdp data ingest:** Added Sri Shetty ([b8c7fd8](https://github.com/newrelic/newrelic-quickstarts/commit/b8c7fd833ac3bd8b8fc99b0a932017ea0eb9a37b))
+* **updated config.yml:** Added Sri Shetty ([564ee08](https://github.com/newrelic/newrelic-quickstarts/commit/564ee084b04369024523cc9c2ff10c4cdeab15a3))
+
 # [0.41.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.40.0...v0.41.0) (2021-10-05)
 
 
