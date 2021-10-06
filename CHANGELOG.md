@@ -1,3 +1,10 @@
+# [0.45.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.44.0...v0.45.0) (2021-10-06)
+
+
+### Features
+
+* adding an npm installplan ([0f1ffb8](https://github.com/newrelic/newrelic-quickstarts/commit/0f1ffb8b5b1f5ed51fb752b70356e0d3aeaabe28))
+
 # [0.44.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.43.0...v0.44.0) (2021-10-06)
 
 
