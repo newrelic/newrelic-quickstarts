@@ -1,3 +1,10 @@
+# [0.44.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.43.0...v0.44.0) (2021-10-06)
+
+
+### Features
+
+* **Gigamon Hawk:** Added [Initial release] ([d5f484d](https://github.com/newrelic/newrelic-quickstarts/commit/d5f484de84a598787bfbc05009182a3cfdab6ff3))
+
 # [0.43.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.42.0...v0.43.0) (2021-10-06)
 
 
