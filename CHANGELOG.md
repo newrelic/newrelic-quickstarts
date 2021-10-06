@@ -1,3 +1,10 @@
+# [0.43.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.42.0...v0.43.0) (2021-10-06)
+
+
+### Features
+
+* add tdp install plan ([fac85df](https://github.com/newrelic/newrelic-quickstarts/commit/fac85dfe48e76987d8c316ff7a5ef4892fedf985))
+
 # [0.42.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.41.0...v0.42.0) (2021-10-05)
 
 
