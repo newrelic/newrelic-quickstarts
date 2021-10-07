@@ -13,7 +13,7 @@
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
-      - [Dashboard images (screenshots)](#dashboard-images-screenshots)
+      - [Dashboard Screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
     - [Icons](#icons)
@@ -165,7 +165,7 @@ documentation:
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
 - The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
 
-#### Dashboard images (screenshots)
+#### Dashboard Screenshots
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details on `dashboards`
 
