@@ -1,3 +1,10 @@
+# [0.46.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.45.0...v0.46.0) (2021-10-08)
+
+
+### Features
+
+* **kubernetes:** add k8s install plan ([e2fbaf3](https://github.com/newrelic/newrelic-quickstarts/commit/e2fbaf3eb70dc3c97a4f97791e50185532658b1a))
+
 # [0.45.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.44.0...v0.45.0) (2021-10-06)
 
 
