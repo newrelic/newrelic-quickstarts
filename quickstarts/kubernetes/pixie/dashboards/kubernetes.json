@@ -1,1102 +1,311 @@
 {
-	"name": "Kubernetes Dashboard",
-	"description": "Get a high level overview of your Kubernetes instances",
-	"pages": [
-	   {
-            "name": "Kubernetes",
-            "description": "This dashboard provides an overview of your Kubernetes platform health. Apply filters to focus on a specific cluster or namespace.",
-            "widgets": [
+    "name": "Pixie Quickstart Dashboard",
+    "description": null,
+    "permissions": "PUBLIC_READ_ONLY",
+    "pages": [
+      {
+        "name": "Pixie Quickstart Dashboard",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "\n![Pixie](https://logo.clearbit.com/https://pixielabs.ai/)\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 2,
+              "row": 1,
+              "height": 2,
+              "width": 11
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Pixie Quickstart Dashboard\n---\nPixie is an open source observability tool for Kubernetes applications. Pixie uses eBPF to automatically capture telemetry data without the need for manual instrumentation. This dashboard will provide an overview of latency, error rate and throughput metrics for services running in your Kubernetes clusters.\n\n\nFor more information or support, please go to https://px.dev/ or https://docs.newrelic.com/docs/auto-telemetry-pixie/get-started-auto-telemetry-pixie/."
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Latency\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Slowest HTTP Targets [Top 20]",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
                 {
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 1,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Resources Used",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (average(cpuUsedCores) * uniqueCount(entityName)) as 'Cores',  (average(memoryWorkingSetBytes) * uniqueCount(entityName)) / 1000000000 as 'Mem GB' FROM K8sNodeSample UNTIL 1 minute ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 1,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "# of K8s Objects",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT uniqueCount(K8sNodeSample.entityId) as 'Nodes', uniqueCount(K8sNamespaceSample.clusterName) as 'Clusters', uniqueCount(K8sNamespaceSample.entityId) as 'Namespaces', uniqueCount(K8sDeploymentSample.entityId) as 'Deployments', uniqueCount(K8sPodSample.entityId) as 'Pods', uniqueCount(K8sContainerSample.containerID) as 'Containers' FROM K8sNodeSample, K8sNamespaceSample, K8sDeploymentSample, K8sPodSample, K8sContainerSample UNTIL 1 minute ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.markdown"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 1,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "rawConfiguration": {
-                        "text": "::: beyond\n **Kubernetes** \n\nThis dashboard provides an overview of your Kubernetes platform health. Apply filters to focus on a specific cluster or namespace.\n\n\n:::"
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.bar"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 4,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Namespaces per Cluster",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sNamespaceSample SELECT uniqueCount(namespace) FACET clusterName UNTIL 1 minute ago limit 100"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.bar"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 4,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Pods by Namespace",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sPodSample SELECT uniqueCount(entityId) as 'pod' FACET namespace UNTIL 1 minute ago limit 100"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 7,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Container CPU Usage - % Used vs Limit",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sContainerSample SELECT latest(cpuUsedCores/cpuLimitCores) * 100 as '% CPU' FACET clusterName, podName, containerName UNTIL 1 minute ago TIMESERIES limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 7,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Container Memory Usage - % Used vs Limit",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sContainerSample SELECT latest(memoryWorkingSetUtilization) as '% Memory' FACET clusterName, podName, containerName UNTIL 1 minute ago TIMESERIES limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.area"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 4,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Container Restarts",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sContainerSample SELECT max(restartCount)-min(restartCount) as 'Restarts' FACET clusterName, podName, containerName UNTIL 1 minute ago TIMESERIES limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Container CPU Cores Used",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(cpuUsedCores) as 'CPU Cores Used' from K8sContainerSample FACET clusterName, podName, containerName timeseries since 60 minutes ago UNTIL 1 minute ago limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Container MBytes of Memory Used",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(memoryWorkingSetBytes / 1000000) as 'MB of Mem' from K8sContainerSample FACET clusterName, podName, containerName timeseries since 60 minutes ago UNTIL 1 minute ago limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.area"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Missing Pods by Deployment",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT latest(podsDesired) - latest(podsReady) as 'Missing Pods' FROM K8sReplicasetSample since 10 minutes ago UNTIL 1 minute ago facet clusterName, deploymentName timeseries limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.table"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 13,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "Latest pods not Running by Cluster/Namespace",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT latest(status) as 'Status', max(timestamp) as 'Timestamp' from K8sPodSample WHERE collector.name='cloudwatch-metric-streams' AND status NOT IN ('Running', 'Succeeded') facet clusterName, namespace, podName since 10 minutes ago UNTIL 1 minute ago limit 100"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 13,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Containers by Namespace",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT uniqueCount(containerID) FROM K8sContainerSample SINCE 10 minutes AGO UNTIL 1 minute ago facet namespace TIMESERIES"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.table"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 16,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "Node Resource Consumption",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sNodeSample, K8sPodSample SELECT latest(cpuUsedCores) as 'Used Cores', latest(memoryWorkingSetBytes) / 1000000 as 'Used Memory MB', uniqueCount(podName) as 'Pods' FACET nodeName since 10 minutes ago UNTIL 1 minute ago limit 100"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 16,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Active Pods by Deployment",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT uniqueCount(podName) FROM K8sPodSample where status='Running' SINCE 10 minutes AGO UNTIL 1 minute ago facet clusterName, deploymentName WHERE collector.name='cloudwatch-metric-streams' AND deploymentName IS NOT NULL TIMESERIES limit 50"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.table"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 22,
-                        "height": 3,
-                        "width": 12
-                    },
-                    "title": "Pod Network Status",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT latest(`net.rxBytesPerSecond`)/1000 as 'Received KBps', latest(`net.txBytesPerSecond`)/1000 as 'Transmitted KBps', latest(`net.errorsPerSecond`) as 'Errors / sec' FROM K8sPodSample FACET podName since 10 minutes ago UNTIL 1 minute ago limit 100"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.bar"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 19,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Pod Count by Node",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT uniquecount(podName) from K8sPodSample where status='Running' facet nodeName since 10 minutes ago UNTIL 1 minute ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 7,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Volume Usage - % Used",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sVolumeSample select latest(fsUsedPercent) facet podName, volumeName, pvcName timeseries"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.table"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 19,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "Volumes Usage > 90%",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "FROM K8sVolumeSample select latest(fsUsedPercent) facet podName, volumeName, pvcName where fsUsedPercent > 90 SINCE 10 minutes ago UNTIL 1 minute ago"
-                            }
-                        ]
-                    }
+                  "accountId": 0,
+                  "query": "FROM Span select average(duration.ms) where instrumentation.provider = 'pixie' and http.url not like '/health%' and parent.k8s.pod.name is not null facet parent.k8s.pod.name, service.name, k8s.pod.name, k8s.namespace.name, k8s.cluster.name, http.method, http.target limit 20  "
                 }
+              ]
+            },
+            "linkedEntityGuids": [
+              "MTYwNjg2MnxWSVp8REFTSEJPQVJEfDI1Mzc3NTg"
             ]
-        },
-        		{
-			"name": "Kubernetes Clusters and Nodes",
-			"description": "Visualize your Kubernetes Clusters and Nodes",
-			"widgets": [
-				{
-					"visualization": {
-						"id": "viz.markdown"
-					},
-					"layout": {
-						"column": 1,
-						"row": 1,
-						"height": 2,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"text": "![Kubernetes](https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/1200px-Kubernetes_logo_without_workmark.svg.png)"
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 2,
-						"row": 1,
-						"height": 3,
-						"width": 5
-					},
-					"title": "Clusters",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "from K8sNodeSample, K8sPodSample select uniqueCount(nodeName) as 'Nodes', filter(uniqueCount(podName), where status = 'Running') as 'Running Pods', filter(uniqueCount(podName), where status in ('Pending')) as 'Pending Pods', uniqueCount(podName) as 'Total Pods' facet clusterName since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 7,
-						"row": 1,
-						"height": 3,
-						"width": 2
-					},
-					"title": "CPU Usage",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sNodeSample SELECT average(cpuUsedCores / allocatableCpuCores * 100) AS 'CPU Util %', 100 as '100' since 30 minutes ago TIMESERIES"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 9,
-						"row": 1,
-						"height": 3,
-						"width": 2
-					},
-					"title": "Memory Usage",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sNodeSample SELECT average(memoryWorkingSetBytes / allocatableMemoryBytes * 100) AS 'Memory Util %', 100 as '100' since 30 minutes ago TIMESERIES"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 11,
-						"row": 1,
-						"height": 3,
-						"width": 2
-					},
-					"title": "Disk Usage",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT average(fsUsedBytes / fsCapacityBytes * 100) AS 'Disk Util %', 100 as '100' FROM K8sNodeSample since 30 minutes ago TIMESERIES"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 1,
-						"row": 3,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "from K8sNodeSample select uniqueCount(nodeName) as 'Nodes' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 1,
-						"row": 4,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select uniqueCount(podName) as 'Running Pods' where status = 'Running' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 2,
-						"row": 4,
-						"height": 5,
-						"width": 11
-					},
-					"title": "Nodes",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sNodeSample, K8sPodSample select filter(uniqueCount(podName), where eventType() = 'K8sPodSample' and status = 'Running') as 'Running Pods', filter(uniqueCount(podName), where eventType() = 'K8sPodSample' and status = 'Pending') as 'Pending Pods', filter(average(cpuUsedCores) / average(allocatableCpuCores) * 100, where eventType() = 'K8sNodeSample') as 'CPU %', filter(average(memoryWorkingSetBytes / allocatableMemoryBytes * 100), where eventType() = 'K8sNodeSample') as 'Mem %', filter(max(fsUsedBytes / fsCapacityBytes) * 100, where eventType() = 'K8sNodeSample') as 'Disk Util %' where nodeName is not null facet nodeName limit 2000 since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 1,
-						"row": 5,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select filter(uniqueCount(podName), where status = 'Running') / filter(uniqueCount(podName), where status in ('Running','Pending')) * 100 as '% Pods Running' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 1,
-						"row": 6,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select uniqueCount(namespaceName) as 'Namespaces' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 1,
-						"row": 7,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select uniqueCount(deploymentName) as 'Deployments' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.markdown"
-					},
-					"layout": {
-						"column": 1,
-						"row": 8,
-						"height": 1,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"text": "#"
-					}
-				}
-			]
-		},
-			{
-			"name": "Kubernetes Container Restarts",
-			"description": "Container restarts are usually not a good thing. This dashboard will help identify the biggest offenders and where they are currently trying to run.",
-			"widgets": [
-				{
-					"visualization": {
-						"id": "viz.markdown"
-					},
-					"layout": {
-						"column": 1,
-						"row": 1,
-						"height": 7,
-						"width": 3
-					},
-					"title": "",
-					"rawConfiguration": {
-						"text": "# Container Restarts\n---\n![Container](https://github.com/kubernetes/community/blob/master/icons/png/resources/unlabeled/pod-128.png?raw=true)\n\nContainer restarts are **usually** not a good thing.  This dashboard will help identify the biggest offenders and where they are currently _trying_ to run."
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 4,
-						"row": 1,
-						"height": 7,
-						"width": 9
-					},
-					"title": "Container Restarts",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sContainerSample select max(restartCount), latest(reason) where restartCount > 0 order by restartCount facet containerName, podName, clusterName since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "Kubernetes Pod Status",
-			"description": "This page will help you see the current status of your Kubernetes clusters",
-			"widgets": [
-				{
-					"visualization": {
-						"id": "viz.markdown"
-					},
-					"layout": {
-						"column": 1,
-						"row": 1,
-						"height": 2,
-						"width": 1
-					},
-					"title": "",
-					"rawConfiguration": {
-						"text": "![Pod](https://github.com/kubernetes/community/blob/master/icons/png/resources/labeled/pod-128.png?raw=true)"
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
-					"layout": {
-						"column": 2,
-						"row": 1,
-						"height": 2,
-						"width": 11
-					},
-					"title": "Overall Pod Status",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "from K8sPodSample select uniqueCount(podName) as 'Total Pods', filter(uniqueCount(podName), where status = 'Running') as 'Running Pods', filter(uniqueCount(podName), where status = 'Pending') as 'Pending Pods', filter(uniqueCount(podName), where status = 'Failed') as 'Failed Pods' since 30 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 1,
-						"row": 3,
-						"height": 3,
-						"width": 5
-					},
-					"title": "Pod Status by Cluster",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select uniqueCount(podName) as 'Pod Count' where status is not null facet clusterName, status since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 6,
-						"row": 3,
-						"height": 3,
-						"width": 7
-					},
-					"title": "Latest Pending Pods",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select podName, status, clusterName where status = 'Pending' since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 1,
-						"row": 6,
-						"height": 3,
-						"width": 5
-					},
-					"title": "Pod OOMKills",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT count(reason) as 'OOM Kills' from K8sContainerSample WHERE reason = 'OOMKilled' facet clusterName, podName since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.table"
-					},
-					"layout": {
-						"column": 6,
-						"row": 6,
-						"height": 3,
-						"width": 7
-					},
-					"title": "Latest Failed Pods",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample select podName, status, clusterName where status = 'Failed' since 30 minutes ago limit 1000"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"layout": {
-						"column": 1,
-						"row": 9,
-						"height": 3,
-						"width": 12
-					},
-					"title": "Pods Restarts",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT max(restartCount) - min(restartCount) FROM K8sContainerSample FACET podName,namespace"
-							}
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "Kubernetes Utilization",
-			"description": "This page will show you the current utilization of resources by your Kubernetes clusters",
-			"widgets": [
-				{
-					"visualization": {
-						"id": "viz.area"
-					},
-					"layout": {
-						"column": 1,
-						"row": 1,
-						"height": 3,
-						"width": 12
-					},
-					"title": "CPU Used (Cores) by Node",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT average(cpuUsedCores) FROM K8sNodeSample FACET nodeName SINCE 60 MINUTES AGO TIMESERIES"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.heatmap"
-					},
-					"layout": {
-						"column": 1,
-						"row": 4,
-						"height": 3,
-						"width": 8
-					},
-					"title": "CPU % by Instance Type",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT histogram(cpuPercent, 100, 25) FROM ProcessSample FACET instanceType"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 9,
-						"row": 4,
-						"height": 3,
-						"width": 4
-					},
-					"title": "Memory Usage by pod, container",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT (average(memoryUsedBytes) / average(memoryLimitBytes))*100 as 'Memory Used %' from K8sContainerSample facet podName, containerName timeseries since 60 minutes ago"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.heatmap"
-					},
-					"layout": {
-						"column": 1,
-						"row": 7,
-						"height": 3,
-						"width": 8
-					},
-					"title": "CPU % by Namespace",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT histogram(cpuPercent, 10, 100) FROM ProcessSample FACET `containerLabel_io.kubernetes.pod.namespace`"
-							}
-						]
-					}
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 9,
-						"row": 7,
-						"height": 3,
-						"width": 4
-					},
-					"title": "MAX CPU Cores Requested by Container",
-					"rawConfiguration": {
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT max(cpuRequestedCores) FROM K8sContainerSample FACET containerName SINCE 30 MINUTES AGO TIMESERIES"
-							}
-						]
-					}
-				}
-			]
-		},
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Avg. Response Time by Service [Top 20]",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
                 {
-            "name": "Kubernetes Cluster Events",
-            "description": "Visualize Cluster Events",
-            "widgets": [
-              {
-                "visualization": {
-                  "id": "viz.markdown"
-                },
-                "layout": {
-                  "column": 1,
-                  "row": 1,
-                  "height": 4,
-                  "width": 1
-                },
-                "title": "",
-                "rawConfiguration": {
-                  "text": "![Logo](https://constructionlinks.ca/wp-content/uploads/2020/07/procore-logo-2020.jpg)"
-                },
-                "linkedEntityGuids": null
+                  "accountId": 0,
+                  "query": "FROM Metric select average(http.server.duration) where instrumentation.provider = 'pixie' facet service.name limit 20 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Errors\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "height": 3,
+              "width": 12
+            },
+            "title": "HTTP Errors",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
               },
-              {
-                "visualization": {
-                  "id": "viz.pie"
-                },
-                "layout": {
-                  "column": 2,
-                  "row": 1,
-                  "height": 4,
-                  "width": 7
-                },
-                "title": "Event Breakdown",
-                "rawConfiguration": {
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent select max(event.count) as 'Event Count' where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason limit 1000 since 1 day ago"
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet parent.service.name, k8s.pod.name, http.status_code limit 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "height": 3,
+              "width": 6
+            },
+            "title": "HTTP Error Count by Service/Pod",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
               },
-              {
-                "visualization": {
-                  "id": "viz.billboard"
-                },
-                "layout": {
-                  "column": 9,
-                  "row": 1,
-                  "height": 2,
-                  "width": 2
-                },
-                "title": "Murders",
-                "rawConfiguration": {
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent SELECT count(event.count) as 'Murders' WHERE category = 'kubernetes' AND event.reason like '%Kill%'"
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "legend": {
+                "enabled": true
               },
-              {
-                "visualization": {
-                  "id": "viz.billboard"
-                },
-                "layout": {
-                  "column": 11,
-                  "row": 1,
-                  "height": 2,
-                  "width": 2
-                },
-                "title": "Backoffs",
-                "rawConfiguration": {
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent SELECT count(event.count) as 'Backoffs' WHERE category = 'kubernetes' AND event.reason like '%BackOff%'"
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet parent.service.name, k8s.pod.name, http.status_code limit 100 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 7,
+              "row": 14,
+              "height": 3,
+              "width": 6
+            },
+            "title": "HTTP Error Count by Target",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
               },
-              {
-                "visualization": {
-                  "id": "viz.billboard"
-                },
-                "layout": {
-                  "column": 9,
-                  "row": 3,
-                  "height": 2,
-                  "width": 2
-                },
-                "title": "Evictions",
-                "rawConfiguration": {
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent select count(event.count) as 'Evictions' where category = 'kubernetes' AND event.reason like '%Evicted%' "
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "legend": {
+                "enabled": true
               },
-              {
-                "visualization": {
-                  "id": "viz.billboard"
-                },
-                "layout": {
-                  "column": 11,
-                  "row": 3,
-                  "height": 2,
-                  "width": 2
-                },
-                "title": "Pod Failures",
-                "rawConfiguration": {
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent select count(event.count) as 'Pod Fails' where category = 'kubernetes' AND event.reason like '%Fail%' "
-                    }
-                  ],
-                  "thresholds": [
-                    {
-                      "alertSeverity": "CRITICAL",
-                      "value": 0
-                    },
-                    {
-                      "alertSeverity": "WARNING",
-                      "value": 0
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet http.target, http.status_code limit 100 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Throughput\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Throughput by Service [Top 20]",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
               },
-              {
-                "visualization": {
-                  "id": "viz.table"
-                },
-                "layout": {
-                  "column": 1,
-                  "row": 5,
-                  "height": 4,
-                  "width": 6
-                },
-                "title": "Cluster Events",
-                "rawConfiguration": {
-                  "dataFormatters": [],
-                  "facet": {
-                    "showOtherSeries": false
-                  },
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent select max(event.count) as 'Event Count', latest(event.lastTimestamp), latest(entityName) where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason, clusterName, event.involvedObject.name, event.involvedObject.kind  limit 1000 since 1 day ago where clusterName = 'pixie-auto-telemetry'"
-                    }
-                  ]
-                },
-                "linkedEntityGuids": null
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select count(http.server.duration) as 'Total Requests', rate(count(http.server.duration), 1 minute) as 'Req/min' where instrumentation.provider = 'pixie' facet service.name, k8s.namespace.name, k8s.cluster.name limit 20"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 21,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Throughput by Service [Top 20]",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
               },
-              {
-                "visualization": {
-                  "id": "viz.line"
-                },
-                "layout": {
-                  "column": 7,
-                  "row": 5,
-                  "height": 4,
-                  "width": 6
-                },
-                "title": "Timeseries of Kubernetes Cluster Events",
-                "rawConfiguration": {
-                  "facet": {
-                    "showOtherSeries": false
-                  },
-                  "legend": {
-                    "enabled": true
-                  },
-                  "nrqlQueries": [
-                    {
-                      "accountId": 0,
-                      "query": "FROM InfrastructureEvent select count(event.count) as 'Event Count' where category = 'kubernetes' and event.reason like '%Fail%' or event.reason like '%Kill%' or event.reason like '%Evict%' or event.reason like '%BackOff%' facet event.reason limit 1000 since 1 day ago TIMESERIES AUTO "
-                    }
-                  ],
-                  "yAxisLeft": {
-                    "zero": true
-                  }
-                },
-                "linkedEntityGuids": null
-              }
-            ]
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select count(http.server.duration) where instrumentation.provider = 'pixie' facet service.name TIMESERIES limit 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
           }
-	]
-}
+        ]
+      },
+      {
+        "name": "HTTP Spans",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 8,
+              "width": 12
+            },
+            "title": "HTTP Spans",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select * where instrumentation.provider = 'pixie'"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
