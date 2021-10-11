@@ -4,6 +4,18 @@
 ### Features
 
 * ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+* **aws:** Update aws links to in-product install ([d586e5d](https://github.com/newrelic/newrelic-quickstarts/commit/d586e5df72ab4b0341cd3fd5e7ab60b5f733059c))
+* **azure:** Add in-product install link for Azure ([05403cc](https://github.com/newrelic/newrelic-quickstarts/commit/05403cc6345c3702d074944770e04f4d9525bfa0))
+* **fluentd:** Add in-product install link for FluentD ([7e2349c](https://github.com/newrelic/newrelic-quickstarts/commit/7e2349c82c239984b3ab9e7fd38feb427afc23fa))
+* **gcp:** Add in-product link to install for GCP ([1c08880](https://github.com/newrelic/newrelic-quickstarts/commit/1c088802ae017953a415d1e80ede40eaaee926cb))
+* **prometheus:** Add in-product link and add openmetrics quickstar ([130c265](https://github.com/newrelic/newrelic-quickstarts/commit/130c2654176ff0da2570d8761184f01594b8c544))
+
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
 
 # [0.46.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.45.0...v0.46.0) (2021-10-08)
 
