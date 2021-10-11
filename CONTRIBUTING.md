@@ -13,7 +13,8 @@
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
-      - [Dashboard images (screenshots)](#dashboard-images-screenshots)
+      - [Dashboard Screenshots](#dashboard-screenshots)
+      - [Images directory](#images-directory)
       - [Logos](#logos)
     - [Icons](#icons)
     - [Keywords](#keywords)
@@ -85,7 +86,7 @@ When writing about a quickstart the following language rules should be followed:
 
   ### New Relic + <QUICKSTART_TECHNOLOGY> (Optional)
   
-  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilies such as errors inbox, transaction traces, etc.
+  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilities such as errors inbox, transaction traces, etc.
 ```
 
 ## Quickstarts contributor guidelines
@@ -96,8 +97,8 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 2`: Review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs) for structure and limits you need to consider.
 - `Step 3`: Create your quickstart!
 - `Step 4`: Submit a PR!
-- `Step 5`: resolve feedback from code reviews.
-- `Step 6`: after approval, merge your PR.
+- `Step 5`: Resolve feedback from code reviews.
+- `Step 6`: After approval, merge your PR.
 
 When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
@@ -164,12 +165,12 @@ documentation:
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
 - The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
 
-#### Dashboard images (screenshots)
+#### Dashboard Screenshots
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details `dashboards`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details on `dashboards`
 
 - Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
-- file name should be `quickstart_name01`, `quickstart_name02`, etc
+- File name should be `quickstart_name01`, `quickstart_name02`, etc
 - Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
@@ -178,9 +179,23 @@ documentation:
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
 
+#### Images directory
+
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/README.md#getting-started) for more details on `dashboards`
+
+- These images are `optional` and should contain images you want to display within a markdown widget on your Dashboard.
+- File name should be `quickstart_name01`, `quickstart_name02`, etc
+- These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
+- Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
+- Each image file must be less than `4MB` in size
+- There should be no more than `6`  dashboard images per dashboard
+- See our Python quickstart for examples:
+  - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
+  - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
+
 #### Logos
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details `logos`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
 - Logos are `optional` but highly recommended to call attention to your quickstart.
