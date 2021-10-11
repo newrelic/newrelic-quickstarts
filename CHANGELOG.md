@@ -1,3 +1,86 @@
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+* **aws:** Update aws links to in-product install ([d586e5d](https://github.com/newrelic/newrelic-quickstarts/commit/d586e5df72ab4b0341cd3fd5e7ab60b5f733059c))
+* **azure:** Add in-product install link for Azure ([05403cc](https://github.com/newrelic/newrelic-quickstarts/commit/05403cc6345c3702d074944770e04f4d9525bfa0))
+* **fluentd:** Add in-product install link for FluentD ([7e2349c](https://github.com/newrelic/newrelic-quickstarts/commit/7e2349c82c239984b3ab9e7fd38feb427afc23fa))
+* **gcp:** Add in-product link to install for GCP ([1c08880](https://github.com/newrelic/newrelic-quickstarts/commit/1c088802ae017953a415d1e80ede40eaaee926cb))
+* **prometheus:** Add in-product link and add openmetrics quickstar ([130c265](https://github.com/newrelic/newrelic-quickstarts/commit/130c2654176ff0da2570d8761184f01594b8c544))
+
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+
+# [0.46.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.45.0...v0.46.0) (2021-10-08)
+
+
+### Features
+
+* **kubernetes:** add k8s install plan ([e2fbaf3](https://github.com/newrelic/newrelic-quickstarts/commit/e2fbaf3eb70dc3c97a4f97791e50185532658b1a))
+
+# [0.45.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.44.0...v0.45.0) (2021-10-06)
+
+
+### Features
+
+* adding an npm installplan ([0f1ffb8](https://github.com/newrelic/newrelic-quickstarts/commit/0f1ffb8b5b1f5ed51fb752b70356e0d3aeaabe28))
+
+# [0.44.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.43.0...v0.44.0) (2021-10-06)
+
+
+### Features
+
+* **Gigamon Hawk:** Added [Initial release] ([d5f484d](https://github.com/newrelic/newrelic-quickstarts/commit/d5f484de84a598787bfbc05009182a3cfdab6ff3))
+
+# [0.43.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.42.0...v0.43.0) (2021-10-06)
+
+
+### Features
+
+* add tdp install plan ([fac85df](https://github.com/newrelic/newrelic-quickstarts/commit/fac85dfe48e76987d8c316ff7a5ef4892fedf985))
+
+# [0.42.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.41.0...v0.42.0) (2021-10-05)
+
+
+### Features
+
+* **tdp data ingest:** Added Sri Shetty ([b8c7fd8](https://github.com/newrelic/newrelic-quickstarts/commit/b8c7fd833ac3bd8b8fc99b0a932017ea0eb9a37b))
+* **updated config.yml:** Added Sri Shetty ([564ee08](https://github.com/newrelic/newrelic-quickstarts/commit/564ee084b04369024523cc9c2ff10c4cdeab15a3))
+
+# [0.41.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.40.0...v0.41.0) (2021-10-05)
+
+
+### Features
+
+* add additional documentation link ([f17a97e](https://github.com/newrelic/newrelic-quickstarts/commit/f17a97ea7bbf2fb48243559e2fdeceacf8146738))
+* add deeper network install plan ([6fbcde4](https://github.com/newrelic/newrelic-quickstarts/commit/6fbcde45da5d64fc4735f0cb3d157ef9882e66af))
+* add deeper network quickstart ([61b1762](https://github.com/newrelic/newrelic-quickstarts/commit/61b1762ed87475c4f3999fa6171d145b4660b236))
+
+# [0.40.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.39.0...v0.40.0) (2021-10-05)
+
+
+### Features
+
+* **elixir:** Added elixir quickstart and install plan ([888d75e](https://github.com/newrelic/newrelic-quickstarts/commit/888d75eae5892f652b76655672ad5e86f09a3d60))
+
+# [0.39.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.38.0...v0.39.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* remove dupe uuid to generate fresh ([813ba43](https://github.com/newrelic/newrelic-quickstarts/commit/813ba4396a309b0afbf79b528ee90b6909643b66))
+
+
+### Features
+
+* check for uuid uniqueness ([ce21b2d](https://github.com/newrelic/newrelic-quickstarts/commit/ce21b2dc743b2e6f3de5ab37e5d0a2cc4a013ed6))
+
 # [0.38.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.37.0...v0.38.0) (2021-09-30)
 
 
