@@ -1,0 +1,606 @@
+{
+  "name": "HerokuConnect ",
+  "description": "",
+  "pages": [
+    {
+      "name": "HC Overview",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Throughput",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT filter(sum(numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*'))), WHERE message like '%DATABASE%')*-1 as 'SFDC to PostgreSQL',  filter(sum(numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*'))), WHERE message like '%SALESFORCE%') as 'PostgreSQL to SFDC' WHERE syslog.procid = 'herokuconnect'  since 1 day ago TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Latency",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT filter(average(numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*'))), WHERE message like '%DATABASE%')*-1 as 'SFDC to PostgreSQL',  filter(average(numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*'))), WHERE message like '%SALESFORCE%') as 'PostgreSQL to SFDC' WHERE syslog.procid = 'herokuconnect' AND message like '%SALESFORCE%' since 1 day ago TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Latency Avg Ranking (Top 10)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message not like '%Informational%' since 1 day ago FACET capture(message, 'event=\"[\\\\d ]*(?P<Table>[^, ]+).*') limit 10"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Sync rows sum (Up/Down)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message not like '%Informational%' since 1 day ago FACET capture(message, 'event=\"[\\\\d ]*(?P<Table>[^, ]+).*') limit 10"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Logs",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log   SELECT capture(message, 'event=\"[\\\\d+ ]*(?P<Table>[^ ,]+).*'), capture(message, 'event=\"[\\\\d+ ]*[^ ]+ (?P<Operator>[^ ]+).*'), numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*')), numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*')), message WHERE syslog.procid = 'herokuconnect' since 1 day ago limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "HC PostgreSQL to SFDC",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Insert",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"\\\\d+ (?P<Table>[^ ]+).*') limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"\\\\d+ (?P<Table>[^ ]+).*') limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "SOAP Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%QUERY%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Insert",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"\\\\d+ (?P<Table>[^ ]+).*') limit 50 TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"\\\\d+ (?P<Table>[^ ]+).*') limit 50 TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "SOAP Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*SALESFORCE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%QUERY%SALESFORCE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50 TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Insert latency",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.*total \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%SALESFORCE%' since 1 day ago limit 50 TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Update latency",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.*total \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%SALESFORCE%' since 1 day ago limit 50 TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "SOAP Update latency",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.*rows \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%QUERY%SALESFORCE%' since 1 day ago limit 50 TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Logs",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log   SELECT capture(message, 'event=\"[\\\\d+ ]*(?P<Table>[^ ]+).*'), capture(message, 'event=\"[\\\\d+ ]*[^ ]+ (?P<Operator>[^ ]+).*'), numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*')), numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*')), message WHERE syslog.procid = 'herokuconnect' AND message like '%SALESFORCE%' since 1 day ago limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "HC SFDC to PostgreSQL",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Insert",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*DATABASE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%DATABASE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%DATABASE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Insert",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.*DATABASE (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%DATABASE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50 TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Update",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%DATABASE%' since 1 day ago facet capture(message, 'event=\"(?P<Table>[^ ]+).*') limit 50 TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Insert latency",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%INSERT%DATABASE%' since 1 day ago limit 50 TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Update latency",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*'))) WHERE syslog.procid = 'herokuconnect' AND message like '%UPDATE%DATABASE%' since 1 day ago limit 50 TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Logs",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log   SELECT capture(message, 'event=\"[\\\\d+ ]*(?P<Table>[^ ]+).*'), capture(message, 'event=\"[\\\\d+ ]*[^ ]+ (?P<Operator>[^ ]+).*'), numeric(capture(message, '.* (?P<Rows>\\\\d+) rows.*')), numeric(capture(message, '.* \\\\((?P<latency>[^ ]*) secs\\\\).*')), message WHERE syslog.procid = 'herokuconnect' AND message like '%DATABASE%' since 1 day ago limit 50"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}
