@@ -1,3 +1,10 @@
+## [0.48.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.2...v0.48.3) (2021-10-11)
+
+
+### Bug Fixes
+
+* alert conditions are now being created correctly ([56664ff](https://github.com/newrelic/newrelic-quickstarts/commit/56664ff7cb4cceec46fd34ea947c14a5d3dae4f1))
+
 ## [0.48.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.1...v0.48.2) (2021-10-11)
 
 
