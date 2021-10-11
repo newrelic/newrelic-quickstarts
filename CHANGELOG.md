@@ -1,3 +1,17 @@
+# [0.48.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.47.0...v0.48.0) (2021-10-11)
+
+
+### Bug Fixes
+
+* **pixie:** missing url ([6d61b16](https://github.com/newrelic/newrelic-quickstarts/commit/6d61b166178ee9c0fd7f9ab6bc12f0d703165446))
+
+
+### Features
+
+* added pixie (copy of k8s) ([a8eed1a](https://github.com/newrelic/newrelic-quickstarts/commit/a8eed1ae3caf8b820b4fe3f389c1db31c83c8d4b))
+* **istio:** added k8s tag ([2797758](https://github.com/newrelic/newrelic-quickstarts/commit/279775815303ce5afa9c7d0b5126e15fefe78432))
+* **pixie:** updated icon and logo ([3c12cbf](https://github.com/newrelic/newrelic-quickstarts/commit/3c12cbf58961354a588e1a948247c9728d0306b1))
+
 # [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
 
 
