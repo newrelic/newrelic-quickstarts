@@ -1,3 +1,17 @@
+## [0.48.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.1...v0.48.2) (2021-10-11)
+
+
+### Bug Fixes
+
+* kick build ([a4946a7](https://github.com/newrelic/newrelic-quickstarts/commit/a4946a749bb9ac5986e79ca3b137ee6a55514d1f))
+
+## [0.48.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.0...v0.48.1) (2021-10-11)
+
+
+### Bug Fixes
+
+* **pixie:** remove duplicate pixie quickstart ([511c421](https://github.com/newrelic/newrelic-quickstarts/commit/511c42184066452266472d6a3b3b9d6b58b61682))
+
 # [0.48.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.47.0...v0.48.0) (2021-10-11)
 
 
