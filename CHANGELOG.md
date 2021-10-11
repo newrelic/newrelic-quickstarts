@@ -1,3 +1,10 @@
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+
 # [0.46.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.45.0...v0.46.0) (2021-10-08)
 
 
