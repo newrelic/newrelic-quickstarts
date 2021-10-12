@@ -1,3 +1,10 @@
+## [0.48.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.3...v0.48.4) (2021-10-12)
+
+
+### Bug Fixes
+
+* trigger a new release ([e277efe](https://github.com/newrelic/newrelic-quickstarts/commit/e277efe737cb0de9d9b8a2daafdce4a4453c627c))
+
 ## [0.48.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.2...v0.48.3) (2021-10-11)
 
 
