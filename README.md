@@ -4,6 +4,8 @@
 
 # New Relic One quickstarts
 
+> Only users with full platform access can use the dashboards installed with a quickstart.
+
 New Relic One quickstarts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
 
 - Clear instructions for instrumenting your services
@@ -16,14 +18,6 @@ All of this is available through our [Instant Observability](https://developer.n
 > Looking for inspiration?
 
 You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observability).
-
-## Preview Announcement
-
-> 🧪 This project is currently in `Preview`  🧪
-
-During this preview period all users of New Relic will have full access to install any quickstart. After installation you can use the dashboards and alerts included in the quickstart.
-
-When the preview period ends, only users with full platform access can use the dashboards installed with the quickstart.
 
 ## Quickstart components
 
