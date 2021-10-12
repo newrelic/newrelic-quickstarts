@@ -74,7 +74,7 @@ When writing about a quickstart the following language rules should be followed:
   ## Why monitor <QUICKSTART_TECHNOLOGY>
 
   Explain the role and purpose of monitoring your technology. What are some specific difficulties about the technology? What are useful metrics to monitor?
-  
+
   ### <QUICKSTART_TECHNOLOGY> quickstart highlights
 
   Describe the specific features of your quickstart. Mentions things such as dashboard visuals, alerts, and the type of instrumentation. We recommend the following format:
@@ -85,8 +85,8 @@ When writing about a quickstart the following language rules should be followed:
   - Third highlight
 
   ### New Relic + <QUICKSTART_TECHNOLOGY> (Optional)
-  
-  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilities such as errors inbox, transaction traces, etc.
+
+  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilies such as errors inbox, transaction traces, etc.
 ```
 
 ## Quickstarts contributor guidelines
@@ -113,10 +113,10 @@ You should also review the API limits for [dashboards](https://docs.newrelic.com
 #### InstallPlans
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
+> You can view all the available `installPlans` in the [Install](https://github.com/newrelic/newrelic-quickstarts/tree/main/install) directory.
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
-- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
-- You can view all the available `installPlans` in the [Install](https://github.com/newrelic/newrelic-quickstarts/tree/main/install) directory.
+- Every quick start that should be "installable"  will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md#target_destination) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md) configuration if you want use the guided install flow.
 
 #### Summary & descriptions
 
@@ -228,6 +228,8 @@ keywords:
 
 Keywords are strictly defined and you should provide a standard set of keywords in your quickstart from the list below. If you submit a keyword
 that is not defined in this list below, it will be reviewed for use after you submit a PR.
+
+> the `featured` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
 
 - apm
 - automation
