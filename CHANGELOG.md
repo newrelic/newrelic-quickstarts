@@ -1,3 +1,64 @@
+## [0.48.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.2...v0.48.3) (2021-10-11)
+
+
+### Bug Fixes
+
+* alert conditions are now being created correctly ([56664ff](https://github.com/newrelic/newrelic-quickstarts/commit/56664ff7cb4cceec46fd34ea947c14a5d3dae4f1))
+
+## [0.48.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.1...v0.48.2) (2021-10-11)
+
+
+### Bug Fixes
+
+* kick build ([a4946a7](https://github.com/newrelic/newrelic-quickstarts/commit/a4946a749bb9ac5986e79ca3b137ee6a55514d1f))
+
+## [0.48.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.0...v0.48.1) (2021-10-11)
+
+
+### Bug Fixes
+
+* **pixie:** remove duplicate pixie quickstart ([511c421](https://github.com/newrelic/newrelic-quickstarts/commit/511c42184066452266472d6a3b3b9d6b58b61682))
+
+# [0.48.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.47.0...v0.48.0) (2021-10-11)
+
+
+### Bug Fixes
+
+* **pixie:** missing url ([6d61b16](https://github.com/newrelic/newrelic-quickstarts/commit/6d61b166178ee9c0fd7f9ab6bc12f0d703165446))
+
+
+### Features
+
+* added pixie (copy of k8s) ([a8eed1a](https://github.com/newrelic/newrelic-quickstarts/commit/a8eed1ae3caf8b820b4fe3f389c1db31c83c8d4b))
+* **istio:** added k8s tag ([2797758](https://github.com/newrelic/newrelic-quickstarts/commit/279775815303ce5afa9c7d0b5126e15fefe78432))
+* **pixie:** updated icon and logo ([3c12cbf](https://github.com/newrelic/newrelic-quickstarts/commit/3c12cbf58961354a588e1a948247c9728d0306b1))
+
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+* **aws:** Update aws links to in-product install ([d586e5d](https://github.com/newrelic/newrelic-quickstarts/commit/d586e5df72ab4b0341cd3fd5e7ab60b5f733059c))
+* **azure:** Add in-product install link for Azure ([05403cc](https://github.com/newrelic/newrelic-quickstarts/commit/05403cc6345c3702d074944770e04f4d9525bfa0))
+* **fluentd:** Add in-product install link for FluentD ([7e2349c](https://github.com/newrelic/newrelic-quickstarts/commit/7e2349c82c239984b3ab9e7fd38feb427afc23fa))
+* **gcp:** Add in-product link to install for GCP ([1c08880](https://github.com/newrelic/newrelic-quickstarts/commit/1c088802ae017953a415d1e80ede40eaaee926cb))
+* **prometheus:** Add in-product link and add openmetrics quickstar ([130c265](https://github.com/newrelic/newrelic-quickstarts/commit/130c2654176ff0da2570d8761184f01594b8c544))
+
+# [0.47.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.46.0...v0.47.0) (2021-10-11)
+
+
+### Features
+
+* ability to include dashboard images ([0dab461](https://github.com/newrelic/newrelic-quickstarts/commit/0dab4619d0c053fb4cc9c7eae6ba4957a1f21334))
+
+# [0.46.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.45.0...v0.46.0) (2021-10-08)
+
+
+### Features
+
+* **kubernetes:** add k8s install plan ([e2fbaf3](https://github.com/newrelic/newrelic-quickstarts/commit/e2fbaf3eb70dc3c97a4f97791e50185532658b1a))
+
 # [0.45.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.44.0...v0.45.0) (2021-10-06)
 
 
