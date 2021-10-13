@@ -1,3 +1,10 @@
+## [0.49.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.1...v0.49.2) (2021-10-13)
+
+
+### Bug Fixes
+
+* revert to docs install for now ([0475454](https://github.com/newrelic/newrelic-quickstarts/commit/0475454e3c5dcc8ab44b87e90c71b670500b1d59))
+
 ## [0.49.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.0...v0.49.1) (2021-10-13)
 
 
