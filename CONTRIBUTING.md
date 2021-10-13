@@ -49,9 +49,8 @@ your interactions with the project and its participants.
 
 ## Quickstart yaml to UI mapping
 
-Quickstarts are defined by several yaml files. These files are used to render the quickstart content on New Relic's External I/O Catalog and within the internal
-New Relic Catalog. At this time there isn't any easy way to preview a quickstart as you develop, so we have provided a visual mapping below to explain how each part of the
-UI is rendered using the quickstart yaml files.
+Quickstarts are defined by several yaml files. These files are used to render the quickstart content on New Relic's external I/O Catalog and within the internal
+New Relic I/O Catalog. At this time there isn't any easy way to preview a quickstart as you develop, so we have provided a visual mapping below to explain how each part of the UI is rendered using the quickstart yaml files.
 
 This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
 [here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
