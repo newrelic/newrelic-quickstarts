@@ -1,3 +1,10 @@
+# [0.49.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.4...v0.49.0) (2021-10-13)
+
+
+### Features
+
+* Merge pull request [#480](https://github.com/newrelic/newrelic-quickstarts/issues/480) from nr-jbiggley/nr-network ([59c59d7](https://github.com/newrelic/newrelic-quickstarts/commit/59c59d727c3a9b9f9a96fc1e3d181278516a1e0c))
+
 ## [0.48.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.3...v0.48.4) (2021-10-12)
 
 
