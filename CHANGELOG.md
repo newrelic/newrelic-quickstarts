@@ -1,3 +1,10 @@
+## [0.49.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.0...v0.49.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* **lacework:** linkedEntityGuids should be null ([fbb65f6](https://github.com/newrelic/newrelic-quickstarts/commit/fbb65f65a2be8284cdbf65e0ca65c4cc981f7f4c))
+
 # [0.49.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.4...v0.49.0) (2021-10-13)
 
 
