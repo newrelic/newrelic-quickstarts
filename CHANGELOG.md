@@ -1,3 +1,17 @@
+# [0.50.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.2...v0.50.0) (2021-10-14)
+
+
+### Bug Fixes
+
+* adjusting config file, json permission ([b445d21](https://github.com/newrelic/newrelic-quickstarts/commit/b445d213a1bd92290547edabc61781d598ba6c8e))
+* remove file from gitignore ([bcd6502](https://github.com/newrelic/newrelic-quickstarts/commit/bcd6502b237d5a71eeff440f549e9cd1f4bc3e3b))
+
+
+### Features
+
+* **log-analysis:** Added log-analysis dashboard ([e8ed127](https://github.com/newrelic/newrelic-quickstarts/commit/e8ed1270168014451d64bfd4c02fdcbb01b14847))
+* **log-analysis:** Added log-analysis dashboard ([1765cfe](https://github.com/newrelic/newrelic-quickstarts/commit/1765cfebd2dbee42ba34459075d974e8a10efdee))
+
 ## [0.49.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.1...v0.49.2) (2021-10-13)
 
 
