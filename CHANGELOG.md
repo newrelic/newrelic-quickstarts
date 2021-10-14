@@ -1,3 +1,10 @@
+## [0.50.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.0...v0.50.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* **gatsby-build:** add accountId ([5e2e295](https://github.com/newrelic/newrelic-quickstarts/commit/5e2e2958900f8c933bc4bd80d910a50c7a8dfc5c))
+
 # [0.50.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.2...v0.50.0) (2021-10-14)
 
 
