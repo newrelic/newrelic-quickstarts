@@ -1,3 +1,10 @@
+## [0.50.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.3...v0.50.4) (2021-10-15)
+
+
+### Bug Fixes
+
+*  change name and title to CodeStream ([800972b](https://github.com/newrelic/newrelic-quickstarts/commit/800972b16be2ac53583a6b9b69f2f23edab88412))
+
 ## [0.50.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.2...v0.50.3) (2021-10-15)
 
 
