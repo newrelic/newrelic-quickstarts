@@ -1,3 +1,10 @@
+## [0.50.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.2...v0.50.3) (2021-10-15)
+
+
+### Bug Fixes
+
+* Use https prefix on Fastly docs link ([48e1416](https://github.com/newrelic/newrelic-quickstarts/commit/48e141641e9dd5b5cbe80983dfa4439c3aa7c926))
+
 ## [0.50.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.1...v0.50.2) (2021-10-14)
 
 
