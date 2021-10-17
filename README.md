@@ -82,6 +82,8 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 5. Submit and wait for review. Please be available to resolve review feedback in a timely manner.
 
+**NOTE:** All contributions are public and available for use by others. When contributing, make sure the NRQL queries you use match the datasets the users have. You don't want to use NRQL queries with sensitive data. 
+
 ## Testing
 
 ### Importer
