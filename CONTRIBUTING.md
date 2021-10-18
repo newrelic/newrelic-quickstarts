@@ -308,6 +308,7 @@ Before submitting an Issue, please search for similar ones in the
 2. Provide a short description of the changes and screenshots of any visual changes.
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
 ## Using Conventional Commits
 
