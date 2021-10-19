@@ -1,3 +1,10 @@
+## [0.50.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.6...v0.50.7) (2021-10-19)
+
+
+### Bug Fixes
+
+* restoring installPlan for npm ([c52d8e1](https://github.com/newrelic/newrelic-quickstarts/commit/c52d8e13ca0f27d116e89dfb7781118b91d282f8))
+
 ## [0.50.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.5...v0.50.6) (2021-10-19)
 
 
