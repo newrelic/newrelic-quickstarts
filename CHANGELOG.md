@@ -1,3 +1,17 @@
+## [0.50.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.6...v0.50.7) (2021-10-19)
+
+
+### Bug Fixes
+
+* restoring installPlan for npm ([c52d8e1](https://github.com/newrelic/newrelic-quickstarts/commit/c52d8e13ca0f27d116e89dfb7781118b91d282f8))
+
+## [0.50.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.5...v0.50.6) (2021-10-19)
+
+
+### Bug Fixes
+
+* added install plan for aws metric streams dashboards ([1f1ee49](https://github.com/newrelic/newrelic-quickstarts/commit/1f1ee49200b079feb5d8c5d69d1715b54c2bb94e))
+
 ## [0.50.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.4...v0.50.5) (2021-10-18)
 
 ## [0.50.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.3...v0.50.4) (2021-10-15)
