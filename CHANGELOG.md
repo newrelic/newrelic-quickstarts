@@ -1,3 +1,10 @@
+# [0.51.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.7...v0.51.0) (2021-10-20)
+
+
+### Features
+
+* **Delphix Integration:** Added [Delphix Integration] ([1c1e3a8](https://github.com/newrelic/newrelic-quickstarts/commit/1c1e3a87816db30e1e0767de73b15cb8e14baa57))
+
 ## [0.50.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.6...v0.50.7) (2021-10-19)
 
 
