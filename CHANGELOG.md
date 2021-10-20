@@ -1,3 +1,68 @@
+## [0.50.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.4...v0.50.5) (2021-10-18)
+
+## [0.50.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.3...v0.50.4) (2021-10-15)
+
+
+### Bug Fixes
+
+*  change name and title to CodeStream ([800972b](https://github.com/newrelic/newrelic-quickstarts/commit/800972b16be2ac53583a6b9b69f2f23edab88412))
+
+## [0.50.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.2...v0.50.3) (2021-10-15)
+
+
+### Bug Fixes
+
+* Use https prefix on Fastly docs link ([48e1416](https://github.com/newrelic/newrelic-quickstarts/commit/48e141641e9dd5b5cbe80983dfa4439c3aa7c926))
+
+## [0.50.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.1...v0.50.2) (2021-10-14)
+
+
+### Bug Fixes
+
+* kick build ([0ff7c54](https://github.com/newrelic/newrelic-quickstarts/commit/0ff7c547e7ff52355590db0a0e44c469d97a49b3))
+
+## [0.50.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.0...v0.50.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* **gatsby-build:** add accountId ([5e2e295](https://github.com/newrelic/newrelic-quickstarts/commit/5e2e2958900f8c933bc4bd80d910a50c7a8dfc5c))
+
+# [0.50.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.2...v0.50.0) (2021-10-14)
+
+
+### Bug Fixes
+
+* adjusting config file, json permission ([b445d21](https://github.com/newrelic/newrelic-quickstarts/commit/b445d213a1bd92290547edabc61781d598ba6c8e))
+* remove file from gitignore ([bcd6502](https://github.com/newrelic/newrelic-quickstarts/commit/bcd6502b237d5a71eeff440f549e9cd1f4bc3e3b))
+
+
+### Features
+
+* **log-analysis:** Added log-analysis dashboard ([e8ed127](https://github.com/newrelic/newrelic-quickstarts/commit/e8ed1270168014451d64bfd4c02fdcbb01b14847))
+* **log-analysis:** Added log-analysis dashboard ([1765cfe](https://github.com/newrelic/newrelic-quickstarts/commit/1765cfebd2dbee42ba34459075d974e8a10efdee))
+
+## [0.49.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.1...v0.49.2) (2021-10-13)
+
+
+### Bug Fixes
+
+* revert to docs install for now ([0475454](https://github.com/newrelic/newrelic-quickstarts/commit/0475454e3c5dcc8ab44b87e90c71b670500b1d59))
+
+## [0.49.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.49.0...v0.49.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* **lacework:** linkedEntityGuids should be null ([fbb65f6](https://github.com/newrelic/newrelic-quickstarts/commit/fbb65f65a2be8284cdbf65e0ca65c4cc981f7f4c))
+
+# [0.49.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.4...v0.49.0) (2021-10-13)
+
+
+### Features
+
+* Merge pull request [#480](https://github.com/newrelic/newrelic-quickstarts/issues/480) from nr-jbiggley/nr-network ([59c59d7](https://github.com/newrelic/newrelic-quickstarts/commit/59c59d727c3a9b9f9a96fc1e3d181278516a1e0c))
+
 ## [0.48.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.48.3...v0.48.4) (2021-10-12)
 
 

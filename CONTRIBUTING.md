@@ -3,6 +3,12 @@
 <!-- toc -->
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
+  - [Quickstart yaml to UI mapping](#quickstart-yaml-to-ui-mapping)
+    - [Main config](#main-config)
+    - [Alerts](#alerts)
+    - [Dashboards](#dashboards)
+    - [Data sources](#data-sources)
+    - [Install Plan](#install-plan)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -40,6 +46,36 @@ changes, and [send a Pull Request](https://help.github.com/articles/using-pull-r
 Note that our [code of conduct](https://github.com/newrelic/.github/blob/main/CODE_OF_CONDUCT.md)
 applies to all platforms and venues related to this project; please follow it in all
 your interactions with the project and its participants.
+
+## Quickstart yaml to UI mapping
+
+Quickstarts are defined by several yaml files. These files are used to render the quickstart content on New Relic's external I/O Catalog and within the internal
+New Relic I/O Catalog. At this time there isn't any easy way to preview a quickstart as you develop, so we have provided a visual mapping below to explain how each part of the UI is rendered using the quickstart yaml files.
+
+This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
+[here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
+
+> please note,  the internal catalog follows a very similar UI pattern.
+
+### Main config
+
+![main config](./images/main.png)
+
+### Alerts
+
+![alerts](./images/alerts.png)
+
+### Dashboards
+
+![dashboards](./images/dashboards.png)
+
+### Data sources
+
+![alt text](./images/data-sources.png)
+
+### Install Plan
+
+![install plan](./images/install-plan.png)
 
 ## Quickstarts style guide
 
@@ -272,6 +308,7 @@ Before submitting an Issue, please search for similar ones in the
 2. Provide a short description of the changes and screenshots of any visual changes.
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
 ## Using Conventional Commits
 
