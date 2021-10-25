@@ -1,3 +1,10 @@
+# [0.52.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.51.0...v0.52.0) (2021-10-25)
+
+
+### Features
+
+* new aws metric stream dashboards ([55b58cc](https://github.com/newrelic/newrelic-quickstarts/commit/55b58cc1b54af5d7c1ae2516462bcd78ed7754eb))
+
 # [0.51.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.7...v0.51.0) (2021-10-20)
 
 
