@@ -1,3 +1,10 @@
+# [0.53.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.4...v0.53.0) (2021-10-26)
+
+
+### Features
+
+* replace dashboard and move guided install ([5cd7edf](https://github.com/newrelic/newrelic-quickstarts/commit/5cd7edfa18979ef865f281bc97a88ce83ed8ff39))
+
 ## [0.52.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.3...v0.52.4) (2021-10-26)
 
 
