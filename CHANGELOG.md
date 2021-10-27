@@ -1,3 +1,10 @@
+## [0.53.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.1...v0.53.2) (2021-10-27)
+
+
+### Bug Fixes
+
+* Merge pull request [#520](https://github.com/newrelic/newrelic-quickstarts/issues/520) from lazyplatypus/patch-9 ([f75c1b9](https://github.com/newrelic/newrelic-quickstarts/commit/f75c1b9594ab53ad5d40195c470fc5afb5c690d4))
+
 ## [0.53.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.0...v0.53.1) (2021-10-27)
 
 
