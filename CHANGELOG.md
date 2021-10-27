@@ -1,3 +1,10 @@
+# [0.54.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.3...v0.54.0) (2021-10-27)
+
+
+### Features
+
+* **sendgrid:** Add dashboard to visualize SendGrid Events ([fe8108e](https://github.com/newrelic/newrelic-quickstarts/commit/fe8108ebc6dff16c0eace643e76d1a36fca2c78a))
+
 ## [0.53.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.2...v0.53.3) (2021-10-27)
 
 ## [0.53.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.1...v0.53.2) (2021-10-27)
