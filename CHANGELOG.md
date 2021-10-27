@@ -1,3 +1,10 @@
+## [0.53.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.0...v0.53.1) (2021-10-27)
+
+
+### Bug Fixes
+
+* kick build ([7b33760](https://github.com/newrelic/newrelic-quickstarts/commit/7b337609d7369b9ea8103fd48e809fc7af315cd2))
+
 # [0.53.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.4...v0.53.0) (2021-10-26)
 
 
