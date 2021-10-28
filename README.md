@@ -25,7 +25,7 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards/) you can customize and understand the data you collect. Explore your data and correlate connected sources with tailored, user-friendly charts, and quickly learn the state of your system and applications for faster, more efficient troubleshooting.
 
-> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. Use the `sanitize-dashboard` script to remove any unneeded keys within the .json file, as well as setting the `accountId` to 0. EX: `yarn sanitize-dashboard node/express` where the argument is the path to the dashboard directory. The script will handle the rest.
+> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. Use the `sanitize-dashboard` script to remove any unneeded keys within the .json file, as well as setting the `accountId` to 0. EX: `yarn sanitize-dashboard node-js/express` where the argument is the path to the dashboard directory. The script will handle the rest.
 
 ### 📟 Alerts
 
