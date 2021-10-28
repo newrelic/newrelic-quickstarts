@@ -4,14 +4,20 @@
 
 # New Relic One quickstarts
 
-> 🧪 This project is currently in an `ALPHA` state 🧪
+> Only users with full platform access can use the dashboards installed with a quickstart.
 
 New Relic One quickstarts help accelerate your New Relic journey by providing immediate value for your specific use cases. They include:
 
 - Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
 
-All of this is available through an open ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observability) open source ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+
+## New Relic One Instant Observability
+
+> Looking for inspiration?
+
+You can search for all the available quickstarts in the [New Relic Instant Observability catalog](https://developer.newrelic.com/instant-observability).
 
 ## Quickstart components
 
@@ -43,9 +49,10 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 3. Copy the `_template` directory and its content to a new directory within the `quickstarts` folder. Choose a name which identifies the purpose of your quickstart, such as `rabbitmq`, `apm-errors`, `sre`, or `aws-s3`
 
-4. In your new directory, you'll find the following folders: `dashboards` and `alerts` . Each folder contains a template or template directories that you can use to create entities for your quickstart.
+4. In your new directory, you'll find the following folders: `dashboards`, `alerts` and `images`. Each folder contains a template or template directories that you can use to create entities for your quickstart.
 
 - For example, to add an existing dashboard to your quickstart, [copy the dashboard's JSON](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#dash-json), and save it as a JSON file in the `dashboards` directory. Next, create a screenshot of your dashboard, add it to `dashboards`, and give it the same name as your JSON file.
+  - The `images` folder should contain images you want to display within a markdown widget on your Dashboard. An example of this would be the [Python quickstart](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png) which includes image widgets defined using markdown. For more information on this see our docs on [creating widgets containing markdown text](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#markdown)
 
 - You can add multiple JSON files and screenshots to `dashboards`. Pair each screenshot with a JSON file by using the same file name. If you want multiple screenshots for a dashboard, add a number at the end of the file name. So, your `dashboards` folder might contain:
 
@@ -56,26 +63,26 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 - This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
-- When adding alerts to your quickstart, [using NerdGraph](https://developer.newrelic.com/contribute-to-quickstarts/query-alerts-for-quickstart/) can assist you with adding existing alert configurtions to your yaml files.
+1. In your quickstart's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
 
-5. In your quickstart's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
-
-6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
+2. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
     ```sh
     git add -A
     git commit -m "feat([name]): Added [name]"
     ```
 
-7. Push your changes to Github:
+3. Push your changes to Github:
 
     ```sh
     git push
     ```
 
-8. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-quickstarts/compare?expand=1).
+4. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-quickstarts/compare?expand=1).
 
-9. Submit and wait for review. Please be available to resolve review feedback in a timely manner.
+5. Submit and wait for review. Please be available to resolve review feedback in a timely manner.
+
+**NOTE:** All contributions are public and available for use by others. When contributing, make sure the NRQL queries you use match the datasets the users have. You don't want to use NRQL queries with sensitive data. 
 
 ## Testing
 
@@ -125,3 +132,4 @@ If you believe you have found a security vulnerability in this project or any of
 ## License
 
 New Relic One quickstarts is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+

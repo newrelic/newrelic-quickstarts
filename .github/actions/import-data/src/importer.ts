@@ -155,7 +155,7 @@ const createAlertLocal = async (accountId: number, quickstart: string, policyId:
 
 	fileNames.forEach(async file => {
 		const loadedYaml = yaml.loadAll(fs.readFileSync(`${dir}/${file}`, 'utf-8'));
-		const parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
+		const parsedAlert = JSON.parse(JSON.stringify(loadedYaml))[0];
 
 		if (parsedAlert.type === 'BASELINE') {
 			const filledFile = transformData(parsedAlert);
