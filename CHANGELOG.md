@@ -1,3 +1,10 @@
+## [0.54.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.1...v0.54.2) (2021-10-28)
+
+
+### Bug Fixes
+
+* changes in json file ([0971aec](https://github.com/newrelic/newrelic-quickstarts/commit/0971aec75da38a13e20f6b9f5e839f65d5cce104))
+
 ## [0.54.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.0...v0.54.1) (2021-10-28)
 
 
