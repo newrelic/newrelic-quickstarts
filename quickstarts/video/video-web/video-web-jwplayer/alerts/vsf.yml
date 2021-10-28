@@ -1,12 +1,12 @@
 ---
 
 # Name of the alert
-name: Video Start Time - html5
+name: Video Start Failure % - jwplayer
 
 # Description and details
 details: |+
-  Alert when Video Start Time increases significantly from its baseline.
-  Useful for understanding when your users are experiencing increased start times.
+  Alert when the Video Start Failures % increases significantly from its baseline.
+  Useful for understanding when your users are unable to successfully initiate video plays.
 
 # Type of alert
 type: BASELINE
@@ -14,7 +14,7 @@ type: BASELINE
 # NRQL query
 nrql:
   # Baseline alerts can use an optional FACET
-  query: "SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) FROM PageAction WHERE trackerName = 'html5'"
+  query: "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' WHERE trackerName = 'jwplayer'"
 
 # Direction in which baseline is set (Default: LOWER_ONLY)
 baselineDirection: UPPER_ONLY
