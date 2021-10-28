@@ -106,7 +106,7 @@
 | Restrictions   |      |
 | -------------- | ---- |
 | **Min length** | 0    |
-| **Max length** | 2000 |
+| **Max length** | 4000 |
 |                |      |
 
 **Example:** 
@@ -304,7 +304,7 @@ Must be one of:
 | Restrictions   |     |
 | -------------- | --- |
 | **Min length** | 0   |
-| **Max length** | 250 |
+| **Max length** | 500 |
 |                |     |
 
 **Example:** 

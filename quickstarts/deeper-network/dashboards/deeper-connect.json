@@ -1,0 +1,320 @@
+{
+    "name": "Deeper Network - Connect Monitoring",
+    "description": null,
+    "pages": [
+      {
+        "name": "Deeper Network - Connect Monitoring",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 5
+            },
+            "title": "Filter Devices",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT  latest(network.ip), latest(device.cpuPercent), latest(device.memoryPercent), latest(device.tempCelsius) FACET device.sn LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 6,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "CPU & Memory Utilization",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(device.cpuPercent) as 'CPU %', latest(device.memoryPercent) as 'Memory %' TIMESERIES FACET device.sn"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "height": 3,
+              "width": 3
+            },
+            "title": "Temperature",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(device.tempCelsius) as 'Celsius' TIMESERIES FACET device.sn "
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Current Connections",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(map.connections.inboundCount) as 'Inbound Connections', latest(map.connections.outboundCount) as 'Outbound Connections', latest(map.connections.total) as 'Total Connections' TIMESERIES FACET device.sn"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Traffic Metrics",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Shared Download (Client)",
+                  "precision": null,
+                  "type": "humanized"
+                },
+                {
+                  "name": "Shared Upload (Client)",
+                  "precision": null,
+                  "type": "humanized"
+                },
+                {
+                  "name": "Shared Download (Server)",
+                  "precision": null,
+                  "type": "humanized"
+                },
+                {
+                  "name": "Shared Upload (Server)",
+                  "precision": null,
+                  "type": "humanized"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(traffic.server.uploadBytes) as 'Shared Upload (Server)', latest(traffic.server.downloadBytes) as 'Shared Download (Server)', latest(traffic.client.uploadBytes) as 'Shared Upload (Client)', latest(traffic.client.downloadBytes) as 'Shared Download (Client)' TIMESERIES SINCE 1 week ago FACET device.sn"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Inbound Connections",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectPeerSample SELECT latest(lat), latest(lng) WHERE reversed IS TRUE FACET city, device.sn  LIMIT MAX SINCE 2 minutes ago "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Device Balances",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT  latest(balance.amount), latest(balance.credit), latest(balance.channelAmount) FACET device.sn LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Balance",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(balance.amount) as 'Balance Amount' TIMESERIES SINCE 1 week ago "
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Credit Score",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(balance.credit) as 'Credit Score' TIMESERIES SINCE 1 week ago FACET device.sn "
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 9,
+              "row": 13,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Micropayment",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM DeeperConnectSample SELECT latest(balance.channelAmount) as 'Micropayment Channel Amount' TIMESERIES SINCE 1 week ago FACET device.sn"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
