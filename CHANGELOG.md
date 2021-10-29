@@ -1,3 +1,10 @@
+## [0.54.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.2...v0.54.3) (2021-10-29)
+
+
+### Bug Fixes
+
+* updated alerts documentationo with suggested chaanges' ([0322813](https://github.com/newrelic/newrelic-quickstarts/commit/03228135728ab7aced2f975adb365df7a6ade5c8))
+
 ## [0.54.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.1...v0.54.2) (2021-10-28)
 
 
