@@ -1,3 +1,23 @@
+# [0.55.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.3...v0.55.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* **opentelemetry:** made description more New Relic specific ([8727828](https://github.com/newrelic/newrelic-quickstarts/commit/87278285199d84260663f37dbc7242e67f46ddb7))
+
+
+### Features
+
+* **opentelemetry:** added description of what NR does for Otel ([9d179be](https://github.com/newrelic/newrelic-quickstarts/commit/9d179be5603e18cf7c42d0d897ad09ede9b9eede))
+* **opentelemetry:** improved description and added some more keywords ([9450740](https://github.com/newrelic/newrelic-quickstarts/commit/945074097210e81f273a08f1ae50d97b401eea21))
+
+## [0.54.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.2...v0.54.3) (2021-10-29)
+
+
+### Bug Fixes
+
+* updated alerts documentationo with suggested chaanges' ([0322813](https://github.com/newrelic/newrelic-quickstarts/commit/03228135728ab7aced2f975adb365df7a6ade5c8))
+
 ## [0.54.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.1...v0.54.2) (2021-10-28)
 
 
