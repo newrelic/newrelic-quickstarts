@@ -9,6 +9,7 @@
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quick start best practices](#quick-start-best-practices)
+      - [Authors](#authors)
       - [InstallPlans](#installplans)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
@@ -107,7 +108,17 @@ When creating a new quickstart or reviewing a PR please keep the following in mi
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs)
 for quickstart structure and limits you need to consider.
 
-You should also review the API limits for [dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-api/#limits)) and [alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/rules-limits-alerts/) to help you build your quickstart.
+You should also review the API limits for [dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-api/#limits) and [alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/rules-limits-alerts/) to help you build your quickstart.
+
+#### Authors
+
+Quickstart authors represent the creator of the quickstart.
+
+You can define multiple author names, but it's recommended to use one of the follow formats.
+
+ 1. company name
+ 2. company name + author name
+ 3. author name
 
 #### InstallPlans
 
