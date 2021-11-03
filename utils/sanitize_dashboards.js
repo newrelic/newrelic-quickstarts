@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { readdir } = require('fs').promises;
 const path = require('path');
 // Removes the first two arguments passed by `node`, these aren't needed for this function to run - CM
 const pathsToSanitize = process.argv.slice(2);
@@ -19,14 +18,14 @@ const sanitizeDashboard = (fileContent) => {
 
 pathsToSanitize.forEach(async (i) => {
   const directory = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
-  console.log(directory);
-  const files = await readdir(directory, { withFileTypes: true });
+  const files = fs.readdirSync(directory, { withFileTypes: true });
   const jsonFiles = files.filter((file) => file.name.includes('.json'));
 
   if (jsonFiles.length < 1) {
     console.log(
       'No .json files exist within this directory, skipping sanitization...'
     );
+    return;
   }
 
   for (let file of jsonFiles) {
