@@ -16,7 +16,7 @@ const sanitizeDashboard = (fileContent) => {
     .replace(/[\}\)\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
 };
 
-pathsToSanitize.forEach(async (i) => {
+pathsToSanitize.forEach((i) => {
   const directory = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
   const files = fs.readdirSync(directory, { withFileTypes: true });
   const jsonFiles = files.filter((file) => file.name.includes('.json'));
