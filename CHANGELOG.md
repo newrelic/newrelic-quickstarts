@@ -1,3 +1,10 @@
+## [0.55.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.55.0...v0.55.1) (2021-11-03)
+
+
+### Bug Fixes
+
+* change typo in quickstart name ([654d64b](https://github.com/newrelic/newrelic-quickstarts/commit/654d64be103cb5e7c1109cc95c0d9b808f13868e))
+
 # [0.55.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.3...v0.55.0) (2021-10-29)
 
 
