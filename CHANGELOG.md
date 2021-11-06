@@ -1,3 +1,13 @@
+## [0.56.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.0...v0.56.1) (2021-11-06)
+
+
+### Bug Fixes
+
+* Added link to apm overview ([773bd12](https://github.com/newrelic/newrelic-quickstarts/commit/773bd129c9d03f776c5100decb20b83505fb5176))
+* changes in json file ([6bde601](https://github.com/newrelic/newrelic-quickstarts/commit/6bde601d2203a5d167979fa288bf3725c27055a2))
+* fixes in json file ([af4c0a2](https://github.com/newrelic/newrelic-quickstarts/commit/af4c0a2d59c46e2cefe5de1e9d04f20c3b9c72e0))
+* Spelling mistake ([b24a6d5](https://github.com/newrelic/newrelic-quickstarts/commit/b24a6d5d9892098e0dfb947c8afacd6450988ba6))
+
 # [0.56.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.55.2...v0.56.0) (2021-11-03)
 
 
