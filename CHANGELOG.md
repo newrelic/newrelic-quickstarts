@@ -1,3 +1,14 @@
+## [0.56.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.2...v0.56.3) (2021-11-08)
+
+
+### Bug Fixes
+
+* Added text with link to APM overview ([133c2ca](https://github.com/newrelic/newrelic-quickstarts/commit/133c2cab739ce645d864b87f3a6fddda9a6dd984))
+* changes in json file ([d83ae5d](https://github.com/newrelic/newrelic-quickstarts/commit/d83ae5d5e42021f511984f2fd9b36d4e98567e03))
+* changes in json file ([574bd71](https://github.com/newrelic/newrelic-quickstarts/commit/574bd718763f3870bd2906660415db2bc5ce5ea6))
+* pipeline error ([356dd73](https://github.com/newrelic/newrelic-quickstarts/commit/356dd735505ded0325314d25a6fa7ae9b5247fec))
+* pipeline error ([73e95a9](https://github.com/newrelic/newrelic-quickstarts/commit/73e95a9df44df9bafe110072143035e82cdcd2c6))
+
 ## [0.56.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.1...v0.56.2) (2021-11-06)
 
 ## [0.56.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.0...v0.56.1) (2021-11-06)
