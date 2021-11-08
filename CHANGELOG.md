@@ -1,3 +1,125 @@
+## [0.56.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.1...v0.56.2) (2021-11-06)
+
+## [0.56.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.0...v0.56.1) (2021-11-06)
+
+
+### Bug Fixes
+
+* Added link to apm overview ([773bd12](https://github.com/newrelic/newrelic-quickstarts/commit/773bd129c9d03f776c5100decb20b83505fb5176))
+* changes in json file ([6bde601](https://github.com/newrelic/newrelic-quickstarts/commit/6bde601d2203a5d167979fa288bf3725c27055a2))
+* fixes in json file ([af4c0a2](https://github.com/newrelic/newrelic-quickstarts/commit/af4c0a2d59c46e2cefe5de1e9d04f20c3b9c72e0))
+* Spelling mistake ([b24a6d5](https://github.com/newrelic/newrelic-quickstarts/commit/b24a6d5d9892098e0dfb947c8afacd6450988ba6))
+
+# [0.56.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.55.2...v0.56.0) (2021-11-03)
+
+
+### Bug Fixes
+
+* cleaning up some of the console logs that weren't being triggered by improper inputs ([2896a0a](https://github.com/newrelic/newrelic-quickstarts/commit/2896a0a4e110fad6cdc836413171116b8b003aa3))
+* remove nodejs.json updates ([5f9881c](https://github.com/newrelic/newrelic-quickstarts/commit/5f9881ced66241e99073698293ae2b51d1198016))
+* remove unneeded async ([60c8842](https://github.com/newrelic/newrelic-quickstarts/commit/60c8842c2e8af2c145b5cc09d2361d18a6808eb1))
+* update documentation to be more encompassing, fix potential path errors for windows users, update regex to not remove extra lines or insert unneeded spacing ([1d98782](https://github.com/newrelic/newrelic-quickstarts/commit/1d987825546ecb098fc24d70e1f35e4b4d7ed54a))
+
+
+### Features
+
+* complete sanitize-dashboard script ([53abc94](https://github.com/newrelic/newrelic-quickstarts/commit/53abc94b3b49e227399dca76fa196575743ca722))
+* update documentation directing contributors to use the sanitize-dashboard script when adding new dashboards ([295e02d](https://github.com/newrelic/newrelic-quickstarts/commit/295e02d5733430634b6a88bc46a46ec7a6b28b6c))
+
+## [0.55.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.55.1...v0.55.2) (2021-11-03)
+
+## [0.55.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.55.0...v0.55.1) (2021-11-03)
+
+
+### Bug Fixes
+
+* change typo in quickstart name ([654d64b](https://github.com/newrelic/newrelic-quickstarts/commit/654d64be103cb5e7c1109cc95c0d9b808f13868e))
+
+# [0.55.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.3...v0.55.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* **opentelemetry:** made description more New Relic specific ([8727828](https://github.com/newrelic/newrelic-quickstarts/commit/87278285199d84260663f37dbc7242e67f46ddb7))
+
+
+### Features
+
+* **opentelemetry:** added description of what NR does for Otel ([9d179be](https://github.com/newrelic/newrelic-quickstarts/commit/9d179be5603e18cf7c42d0d897ad09ede9b9eede))
+* **opentelemetry:** improved description and added some more keywords ([9450740](https://github.com/newrelic/newrelic-quickstarts/commit/945074097210e81f273a08f1ae50d97b401eea21))
+
+## [0.54.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.2...v0.54.3) (2021-10-29)
+
+
+### Bug Fixes
+
+* updated alerts documentationo with suggested chaanges' ([0322813](https://github.com/newrelic/newrelic-quickstarts/commit/03228135728ab7aced2f975adb365df7a6ade5c8))
+
+## [0.54.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.1...v0.54.2) (2021-10-28)
+
+
+### Bug Fixes
+
+* changes in json file ([0971aec](https://github.com/newrelic/newrelic-quickstarts/commit/0971aec75da38a13e20f6b9f5e839f65d5cce104))
+
+## [0.54.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.54.0...v0.54.1) (2021-10-28)
+
+
+### Bug Fixes
+
+* changes in json file ([5e303ca](https://github.com/newrelic/newrelic-quickstarts/commit/5e303caca6350bdb688edfe5e90ed35dc8b53cfe))
+* changes in json file ([2e03de1](https://github.com/newrelic/newrelic-quickstarts/commit/2e03de1193d8592f1b377599e5295d99e6d0238c))
+
+# [0.54.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.3...v0.54.0) (2021-10-27)
+
+
+### Features
+
+* **sendgrid:** Add dashboard to visualize SendGrid Events ([fe8108e](https://github.com/newrelic/newrelic-quickstarts/commit/fe8108ebc6dff16c0eace643e76d1a36fca2c78a))
+
+## [0.53.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.2...v0.53.3) (2021-10-27)
+
+## [0.53.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.1...v0.53.2) (2021-10-27)
+
+
+### Bug Fixes
+
+* Merge pull request [#520](https://github.com/newrelic/newrelic-quickstarts/issues/520) from lazyplatypus/patch-9 ([f75c1b9](https://github.com/newrelic/newrelic-quickstarts/commit/f75c1b9594ab53ad5d40195c470fc5afb5c690d4))
+
+## [0.53.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.53.0...v0.53.1) (2021-10-27)
+
+
+### Bug Fixes
+
+* kick build ([7b33760](https://github.com/newrelic/newrelic-quickstarts/commit/7b337609d7369b9ea8103fd48e809fc7af315cd2))
+
+# [0.53.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.4...v0.53.0) (2021-10-26)
+
+
+### Features
+
+* replace dashboard and move guided install ([5cd7edf](https://github.com/newrelic/newrelic-quickstarts/commit/5cd7edfa18979ef865f281bc97a88ce83ed8ff39))
+
+## [0.52.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.3...v0.52.4) (2021-10-26)
+
+
+### Bug Fixes
+
+* update nrql on npm ingest dashboard ([d2ee13d](https://github.com/newrelic/newrelic-quickstarts/commit/d2ee13dd9e2719f58414209726c1465c1e710ab3))
+
+## [0.52.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.2...v0.52.3) (2021-10-26)
+
+## [0.52.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.1...v0.52.2) (2021-10-26)
+
+## [0.52.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.52.0...v0.52.1) (2021-10-25)
+
+# [0.52.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.51.0...v0.52.0) (2021-10-25)
+
+
+### Features
+
+* new aws metric stream dashboards ([55b58cc](https://github.com/newrelic/newrelic-quickstarts/commit/55b58cc1b54af5d7c1ae2516462bcd78ed7754eb))
+
 # [0.51.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.50.7...v0.51.0) (2021-10-20)
 
 
