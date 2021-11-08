@@ -1,3 +1,17 @@
+# [0.57.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.3...v0.57.0) (2021-11-08)
+
+
+### Bug Fixes
+
+* **apache:** indentation fix ([6a39bb2](https://github.com/newrelic/newrelic-quickstarts/commit/6a39bb2c93fde561bdecb74ce9bbf1ddd8908185))
+* **full-stack-observability:** generated new uuid ([2b7d08e](https://github.com/newrelic/newrelic-quickstarts/commit/2b7d08e2c1880ff189e2e64c205d15cbd0094b24))
+* small name change to make it clear it's the apache webserver ([a2f2e12](https://github.com/newrelic/newrelic-quickstarts/commit/a2f2e12fdf0d399ae98b5ae3192533a747365be5))
+
+
+### Features
+
+* added full stack observability quickstart ([de5c865](https://github.com/newrelic/newrelic-quickstarts/commit/de5c8651be8562b6657e842a6b60b739d60ea306))
+
 ## [0.56.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.2...v0.56.3) (2021-11-08)
 
 
