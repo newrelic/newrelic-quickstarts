@@ -1,3 +1,10 @@
+# [0.58.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.57.0...v0.58.0) (2021-11-08)
+
+
+### Features
+
+* **sendgrid:** Add installPlans for SendGrid Event Webhook and S3 log ingestion ([4beb46d](https://github.com/newrelic/newrelic-quickstarts/commit/4beb46dfa1e966c41decf20695215993e7a0c758))
+
 # [0.57.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.3...v0.57.0) (2021-11-08)
 
 
