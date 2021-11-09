@@ -1,3 +1,12 @@
+## [0.58.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.0...v0.58.1) (2021-11-09)
+
+
+### Bug Fixes
+
+* Changed text leading to docs ([8cd0b80](https://github.com/newrelic/newrelic-quickstarts/commit/8cd0b805171fbf20f3639b7bc1eda71453f76d39))
+* Changed text leading to docs ([be3514e](https://github.com/newrelic/newrelic-quickstarts/commit/be3514e79abd7d00a3522de014f5f1271c93c110))
+* Pipeline error ([26ea77c](https://github.com/newrelic/newrelic-quickstarts/commit/26ea77cb4a6db83c53975c7bf243cbaf984058f4))
+
 # [0.58.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.57.0...v0.58.0) (2021-11-08)
 
 
