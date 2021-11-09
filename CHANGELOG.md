@@ -1,3 +1,11 @@
+## [0.58.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.1...v0.58.2) (2021-11-09)
+
+
+### Bug Fixes
+
+* **I/O quickstarts:** Fixed a URL and some minor typos ([c95e034](https://github.com/newrelic/newrelic-quickstarts/commit/c95e0345b34a80fd75ed8502fe9c4a067fcdfb87))
+* **I/O quickstarts:** Fixed capitalization and minor punctuation issues ([2e1edfd](https://github.com/newrelic/newrelic-quickstarts/commit/2e1edfda381fe4a4e2a3312cddfb391a5fb8d0bd))
+
 ## [0.58.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.0...v0.58.1) (2021-11-09)
 
 
