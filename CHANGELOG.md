@@ -1,3 +1,10 @@
+## [0.59.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.0...v0.59.1) (2021-11-10)
+
+
+### Bug Fixes
+
+* **Quickstarts:** Fixed a typo ([b9cde1f](https://github.com/newrelic/newrelic-quickstarts/commit/b9cde1f0a4f033ac705359962ad58b52315d8131))
+
 # [0.59.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.3...v0.59.0) (2021-11-10)
 
 
