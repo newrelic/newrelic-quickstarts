@@ -1,6 +1,7 @@
 {
   "name": "Agentless Gigamon View",
   "description": "",
+  "permissions": "PUBLIC_READ_ONLY",
   "pages": [
     {
       "name": "Agentless Gigamon View",
@@ -24,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon SELECT count(*) FACET version where event_type ='ssl'"
+                "query": "FROM Gigamon SELECT count(*) FACET ssl_version WHERE ssl_version IS NOT NULL"
               }
             ]
           },
@@ -48,7 +49,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon SELECT count(*) FACET cipher "
+                "query": "FROM Gigamon SELECT count(*) FACET ssl_cipher_suite_list"
               }
             ]
           },
@@ -67,12 +68,12 @@
           "title": "DHCP IP & Hostnames",
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon SELECT count(*) FACET hostname,src_ip where event_type ='dhcp'"
+                "query": "SELECT count(*) FROM Gigamon FACET dhcp_host_name, dhcp_ciaddr WHERE dhcp_message_type = 'DHCPINFORM'"
               }
             ]
           },
@@ -91,12 +92,12 @@
           "title": "Application Overview",
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM Gigamon  SELECT count(*) FACET application"
+                "accountId": ,
+                "query": "FROM Gigamon  SELECT count(*) FACET app_name WHERE app_name IS NOT NULL AND app_name != 'Classification-unknown'"
               }
             ]
           },
@@ -109,7 +110,7 @@
           "layout": {
             "column": 1,
             "row": 9,
-            "height": 9,
+            "height": 6,
             "width": 5
           },
           "title": "DNS Servers & Queries",
@@ -120,7 +121,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon  SELECT count(*) FACET query,dst_ip WHERE event_type ='dns'"
+                "query": "FROM Gigamon  SELECT count(*) FACET src_ip,dns_query WHERE  dns_query is NOT NULL AND dns_host_addr is NOT NULL"
               }
             ]
           },
@@ -144,7 +145,31 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon SELECT average(request_bytes  ) FACET src_ip,dst_ip"
+                "query": "FROM Gigamon SELECT count(*) FACET src_ip,dst_ip"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "height": 3,
+            "width": 5
+          },
+          "title": "HTTP Response Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Gigamon SELECT count(*) FACET http_code WHERE http_code IS NOT NULL"
               }
             ]
           },
@@ -160,7 +185,7 @@
             "height": 3,
             "width": 7
           },
-          "title": "High Response Time HTTP",
+          "title": "High Response Time HTTP > 5ms",
           "rawConfiguration": {
             "dataFormatters": [],
             "facet": {
@@ -169,7 +194,81 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Gigamon SELECT count(*) FACET flow_src_ip,http_rtt  where http_rtt IS NOT NULL"
+                "query": "FROM Gigamon SELECT count(*) FACET src_ip,http_server,http_rtt  where http_rtt IS NOT NULL AND http_rtt > '5'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Suspicious Uage",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Gigamon SELECT count(*) FACET app_name,src_ip WHERE app_name LIKE '%torrent%' OR app_name LIKE '%coin%' OR app_name LIKE '%min%'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 7,
+            "row": 18,
+            "height": 4,
+            "width": 6
+          },
+          "title": "SMB File Movement",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Gigamon SELECT count(*) FACET smb_filename,smb_path,src_ip WHERE app_name = 'smb' WHERE smb_path IS NOT NULL"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "height": 12,
+            "width": 12
+          },
+          "title": "Current Incoming Data",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Gigamon SELECT * UNTIL 30 minutes ago"
               }
             ]
           },
