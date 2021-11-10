@@ -1,3 +1,10 @@
+## [0.58.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.2...v0.58.3) (2021-11-10)
+
+
+### Bug Fixes
+
+* **I/O quickstarts:** Fixed capitalization and punctuation ([bb08568](https://github.com/newrelic/newrelic-quickstarts/commit/bb0856864ac1ff3c4baf05aaaae2bdca9a6d6eba))
+
 ## [0.58.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.1...v0.58.2) (2021-11-09)
 
 
