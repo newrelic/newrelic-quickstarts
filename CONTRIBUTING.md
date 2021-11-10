@@ -140,7 +140,7 @@ We encourage all contributors to actively engage in the creation and maintenance
 When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
-### Quick start best practices
+### Quickstart best practices
 
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs)
 for quickstart structure and limits you need to consider.
