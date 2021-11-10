@@ -1,3 +1,20 @@
+# [0.59.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.3...v0.59.0) (2021-11-10)
+
+
+### Bug Fixes
+
+* **audit:** missing line breaks ([e4b88dd](https://github.com/newrelic/newrelic-quickstarts/commit/e4b88ddae0684499ae44d9c1940c637948d5f72d))
+* **audit:** yaml multiline fixes ([d44f3ee](https://github.com/newrelic/newrelic-quickstarts/commit/d44f3eec3ab706dd53ae2c433c1e1e1f4d0979a0))
+
+
+### Features
+
+* added audit event analysis quickstart ([0600bde](https://github.com/newrelic/newrelic-quickstarts/commit/0600bde9eca80a95dfc88b04ab2511798e2b9c19))
+* added k8s data ingestion analysis quickstart ([ee30bb1](https://github.com/newrelic/newrelic-quickstarts/commit/ee30bb107c3007b2fa58244c86e84be9e6b2844f))
+* added k8s log ingestion analysis quickstart ([700475c](https://github.com/newrelic/newrelic-quickstarts/commit/700475cf8dbadc6e97553a9fe2187d9029c61902))
+* added prometheus data ingestion analysis quickstart ([0ff6d04](https://github.com/newrelic/newrelic-quickstarts/commit/0ff6d0459f0e121698b1462dc4667318e0aae999))
+* **audit:** moved analysis/audit quickstarts into central directory ([daaaf13](https://github.com/newrelic/newrelic-quickstarts/commit/daaaf131a268b01be3955168a330ce0557f9fd50))
+
 ## [0.58.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.2...v0.58.3) (2021-11-10)
 
 
