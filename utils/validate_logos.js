@@ -8,27 +8,17 @@ const {
 } = require('./helpers');
 
 /**
- * Method to validate icons and logos exist if supplied.
+ * Method to validate logos exist if supplied.
  * @param {string[]} mainConfigPaths array of absolute paths for each main config
  * @returns {string[]} error messages for errors encountered
  */
-const validateIconAndLogo = (mainConfigPaths) => {
+const validateLogo = (mainConfigPaths) => {
   const errorMessages = [];
 
   for (const configPath of mainConfigPaths) {
     const {
       contents: [config],
     } = readQuickstartFile(configPath);
-
-    if ('icon' in config) {
-      // icon and logo will be supplied as relative paths, so we path.join on the directory of where the main config lives.
-      const iconPath = path.join(path.dirname(configPath), config.icon);
-      if (fs.existsSync(iconPath) === false) {
-        errorMessages.push(
-          `Icon for ${configPath} is supplied but does not exist at ${iconPath}`
-        );
-      }
-    }
 
     if ('logo' in config) {
       const logoPath = path.join(path.dirname(configPath), config.logo);
@@ -49,7 +39,7 @@ const validateIconAndLogo = (mainConfigPaths) => {
  */
 const handleErrors = (errorMessages) => {
   if (errorMessages.length === 0) {
-    console.log('No errors found. Logo and icon validation passed.');
+    console.log('No errors found. Logo validation passed.');
   }
 
   if (errorMessages.length > 0) {
@@ -64,7 +54,7 @@ const handleErrors = (errorMessages) => {
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
   var mainConfigPaths = findMainQuickstartConfigFiles();
-  var errorMessages = validateIconAndLogo(mainConfigPaths);
+  var errorMessages = validateLogo(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
 };
@@ -78,4 +68,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { validateIconAndLogo, handleErrors };
+module.exports = { validateLogo, handleErrors };
