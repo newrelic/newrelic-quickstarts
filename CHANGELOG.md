@@ -1,3 +1,10 @@
+## [0.60.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.1...v0.60.2) (2021-11-11)
+
+
+### Bug Fixes
+
+* set accountId 0 ([ba0c293](https://github.com/newrelic/newrelic-quickstarts/commit/ba0c293eb9245a2a995cf5e0b30466662a956e7b))
+
 ## [0.60.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.0...v0.60.1) (2021-11-11)
 
 # [0.60.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.2...v0.60.0) (2021-11-11)
