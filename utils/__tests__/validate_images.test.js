@@ -132,32 +132,4 @@ describe('Action: validate images', () => {
     expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
-
-  test('validateImageCounts, given an icon, does not include the icon in image count', () => {
-    const globMock = ['test/path/'];
-    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readQuickstartFile.mockReturnValue({
-      contents: [{ icon: 'icon' }],
-    });
-    mockPathResolve('icon');
-    mockGlobSync(['1 dashboard']);
-
-    validateImageCounts(globMock);
-    expect(core.setFailed).not.toHaveBeenCalled();
-    expect(global.console.warn).not.toHaveBeenCalled();
-  });
-
-  test('validateImageCounts, given an icon, includes icon in count if config path does not match', () => {
-    const globMock = ['test/path/'];
-    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readQuickstartFile.mockReturnValue({
-      contents: [{ icon: 'wrong/icon/path' }],
-    });
-    mockPathResolve('wrong/icon/path');
-    mockGlobSync(['1 dashboard']);
-
-    validateImageCounts(globMock);
-    expect(core.setFailed).toHaveBeenCalled();
-    expect(global.console.warn).toHaveBeenCalledTimes(2);
-  });
 });
