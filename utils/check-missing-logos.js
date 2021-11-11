@@ -9,26 +9,20 @@ const {
  * @returns {String[]} - The directories of the quickstarts that do not have a logo image
  */
 const validateLogoExists = (quickstartDirs) => {
-  const noLogos = quickstartDirs
-    .map((quickstart) => {
-      const quickstartConfig = readQuickstartFile(quickstart).contents[0];
-      
-      if (!quickstartConfig.logo) {
-        return quickstart.match(/newrelic-quickstarts(.*)/)[1];
-      }
-      
-      
-    }).filter(Boolean);
-  return noLogos;
+  return quickstartDirs
+    .filter((quickstart) => {
+      const config = readQuickstartFile(quickstart).contents[0];
+      return !config.logo;
+    });
 };
 
 
 const main = () => {
   const quickstartDirs = findMainQuickstartConfigFiles();
-  const quickstartsWithNoLogos = validateLogoExists(quickstartDirs)
-  if (quickstartsWithNoLogos.length > 0) {
+  const noLogos = validateLogoExists(quickstartDirs)
+  if (noLogos.length > 0) {
     console.log('<!> Found Quickstarts that do not contain logos');
-    console.log(quickstartsWithNoLogos);
+    console.log(noLogos);
   } else {
     console.log('(✔) All Quickstarts have logos');
   }
