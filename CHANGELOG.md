@@ -1,3 +1,10 @@
+# [0.60.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.2...v0.60.0) (2021-11-11)
+
+
+### Features
+
+* **pack:** Added React Native ([0d19ee7](https://github.com/newrelic/newrelic-quickstarts/commit/0d19ee777f98fe3a501b14b2829766c8c474847e))
+
 ## [0.59.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.1...v0.59.2) (2021-11-10)
 
 ## [0.59.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.0...v0.59.1) (2021-11-10)
