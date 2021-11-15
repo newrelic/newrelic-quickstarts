@@ -1,3 +1,30 @@
+## [0.61.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.0...v0.61.1) (2021-11-15)
+
+# [0.61.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.3...v0.61.0) (2021-11-15)
+
+
+### Features
+
+* **pack:** Added Curb ([f8a230b](https://github.com/newrelic/newrelic-quickstarts/commit/f8a230ba5dacf9f26311ab219548bb79fcef86c2))
+
+## [0.60.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.2...v0.60.3) (2021-11-11)
+
+## [0.60.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.1...v0.60.2) (2021-11-11)
+
+
+### Bug Fixes
+
+* set accountId 0 ([ba0c293](https://github.com/newrelic/newrelic-quickstarts/commit/ba0c293eb9245a2a995cf5e0b30466662a956e7b))
+
+## [0.60.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.0...v0.60.1) (2021-11-11)
+
+# [0.60.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.2...v0.60.0) (2021-11-11)
+
+
+### Features
+
+* **pack:** Added React Native ([0d19ee7](https://github.com/newrelic/newrelic-quickstarts/commit/0d19ee777f98fe3a501b14b2829766c8c474847e))
+
 ## [0.59.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.1...v0.59.2) (2021-11-10)
 
 ## [0.59.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.0...v0.59.1) (2021-11-10)
