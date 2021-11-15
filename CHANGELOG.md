@@ -1,3 +1,10 @@
+# [0.61.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.3...v0.61.0) (2021-11-15)
+
+
+### Features
+
+* **pack:** Added Curb ([f8a230b](https://github.com/newrelic/newrelic-quickstarts/commit/f8a230ba5dacf9f26311ab219548bb79fcef86c2))
+
 ## [0.60.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.2...v0.60.3) (2021-11-11)
 
 ## [0.60.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.1...v0.60.2) (2021-11-11)
