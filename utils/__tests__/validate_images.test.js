@@ -24,7 +24,7 @@ jest.mock('../helpers', () => ({
   readQuickstartFile: jest.fn(),
 }));
 
-const globMockSize = ['test/path/icon.png'];
+const globMockSize = ['test/path/logo.png'];
 const mockGlobSync = (files) => glob.sync.mockReturnValueOnce(files);
 const mockPathResolve = (returnPath) =>
   path.resolve.mockReturnValue(returnPath);
@@ -127,34 +127,6 @@ describe('Action: validate images', () => {
     ]);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
     mockGlobSync(['2', 'dashboards']);
-
-    validateImageCounts(globMock);
-    expect(core.setFailed).toHaveBeenCalled();
-    expect(global.console.warn).toHaveBeenCalledTimes(2);
-  });
-
-  test('validateImageCounts, given an icon, does not include the icon in image count', () => {
-    const globMock = ['test/path/'];
-    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readQuickstartFile.mockReturnValue({
-      contents: [{ icon: 'icon' }],
-    });
-    mockPathResolve('icon');
-    mockGlobSync(['1 dashboard']);
-
-    validateImageCounts(globMock);
-    expect(core.setFailed).not.toHaveBeenCalled();
-    expect(global.console.warn).not.toHaveBeenCalled();
-  });
-
-  test('validateImageCounts, given an icon, includes icon in count if config path does not match', () => {
-    const globMock = ['test/path/'];
-    mockGlobSync(['just', 'enough', 'images', 'to', 'pass', ':)', 'icon']);
-    helpers.readQuickstartFile.mockReturnValue({
-      contents: [{ icon: 'wrong/icon/path' }],
-    });
-    mockPathResolve('wrong/icon/path');
-    mockGlobSync(['1 dashboard']);
 
     validateImageCounts(globMock);
     expect(core.setFailed).toHaveBeenCalled();

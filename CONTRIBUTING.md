@@ -14,7 +14,7 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
-    - [Quick start best practices](#quick-start-best-practices)
+    - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
       - [InstallPlans](#installplans)
       - [Summary & descriptions](#summary--descriptions)
@@ -23,7 +23,6 @@
       - [Dashboard Screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
-    - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
@@ -250,14 +249,6 @@ documentation:
 - Max 1
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
-
-### Icons
-
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#icon) for more details on `icon`
-
-- Icons are `optional` and not currently used in the UI.
-- `.png` or `.jpeg` or `.svg` format
-- Max 1
 
 ### Keywords
 
