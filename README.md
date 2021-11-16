@@ -1,6 +1,5 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-
 **NOTE:** We recently changed this repository from `newrelic-observability-packs` to `newrelic-quickstarts` to better align with the project goals. If any of your services are reliant on this repo they will need to be checked and altered.
 
 # New Relic One quickstarts
