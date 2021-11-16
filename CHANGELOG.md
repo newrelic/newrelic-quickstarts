@@ -1,3 +1,10 @@
+# [0.62.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.2...v0.62.0) (2021-11-16)
+
+
+### Features
+
+* **pack:** Added Wordpress ([ba30143](https://github.com/newrelic/newrelic-quickstarts/commit/ba3014334fba94da082d13eb8b0a53a1bd8eb75b))
+
 ## [0.61.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.1...v0.61.2) (2021-11-15)
 
 ## [0.61.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.0...v0.61.1) (2021-11-15)
