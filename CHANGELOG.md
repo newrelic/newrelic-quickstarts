@@ -1,3 +1,25 @@
+# [0.63.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.62.0...v0.63.0) (2021-11-18)
+
+
+### Bug Fixes
+
+* **mlops:** added icon and logo to dagshub pack ([a2ea4e7](https://github.com/newrelic/newrelic-quickstarts/commit/a2ea4e74b78b69a81d4dd18a816a5a471aa6c671))
+* **mlops:** added install plan ([03f73b0](https://github.com/newrelic/newrelic-quickstarts/commit/03f73b0bb6695a329685d01dbb93ba7a61badee4))
+* **mlops:** fixed dagshub config file ([e6e7a70](https://github.com/newrelic/newrelic-quickstarts/commit/e6e7a70f531e12ff5982d37f28cb4a2ac63f1f63))
+* **mlops:** fixed yarn.lock ([5fff213](https://github.com/newrelic/newrelic-quickstarts/commit/5fff2136439dd3abb7ad5d1263c5ca159ae5b51d))
+* **mlops:** make dagshub pass complience tests ([9541c2f](https://github.com/newrelic/newrelic-quickstarts/commit/9541c2f24584955c050cde1a85e7074bc0fa7d33))
+* **mlops:** make dagshub pass complience tests ([c928693](https://github.com/newrelic/newrelic-quickstarts/commit/c928693ddf02dd33ae72a53447692a4bbfffbb08))
+* **mlops:** prefilled description and summary in config.yml ([f5ec141](https://github.com/newrelic/newrelic-quickstarts/commit/f5ec141230b979df65526b3e9fa3c08202a1d2b1))
+* **mlops:** remove uneccessary yarn.lock update ([423337c](https://github.com/newrelic/newrelic-quickstarts/commit/423337ccf5fdaf940267a2772ef4841eb0f42612))
+* **mlops:** updated dashboard template json ([055024e](https://github.com/newrelic/newrelic-quickstarts/commit/055024e64b5dbc4f4f8f75bd683052367d91a4a5))
+* **mlops:** updated dashboard template json ([6386b2e](https://github.com/newrelic/newrelic-quickstarts/commit/6386b2e17039e44902ca4869abc1ca0c4c84ac2e))
+* **mlops:** updated dashboard template json ([a5f44df](https://github.com/newrelic/newrelic-quickstarts/commit/a5f44df08618e59498ce37e2bce76de85c10ba74))
+
+
+### Features
+
+* **mlops:** added pack for dagshub ([9381385](https://github.com/newrelic/newrelic-quickstarts/commit/9381385d116dbda4152ab00bc24368bc7bfa3ba9))
+
 # [0.62.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.2...v0.62.0) (2021-11-16)
 
 
