@@ -127,6 +127,8 @@ When writing about a quickstart the following language rules should be followed:
 
 ## Quickstarts contributor guidelines
 
+> Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
+
 We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a quickstart.
