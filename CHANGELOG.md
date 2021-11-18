@@ -1,3 +1,10 @@
+# [0.64.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.63.0...v0.64.0) (2021-11-18)
+
+
+### Features
+
+* **Integration:** Aporia Integration ([4c6c288](https://github.com/newrelic/newrelic-quickstarts/commit/4c6c2883933aea05c0e9ce4b40fe3abf9680b1e1))
+
 # [0.63.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.62.0...v0.63.0) (2021-11-18)
 
 
