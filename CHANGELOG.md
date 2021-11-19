@@ -1,3 +1,10 @@
+## [0.66.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.1...v0.66.2) (2021-11-19)
+
+
+### Bug Fixes
+
+* **aws:** link to aws integrations overview pane ([c35a9e7](https://github.com/newrelic/newrelic-quickstarts/commit/c35a9e736dfc59bac3287ef2309f00eac37e9452))
+
 ## [0.66.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.0...v0.66.1) (2021-11-19)
 
 
