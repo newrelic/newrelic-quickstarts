@@ -20,7 +20,7 @@
 | - [keywords](#keywords )           | No      | array            | No         | -          | The keywords schema                  |
 | - [children](#children )           | No      | object           | No         | -          | Displaying related child quickstarts |
 | - [contributors](#contributors )   | No      | array            | No         | -          | The contributors schema              |
-| - [logo](#logo )                   | No      | string           | No         | -          | The logo schema                      |
+| + [logo](#logo )                   | No      | string           | No         | -          | The logo schema                      |
 | - [website](#website )             | No      | string           | No         | -          | The website schema                   |
 | - [documentation](#documentation ) | No      | array            | No         | -          | The documentation schema             |
 |                                    |         |                  |            |            |                                      |
@@ -589,7 +589,7 @@ Must be one of:
 ]
 ```
 
-## <a name="logo"></a>11. [Optional] Property `root > logo`
+## <a name="logo"></a>11. [Required] Property `root > logo`
 
 **Title:** The logo schema
 
