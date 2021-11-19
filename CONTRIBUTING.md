@@ -14,7 +14,7 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
-    - [Quick start best practices](#quick-start-best-practices)
+    - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
       - [InstallPlans](#installplans)
       - [Summary & descriptions](#summary--descriptions)
@@ -23,7 +23,6 @@
       - [Dashboard Screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
-    - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
@@ -128,6 +127,8 @@ When writing about a quickstart the following language rules should be followed:
 
 ## Quickstarts contributor guidelines
 
+> Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
+
 We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
 - `Step 1`: Review the [quickstart Template Config](./_template/config.yml) for a definition of how to create a quickstart.
@@ -140,7 +141,7 @@ We encourage all contributors to actively engage in the creation and maintenance
 When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
-### Quick start best practices
+### Quickstart best practices
 
 Before getting started, review the [documentation](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs)
 for quickstart structure and limits you need to consider.
@@ -250,14 +251,6 @@ documentation:
 - Max 1
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
-
-### Icons
-
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#icon) for more details on `icon`
-
-- Icons are `optional` and not currently used in the UI.
-- `.png` or `.jpeg` or `.svg` format
-- Max 1
 
 ### Keywords
 

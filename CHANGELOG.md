@@ -1,3 +1,152 @@
+## [0.64.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.64.0...v0.64.1) (2021-11-18)
+
+# [0.64.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.63.0...v0.64.0) (2021-11-18)
+
+
+### Features
+
+* **Integration:** Aporia Integration ([4c6c288](https://github.com/newrelic/newrelic-quickstarts/commit/4c6c2883933aea05c0e9ce4b40fe3abf9680b1e1))
+
+# [0.63.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.62.0...v0.63.0) (2021-11-18)
+
+
+### Bug Fixes
+
+* **mlops:** added icon and logo to dagshub pack ([a2ea4e7](https://github.com/newrelic/newrelic-quickstarts/commit/a2ea4e74b78b69a81d4dd18a816a5a471aa6c671))
+* **mlops:** added install plan ([03f73b0](https://github.com/newrelic/newrelic-quickstarts/commit/03f73b0bb6695a329685d01dbb93ba7a61badee4))
+* **mlops:** fixed dagshub config file ([e6e7a70](https://github.com/newrelic/newrelic-quickstarts/commit/e6e7a70f531e12ff5982d37f28cb4a2ac63f1f63))
+* **mlops:** fixed yarn.lock ([5fff213](https://github.com/newrelic/newrelic-quickstarts/commit/5fff2136439dd3abb7ad5d1263c5ca159ae5b51d))
+* **mlops:** make dagshub pass complience tests ([9541c2f](https://github.com/newrelic/newrelic-quickstarts/commit/9541c2f24584955c050cde1a85e7074bc0fa7d33))
+* **mlops:** make dagshub pass complience tests ([c928693](https://github.com/newrelic/newrelic-quickstarts/commit/c928693ddf02dd33ae72a53447692a4bbfffbb08))
+* **mlops:** prefilled description and summary in config.yml ([f5ec141](https://github.com/newrelic/newrelic-quickstarts/commit/f5ec141230b979df65526b3e9fa3c08202a1d2b1))
+* **mlops:** remove uneccessary yarn.lock update ([423337c](https://github.com/newrelic/newrelic-quickstarts/commit/423337ccf5fdaf940267a2772ef4841eb0f42612))
+* **mlops:** updated dashboard template json ([055024e](https://github.com/newrelic/newrelic-quickstarts/commit/055024e64b5dbc4f4f8f75bd683052367d91a4a5))
+* **mlops:** updated dashboard template json ([6386b2e](https://github.com/newrelic/newrelic-quickstarts/commit/6386b2e17039e44902ca4869abc1ca0c4c84ac2e))
+* **mlops:** updated dashboard template json ([a5f44df](https://github.com/newrelic/newrelic-quickstarts/commit/a5f44df08618e59498ce37e2bce76de85c10ba74))
+
+
+### Features
+
+* **mlops:** added pack for dagshub ([9381385](https://github.com/newrelic/newrelic-quickstarts/commit/9381385d116dbda4152ab00bc24368bc7bfa3ba9))
+
+# [0.62.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.2...v0.62.0) (2021-11-16)
+
+
+### Features
+
+* **pack:** Added Wordpress ([ba30143](https://github.com/newrelic/newrelic-quickstarts/commit/ba3014334fba94da082d13eb8b0a53a1bd8eb75b))
+
+## [0.61.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.1...v0.61.2) (2021-11-15)
+
+## [0.61.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.61.0...v0.61.1) (2021-11-15)
+
+# [0.61.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.3...v0.61.0) (2021-11-15)
+
+
+### Features
+
+* **pack:** Added Curb ([f8a230b](https://github.com/newrelic/newrelic-quickstarts/commit/f8a230ba5dacf9f26311ab219548bb79fcef86c2))
+
+## [0.60.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.2...v0.60.3) (2021-11-11)
+
+## [0.60.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.1...v0.60.2) (2021-11-11)
+
+
+### Bug Fixes
+
+* set accountId 0 ([ba0c293](https://github.com/newrelic/newrelic-quickstarts/commit/ba0c293eb9245a2a995cf5e0b30466662a956e7b))
+
+## [0.60.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.60.0...v0.60.1) (2021-11-11)
+
+# [0.60.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.2...v0.60.0) (2021-11-11)
+
+
+### Features
+
+* **pack:** Added React Native ([0d19ee7](https://github.com/newrelic/newrelic-quickstarts/commit/0d19ee777f98fe3a501b14b2829766c8c474847e))
+
+## [0.59.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.1...v0.59.2) (2021-11-10)
+
+## [0.59.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.59.0...v0.59.1) (2021-11-10)
+
+
+### Bug Fixes
+
+* **Quickstarts:** Fixed a typo ([b9cde1f](https://github.com/newrelic/newrelic-quickstarts/commit/b9cde1f0a4f033ac705359962ad58b52315d8131))
+
+# [0.59.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.3...v0.59.0) (2021-11-10)
+
+
+### Bug Fixes
+
+* **audit:** missing line breaks ([e4b88dd](https://github.com/newrelic/newrelic-quickstarts/commit/e4b88ddae0684499ae44d9c1940c637948d5f72d))
+* **audit:** yaml multiline fixes ([d44f3ee](https://github.com/newrelic/newrelic-quickstarts/commit/d44f3eec3ab706dd53ae2c433c1e1e1f4d0979a0))
+
+
+### Features
+
+* added audit event analysis quickstart ([0600bde](https://github.com/newrelic/newrelic-quickstarts/commit/0600bde9eca80a95dfc88b04ab2511798e2b9c19))
+* added k8s data ingestion analysis quickstart ([ee30bb1](https://github.com/newrelic/newrelic-quickstarts/commit/ee30bb107c3007b2fa58244c86e84be9e6b2844f))
+* added k8s log ingestion analysis quickstart ([700475c](https://github.com/newrelic/newrelic-quickstarts/commit/700475cf8dbadc6e97553a9fe2187d9029c61902))
+* added prometheus data ingestion analysis quickstart ([0ff6d04](https://github.com/newrelic/newrelic-quickstarts/commit/0ff6d0459f0e121698b1462dc4667318e0aae999))
+* **audit:** moved analysis/audit quickstarts into central directory ([daaaf13](https://github.com/newrelic/newrelic-quickstarts/commit/daaaf131a268b01be3955168a330ce0557f9fd50))
+
+## [0.58.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.2...v0.58.3) (2021-11-10)
+
+
+### Bug Fixes
+
+* **I/O quickstarts:** Fixed capitalization and punctuation ([bb08568](https://github.com/newrelic/newrelic-quickstarts/commit/bb0856864ac1ff3c4baf05aaaae2bdca9a6d6eba))
+
+## [0.58.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.1...v0.58.2) (2021-11-09)
+
+
+### Bug Fixes
+
+* **I/O quickstarts:** Fixed a URL and some minor typos ([c95e034](https://github.com/newrelic/newrelic-quickstarts/commit/c95e0345b34a80fd75ed8502fe9c4a067fcdfb87))
+* **I/O quickstarts:** Fixed capitalization and minor punctuation issues ([2e1edfd](https://github.com/newrelic/newrelic-quickstarts/commit/2e1edfda381fe4a4e2a3312cddfb391a5fb8d0bd))
+
+## [0.58.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.58.0...v0.58.1) (2021-11-09)
+
+
+### Bug Fixes
+
+* Changed text leading to docs ([8cd0b80](https://github.com/newrelic/newrelic-quickstarts/commit/8cd0b805171fbf20f3639b7bc1eda71453f76d39))
+* Changed text leading to docs ([be3514e](https://github.com/newrelic/newrelic-quickstarts/commit/be3514e79abd7d00a3522de014f5f1271c93c110))
+* Pipeline error ([26ea77c](https://github.com/newrelic/newrelic-quickstarts/commit/26ea77cb4a6db83c53975c7bf243cbaf984058f4))
+
+# [0.58.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.57.0...v0.58.0) (2021-11-08)
+
+
+### Features
+
+* **sendgrid:** Add installPlans for SendGrid Event Webhook and S3 log ingestion ([4beb46d](https://github.com/newrelic/newrelic-quickstarts/commit/4beb46dfa1e966c41decf20695215993e7a0c758))
+
+# [0.57.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.3...v0.57.0) (2021-11-08)
+
+
+### Bug Fixes
+
+* **apache:** indentation fix ([6a39bb2](https://github.com/newrelic/newrelic-quickstarts/commit/6a39bb2c93fde561bdecb74ce9bbf1ddd8908185))
+* **full-stack-observability:** generated new uuid ([2b7d08e](https://github.com/newrelic/newrelic-quickstarts/commit/2b7d08e2c1880ff189e2e64c205d15cbd0094b24))
+* small name change to make it clear it's the apache webserver ([a2f2e12](https://github.com/newrelic/newrelic-quickstarts/commit/a2f2e12fdf0d399ae98b5ae3192533a747365be5))
+
+
+### Features
+
+* added full stack observability quickstart ([de5c865](https://github.com/newrelic/newrelic-quickstarts/commit/de5c8651be8562b6657e842a6b60b739d60ea306))
+
+## [0.56.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.2...v0.56.3) (2021-11-08)
+
+
+### Bug Fixes
+
+* Added text with link to APM overview ([133c2ca](https://github.com/newrelic/newrelic-quickstarts/commit/133c2cab739ce645d864b87f3a6fddda9a6dd984))
+* changes in json file ([d83ae5d](https://github.com/newrelic/newrelic-quickstarts/commit/d83ae5d5e42021f511984f2fd9b36d4e98567e03))
+* changes in json file ([574bd71](https://github.com/newrelic/newrelic-quickstarts/commit/574bd718763f3870bd2906660415db2bc5ce5ea6))
+* pipeline error ([356dd73](https://github.com/newrelic/newrelic-quickstarts/commit/356dd735505ded0325314d25a6fa7ae9b5247fec))
+* pipeline error ([73e95a9](https://github.com/newrelic/newrelic-quickstarts/commit/73e95a9df44df9bafe110072143035e82cdcd2c6))
+
 ## [0.56.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.1...v0.56.2) (2021-11-06)
 
 ## [0.56.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.56.0...v0.56.1) (2021-11-06)
