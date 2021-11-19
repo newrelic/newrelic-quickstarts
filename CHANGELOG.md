@@ -1,3 +1,10 @@
+## [0.66.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.0...v0.66.1) (2021-11-19)
+
+
+### Bug Fixes
+
+* **aws:** use larger logo ([2ed4cb2](https://github.com/newrelic/newrelic-quickstarts/commit/2ed4cb2910f9f1d133f4e9850f1af893eb57bb98))
+
 # [0.66.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.65.0...v0.66.0) (2021-11-19)
 
 
