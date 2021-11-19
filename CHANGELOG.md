@@ -1,3 +1,10 @@
+# [0.67.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.2...v0.67.0) (2021-11-19)
+
+
+### Features
+
+* label pr's based on what files have changed ([f79cbe9](https://github.com/newrelic/newrelic-quickstarts/commit/f79cbe9c058651ae0923b8acd6d9e9d049d2183b))
+
 ## [0.66.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.1...v0.66.2) (2021-11-19)
 
 
