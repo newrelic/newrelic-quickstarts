@@ -1,3 +1,15 @@
+# [0.65.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.64.1...v0.65.0) (2021-11-19)
+
+
+### Bug Fixes
+
+* add logo to tests ([e6452f1](https://github.com/newrelic/newrelic-quickstarts/commit/e6452f10504f2bbeae8c462b9b58ab24a066159d))
+
+
+### Features
+
+* require logo in schema ([a2b5dc4](https://github.com/newrelic/newrelic-quickstarts/commit/a2b5dc4bde9cc14b70797bc4566d2f378d2b1927))
+
 ## [0.64.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.64.0...v0.64.1) (2021-11-18)
 
 # [0.64.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.63.0...v0.64.0) (2021-11-18)
