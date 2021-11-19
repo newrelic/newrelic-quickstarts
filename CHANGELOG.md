@@ -1,3 +1,10 @@
+# [0.66.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.65.0...v0.66.0) (2021-11-19)
+
+
+### Features
+
+* **aws:** add generalized aws quickstart ([3dd6c5e](https://github.com/newrelic/newrelic-quickstarts/commit/3dd6c5ec095884237fb5e854589f75916b7c4c10))
+
 # [0.65.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.64.1...v0.65.0) (2021-11-19)
 
 
