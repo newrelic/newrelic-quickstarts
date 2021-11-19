@@ -246,7 +246,7 @@ documentation:
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
-- Logos are `optional` but highly recommended to call attention to your quickstart.
+- Logos are `required` and are used in both the Public Catalog and in New Relic One.
 - `.png` or `.jpeg` or `.svg` format
 - Max 1
 - Aspect ratio: 1:1
