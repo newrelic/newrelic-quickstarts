@@ -1,3 +1,11 @@
+## [0.67.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.3...v0.67.4) (2021-11-23)
+
+
+### Bug Fixes
+
+* **Quickstarts:** Fixed a typo ([de4e11b](https://github.com/newrelic/newrelic-quickstarts/commit/de4e11b86e9814e3c56012311f2c4ca214f2fa76))
+* **Quickstarts:** Fixed yaml syntax error ([482f715](https://github.com/newrelic/newrelic-quickstarts/commit/482f7154076795cfe17dfa698948fc41b099b726))
+
 ## [0.67.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.2...v0.67.3) (2021-11-23)
 
 ## [0.67.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.1...v0.67.2) (2021-11-23)
