@@ -244,6 +244,7 @@ documentation:
 #### Logos
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
+> If you don't have a logo for your quickstart, you can use a [generic new relic logo](./images/newrelic-generic-logo.svg).
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
 - Logos are `required` and are used in both the Public Catalog and in New Relic One.
