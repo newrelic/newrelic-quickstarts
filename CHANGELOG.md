@@ -1,3 +1,10 @@
+# [0.68.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.4...v0.68.0) (2021-11-23)
+
+
+### Features
+
+* adding network syslog quickstart ([3c672da](https://github.com/newrelic/newrelic-quickstarts/commit/3c672da39c9192643270a47884036166b091e15f))
+
 ## [0.67.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.3...v0.67.4) (2021-11-23)
 
 
