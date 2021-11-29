@@ -1,3 +1,10 @@
+# [0.70.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.69.1...v0.70.0) (2021-11-29)
+
+
+### Features
+
+* Add nerdlet to the comet quickstart ([661b05b](https://github.com/newrelic/newrelic-quickstarts/commit/661b05b7b351a26d023c29834a94117053f5996e))
+
 ## [0.69.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.69.0...v0.69.1) (2021-11-29)
 
 # [0.69.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.68.2...v0.69.0) (2021-11-25)
