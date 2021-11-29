@@ -46,6 +46,8 @@ Our road map for quickstarts includes the addition of [Synthetics monitoring](ht
 
 ## Getting Started
 
+> Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
+
 Contribute your own quickstart to the New Relic One catalog by following the steps below:
 
 1. [Fork the Github repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository)

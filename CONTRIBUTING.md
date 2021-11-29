@@ -14,7 +14,7 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
-    - [Quick start best practices](#quick-start-best-practices)
+    - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
       - [InstallPlans](#installplans)
       - [Summary & descriptions](#summary--descriptions)
@@ -23,7 +23,6 @@
       - [Dashboard Screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
-    - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
@@ -127,6 +126,8 @@ When writing about a quickstart the following language rules should be followed:
 ```
 
 ## Quickstarts contributor guidelines
+
+> Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
 
 We encourage all contributors to actively engage in the creation and maintenance of quickstarts. Whether you work at New Relic or use New Relic as a customer, the community is open to your expertise!
 
@@ -243,21 +244,14 @@ documentation:
 #### Logos
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
+> If you don't have a logo for your quickstart, you can use a [generic new relic logo](./images/newrelic-generic-logo.svg).
 
 - Logo files should go in the root quickstart directory, `/quickstarts_name01`
-- Logos are `optional` but highly recommended to call attention to your quickstart.
+- Logos are `required` and are used in both the Public Catalog and in New Relic One.
 - `.png` or `.jpeg` or `.svg` format
 - Max 1
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
-
-### Icons
-
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#icon) for more details on `icon`
-
-- Icons are `optional` and not currently used in the UI.
-- `.png` or `.jpeg` or `.svg` format
-- Max 1
 
 ### Keywords
 
