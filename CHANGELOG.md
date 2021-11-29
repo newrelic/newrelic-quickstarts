@@ -1,3 +1,44 @@
+# [0.70.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.69.1...v0.70.0) (2021-11-29)
+
+
+### Features
+
+* Add nerdlet to the comet quickstart ([661b05b](https://github.com/newrelic/newrelic-quickstarts/commit/661b05b7b351a26d023c29834a94117053f5996e))
+
+## [0.69.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.69.0...v0.69.1) (2021-11-29)
+
+# [0.69.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.68.2...v0.69.0) (2021-11-25)
+
+
+### Features
+
+* **Integration:** Comet Integration ([529a51d](https://github.com/newrelic/newrelic-quickstarts/commit/529a51d98dda7bd7fde6529570012ea76d03333f))
+
+## [0.68.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.68.1...v0.68.2) (2021-11-24)
+
+## [0.68.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.68.0...v0.68.1) (2021-11-23)
+
+# [0.68.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.4...v0.68.0) (2021-11-23)
+
+
+### Features
+
+* adding network syslog quickstart ([3c672da](https://github.com/newrelic/newrelic-quickstarts/commit/3c672da39c9192643270a47884036166b091e15f))
+
+## [0.67.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.3...v0.67.4) (2021-11-23)
+
+
+### Bug Fixes
+
+* **Quickstarts:** Fixed a typo ([de4e11b](https://github.com/newrelic/newrelic-quickstarts/commit/de4e11b86e9814e3c56012311f2c4ca214f2fa76))
+* **Quickstarts:** Fixed yaml syntax error ([482f715](https://github.com/newrelic/newrelic-quickstarts/commit/482f7154076795cfe17dfa698948fc41b099b726))
+
+## [0.67.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.2...v0.67.3) (2021-11-23)
+
+## [0.67.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.1...v0.67.2) (2021-11-23)
+
+## [0.67.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.67.0...v0.67.1) (2021-11-23)
+
 # [0.67.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.66.2...v0.67.0) (2021-11-19)
 
 
