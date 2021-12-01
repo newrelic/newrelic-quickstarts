@@ -25,7 +25,12 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards/) you can customize and understand the data you collect. Explore your data and correlate connected sources with tailored, user-friendly charts, and quickly learn the state of your system and applications for faster, more efficient troubleshooting.
 
-> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. You will need to add "permissions": "PUBLIC_READ_WRITE",to the json prior to adding the dashboard to your account.
+> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. Use the `sanitize-dashboard` script to remove any unneeded keys within the .json file, as well as setting the `accountId` to 0.
+
+1. Ensure you're using Node.js version 16, [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md) is a great tool to help you get the right Node.js versions.
+2. run `yarn install`, if you do not have [yarn](https://www.npmjs.com/package/yarn), this link will help!
+3. `cd` into the 'utils' directory.
+4. EX: `yarn sanitize-dashboard node-js/express` where the argument is the path to the dashboard directory. The script will handle the rest.
 
 ### 📟 Alerts
 
@@ -40,6 +45,8 @@ With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/e
 Our road map for quickstarts includes the addition of [Synthetics monitoring](https://docs.newrelic.com/docs/synthetics/synthetic-monitoring/getting-started/get-started-synthetic-monitoring/), [NerdPacks](https://developer.newrelic.com/build-apps/) and [Flex configurations](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/flex-integration-tool-build-your-own-integration/).
 
 ## Getting Started
+
+> Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
 
 Contribute your own quickstart to the New Relic One catalog by following the steps below:
 
@@ -70,22 +77,22 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
 
-    ```sh
-    git add -A
-    git commit -m "feat([name]): Added [name]"
-    ```
+   ```sh
+   git add -A
+   git commit -m "feat([name]): Added [name]"
+   ```
 
 7. Push your changes to Github:
 
-    ```sh
-    git push
-    ```
+   ```sh
+   git push
+   ```
 
 8. [Create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) in the [parent repository](https://github.com/newrelic/newrelic-quickstarts/compare?expand=1).
 
 9. Submit and wait for review. Please be available to resolve review feedback in a timely manner.
 
-**NOTE:** All contributions are public and available for use by others. When contributing, make sure the NRQL queries you use match the datasets the users have. You don't want to use NRQL queries with sensitive data. 
+**NOTE:** All contributions are public and available for use by others. When contributing, make sure the NRQL queries you use match the datasets the users have. You don't want to use NRQL queries with sensitive data.
 
 ## Testing
 
@@ -107,11 +114,14 @@ We've included an `importer` utility for testing quickstarts on your account. Yo
    # Example
    > ./import.sh mysql
    ```
-If your quickstart is in a sub-directory please include that too for example `python/flask`
-  ```
-   # Example
-   > ./import.sh python/flask
-   ```
+
+   If your quickstart is in a sub-directory please include that too for example `python/flask`
+
+```
+ # Example
+ > ./import.sh python/flask
+```
+
 ## Support
 
 New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find this project's topic/threads here:
@@ -135,4 +145,3 @@ If you believe you have found a security vulnerability in this project or any of
 ## License
 
 New Relic One quickstarts is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
-
