@@ -1,3 +1,10 @@
+# [0.72.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.71.0...v0.72.0) (2021-12-01)
+
+
+### Features
+
+* **Integration:** Truera Integration ([4454605](https://github.com/newrelic/newrelic-quickstarts/commit/4454605194a79119c46883bb1dddb9ea1f3d3883))
+
 # [0.71.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.70.1...v0.71.0) (2021-12-01)
 
 
