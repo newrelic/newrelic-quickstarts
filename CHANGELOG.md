@@ -1,3 +1,11 @@
+# [0.71.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.70.1...v0.71.0) (2021-12-01)
+
+
+### Features
+
+* **setup:** add truera ([4a566fd](https://github.com/newrelic/newrelic-quickstarts/commit/4a566fdf39cc5765f5eeea5426ce4755a82d7ced))
+* **setup:** add truera.json ([b996ec8](https://github.com/newrelic/newrelic-quickstarts/commit/b996ec86a5c737a22510014cf6ed3327b30cbfcb))
+
 ## [0.70.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.70.0...v0.70.1) (2021-11-30)
 
 
