@@ -1,3 +1,29 @@
+# [0.72.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.71.0...v0.72.0) (2021-12-01)
+
+
+### Features
+
+* **Integration:** Truera Integration ([4454605](https://github.com/newrelic/newrelic-quickstarts/commit/4454605194a79119c46883bb1dddb9ea1f3d3883))
+
+# [0.71.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.70.1...v0.71.0) (2021-12-01)
+
+
+### Features
+
+* **setup:** add truera ([4a566fd](https://github.com/newrelic/newrelic-quickstarts/commit/4a566fdf39cc5765f5eeea5426ce4755a82d7ced))
+* **setup:** add truera.json ([b996ec8](https://github.com/newrelic/newrelic-quickstarts/commit/b996ec86a5c737a22510014cf6ed3327b30cbfcb))
+
+## [0.70.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.70.0...v0.70.1) (2021-11-30)
+
+
+### Bug Fixes
+
+* **Quickstarts:** Added indents back ([fdf7a70](https://github.com/newrelic/newrelic-quickstarts/commit/fdf7a70e4a75edecb9e980ba6d921ee02bf46c51))
+* **Quickstarts:** Another syntax fix ([325f29f](https://github.com/newrelic/newrelic-quickstarts/commit/325f29f3100e1a2f1f405af54123d0ea5f0de30a))
+* **Quickstarts:** Fixed some formatting issues ([ce0039c](https://github.com/newrelic/newrelic-quickstarts/commit/ce0039ced36e90b2ee3a820c54183e48d489d224))
+* **Quickstarts:** More yaml fixes ([e2deb27](https://github.com/newrelic/newrelic-quickstarts/commit/e2deb27bbf3871eabb982b31cff7b4e9112f35e7))
+* **Quickstarts:** Removed tabs ([3c4751a](https://github.com/newrelic/newrelic-quickstarts/commit/3c4751ae8e1bffa04fe32cf89284e01182c7daf3))
+
 # [0.70.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.69.1...v0.70.0) (2021-11-29)
 
 
