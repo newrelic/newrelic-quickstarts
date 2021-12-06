@@ -1,3 +1,10 @@
+# [0.73.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.1...v0.73.0) (2021-12-06)
+
+
+### Features
+
+* Enable tomcat targeted installs ([32ddb61](https://github.com/newrelic/newrelic-quickstarts/commit/32ddb617c5153e5d88270717f1ee81e25e5c2a81))
+
 ## [0.72.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.0...v0.72.1) (2021-12-03)
 
 
