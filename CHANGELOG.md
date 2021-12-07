@@ -1,3 +1,24 @@
+## [0.73.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.0...v0.73.1) (2021-12-07)
+
+
+### Bug Fixes
+
+* Bad indentation ([acff0e7](https://github.com/newrelic/newrelic-quickstarts/commit/acff0e7f362a18c1b758fbda761587da0cfd5b3c))
+
+# [0.73.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.1...v0.73.0) (2021-12-06)
+
+
+### Features
+
+* Enable tomcat targeted installs ([32ddb61](https://github.com/newrelic/newrelic-quickstarts/commit/32ddb617c5153e5d88270717f1ee81e25e5c2a81))
+
+## [0.72.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.0...v0.72.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* Merge pull request [#608](https://github.com/newrelic/newrelic-quickstarts/issues/608) from newrelic/maint/update-install-plans ([0bf3e72](https://github.com/newrelic/newrelic-quickstarts/commit/0bf3e72d0e2ba89de9daf1cc56a0d8a96336d070))
+
 # [0.72.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.71.0...v0.72.0) (2021-12-01)
 
 
