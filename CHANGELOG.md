@@ -1,3 +1,10 @@
+## [0.73.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.0...v0.73.1) (2021-12-07)
+
+
+### Bug Fixes
+
+* Bad indentation ([acff0e7](https://github.com/newrelic/newrelic-quickstarts/commit/acff0e7f362a18c1b758fbda761587da0cfd5b3c))
+
 # [0.73.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.1...v0.73.0) (2021-12-06)
 
 
