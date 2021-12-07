@@ -1,3 +1,10 @@
+# [0.74.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.1...v0.74.0) (2021-12-07)
+
+
+### Features
+
+* **oma-aqm:** Added the OMA Alert Quality Management dashboard ([c0ca6f9](https://github.com/newrelic/newrelic-quickstarts/commit/c0ca6f96ff0216ffa320901ae003d28c560c8a60))
+
 ## [0.73.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.0...v0.73.1) (2021-12-07)
 
 
