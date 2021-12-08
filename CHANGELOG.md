@@ -1,3 +1,10 @@
+# [0.76.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.75.0...v0.76.0) (2021-12-08)
+
+
+### Features
+
+* Add nerdlets for aporia, dagshub, mona & superwise-ai ([320fe3d](https://github.com/newrelic/newrelic-quickstarts/commit/320fe3df217d6c2ee0f3d11ecdc0ff73253dae61))
+
 # [0.75.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.74.0...v0.75.0) (2021-12-07)
 
 
