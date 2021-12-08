@@ -17,6 +17,7 @@
     - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
       - [InstallPlans](#installplans)
+        - [Creating a new InstallPlan](#creating-a-new-installplan)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
@@ -165,7 +166,17 @@ You can define multiple author names, but it's recommended to use one of the fol
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable"  will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md#target_destination) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md) configuration if you want use the guided install flow.
-- The install plan `id` is user defined.
+
+##### Creating a new InstallPlan
+
+> If you need to create a new `installPlan` for a quickstart consider the following best practices.
+
+- When creating a new `installPlan` you can refer to existing plans in the [install directory](./install/) for guidance.
+- The install plan `id` is user defined. You'll need to set that value in the configuration file.
+- In case of a third party install plan, the install plan `id` should be prefixed with `third-party-`.
+- All third party install plans should be store in the[third-party directory](./install/third-party)
+- The configuration file name should be `install.yml`.
+- keep the install plan `description` succinct as it's informational only.
 
 #### Summary & descriptions
 
