@@ -1,3 +1,10 @@
+## [0.78.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.0...v0.78.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* Change support level for mlops/comet ([4f5a99e](https://github.com/newrelic/newrelic-quickstarts/commit/4f5a99edea784f6e78af617675da5d74fb5101b3))
+
 # [0.78.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.77.0...v0.78.0) (2021-12-08)
 
 
