@@ -1,3 +1,10 @@
+# [0.75.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.74.0...v0.75.0) (2021-12-07)
+
+
+### Features
+
+* Add sagemaker and bring your own data tiles ([46e9e7e](https://github.com/newrelic/newrelic-quickstarts/commit/46e9e7e242ece222c7e8f64d4603775f3547a159))
+
 # [0.74.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.1...v0.74.0) (2021-12-07)
 
 
