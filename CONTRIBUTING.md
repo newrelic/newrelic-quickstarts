@@ -8,7 +8,7 @@
     - [Alerts](#alerts)
     - [Dashboards](#dashboards)
     - [Data sources](#data-sources)
-    - [Install Plan](#install-plan)
+    - [Install plan](#install-plan)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -16,22 +16,22 @@
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
-      - [InstallPlans](#installplans)
-        - [Creating a new InstallPlan](#creating-a-new-installplan)
+      - [Install plans](#install-plans)
+        - [Creating a new installPlan](#creating-a-new-installplan)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
-      - [Dashboard Screenshots](#dashboard-screenshots)
+      - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
     - [Keywords](#keywords)
-  - [Feature Requests](#feature-requests)
-  - [Pull Requests](#pull-requests)
-  - [Using Conventional Commits](#using-conventional-commits)
+  - [Feature requests](#feature-requests)
+  - [Pull requests](#pull-requests)
+  - [Using conventional commits](#using-conventional-commits)
     - [Use `chore`](#use-chore)
     - [Use `fix`](#use-fix)
     - [Use `feat`](#use-feat)
-  - [Contributor License Agreement](#contributor-license-agreement)
+  - [Contributor license agreement](#contributor-license-agreement)
   - [Slack](#slack)
   - [Partnerships](#partnerships)
 <!-- tocstop -->
@@ -74,7 +74,7 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 
 ![alt text](./images/data-sources.png)
 
-### Install Plan
+### Install plan
 
 ![install plan](./images/install-plan.png)
 
@@ -159,7 +159,7 @@ You can define multiple author names, but it's recommended to use one of the fol
  2. company name + author name
  3. author name
 
-#### InstallPlans
+#### Install plans
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#installPlans) for more details on `installPlans`.
 > You can view all the available `installPlans` in the [Install](https://github.com/newrelic/newrelic-quickstarts/tree/main/install) directory.
@@ -167,7 +167,7 @@ You can define multiple author names, but it's recommended to use one of the fol
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable"  will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md#target_destination) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md) configuration if you want use the guided install flow.
 
-##### Creating a new InstallPlan
+##### Creating a new installPlan
 
 > If you need to create a new `installPlan` for a quickstart consider the following best practices.
 
@@ -225,7 +225,7 @@ documentation:
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
 - The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
 
-#### Dashboard Screenshots
+#### Dashboard screenshots
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details on `dashboards`
 
@@ -313,13 +313,13 @@ that is not defined in this list below, it will be reviewed for use after you su
 - tracing
 - windows
 
-## Feature Requests
+## Feature requests
 
 Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
 Before submitting an Issue, please search for similar ones in the
 [closed issues](../../issues?q=is%3Aissue+is%3Aclosed+label%3Aenhancement).
 
-## Pull Requests
+## Pull requests
 
 1. Ensure that all new commits follow the [Conventional Commit](#using-conventional-commits) syntax.
 2. Provide a short description of the changes and screenshots of any visual changes.
@@ -327,7 +327,7 @@ Before submitting an Issue, please search for similar ones in the
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
 5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
-## Using Conventional Commits
+## Using conventional commits
 
 Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
 standards in your pull request title and commit messages.
@@ -358,7 +358,7 @@ git commit -m "fix: typo and prop error in the code of conduct"
 git commit -m "feat(media): creating a video landing page"
 ```
 
-## Contributor License Agreement
+## Contributor license agreement
 
 Keep in mind that when you submit your Pull Request, you'll need to sign the CLA via the click-through using CLA-Assistant. If you'd like to execute our corporate CLA, or if you have any questions, please drop us an email at opensource@newrelic.com.
 
