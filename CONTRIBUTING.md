@@ -14,6 +14,7 @@
     - [Quickstarts usage](#quickstarts-usage)
     - [Quickstarts description template](#quickstarts-description-template)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
+    - [Quickstart PR review workflow](#quickstart-pr-review-workflow)
     - [Quickstart best practices](#quickstart-best-practices)
       - [Authors](#authors)
       - [Install plans](#install-plans)
@@ -141,6 +142,15 @@ We encourage all contributors to actively engage in the creation and maintenance
 
 When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
 [quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
+
+### Quickstart PR review workflow
+
+When you submit a PR for a new our existing quickstart the follow workflow is executed.
+
+- `Step 1`: A new PR is added ro the `To do` column of the [NR1 Community Quickstarts project board](https://github.com/newrelic/newrelic-quickstarts/projects/3)
+- `Step 2`: A repo maintainer will review the PR and provided feedback. The PR will move to the `In progress` column.
+- `Step 3`: Once a review is complete the PR will move to `In review` column and `in-review` label will be applied.
+- `Step 4`: When all review feedback is resolved the PR will be merged and  moved to the `Done` column and a `released` label will be applied.
 
 ### Quickstart best practices
 
