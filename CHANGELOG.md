@@ -1,3 +1,10 @@
+# [0.77.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.76.0...v0.77.0) (2021-12-08)
+
+
+### Features
+
+* adds the atlassian quickstart ([778fde4](https://github.com/newrelic/newrelic-quickstarts/commit/778fde4dc7595c259fd8f54947b7c6d06e78cb63))
+
 # [0.76.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.75.0...v0.76.0) (2021-12-08)
 
 
