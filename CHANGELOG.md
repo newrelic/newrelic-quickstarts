@@ -1,3 +1,16 @@
+# [0.78.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.77.0...v0.78.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* **install:** small styling fix ([f7c051b](https://github.com/newrelic/newrelic-quickstarts/commit/f7c051b9ac91b3f1b0d58db98b0669b0c7021322))
+
+
+### Features
+
+* **install:** added example install files for review ([8cfc2d2](https://github.com/newrelic/newrelic-quickstarts/commit/8cfc2d27b5ba3082f5a3c19c322907321ed971e3))
+* **install:** added java agent ([b5333d0](https://github.com/newrelic/newrelic-quickstarts/commit/b5333d0571cba9625928ecfb439bde102002938b))
+
 # [0.77.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.76.0...v0.77.0) (2021-12-08)
 
 
