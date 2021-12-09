@@ -9,6 +9,7 @@
     - [Dashboards](#dashboards)
     - [Data sources](#data-sources)
     - [Install plan](#install-plan)
+  - [Quickstart install flow](#quickstart-install-flow)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -78,6 +79,12 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 ### Install plan
 
 ![install plan](./images/install-plan.png)
+
+## Quickstart install flow
+
+The diagram below explains the installation flow each type of quickstart follows.
+
+![alt text](./images/quickstart-install-flow.png)
 
 ## Quickstarts style guide
 
