@@ -1,3 +1,11 @@
+## [0.78.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.1...v0.78.2) (2021-12-10)
+
+
+### Bug Fixes
+
+* change installPlan of Log Analysis ([6547d8a](https://github.com/newrelic/newrelic-quickstarts/commit/6547d8a30aaaf64e91f3c29c8ebd27c2972d81ca))
+* change installPlan of Log Analysis ([4c55ba7](https://github.com/newrelic/newrelic-quickstarts/commit/4c55ba79ceb55316f2e3cda540ebf519be5afbf7))
+
 ## [0.78.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.0...v0.78.1) (2021-12-08)
 
 
