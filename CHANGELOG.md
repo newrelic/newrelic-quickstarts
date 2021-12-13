@@ -1,3 +1,80 @@
+## [0.78.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.1...v0.78.2) (2021-12-10)
+
+
+### Bug Fixes
+
+* change installPlan of Log Analysis ([6547d8a](https://github.com/newrelic/newrelic-quickstarts/commit/6547d8a30aaaf64e91f3c29c8ebd27c2972d81ca))
+* change installPlan of Log Analysis ([4c55ba7](https://github.com/newrelic/newrelic-quickstarts/commit/4c55ba79ceb55316f2e3cda540ebf519be5afbf7))
+
+## [0.78.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.0...v0.78.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* Change support level for mlops/comet ([4f5a99e](https://github.com/newrelic/newrelic-quickstarts/commit/4f5a99edea784f6e78af617675da5d74fb5101b3))
+
+# [0.78.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.77.0...v0.78.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* **install:** small styling fix ([f7c051b](https://github.com/newrelic/newrelic-quickstarts/commit/f7c051b9ac91b3f1b0d58db98b0669b0c7021322))
+
+
+### Features
+
+* **install:** added example install files for review ([8cfc2d2](https://github.com/newrelic/newrelic-quickstarts/commit/8cfc2d27b5ba3082f5a3c19c322907321ed971e3))
+* **install:** added java agent ([b5333d0](https://github.com/newrelic/newrelic-quickstarts/commit/b5333d0571cba9625928ecfb439bde102002938b))
+
+# [0.77.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.76.0...v0.77.0) (2021-12-08)
+
+
+### Features
+
+* adds the atlassian quickstart ([778fde4](https://github.com/newrelic/newrelic-quickstarts/commit/778fde4dc7595c259fd8f54947b7c6d06e78cb63))
+
+# [0.76.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.75.0...v0.76.0) (2021-12-08)
+
+
+### Features
+
+* Add nerdlets for aporia, dagshub, mona & superwise-ai ([320fe3d](https://github.com/newrelic/newrelic-quickstarts/commit/320fe3df217d6c2ee0f3d11ecdc0ff73253dae61))
+
+# [0.75.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.74.0...v0.75.0) (2021-12-07)
+
+
+### Features
+
+* Add sagemaker and bring your own data tiles ([46e9e7e](https://github.com/newrelic/newrelic-quickstarts/commit/46e9e7e242ece222c7e8f64d4603775f3547a159))
+
+# [0.74.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.1...v0.74.0) (2021-12-07)
+
+
+### Features
+
+* **oma-aqm:** Added the OMA Alert Quality Management dashboard ([c0ca6f9](https://github.com/newrelic/newrelic-quickstarts/commit/c0ca6f96ff0216ffa320901ae003d28c560c8a60))
+
+## [0.73.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.73.0...v0.73.1) (2021-12-07)
+
+
+### Bug Fixes
+
+* Bad indentation ([acff0e7](https://github.com/newrelic/newrelic-quickstarts/commit/acff0e7f362a18c1b758fbda761587da0cfd5b3c))
+
+# [0.73.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.1...v0.73.0) (2021-12-06)
+
+
+### Features
+
+* Enable tomcat targeted installs ([32ddb61](https://github.com/newrelic/newrelic-quickstarts/commit/32ddb617c5153e5d88270717f1ee81e25e5c2a81))
+
+## [0.72.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.72.0...v0.72.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* Merge pull request [#608](https://github.com/newrelic/newrelic-quickstarts/issues/608) from newrelic/maint/update-install-plans ([0bf3e72](https://github.com/newrelic/newrelic-quickstarts/commit/0bf3e72d0e2ba89de9daf1cc56a0d8a96336d070))
+
 # [0.72.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.71.0...v0.72.0) (2021-12-01)
 
 

@@ -165,6 +165,7 @@ You can define multiple author names, but it's recommended to use one of the fol
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
 - Every quick start that should be "installable"  will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md#target_destination) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md) configuration if you want use the guided install flow.
+- The install plan `id` is user defined.
 
 #### Summary & descriptions
 
