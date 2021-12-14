@@ -1,3 +1,47 @@
+## [0.78.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.2...v0.78.3) (2021-12-13)
+
+## [0.78.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.1...v0.78.2) (2021-12-10)
+
+
+### Bug Fixes
+
+* change installPlan of Log Analysis ([6547d8a](https://github.com/newrelic/newrelic-quickstarts/commit/6547d8a30aaaf64e91f3c29c8ebd27c2972d81ca))
+* change installPlan of Log Analysis ([4c55ba7](https://github.com/newrelic/newrelic-quickstarts/commit/4c55ba79ceb55316f2e3cda540ebf519be5afbf7))
+
+## [0.78.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.0...v0.78.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* Change support level for mlops/comet ([4f5a99e](https://github.com/newrelic/newrelic-quickstarts/commit/4f5a99edea784f6e78af617675da5d74fb5101b3))
+
+# [0.78.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.77.0...v0.78.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* **install:** small styling fix ([f7c051b](https://github.com/newrelic/newrelic-quickstarts/commit/f7c051b9ac91b3f1b0d58db98b0669b0c7021322))
+
+
+### Features
+
+* **install:** added example install files for review ([8cfc2d2](https://github.com/newrelic/newrelic-quickstarts/commit/8cfc2d27b5ba3082f5a3c19c322907321ed971e3))
+* **install:** added java agent ([b5333d0](https://github.com/newrelic/newrelic-quickstarts/commit/b5333d0571cba9625928ecfb439bde102002938b))
+
+# [0.77.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.76.0...v0.77.0) (2021-12-08)
+
+
+### Features
+
+* adds the atlassian quickstart ([778fde4](https://github.com/newrelic/newrelic-quickstarts/commit/778fde4dc7595c259fd8f54947b7c6d06e78cb63))
+
+# [0.76.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.75.0...v0.76.0) (2021-12-08)
+
+
+### Features
+
+* Add nerdlets for aporia, dagshub, mona & superwise-ai ([320fe3d](https://github.com/newrelic/newrelic-quickstarts/commit/320fe3df217d6c2ee0f3d11ecdc0ff73253dae61))
+
 # [0.75.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.74.0...v0.75.0) (2021-12-07)
 
 
