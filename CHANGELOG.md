@@ -1,3 +1,10 @@
+# [0.79.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.3...v0.79.0) (2021-12-14)
+
+
+### Features
+
+* removed OHIs targeted installs with low success rate ([8d5d57a](https://github.com/newrelic/newrelic-quickstarts/commit/8d5d57aee54227c9ab989862c72b19c82091fc58))
+
 ## [0.78.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.2...v0.78.3) (2021-12-13)
 
 ## [0.78.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.1...v0.78.2) (2021-12-10)
