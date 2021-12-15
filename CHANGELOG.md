@@ -1,3 +1,10 @@
+# [0.80.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.79.1...v0.80.0) (2021-12-15)
+
+
+### Features
+
+* adding notification channel quickstats ([4a82a95](https://github.com/newrelic/newrelic-quickstarts/commit/4a82a95c66bea1e2876ec325fe40550e165a90f6))
+
 ## [0.79.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.79.0...v0.79.1) (2021-12-15)
 
 
