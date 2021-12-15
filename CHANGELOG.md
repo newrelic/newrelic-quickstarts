@@ -1,3 +1,10 @@
+## [0.79.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.79.0...v0.79.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* change name of key ([18d1696](https://github.com/newrelic/newrelic-quickstarts/commit/18d1696feff1a6ca8bec6e63c8450aea4f2b20f2))
+
 # [0.79.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.3...v0.79.0) (2021-12-14)
 
 
