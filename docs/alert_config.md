@@ -37,7 +37,6 @@
 Must be one of:
 * "STATIC"
 * "BASELINE"
-* "OUTLIER"
 
 ## <a name="nrql"></a>3. [Required] Property `Quickstart Alert Configuration > nrql`
 
