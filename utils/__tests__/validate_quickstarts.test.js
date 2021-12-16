@@ -81,7 +81,6 @@ describe('test validateFile', () => {
       type
       ${'STATIC'}
       ${'BASELINE'}
-      ${'OUTLIER'}
     `('doesnt fail for a valid alert definition', ({ type }) => {
       const alertTestFile = getTestFile('alert');
       alertTestFile.contents[0].type = type;
@@ -372,7 +371,7 @@ describe('test convertErrors', () => {
         instancePath: '/type',
         schemaPath: '#/properties/type/enum',
         keyword: 'enum',
-        params: { allowedValues: ['STATIC', 'BASELINE', 'OUTLIER'] },
+        params: { allowedValues: ['STATIC', 'BASELINE'] },
         message: 'must be equal to one of the allowed values',
       },
     ];
@@ -380,12 +379,12 @@ describe('test convertErrors', () => {
     const [convertedError, ..._] = convertErrors(mockAjvErrors);
 
     expect(convertedError.message).toBe(
-      `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`
+      `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE"]`
     );
   });
 
   test('converts missing required field error message on a nested property', () => {
-    /* 
+    /*
       previously if a field 'nrql' has a required field 'query', the message was: "must have required property 'query'".
       there was no information about what level 'query' lived at (i.e, where does it go).
       now it should look something like: "'/nrql' must have required property 'query'".
@@ -432,7 +431,7 @@ describe('test convertErrors', () => {
         instancePath: '/type',
         schemaPath: '#/properties/type/enum',
         keyword: 'enum',
-        params: { allowedValues: ['STATIC', 'BASELINE', 'OUTLIER'] },
+        params: { allowedValues: ['STATIC', 'BASELINE'] },
         message: 'must be equal to one of the allowed values',
       },
       {
@@ -448,7 +447,7 @@ describe('test convertErrors', () => {
 
     expect(convertedErrors).toEqual([
       {
-        message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
+        message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE"]`,
       },
       {
         message: "must have required property 'name'",
@@ -468,7 +467,7 @@ describe('test printErrors', () => {
         path: `newrelic-quickstarts/fake_path`,
         errors: [
           {
-            message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE","OUTLIER"]`,
+            message: `'/type' must be equal to one of the allowed values: ["STATIC","BASELINE"]`,
           },
           {
             message: "must have required property 'name'",
@@ -492,7 +491,7 @@ describe('test printErrors', () => {
 
     expect(global.console.log).toHaveBeenNthCalledWith(
       1,
-      `\nError: fake_path\n\t '/type' must be equal to one of the allowed values: [\"STATIC\",\"BASELINE\",\"OUTLIER\"]\n\t must have required property 'name'`
+      `\nError: fake_path\n\t '/type' must be equal to one of the allowed values: [\"STATIC\",\"BASELINE\"]\n\t must have required property 'name'`
     );
     expect(global.console.log).toHaveBeenNthCalledWith(
       2,
