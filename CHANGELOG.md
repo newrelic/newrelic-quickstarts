@@ -1,3 +1,10 @@
+## [0.80.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.2...v0.80.3) (2021-12-17)
+
+
+### Bug Fixes
+
+* remove outlier alerts from jumpstart ([1b685ad](https://github.com/newrelic/newrelic-quickstarts/commit/1b685ad6606fdc86062b3debde4fb4e70b5efb59))
+
 ## [0.80.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.1...v0.80.2) (2021-12-17)
 
 ## [0.80.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.0...v0.80.1) (2021-12-16)
