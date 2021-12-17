@@ -17,12 +17,3 @@ export const staticMutation = gql`
 		}
 	}
 `;
-
-export const outlierMutation = gql`
-	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionOutlierInput!) {
-		alertsNrqlConditionOutlierCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
-			policyId
-			runbookUrl
-		}
-	}
-`;
