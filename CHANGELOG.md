@@ -1,3 +1,39 @@
+## [0.80.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.4...v0.80.5) (2021-12-20)
+
+## [0.80.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.3...v0.80.4) (2021-12-18)
+
+## [0.80.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.2...v0.80.3) (2021-12-17)
+
+
+### Bug Fixes
+
+* remove outlier alerts from jumpstart ([1b685ad](https://github.com/newrelic/newrelic-quickstarts/commit/1b685ad6606fdc86062b3debde4fb4e70b5efb59))
+
+## [0.80.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.1...v0.80.2) (2021-12-17)
+
+## [0.80.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.0...v0.80.1) (2021-12-16)
+
+# [0.80.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.79.1...v0.80.0) (2021-12-15)
+
+
+### Features
+
+* adding notification channel quickstats ([4a82a95](https://github.com/newrelic/newrelic-quickstarts/commit/4a82a95c66bea1e2876ec325fe40550e165a90f6))
+
+## [0.79.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.79.0...v0.79.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* change name of key ([18d1696](https://github.com/newrelic/newrelic-quickstarts/commit/18d1696feff1a6ca8bec6e63c8450aea4f2b20f2))
+
+# [0.79.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.3...v0.79.0) (2021-12-14)
+
+
+### Features
+
+* removed OHIs targeted installs with low success rate ([8d5d57a](https://github.com/newrelic/newrelic-quickstarts/commit/8d5d57aee54227c9ab989862c72b19c82091fc58))
+
 ## [0.78.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.2...v0.78.3) (2021-12-13)
 
 ## [0.78.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.78.1...v0.78.2) (2021-12-10)

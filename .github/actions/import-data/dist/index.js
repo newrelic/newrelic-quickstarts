@@ -189,16 +189,6 @@ const createAlertLocal = (accountId, quickstart, policyId) => __awaiter(void 0, 
                 console.error('Alert Failure: ', error.response.errors[0].message);
             }
         }
-        else if (parsedAlert.type === 'OUTLIER') {
-            const filledFile = transformData(parsedAlert);
-            variables.condition = filledFile;
-            try {
-                yield client.rawRequest(alerts_1.outlierMutation, variables);
-            }
-            catch (error) {
-                console.error('Alert Failure: ', error.response.errors[0].message);
-            }
-        }
     }));
 });
 const transformData = (incomingFile) => {
@@ -335,7 +325,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.outlierMutation = exports.staticMutation = exports.baselineMutation = void 0;
+exports.staticMutation = exports.baselineMutation = void 0;
 const graphql_request_1 = __webpack_require__(2476);
 exports.baselineMutation = graphql_request_1.gql `
 	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionBaselineInput!) {
@@ -350,14 +340,6 @@ exports.staticMutation = graphql_request_1.gql `
 		alertsNrqlConditionStaticCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
 			runbookUrl
 			policyId
-		}
-	}
-`;
-exports.outlierMutation = graphql_request_1.gql `
-	mutation ($accountId: Int!, $policyId: ID!, $condition: AlertsNrqlConditionOutlierInput!) {
-		alertsNrqlConditionOutlierCreate(accountId: $accountId, condition: $condition, policyId: $policyId) {
-			policyId
-			runbookUrl
 		}
 	}
 `;
