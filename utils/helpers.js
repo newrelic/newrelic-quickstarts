@@ -5,6 +5,8 @@ const yaml = require('js-yaml');
 const glob = require('glob');
 const isImage = require('is-image');
 
+const pathsToSanitize = process.argv.slice(2);
+
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
@@ -147,4 +149,5 @@ module.exports = {
   isDirectory,
   findMainQuickstartConfigFiles,
   findMainInstallConfigFiles,
+  pathsToSanitize,
 };
