@@ -91,3 +91,26 @@ jobs:
 
       - name: Validate Logos
         run: cd utils && yarn validate-logos
+
+
+  validate-install-plan-ids:
+    name: Validate install plan ids
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Validate new files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          cd utils && yarn validate-new-quickstart $URL

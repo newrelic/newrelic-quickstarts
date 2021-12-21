@@ -126,6 +126,13 @@ const findMainQuickstartConfigFiles = () =>
     path.resolve(process.cwd(), '../quickstarts/**/config.+(yml|yaml)')
   );
 
+/**
+ * Finds the path to all top level install configs
+ * @returns {String[]} An array of the file paths
+ */
+const findMainInstallConfigFiles = () =>
+  glob.sync(path.resolve(process.cwd(), '../install/**/install.+(yml|yaml)'));
+
 module.exports = {
   readYamlFile,
   readJsonFile,
@@ -139,4 +146,5 @@ module.exports = {
   globFiles,
   isDirectory,
   findMainQuickstartConfigFiles,
+  findMainInstallConfigFiles,
 };
