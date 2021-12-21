@@ -34,7 +34,7 @@ const fetchPaginatedGHResults = async (url, token) => {
     });
     if (!resp.ok) {
       console.error(
-        `Github API returned status ${resp.code} - ${resp.message}`
+        `ERROR: Github API returned status ${resp.code} - ${resp.message}`
       );
       process.exit(1);
     }
