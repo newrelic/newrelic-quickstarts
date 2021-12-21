@@ -3,6 +3,7 @@ const path = require('path');
 const {
   fetchPaginatedGHResults,
   filterQuickstartConfigFiles,
+  filterOutTestFiles,
 } = require('./github-api-helpers');
 const {
   findMainInstallConfigFiles,
@@ -91,7 +92,11 @@ const validateInstallPlanIds = (githubFiles) => {
 };
 
 const main = async () => {
-  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  const githubFiles = await fetchPaginatedGHResults(
+    url,
+    process.env.GITHUB_TOKEN
+  );
+  const files = filterOutTestFiles(githubFiles);
   validateInstallPlanIds(files);
 };
 
