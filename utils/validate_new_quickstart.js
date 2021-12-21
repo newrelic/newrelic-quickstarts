@@ -1,5 +1,6 @@
 'use strict';
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
+const { findMainQuickstartConfigFiles } = require('./helpers')
 const path = require('path');
 const glob = require('glob');
 const { get } = require('http');
@@ -69,6 +70,17 @@ const getQuickstartFromFilename = (filename) => {
   // Add conditions for other cases (e.g. logos  or quickstarts with config.yml)
 };
 
+const getQuickstartConfigPaths = (quickstartNames) => {
+  const allQuickstartConfigPaths = findMainQuickstartConfigFiles()
+  
+  return quickstartNames.map((quickstartName) => {
+    return allQuickstartConfigPaths.find((path) => {
+      return path.split("/").includes(quickstartName)
+    })
+  })
+}
+
+
 const simplifyQuickstartList = (quickstartList) => {
   return [...new Set(quickstartList)];
 };
@@ -105,4 +117,4 @@ Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
   });
 // path.resolve(basePath, '../quickstarts/**/config.yml');
 
-module.exports = { getQuickstartFromFilename, simplifyQuickstartList };
+module.exports = { getQuickstartFromFilename, simplifyQuickstartList, getQuickstartConfigPaths };

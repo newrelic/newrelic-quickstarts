@@ -1,9 +1,17 @@
 'use strict';
+const path = require('path');
 const { expect } = require('@jest/globals');
 const {
   getQuickstartFromFilename,
   simplifyQuickstartList,
+  getQuickstartConfigPaths,
 } = require('../validate_new_quickstart');
+
+const buildFullQuickstartFilePaths = (relativePaths) => {
+  return relativePaths.map((relativePath) => {
+    return path.resolve(process.cwd(), `..${relativePath}`);
+  });
+};
 
 const mockFilenames = [
   'quickstarts/python/aiohttp/alerts/ApdexScore.yml',
@@ -35,6 +43,26 @@ const expectedUniqueQuickstartDirectories = [
   'pysqlite',
 ];
 
+const quickstartNames = [
+  'aws-ec2',
+  'infrastructure',
+  'aiohttp',
+  'pysqlite',
+  'postgresql',
+];
+
+const quickstartConfigRelativePaths = [
+  '/quickstarts/aws/aws-ec2/config.yml',
+  '/quickstarts/infrastructure/config.yml',
+  '/quickstarts/python/aiohttp/config.yml',
+  '/quickstarts/python/pysqlite/config.yml',
+  '/quickstarts/postgresql/config.yml',
+];
+
+const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
+  quickstartConfigRelativePaths
+);
+
 describe('getQuickstartFromFilename', () => {
   test('returns the quickstart an alert belongs to', () => {
     expect(
@@ -63,5 +91,10 @@ describe('getQuickstartFromFilename', () => {
       mockFilenames.map(getQuickstartFromFilename)
     );
     expect(simplifiedList).toEqual(expectedUniqueQuickstartDirectories);
+  });
+
+  test('returns list of unique quickstart config filepaths', () => {
+    const foundConfigPaths = getQuickstartConfigPaths(quickstartNames);
+    expect(foundConfigPaths).toEqual(expectedQuickstartConfigFullPaths);
   });
 });
