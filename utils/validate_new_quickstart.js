@@ -34,15 +34,34 @@ const hasConfig = ({ filename }) =>
   (filename.startsWith('quickstarts/') && filename.endsWith('/config.yml')) ||
   (filename.startsWith('quickstarts/') && filename.endsWith('/config.yaml'));
 
+const getQuickstartNode = (filename, target) => {
+  const splitFilePath = filename.split('/');
+  return splitFilePath[splitFilePath.findIndex((path) => path === target) - 1];
+};
+
+const getQuickstartFromFilename = (filename) => {
+  if (filename.includes('/alerts/')) {
+    return getQuickstartNode(filename, 'alerts');
+  }
+
+  if (filename.includes('/dashboards/')) {
+    return getQuickstartNode(filename, 'dashboards');
+  }
+
+  // Add conditions for other cases (e.g. logos  or quickstarts with config.yml)
+};
+
 // console.log(getQuickstartFilePaths(process.cwd()).sort());
 const getParentQuickstart = (filename) => {
   console.log(filename);
 };
+
 Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
   .then((response) => {
     const uniqueQuickstartConfigs = response
       .filter(hasConfig)
       .map(({ filename }) => filename);
+
     let uniqueQuickstarts = uniqueQuickstartConfigs.map((filename) => {
       const splitFilePath = filename.split('/');
       return splitFilePath[splitFilePath.length - 2];
@@ -63,3 +82,5 @@ Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
     throw new Error(`Github API returned ${error.message}`);
   });
 // path.resolve(basePath, '../quickstarts/**/config.yml');
+
+module.exports = { getQuickstartFromFilename };
