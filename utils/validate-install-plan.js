@@ -92,17 +92,8 @@ const validateInstallPlanIds = (githubFiles) => {
 };
 
 const main = async () => {
-  try {
-    const githubFiles = await fetchPaginatedGHResults(
-      url,
-      process.env.GITHUB_TOKEN
-    );
-    const files = filterOutTestFiles(githubFiles);
-    validateInstallPlanIds(files);
-  } catch (error) {
-    console.error('Install Plan Error: ', error);
-    process.exit(1);
-  }
+  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  validateInstallPlanIds(filterOutTestFiles(files));
 };
 
 if (require.main === module) {

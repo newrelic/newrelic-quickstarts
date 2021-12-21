@@ -33,9 +33,10 @@ const fetchPaginatedGHResults = async (url, token) => {
       headers: { authorization: `token ${token}` },
     });
     if (!resp.ok) {
-      throw new Error(
+      console.error(
         `Github API returned status ${resp.code} - ${resp.message}`
       );
+      process.exit(1);
     }
     const page = await resp.json();
     nextPageLink = getNextLink(resp.headers.get('Link'));
