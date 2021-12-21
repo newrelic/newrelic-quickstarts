@@ -1,12 +1,13 @@
 'use strict';
 
-const { fetchPaginatedGHResults } = require('./github-api-helpers');
+const {
+  fetchPaginatedGHResults,
+  filterQuickstartConfigFiles,
+} = require('./github-api-helpers');
 const { findMainInstallConfigFiles, readQuickstartFile } = require('./helpers');
 const path = require('path');
 
 const url = process.argv[2];
-
-const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
 
 const getAllInstallPlanIds = () => {
   const configPaths = findMainInstallConfigFiles();
@@ -27,7 +28,7 @@ const getConfigInstallPlans = (configFiles) => {
   });
 };
 
-const validateInstallPlans = (files, installPlanIds) => {
+const getInstallPlansNoMatches = (files, installPlanIds) => {
   return files
     .map(({ installPlans, filePath }) => {
       const nonExistentInstallPlans = installPlans.filter(
@@ -38,16 +39,13 @@ const validateInstallPlans = (files, installPlanIds) => {
     .filter(({ installPlans }) => installPlans.length > 0);
 };
 
-const main = async () => {
-  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
-  const configFiles = files.filter(({ filename }) =>
-    CONFIG_REGEXP.test(filename)
-  );
+const validateInstallPlanIds = (files) => {
+  const configFiles = filterQuickstartConfigFiles(files);
 
   const configInstallPlans = getConfigInstallPlans(configFiles);
   const installPlanIds = getAllInstallPlanIds();
 
-  const installPlanNoMatches = validateInstallPlans(
+  const installPlanNoMatches = getInstallPlansNoMatches(
     configInstallPlans,
     installPlanIds
   );
@@ -72,6 +70,18 @@ const main = async () => {
   }
 };
 
+const main = async () => {
+  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  validateInstallPlanIds(files);
+};
+
 if (require.main === module) {
   main();
 }
+
+module.exports = {
+  validateInstallPlanIds,
+  getConfigInstallPlans,
+  getInstallPlansNoMatches,
+  getAllInstallPlanIds,
+};

@@ -3,6 +3,8 @@
 const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
+const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+
 /**
  * Pulls the next page off of a `Link` header
  * @param {String} linkHeader the `Link` header value
@@ -41,4 +43,18 @@ const fetchPaginatedGHResults = async (url, token) => {
   return files;
 };
 
-module.exports = { fetchPaginatedGHResults, getNextLink };
+/**
+ * Filters results from the Github API for config yaml
+ * @param {Array} files the results from Github API
+ * @returns {Array} config files from Github API
+ */
+
+const filterQuickstartConfigFiles = (files) => {
+  return files.filter(({ filename }) => CONFIG_REGEXP.test(filename));
+};
+
+module.exports = {
+  fetchPaginatedGHResults,
+  getNextLink,
+  filterQuickstartConfigFiles,
+};
