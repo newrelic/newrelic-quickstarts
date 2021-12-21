@@ -4,6 +4,9 @@ const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+const MOCK_QUICKSTART_REGEXP = new RegExp(
+  'mock_quickstarts/.+/config.+(yml|yaml|json)'
+);
 
 /**
  * Pulls the next page off of a `Link` header
@@ -44,13 +47,23 @@ const fetchPaginatedGHResults = async (url, token) => {
 };
 
 /**
- * Filters results from the Github API for config yaml
+ * Filters results from the Github API for config yaml and removes test files
  * @param {Array} files the results from Github API
- * @returns {Array} config files from Github API
+ * @returns {Array} config files from Github API without test files
  */
-
 const filterQuickstartConfigFiles = (files) => {
-  return files.filter(({ filename }) => CONFIG_REGEXP.test(filename));
+  return filterOutTestFiles(
+    files.filter(({ filename }) => CONFIG_REGEXP.test(filename))
+  );
+};
+
+/**
+ * Filters out results from the Github API for changes to test files
+ * @param {Array} files the results from Github API
+ * @returns {Array} files from Github API excluding test files
+ */
+const filterOutTestFiles = (files) => {
+  return files.filter(({ filename }) => !MOCK_QUICKSTART_REGEXP.test(filename));
 };
 
 module.exports = {
