@@ -1,6 +1,6 @@
 'use strict';
 const { expect } = require('@jest/globals');
-const { getQuickstartFromFilename, getQuickstartNode } = require('../validate_new_quickstart')
+const { getQuickstartFromFilename } = require('../validate_new_quickstart')
 
 
 const mockFilenames = [
