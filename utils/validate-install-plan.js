@@ -4,9 +4,13 @@ const {
   fetchPaginatedGHResults,
   filterQuickstartConfigFiles,
 } = require('./github-api-helpers');
-const { findMainInstallConfigFiles, readQuickstartFile } = require('./helpers');
+const {
+  findMainInstallConfigFiles,
+  readQuickstartFile,
+  pathsToSanitize,
+} = require('./helpers');
 
-const url = process.argv[2];
+const url = pathsToSanitize[0];
 
 /**
  * Gets all install plain ids under installs/ dir
@@ -70,16 +74,14 @@ const validateInstallPlanIds = (githubFiles) => {
 
   if (installPlanNoMatches.length > 0) {
     console.error(
-      `ERROR: Found install plans with no corresponding install plan id.`
+      `ERROR: Found install plans with no corresponding install plan id.\n`
     );
-    console.error(
-      `An install plan id must match an existing install plan id.\n`
-    );
+    console.error(`An install plan id must match an existing install plan id.`);
     installPlanNoMatches.forEach((m) =>
-      console.error(`${m.installPlans.join(', ')} in ${m.filePath}\n`)
+      console.error(`- ${m.installPlans.join(', ')} in ${m.filePath}`)
     );
     console.error(
-      `Please change to an existing install plan id or remove the ids.`
+      `\nPlease change to an existing install plan id or remove the ids.`
     );
 
     if (require.main === module) {
