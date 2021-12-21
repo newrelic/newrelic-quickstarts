@@ -89,6 +89,7 @@ const buildMutationVariables = (quickstartConfig) => {
     summary: content.summary,
   };
 };
+
 const simplifyQuickstartList = (quickstartList) => {
   return [...new Set(quickstartList)];
 };
