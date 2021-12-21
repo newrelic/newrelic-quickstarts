@@ -5,6 +5,7 @@ const {
   getQuickstartFromFilename,
   simplifyQuickstartList,
   getQuickstartConfigPaths,
+  getYamlContents,
 } = require('../validate_new_quickstart');
 
 const buildFullQuickstartFilePaths = (relativePaths) => {
@@ -96,5 +97,10 @@ describe('getQuickstartFromFilename', () => {
   test('returns list of unique quickstart config filepaths', () => {
     const foundConfigPaths = getQuickstartConfigPaths(quickstartNames);
     expect(foundConfigPaths).toEqual(expectedQuickstartConfigFullPaths);
+  });
+
+  test('returns list of config content for each config filepath', () => {
+    const configContent = getYamlContents(expectedQuickstartConfigFullPaths);
+    expect(configContent).toEqual([]);
   });
 });

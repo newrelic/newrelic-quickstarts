@@ -1,9 +1,10 @@
 'use strict';
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
-const { findMainQuickstartConfigFiles } = require('./helpers')
+const { findMainQuickstartConfigFiles, readYamlFile } = require('./helpers');
 const path = require('path');
 const glob = require('glob');
 const { get } = require('http');
+const { nil } = require('ajv');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
 const EXCLUDED_DIRECTORY_PATTERNS = [
@@ -58,34 +59,40 @@ const getQuickstartFromFilename = (filename) => {
   const targetFileName = filename.split('/').pop();
 
   return getQuickstartNode(filename, targetFileName);
-  //   if (filename.includes('/logo.svg')) {
-  //     return getQuickstartNode(filename, 'logo.svg');
-  //   }
-  //   const matches = filename.match(CONFIG_REGEXP);
-  //   //   console.log(matches);
-  //   if (CONFIG_REGEXP.test(filename)) {
-  //     const targetNode = matches[0].split('/').pop();
-  //     return getQuickstartNode(filename, targetNode);
-  //   }
-  // Add conditions for other cases (e.g. logos  or quickstarts with config.yml)
 };
 
 const getQuickstartConfigPaths = (quickstartNames) => {
-  const allQuickstartConfigPaths = findMainQuickstartConfigFiles()
-  
+  const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
+
   return quickstartNames.map((quickstartName) => {
     return allQuickstartConfigPaths.find((path) => {
-      return path.split("/").includes(quickstartName)
-    })
-  })
-}
+      return path.split('/').includes(quickstartName);
+    });
+  });
+};
 
+const getYamlContents = (configPaths) => {
+  return configPaths.map((configPath) => readYamlFile(configPath));
+};
 
+const buildMutationVariables = (quickstartConfig) => {
+  const content = quickstartConfig.contents[0];
+  return {
+    authors: content.authors,
+    categoryTerms: content.categoryTerms ?? content.keywords,
+    description: content.description,
+    displayName: content.displayName,
+    documentation: content.documentation ?? nil,
+    icon: content.logo,
+    keywords: content.keywords ?? nil,
+    sourceUrl: nil,
+    summary: content.summary,
+  };
+};
 const simplifyQuickstartList = (quickstartList) => {
   return [...new Set(quickstartList)];
 };
 
-// console.log(getQuickstartFilePaths(process.cwd()).sort());
 const getParentQuickstart = (filename) => {
   console.log(filename);
 };
@@ -100,8 +107,6 @@ Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
       const splitFilePath = filename.split('/');
       return splitFilePath[splitFilePath.length - 2];
     });
-    // console.log(uniqueQuickstarts);
-    // console.log(uniqueQuickstartConfigs);
     response.forEach(({ filename }) => {
       uniqueQuickstarts.forEach((quickstart) => {
         console.log(`${quickstart}, ${filename}`);
@@ -117,4 +122,9 @@ Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
   });
 // path.resolve(basePath, '../quickstarts/**/config.yml');
 
-module.exports = { getQuickstartFromFilename, simplifyQuickstartList, getQuickstartConfigPaths };
+module.exports = {
+  getQuickstartFromFilename,
+  simplifyQuickstartList,
+  getQuickstartConfigPaths,
+  getYamlContents,
+};
