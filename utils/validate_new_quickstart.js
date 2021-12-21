@@ -2,7 +2,9 @@
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
 const path = require('path');
 const glob = require('glob');
+const { get } = require('http');
 
+const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
 const EXCLUDED_DIRECTORY_PATTERNS = [
   'node_modules/**',
   'utils/**',
@@ -48,7 +50,27 @@ const getQuickstartFromFilename = (filename) => {
     return getQuickstartNode(filename, 'dashboards');
   }
 
+  if (filename.includes('/images/')) {
+    return getQuickstartNode(filename, 'images');
+  }
+
+  const targetFileName = filename.split('/').pop();
+
+  return getQuickstartNode(filename, targetFileName);
+  //   if (filename.includes('/logo.svg')) {
+  //     return getQuickstartNode(filename, 'logo.svg');
+  //   }
+  //   const matches = filename.match(CONFIG_REGEXP);
+  //   //   console.log(matches);
+  //   if (CONFIG_REGEXP.test(filename)) {
+  //     const targetNode = matches[0].split('/').pop();
+  //     return getQuickstartNode(filename, targetNode);
+  //   }
   // Add conditions for other cases (e.g. logos  or quickstarts with config.yml)
+};
+
+const simplifyQuickstartList = (quickstartList) => {
+  return [...new Set(quickstartList)];
 };
 
 // console.log(getQuickstartFilePaths(process.cwd()).sort());
@@ -83,4 +105,4 @@ Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
   });
 // path.resolve(basePath, '../quickstarts/**/config.yml');
 
-module.exports = { getQuickstartFromFilename };
+module.exports = { getQuickstartFromFilename, simplifyQuickstartList };
