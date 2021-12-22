@@ -1,16 +1,16 @@
 'use strict';
+
+const path = require('path');
+const glob = require('glob');
+
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
 const {
   findMainQuickstartConfigFiles,
   readYamlFile,
   removeRepoPathPrefix,
 } = require('./helpers');
-const path = require('path');
-const glob = require('glob');
-const { get } = require('http');
-const { nil } = require('ajv');
 
-const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
