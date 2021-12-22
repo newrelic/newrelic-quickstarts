@@ -7,7 +7,7 @@ const {
   getQuickstartConfigPaths,
   getYamlContents,
   buildMutationVariables,
-} = require('../validate_new_quickstart');
+} = require('../validate_pr_quickstarts');
 
 const buildFullQuickstartFilePaths = (relativePaths) => {
   return relativePaths.map((relativePath) => {
