@@ -7,6 +7,7 @@ const { fetchPaginatedGHResults } = require('./github-api-helpers');
 const {
   findMainQuickstartConfigFiles,
   readYamlFile,
+  readQuickstartFile,
   removeRepoPathPrefix,
 } = require('./helpers');
 
@@ -138,11 +139,11 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) => {
 
   return alertConfigPaths.map((alertConfigPath) => {
     const parsedConfig = readQuickstartFile(alertConfigPath);
-    const { details, name, type } = parsedConfig.content;
+    const { details, name, type } = parsedConfig.contents[0];
     return {
       description: details ? details.trim() : null,
       displayName: name.trim(),
-      rawConfiguration: JSON.stringify(parsedConfig.content),
+      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
       type: type.trim(),
     };
   });

@@ -66,7 +66,7 @@ const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
   quickstartConfigRelativePaths
 );
 
-const expectedMockQuickstart1MutationInput = {
+const expectedMockQuickstart2MutationInput = {
   authors: [{ name: 'John Smith' }],
   categoryTerms: ['list', 'of', 'searchable', 'keywords'],
   description:
@@ -79,12 +79,30 @@ const expectedMockQuickstart1MutationInput = {
       description: 'Description about this doc reference',
     },
   ],
-  icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-1/logo.png',
+  icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-2/logo.png',
   keywords: ['list', 'of', 'searchable', 'keywords'],
   sourceUrl:
-    'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-1',
+    'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-2',
   summary: 'A short form description for this quickstart',
-  installPlanStepIds: ['fake-install-plan'],
+  installPlanStepIds: ['infra-agent-targeted'],
+  alertConditions: [
+    {
+      description:
+        "This alert triggers when the reported health of an Elasticsearch cluster is 'red'.",
+      displayName: 'Cluster Health',
+      rawConfiguration:
+        '{"name":"Cluster Health","details":"This alert triggers when the reported health of an Elasticsearch cluster is \'red\'.\\n","type":"STATIC","nrql":{"query":"FROM ElasticsearchClusterSample SELECT uniqueCount(displayName) WHERE cluster.status = \'red\' FACET displayName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":0,"thresholdDuration":300,"thresholdOccurrences":"AT_LEAST_ONCE"}],"violationTimeLimitSeconds":86400}',
+      type: 'STATIC',
+    },
+    {
+      description:
+        'This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.',
+      displayName: 'Errors',
+      rawConfiguration:
+        '{"name":"Errors","details":"This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.\\n","type":"STATIC","nrql":{"query":"from Transaction select percentage(count(*), where error is not false) as \'Errors\' where transactionType = \'Web\' facet appName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":10,"thresholdDuration":300,"thresholdOccurrences":"ALL"}],"expiration":{"closeViolationsOnExpiration":true,"openViolationOnExpiration":false,"expirationDuration":86400},"violationTimeLimitSeconds":86400}',
+      type: 'STATIC',
+    },
+  ],
 };
 
 describe('getQuickstartFromFilename', () => {
@@ -130,9 +148,9 @@ describe('getQuickstartFromFilename', () => {
   test.only('buildMutationVariables returns expected mutation input from quickstart config', () => {
     const mutationInput = buildMutationVariables(
       readQuickstartFile(
-        `${process.cwd()}/mock_quickstarts/mock-quickstart-1/config.yml`
+        `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
       )
     );
-    expect(mutationInput).toEqual(expectedMockQuickstart1MutationInput);
+    expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
   });
 });
