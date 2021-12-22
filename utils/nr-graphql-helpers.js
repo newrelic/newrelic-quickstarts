@@ -1,4 +1,5 @@
 'use strict';
+
 const fetch = require('node-fetch');
 
 /**
@@ -22,7 +23,6 @@ const buildRequestBody = ({ queryString, variables }) =>
 const fetchNRGraphqlResults = async (queryBody, url, token) => {
   try {
     const body = buildRequestBody(queryBody);
-    console.log(body);
 
     const res = await fetch(url, {
       method: 'post',

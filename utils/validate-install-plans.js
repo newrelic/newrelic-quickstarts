@@ -4,7 +4,10 @@ const {
   fetchPaginatedGHResults,
   filterInstallPlans,
 } = require('./github-api-helpers');
-const { fetchNRGraphqlResults } = require('./nr-graphql-helpers');
+const {
+  fetchNRGraphqlResults,
+  translateMutationErrors,
+} = require('./nr-graphql-helpers');
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
@@ -98,9 +101,9 @@ const validateInstallPlanSchema = async (files) => {
     transformInstallPlansToRequestVariables
   );
 
-  await Promise.all(
-    installVariableFiles.forEach(async ({ variables }) => {
-      const response = await fetchNRGraphqlResults(
+  const graphqlResponses = await Promise.all(
+    installVariableFiles.map(async ({ variables, filePath }) => {
+      const { data, errors } = await fetchNRGraphqlResults(
         {
           queryString: VALIDATE_INSTALL_PLAN_MUTATION,
           variables,
@@ -108,11 +111,22 @@ const validateInstallPlanSchema = async (files) => {
         NR_API_URL,
         NR_API_TOKEN
       );
-      if (response.errors) {
-        translateMutationErrors(response.errors);
-      }
+      return { data, filePath, errors };
     })
   );
+
+  let hasFailed = false;
+
+  graphqlResponses.forEach(({ errors, filePath }) => {
+    if (errors) {
+      hasFailed = true;
+      translateMutationErrors(errors, filePath);
+    }
+  });
+
+  if (hasFailed) {
+    process.exit(1);
+  }
 };
 
 const main = async () => {
