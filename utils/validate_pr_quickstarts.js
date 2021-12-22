@@ -85,7 +85,10 @@ const getYamlContents = (configPaths) => {
 
 const buildMutationVariables = (quickstartConfig) => {
   const content = quickstartConfig.contents[0];
+  const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
+
   return {
+    alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),
     authors: content.authors.map((author) => {
       return { name: author };
     }),
@@ -109,6 +112,31 @@ const getQuickstartRelativePath = (configPath) => {
   const splitConfigPath = configPath.split('/');
   splitConfigPath.pop();
   return removeRepoPathPrefix(splitConfigPath.join('/'));
+};
+
+const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
+  const splitConfigPath = quickstartConfigPath.split('/');
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/alerts/*.+(yml|yaml)`;
+
+  return glob.sync(globPattern);
+};
+
+const adaptQuickstartAlertsInput = (alertConfigPaths) => {
+  if (alertConfigPaths.length == 0) {
+    return null;
+  }
+
+  return alertConfigPaths.map((alertConfigPath) => {
+    const parsedConfig = readQuickstartFile(alertConfigPath);
+    const { details, name, type } = parsedConfig.content;
+    return {
+      description: details ? details.trim() : null,
+      displayName: name.trim(),
+      rawConfiguration: JSON.stringify(parsedConfig.content),
+      type: type.trim(),
+    };
+  });
 };
 
 const adaptQuickstartDocumentationInput = (documentation) => {
