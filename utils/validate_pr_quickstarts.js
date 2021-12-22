@@ -10,7 +10,6 @@ const {
   removeRepoPathPrefix,
 } = require('./helpers');
 
-
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
@@ -84,27 +83,37 @@ const getYamlContents = (configPaths) => {
 };
 
 const buildMutationVariables = (quickstartConfig) => {
-  const content = quickstartConfig.contents[0];
+  const {
+    authors,
+    categoryTerms,
+    description,
+    title,
+    documentation,
+    logo,
+    keywords,
+    summary,
+    installPlans,
+  } = quickstartConfig.contents[0];
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
 
   return {
     alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),
-    authors: content.authors.map((author) => {
+    authors: authors.map((author) => {
       return { name: author };
     }),
-    categoryTerms: content.categoryTerms || content.keywords,
-    description: content.description.trim(),
-    displayName: content.title.trim(),
-    documentation: adaptQuickstartDocumentationInput(content.documentation),
+    categoryTerms: categoryTerms || keywords,
+    description: description.trim(),
+    displayName: title.trim(),
+    documentation: adaptQuickstartDocumentationInput(documentation),
     icon: `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
       quickstartConfig.path
-    )}/${content.logo}`,
-    keywords: content.keywords || null,
+    )}/${logo}`,
+    keywords: keywords || null,
     sourceUrl: `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
       quickstartConfig.path
     )}`,
-    summary: content.summary.trim(),
-    installPlanStepIds: content.installPlans,
+    summary: summary.trim(),
+    installPlanStepIds: installPlans,
   };
 };
 
