@@ -208,29 +208,61 @@ const getParentQuickstart = (filename) => {
   console.log(filename);
 };
 
-Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
-  .then((response) => {
-    const uniqueQuickstartConfigs = response
-      .filter(hasConfig)
-      .map(({ filename }) => filename);
-
-    let uniqueQuickstarts = uniqueQuickstartConfigs.map((filename) => {
-      const splitFilePath = filename.split('/');
-      return splitFilePath[splitFilePath.length - 2];
-    });
-    response.forEach(({ filename }) => {
-      uniqueQuickstarts.forEach((quickstart) => {
-        console.log(`${quickstart}, ${filename}`);
-        if (!filename.includes(quickstart)) {
-          getParentQuickstart(filename);
-        }
-      });
-    });
-    process.exit(0);
-  })
-  .catch((error) => {
+const main = async () => {
+  const files = await fetchPaginatedGHResults(
+    url,
+    process.env.GITHUB_TOKEN
+  ).catch((error) => {
     throw new Error(`Github API returned ${error.message}`);
   });
+
+  process.exit(0);
+};
+
+// get unique quickstarts
+
+//get unique quickstarts config paths
+
+// unique quickstarts.MAP-->
+//parse file from path via readQuickstartFile
+//buildMutationVariables(parsedfile)
+//returns an array of mutation input objects
+
+// Map through array of input objects
+//run mutation (promise.all?)
+
+/**
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
+ * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
+ * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
+ */
+if (require.main === module) {
+  main();
+}
+
+// Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
+//   .then((response) => {
+//     const uniqueQuickstartConfigs = response
+//       .filter(hasConfig)
+//       .map(({ filename }) => filename);
+
+//     let uniqueQuickstarts = uniqueQuickstartConfigs.map((filename) => {
+//       const splitFilePath = filename.split('/');
+//       return splitFilePath[splitFilePath.length - 2];
+//     });
+//     response.forEach(({ filename }) => {
+//       uniqueQuickstarts.forEach((quickstart) => {
+//         console.log(`${quickstart}, ${filename}`);
+//         if (!filename.includes(quickstart)) {
+//           getParentQuickstart(filename);
+//         }
+//       });
+//     });
+//   process.exit(0);
+// })
+// .catch((error) => {
+//   throw new Error(`Github API returned ${error.message}`);
+// });
 
 module.exports = {
   getQuickstartFromFilename,
