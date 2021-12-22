@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
-const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml)');
 const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
 
 /**
