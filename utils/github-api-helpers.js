@@ -3,6 +3,9 @@
 const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
+const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
+
 /**
  * Pulls the next page off of a `Link` header
  * @param {String} linkHeader the `Link` header value
@@ -30,9 +33,10 @@ const fetchPaginatedGHResults = async (url, token) => {
       headers: { authorization: `token ${token}` },
     });
     if (!resp.ok) {
-      throw new Error(
-        `Github API returned status ${resp.code} - ${resp.message}`
+      console.error(
+        `ERROR: Github API returned status ${resp.code} - ${resp.message}`
       );
+      process.exit(1);
     }
     const page = await resp.json();
     nextPageLink = getNextLink(resp.headers.get('Link'));
@@ -41,4 +45,26 @@ const fetchPaginatedGHResults = async (url, token) => {
   return files;
 };
 
-module.exports = { fetchPaginatedGHResults, getNextLink };
+/**
+ * Filters results from the Github API for config yaml and removes test files
+ * @param {Array} files the results from Github API
+ * @returns {Array} config files from Github API without test files
+ */
+const filterQuickstartConfigFiles = (files) =>
+  files.filter(({ filename }) => CONFIG_REGEXP.test(filename));
+
+/**
+ * Filters out results from the Github API for changes to test files
+ * @param {Array} files the results from Github API
+ * @returns {Array} files from Github API excluding test files
+ */
+const filterOutTestFiles = (files) => {
+  return files.filter(({ filename }) => !MOCK_QUICKSTART_REGEXP.test(filename));
+};
+
+module.exports = {
+  fetchPaginatedGHResults,
+  getNextLink,
+  filterQuickstartConfigFiles,
+  filterOutTestFiles,
+};
