@@ -70,43 +70,49 @@ const transformContentsToRequest = ({
   target,
   install,
   fallback,
-}) => {
+}) => ({
+  dryRun: true,
+  id,
+  displayName: name,
+  heading: title,
+  description,
+  target: transformInstallPlanTarget(target),
+  primary: transformInstallPlanDirective(install),
+  fallback: transformInstallPlanDirective(fallback),
+});
+
+const transformInstallPlansToRequestVariables = ({ filename }) => {
+  const { contents, path: filePath } = readYamlFile(
+    path.join(process.cwd(), `../${filename}`)
+  );
+
   return {
-    dryRun: true,
-    id,
-    displayName: name,
-    heading: title,
-    description,
-    target: transformInstallPlanTarget(target),
-    primary: transformInstallPlanDirective(install),
-    fallback: transformInstallPlanDirective(fallback),
+    filePath,
+    variables: transformContentsToRequest(contents[0]),
   };
 };
 
 const validateInstallPlanSchema = async (files) => {
   const installFiles = filterInstallPlans(files);
-  const installFilesContents = installFiles.map(({ filename }) =>
-    readYamlFile(path.join(process.cwd(), `../${filename}`))
+  const installVariableFiles = installFiles.map(
+    transformInstallPlansToRequestVariables
   );
-  const transformedFiles = installFilesContents.map(({ contents, path }) => ({
-    requestVariables: transformContentsToRequest(contents[0]),
-    path,
-  }));
 
-  const response = await Promise.all(
-    transformedFiles.map(async ({ requestVariables }) => {
-      const res = await fetchNRGraphqlResults(
+  await Promise.all(
+    installVariableFiles.forEach(async ({ variables }) => {
+      const response = await fetchNRGraphqlResults(
         {
           queryString: VALIDATE_INSTALL_PLAN_MUTATION,
-          variables: requestVariables,
+          variables,
         },
         NR_API_URL,
         NR_API_TOKEN
       );
-      return res;
+      if (response.errors) {
+        translateMutationErrors(response.errors);
+      }
     })
   );
-  console.log(response);
 };
 
 const main = async () => {
