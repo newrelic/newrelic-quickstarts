@@ -79,10 +79,10 @@ const expectedMockQuickstart1MutationInput = {
       description: 'Description about this doc reference',
     },
   ],
-  icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/mock_quickstarts/mock-quickstart-1/logo.png',
+  icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-1/logo.png',
   keywords: ['list', 'of', 'searchable', 'keywords'],
   sourceUrl:
-    'https://github.com/newrelic/newrelic-quickstarts/tree/main/quickstarts/mock_quickstarts/mock-quickstart-1',
+    'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-1',
   summary: 'A short form description for this quickstart',
   installPlanStepIds: ['fake-install-plan'],
 };

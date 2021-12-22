@@ -3,7 +3,7 @@ const { fetchPaginatedGHResults } = require('./github-api-helpers');
 const {
   findMainQuickstartConfigFiles,
   readYamlFile,
-  removeCWDPrefix,
+  removeRepoPathPrefix,
 } = require('./helpers');
 const path = require('path');
 const glob = require('glob');
@@ -12,9 +12,9 @@ const { nil } = require('ajv');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
 const GITHUB_REPO_BASE_URL =
-  'https://github.com/newrelic/newrelic-quickstarts/tree/main/quickstarts';
+  'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
-  'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts';
+  'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
 const EXCLUDED_DIRECTORY_PATTERNS = [
   'node_modules/**',
   'utils/**',
@@ -87,22 +87,28 @@ const buildMutationVariables = (quickstartConfig) => {
   const content = quickstartConfig.contents[0];
   return {
     authors: content.authors.map((author) => {
-      name: author;
+      return { name: author };
     }),
     categoryTerms: content.categoryTerms || content.keywords,
     description: content.description.trim(),
     displayName: content.title.trim(),
     documentation: adaptQuickstartDocumentationInput(content.documentation),
-    icon: `${GITHUB_RAW_BASE_URL}/${removeCWDPrefix(quickstartConfig.path)}/${
-      content.logo
-    }`,
+    icon: `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
+      quickstartConfig.path
+    )}/${content.logo}`,
     keywords: content.keywords || null,
-    sourceUrl: `${GITHUB_REPO_BASE_URL}/${removeCWDPrefix(
+    sourceUrl: `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
       quickstartConfig.path
     )}`,
     summary: content.summary.trim(),
     installPlanStepIds: content.installPlans,
   };
+};
+
+const getQuickstartRelativePath = (configPath) => {
+  const splitConfigPath = configPath.split('/');
+  splitConfigPath.pop();
+  return removeRepoPathPrefix(splitConfigPath.join('/'));
 };
 
 const adaptQuickstartDocumentationInput = (documentation) => {
