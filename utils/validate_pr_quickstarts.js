@@ -96,6 +96,9 @@ const buildMutationVariables = (quickstartConfig) => {
     installPlans,
   } = quickstartConfig.contents[0];
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
+  const dashboardConfigPaths = getQuickstartDashboardConfigs(
+    quickstartConfig.path
+  );
 
   return {
     alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),
@@ -115,6 +118,7 @@ const buildMutationVariables = (quickstartConfig) => {
     )}`,
     summary: summary.trim(),
     installPlanStepIds: installPlans,
+    dashboards: adaptQuickstartDashboardInput(dashboardConfigPaths),
   };
 };
 
@@ -140,6 +144,7 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) => {
   return alertConfigPaths.map((alertConfigPath) => {
     const parsedConfig = readQuickstartFile(alertConfigPath);
     const { details, name, type } = parsedConfig.contents[0];
+
     return {
       description: details ? details.trim() : null,
       displayName: name.trim(),
@@ -147,6 +152,51 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) => {
       type: type.trim(),
     };
   });
+};
+
+const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
+  const splitConfigPath = quickstartConfigPath.split('/');
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
+
+  return glob.sync(globPattern);
+};
+
+const adaptQuickstartDashboardInput = (dashboardConfigPaths) => {
+  if (dashboardConfigPaths.length == 0) {
+    return null;
+  }
+
+  return dashboardConfigPaths.map((dashboardConfigPath) => {
+    const parsedConfig = readQuickstartFile(dashboardConfigPath);
+    const { description, name } = parsedConfig.contents[0];
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    return {
+      description: description ? description.trim() : null,
+      displayName: name.trim(),
+      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      screenshots: screenshotPaths.map(getScreenshotUrl),
+    };
+  });
+};
+
+const getScreenshotUrl = (path) => {
+  const screenshotFilename = path.split('/').pop();
+
+  return {
+    url: `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
+      path
+    )}/${screenshotFilename}`,
+  };
+};
+
+const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
+  const splitConfigPath = dashboardConfigPath.split('/');
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/*.+(jpeg|jpg|png)`;
+
+  return glob.sync(globPattern);
 };
 
 const adaptQuickstartDocumentationInput = (documentation) => {
