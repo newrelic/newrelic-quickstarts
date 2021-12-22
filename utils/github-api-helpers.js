@@ -4,9 +4,9 @@ const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
 const QUICKSTART_CONFIG_REGEXP = new RegExp(
-  'quickstarts/.+/config.+(yml|yaml|json)'
+  'quickstarts/.+/config.+(yml|yaml)'
 );
-const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml|json)');
+const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
 
 /**

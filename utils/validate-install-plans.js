@@ -35,38 +35,31 @@ mutation (
     }
   ) {
     installPlanStep {
-      description
-      displayName
-      fallback {
-        mode
-      }
-      heading
       id
-      primary {
-        mode
-      }
-      target {
-        destination
-        os
-        type
-      }
     }
   }
 }
 `;
 
-const TARGET_ENUM_KEYS = ['type', 'destination'];
-
-const capitalizeEnums = (obj, transformKeys = ['mode']) => {
-  return Object.keys(obj).reduce((acc, key) => {
-    if (transformKeys.includes(key)) {
-      const value = obj[key] === 'targetedInstall' ? 'install' : obj[key];
+const transformInstallPlanTarget = (target) => {
+  return Object.entries(target).reduce((acc, [key, value]) => {
+    if (key === 'os') {
+      acc[key] = value.map((str) => str.toUpperCase());
+    } else {
       acc[key] = value.toUpperCase();
-    } else if (key === 'os') {
-      acc[key] = obj[key].map((str) => str.toUpperCase());
     }
     return acc;
-  }, obj);
+  }, {});
+};
+
+const transformInstallPlanDirective = ({ destination, mode }) => {
+  if (mode === 'targetedInstall') {
+    return { mode: 'TARGETED', destination: destination.recipeName };
+  } else if (mode === 'link') {
+    return { mode: 'LINK', destination: destination.url };
+  } else if (mode === 'nerdlet') {
+    return { mode: 'NERDLET', destination: destination.nerdletId };
+  }
 };
 
 const transformContentsToRequest = ({
@@ -84,9 +77,9 @@ const transformContentsToRequest = ({
     displayName: name,
     heading: title,
     description,
-    target: capitalizeEnums(target, TARGET_ENUM_KEYS),
-    primary: capitalizeEnums(install),
-    fallback: capitalizeEnums(fallback),
+    target: transformInstallPlanTarget(target),
+    primary: transformInstallPlanDirective(install),
+    fallback: transformInstallPlanDirective(fallback),
   };
 };
 

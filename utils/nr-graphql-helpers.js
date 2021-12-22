@@ -11,6 +11,8 @@ const buildRequestBody = ({ queryString, variables }) =>
 const fetchNRGraphqlResults = async (queryBody, url, token) => {
   try {
     const body = buildRequestBody(queryBody);
+    console.log(body);
+
     const res = await fetch(url, {
       method: 'post',
       body,
@@ -27,7 +29,7 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
     const results = await res.json();
 
     if (results.errors) {
-      throw new Error(JSON.stringify(results.errors, null, 2));
+      console.error(JSON.stringify(results.errors, null, 2));
     }
 
     return results;
