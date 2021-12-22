@@ -33,6 +33,13 @@ const getQuickstartNode = (filename, target) => {
 };
 
 const getQuickstartFromFilename = (filename) => {
+  if (
+    !filename.includes('quickstarts/') &&
+    !filename.includes('mock_quickstarts/')
+  ) {
+    return;
+  }
+
   if (filename.includes('/alerts/')) {
     return getQuickstartNode(filename, 'alerts');
   }
@@ -200,12 +207,23 @@ const adaptQuickstartDocumentationInput = (documentation) => {
   });
 };
 
-const simplifyQuickstartList = (quickstartList) => {
-  return [...new Set(quickstartList)];
+const buildUniqueQuickstartSet = (acc, { filename }) => {
+  return getQuickstartFromFilename(filename)
+    ? acc.add(getQuickstartFromFilename(filename))
+    : acc;
 };
 
-const getParentQuickstart = (filename) => {
-  console.log(filename);
+const getMutationInputs = (files) => {
+  const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
+
+  // get unique quickstarts
+
+  //get unique quickstarts config paths
+
+  // unique quickstarts.MAP-->
+  //parse file from path via readQuickstartFile
+  //buildMutationVariables(parsedfile)
+  //returns an array of mutation input objects
 };
 
 const main = async () => {
@@ -213,23 +231,16 @@ const main = async () => {
     url,
     process.env.GITHUB_TOKEN
   ).catch((error) => {
-    throw new Error(`Github API returned ${error.message}`);
+    throw new Error(`Github API returned: ${error.message}`);
   });
+
+  const mutationInputs = getMutationInputs(files);
+
+  // TODO: Map through array of input objects
+  //run mutation (promise.all?)
 
   process.exit(0);
 };
-
-// get unique quickstarts
-
-//get unique quickstarts config paths
-
-// unique quickstarts.MAP-->
-//parse file from path via readQuickstartFile
-//buildMutationVariables(parsedfile)
-//returns an array of mutation input objects
-
-// Map through array of input objects
-//run mutation (promise.all?)
 
 /**
  * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
@@ -266,8 +277,8 @@ if (require.main === module) {
 
 module.exports = {
   getQuickstartFromFilename,
-  simplifyQuickstartList,
   getQuickstartConfigPaths,
   getYamlContents,
   buildMutationVariables,
+  buildUniqueQuickstartSet,
 };

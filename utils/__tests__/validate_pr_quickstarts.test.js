@@ -3,10 +3,10 @@ const path = require('path');
 const { expect } = require('@jest/globals');
 const {
   getQuickstartFromFilename,
-  simplifyQuickstartList,
   getQuickstartConfigPaths,
   getYamlContents,
   buildMutationVariables,
+  buildUniqueQuickstartSet,
 } = require('../validate_pr_quickstarts');
 const { readQuickstartFile } = require('../helpers');
 
@@ -19,35 +19,41 @@ const buildFullQuickstartFilePaths = (relativePaths) => {
   });
 };
 
-const mockFilenames = [
-  'quickstarts/python/aiohttp/alerts/ApdexScore.yml',
-  'quickstarts/robert-other-test-quickstart-folder/alerts/baseline-alert.yml',
-  'quickstarts/robert-other-test-quickstart-folder/alerts/static-alert.yml',
-  'quickstarts/robert-other-test-quickstart-folder/config.yml',
-  'quickstarts/robert-other-test-quickstart-folder/dashboards/my-dashboard.json',
-  'quickstarts/robert-other-test-quickstart-folder/dashboards/my-dashboard.png',
-  'quickstarts/robert-other-test-quickstart-folder/icon.jpeg',
-  'quickstarts/robert-other-test-quickstart-folder/images/icon.jpeg',
-  'quickstarts/robert-other-test-quickstart-folder/logo.png',
-  'quickstarts/robert-test-quickstart-folder/alerts/baseline-alert.yml',
-  'quickstarts/robert-test-quickstart-folder/alerts/static-alert.yml',
-  'quickstarts/robert-test-quickstart-folder/config.yml',
-  'quickstarts/robert-test-quickstart-folder/dashboards/my-dashboard.json',
-  'quickstarts/robert-test-quickstart-folder/dashboards/my-dashboard.png',
-  'quickstarts/robert-test-quickstart-folder/icon.jpeg',
-  'quickstarts/robert-test-quickstart-folder/images/icon.jpeg',
-  'quickstarts/robert-test-quickstart-folder/logo.png',
+const mockGitHubResponseFilenames = [
+  'quickstarts/test-quickstart-folder/alerts/baseline-alert.yml',
+  'quickstarts/test-quickstart-folder/alerts/static-alert.yml',
+  'quickstarts/test-quickstart-folder/config.yml',
+  'quickstarts/test-quickstart-folder/dashboards/my-dashboard.json',
+  'quickstarts/test-quickstart-folder/dashboards/my-dashboard.png',
+  'quickstarts/test-quickstart-folder/icon.jpeg',
+  'quickstarts/test-quickstart-folder/images/icon.jpeg',
+  'quickstarts/test-quickstart-folder-2/logo.png',
+  'quickstarts/test-quickstart-folder-2/alerts/baseline-alert.yml',
+  'quickstarts/test-quickstart-folder-2/alerts/static-alert.yml',
+  'quickstarts/test-quickstart-folder-2/config.yml',
+  'quickstarts/test-quickstart-folder-2/dashboards/my-dashboard.json',
+  'quickstarts/test-quickstart-folder-2/dashboards/my-dashboard.png',
+  'quickstarts/test-quickstart-folder-2/icon.jpeg',
+  'quickstarts/test-quickstart-folder-2/images/icon.jpeg',
+  'quickstarts/test-quickstart-folder-2/logo.png',
   'quickstarts/python/aiohttp/alerts/ApdexScore.yml',
   'quickstarts/python/pysqlite/dashboards/python.json',
   'quickstarts/python/pysqlite/logo.svg',
+  '.github/workflows/validate_packs.yml',
+  'utils/__tests__/validate_install_plans.test.js',
+  'utils/github-api-helpers.js',
+  'utils/helpers.js',
+  'utils/package.json',
+  'utils/validate-install-plan.js',
+  'utils/yarn.lock',
 ];
 
-const expectedUniqueQuickstartDirectories = [
+const expectedUniqueQuickstartDirectories = new Set([
   'aiohttp',
-  'robert-other-test-quickstart-folder',
-  'robert-test-quickstart-folder',
+  'test-quickstart-folder-2',
+  'test-quickstart-folder',
   'pysqlite',
-];
+]);
 
 const quickstartNames = [
   'aws-ec2',
@@ -152,12 +158,17 @@ describe('getQuickstartFromFilename', () => {
       getQuickstartFromFilename('quickstarts/python/pysqlite/logo.svg')
     ).toEqual('pysqlite');
   });
+});
 
+describe('Utility functions', () => {
   test('returns a list of unique quickstarts', () => {
-    const simplifiedList = simplifyQuickstartList(
-      mockFilenames.map(getQuickstartFromFilename)
-    );
-    expect(simplifiedList).toEqual(expectedUniqueQuickstartDirectories);
+    const uniqueQuickstarts = mockGitHubResponseFilenames
+      .map((filename) => ({
+        filename,
+      }))
+      .reduce(buildUniqueQuickstartSet, new Set());
+
+    expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
   });
 
   test('returns list of unique quickstart config filepaths', () => {
@@ -170,7 +181,7 @@ describe('getQuickstartFromFilename', () => {
     expect(configContent).toEqual([]);
   });
 
-  test.only('buildMutationVariables returns expected mutation input from quickstart config', () => {
+  test('buildMutationVariables returns expected mutation input from quickstart config', () => {
     const mutationInput = buildMutationVariables(
       readQuickstartFile(
         `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
