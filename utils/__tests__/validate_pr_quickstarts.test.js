@@ -8,6 +8,7 @@ const {
   getYamlContents,
   buildMutationVariables,
 } = require('../validate_pr_quickstarts');
+const { readQuickstartFile } = require('../helpers');
 
 const buildFullQuickstartFilePaths = (relativePaths) => {
   return relativePaths.map((relativePath) => {
@@ -65,6 +66,27 @@ const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
   quickstartConfigRelativePaths
 );
 
+const expectedMockQuickstart1MutationInput = {
+  authors: [{ name: 'John Smith' }],
+  categoryTerms: ['list', 'of', 'searchable', 'keywords'],
+  description:
+    'The template quickstart allows you to get visibility into the performance and available of your example service and dependencies. Use this quickstart together with the mock up integrations.',
+  displayName: 'Template Quickstart',
+  documentation: [
+    {
+      displayName: 'Installation Docs',
+      url: 'docs.newrelic.com',
+      description: 'Description about this doc reference',
+    },
+  ],
+  icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/mock_quickstarts/mock-quickstart-1/logo.png',
+  keywords: ['list', 'of', 'searchable', 'keywords'],
+  sourceUrl:
+    'https://github.com/newrelic/newrelic-quickstarts/tree/main/quickstarts/mock_quickstarts/mock-quickstart-1',
+  summary: 'A short form description for this quickstart',
+  installPlanStepIds: ['fake-install-plan'],
+};
+
 describe('getQuickstartFromFilename', () => {
   test('returns the quickstart an alert belongs to', () => {
     expect(
@@ -103,5 +125,14 @@ describe('getQuickstartFromFilename', () => {
   test('returns list of config content for each config filepath', () => {
     const configContent = getYamlContents(expectedQuickstartConfigFullPaths);
     expect(configContent).toEqual([]);
+  });
+
+  test.only('buildMutationVariables returns expected mutation input from quickstart config', () => {
+    const mutationInput = buildMutationVariables(
+      readQuickstartFile(
+        `${process.cwd()}/mock_quickstarts/mock-quickstart-1/config.yml`
+      )
+    );
+    expect(mutationInput).toEqual(expectedMockQuickstart1MutationInput);
   });
 });

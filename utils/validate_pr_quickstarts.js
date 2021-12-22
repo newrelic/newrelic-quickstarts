@@ -12,7 +12,9 @@ const { nil } = require('ajv');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
 const GITHUB_REPO_BASE_URL =
-  'https://github.com/newrelic/newrelic-quickstarts/tree/main/';
+  'https://github.com/newrelic/newrelic-quickstarts/tree/main/quickstarts';
+const GITHUB_RAW_BASE_URL =
+  'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts';
 const EXCLUDED_DIRECTORY_PATTERNS = [
   'node_modules/**',
   'utils/**',
@@ -87,18 +89,35 @@ const buildMutationVariables = (quickstartConfig) => {
     authors: content.authors.map((author) => {
       name: author;
     }),
-    categoryTerms: content.categoryTerms ?? content.keywords,
-    description: content.description,
-    displayName: content.displayName,
-    documentation: content.documentation ?? nil,
-    icon: content.logo,
-    keywords: content.keywords ?? nil,
-    sourceUrl: `${GITHUB_REPO_BASE_URL}${removeCWDPrefix(
+    categoryTerms: content.categoryTerms || content.keywords,
+    description: content.description.trim(),
+    displayName: content.title.trim(),
+    documentation: adaptQuickstartDocumentationInput(content.documentation),
+    icon: `${GITHUB_RAW_BASE_URL}/${removeCWDPrefix(quickstartConfig.path)}/${
+      content.logo
+    }`,
+    keywords: content.keywords || null,
+    sourceUrl: `${GITHUB_REPO_BASE_URL}/${removeCWDPrefix(
       quickstartConfig.path
     )}`,
-    summary: content.summary,
+    summary: content.summary.trim(),
     installPlanStepIds: content.installPlans,
   };
+};
+
+const adaptQuickstartDocumentationInput = (documentation) => {
+  if (!documentation) {
+    return null;
+  }
+
+  return documentation.map((doc) => {
+    const { name, url, description } = doc;
+    return {
+      displayName: name,
+      url,
+      description,
+    };
+  });
 };
 
 const simplifyQuickstartList = (quickstartList) => {
