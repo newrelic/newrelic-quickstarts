@@ -1,12 +1,18 @@
 'use strict';
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
-const { findMainQuickstartConfigFiles, readYamlFile } = require('./helpers');
+const {
+  findMainQuickstartConfigFiles,
+  readYamlFile,
+  removeCWDPrefix,
+} = require('./helpers');
 const path = require('path');
 const glob = require('glob');
 const { get } = require('http');
 const { nil } = require('ajv');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml|json)');
+const GITHUB_REPO_BASE_URL =
+  'https://github.com/newrelic/newrelic-quickstarts/tree/main/';
 const EXCLUDED_DIRECTORY_PATTERNS = [
   'node_modules/**',
   'utils/**',
@@ -78,15 +84,20 @@ const getYamlContents = (configPaths) => {
 const buildMutationVariables = (quickstartConfig) => {
   const content = quickstartConfig.contents[0];
   return {
-    authors: content.authors,
+    authors: content.authors.map((author) => {
+      name: author;
+    }),
     categoryTerms: content.categoryTerms ?? content.keywords,
     description: content.description,
     displayName: content.displayName,
     documentation: content.documentation ?? nil,
     icon: content.logo,
     keywords: content.keywords ?? nil,
-    sourceUrl: nil,
+    sourceUrl: `${GITHUB_REPO_BASE_URL}${removeCWDPrefix(
+      quickstartConfig.path
+    )}`,
     summary: content.summary,
+    installPlanStepIds: content.installPlans,
   };
 };
 
@@ -128,4 +139,5 @@ module.exports = {
   simplifyQuickstartList,
   getQuickstartConfigPaths,
   getYamlContents,
+  buildMutationVariables,
 };
