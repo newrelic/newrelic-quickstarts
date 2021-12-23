@@ -9,11 +9,34 @@ const {
   readQuickstartFile,
   removeRepoPathPrefix,
 } = require('./helpers');
+const { fetchNRGraphqlResults } = require('./nr-graphql-helpers');
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
+
+const NR_API_URL = process.env.NR_API_URL;
+const NR_API_TOKEN = process.env.NR_API_TOKEN;
+
+const VALIDATE_QUICKSTART_MUTATION = `# gql 
+mutation (
+  $dryRun: Boolean
+  $id: ID!
+  $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
+) {
+    nr1CatalogUpdateQuickstart(
+      dryRun: $dryRun
+      id: $id
+      quickstartMetadata: $quickstartMetadata
+    ) {
+        quickstart {
+          id
+        }
+      }
+  }
+`;
+
 const EXCLUDED_DIRECTORY_PATTERNS = [
   'node_modules/**',
   'utils/**',
@@ -231,6 +254,20 @@ const main = async () => {
 
   const mutationInputs = getMutationInputs(files);
 
+  const requestBodies = mutationInputs.map((mutationInput) => {
+    return {
+      queryString: VALIDATE_QUICKSTART_MUTATION,
+      variables: mutationInput,
+    };
+  });
+
+  const responses = await Promise.all(
+    requestBodies.map((requestBody) => {
+      return fetchNRGraphqlResults(requestBody, NR_API_URL, NR_API_TOKEN);
+    })
+  );
+
+  console.log('RESPONSES', JSON.stringify(responses));
   // TODO: Map through array of input objects
   //run mutation (promise.all?)
 
