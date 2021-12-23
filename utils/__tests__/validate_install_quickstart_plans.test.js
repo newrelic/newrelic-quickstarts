@@ -21,7 +21,7 @@ const invalidQuickstartFilename2 = 'mock-quickstart-3/config.yml';
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({
     sha: '',
-    filename: `utils/mock_files${filename}`,
+    filename: `utils/mock_files/${filename}`,
     status: 'added',
     additions: 0,
     deletions: 0,
