@@ -6,7 +6,6 @@ const glob = require('glob');
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
 const {
   findMainQuickstartConfigFiles,
-  readYamlFile,
   readQuickstartFile,
   removeRepoPathPrefix,
 } = require('./helpers');
@@ -22,10 +21,6 @@ const EXCLUDED_DIRECTORY_PATTERNS = [
   '*',
 ];
 const url = process.argv[2];
-
-const hasConfig = ({ filename }) =>
-  (filename.startsWith('quickstarts/') && filename.endsWith('/config.yml')) ||
-  (filename.startsWith('quickstarts/') && filename.endsWith('/config.yaml'));
 
 const getQuickstartNode = (filename, target) => {
   const splitFilePath = filename.split('/');
@@ -60,15 +55,16 @@ const getQuickstartFromFilename = (filename) => {
 const getQuickstartConfigPaths = (quickstartNames) => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return quickstartNames.map((quickstartName) => {
-    return allQuickstartConfigPaths.find((path) => {
+  return quickstartNames.reduce((acc, quickstartName) => {
+    const match = allQuickstartConfigPaths.find((path) => {
       return path.split('/').includes(quickstartName);
     });
-  });
-};
+    if (match) {
+      acc.push(match);
+    }
 
-const getYamlContents = (configPaths) => {
-  return configPaths.map((configPath) => readYamlFile(configPath));
+    return acc;
+  }, []);
 };
 
 const buildMutationVariables = (quickstartConfig) => {
@@ -216,14 +212,13 @@ const buildUniqueQuickstartSet = (acc, { filename }) => {
 const getMutationInputs = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
 
-  // get unique quickstarts
+  const quickstartConfigPaths = getQuickstartConfigPaths([
+    ...uniqueQuickstarts,
+  ]);
 
-  //get unique quickstarts config paths
-
-  // unique quickstarts.MAP-->
-  //parse file from path via readQuickstartFile
-  //buildMutationVariables(parsedfile)
-  //returns an array of mutation input objects
+  return quickstartConfigPaths.map((configPath) =>
+    buildMutationVariables(readQuickstartFile(configPath))
+  );
 };
 
 const main = async () => {
@@ -278,7 +273,6 @@ if (require.main === module) {
 module.exports = {
   getQuickstartFromFilename,
   getQuickstartConfigPaths,
-  getYamlContents,
   buildMutationVariables,
   buildUniqueQuickstartSet,
 };

@@ -4,7 +4,6 @@ const { expect } = require('@jest/globals');
 const {
   getQuickstartFromFilename,
   getQuickstartConfigPaths,
-  getYamlContents,
   buildMutationVariables,
   buildUniqueQuickstartSet,
 } = require('../validate_pr_quickstarts');
@@ -174,11 +173,6 @@ describe('Utility functions', () => {
   test('returns list of unique quickstart config filepaths', () => {
     const foundConfigPaths = getQuickstartConfigPaths(quickstartNames);
     expect(foundConfigPaths).toEqual(expectedQuickstartConfigFullPaths);
-  });
-
-  test('returns list of config content for each config filepath', () => {
-    const configContent = getYamlContents(expectedQuickstartConfigFullPaths);
-    expect(configContent).toEqual([]);
   });
 
   test('buildMutationVariables returns expected mutation input from quickstart config', () => {
