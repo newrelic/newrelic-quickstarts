@@ -1,3 +1,12 @@
+## [0.80.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.6...v0.80.7) (2021-12-21)
+
+## [0.80.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.5...v0.80.6) (2021-12-21)
+
+
+### Bug Fixes
+
+* Update monalabs logo ([936f569](https://github.com/newrelic/newrelic-quickstarts/commit/936f569af7c9d487f932a563712b1e7639b3e0b0))
+
 ## [0.80.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.4...v0.80.5) (2021-12-20)
 
 ## [0.80.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.3...v0.80.4) (2021-12-18)
