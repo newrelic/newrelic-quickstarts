@@ -17,9 +17,12 @@ const buildRequestBody = ({ queryString, variables }) =>
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @param {String} url - request URL
  * @param {String} token - API token for request
- * @returns {Promise<Object[]} returns the resulting array
+ * @returns {Object} An object with the results or errors of a GraphQL request
  */
 const fetchNRGraphqlResults = async (queryBody, url, token) => {
+  let results;
+  let graphqlErrors = [];
+
   try {
     const body = buildRequestBody(queryBody);
 
@@ -34,14 +37,16 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
 
     if (!res.ok) {
       console.error(`Received status code ${res.status} from the API`);
+      graphqlErrors.push(error);
     }
 
-    const results = await res.json();
-
-    return results;
+    results = await res.json();
   } catch (error) {
     console.error('Encountered a problem querying the GraphQL API', error);
+    graphqlErrors.push(error);
   }
+
+  return { data: results, errors: graphqlErrors };
 };
 
 /**
