@@ -2,7 +2,7 @@
 const fetch = require('node-fetch');
 
 /**
- * Build body param for NR Graphql request
+ * Build body param for NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
@@ -13,7 +13,7 @@ const buildRequestBody = ({ queryString, variables }) =>
   });
 
 /**
- * Send NR Graphql request
+ * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @param {String} url - request URL
  * @param {String} token - API token for request
@@ -45,7 +45,7 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
 };
 
 /**
- * Send NR Graphql Request
+ * Send NR GraphQL Request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
