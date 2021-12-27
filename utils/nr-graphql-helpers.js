@@ -54,13 +54,13 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
  * Handle errors from GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @param {Object[]} errors  - An array of any errors found
- * @param {String} filename  - The path related to the validation error
+ * @param {String} filePath  - The path related to the validation error
  * @returns undefined
  */
-const translateMutationErrors = (errors, filename) => {
+const translateMutationErrors = (errors, filePath) => {
   console.error(
     `ERROR: The following validation errors occurred in ${removeRepoPathPrefix(
-      filename
+      filePath
     )}`
   );
   errors.forEach((error) => {
