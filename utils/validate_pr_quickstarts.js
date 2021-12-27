@@ -8,7 +8,10 @@ const {
   readQuickstartFile,
   removeRepoPathPrefix,
 } = require('./helpers');
-const { fetchNRGraphqlResults } = require('./nr-graphql-helpers');
+const {
+  fetchNRGraphqlResults,
+  translateMutationErrors,
+} = require('./nr-graphql-helpers');
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
@@ -231,16 +234,17 @@ const buildUniqueQuickstartSet = (acc, { filename }) => {
     : acc;
 };
 
-const getMutationInputs = (files) => {
+const getGraphqlRequests = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
 
   const quickstartConfigPaths = getQuickstartConfigPaths([
     ...uniqueQuickstarts,
   ]);
 
-  return quickstartConfigPaths.map((configPath) =>
-    buildMutationVariables(readQuickstartFile(configPath))
-  );
+  return quickstartConfigPaths.map((configPath) => ({
+    filePath: configPath,
+    variables: buildMutationVariables(readQuickstartFile(configPath)),
+  }));
 };
 
 const main = async () => {
@@ -251,24 +255,32 @@ const main = async () => {
     throw new Error(`Github API returned: ${error.message}`);
   });
 
-  const mutationInputs = getMutationInputs(files);
+  const graphqlRequests = getGraphqlRequests(files);
 
-  const requestBodies = mutationInputs.map((mutationInput) => {
-    return {
-      queryString: VALIDATE_QUICKSTART_MUTATION,
-      variables: mutationInput,
-    };
-  });
+  const graphqlResponses = await Promise.all(
+    graphqlRequests.map(async ({ variables, filePath }) => {
+      const { data, errors } = await fetchNRGraphqlResults(
+        { queryString: VALIDATE_QUICKSTART_MUTATION, variables },
+        NR_API_URL,
+        NR_API_TOKEN
+      );
 
-  const responses = await Promise.all(
-    requestBodies.map((requestBody) => {
-      return fetchNRGraphqlResults(requestBody, NR_API_URL, NR_API_TOKEN);
+      return { data, errors, filePath };
     })
   );
 
-  console.log('RESPONSES', JSON.stringify(responses));
+  let hasFailed = false;
 
-  process.exit(0);
+  graphqlResponses.forEach(({ errors, filePath }) => {
+    if (errors.length > 0) {
+      hasFailed = true;
+      translateMutationErrors(errors, filePath);
+    }
+  });
+
+  if (hasFailed) {
+    process.exit(1);
+  }
 };
 
 /**
