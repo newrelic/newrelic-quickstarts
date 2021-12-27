@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const { removeRepoPathPrefix } = require('./helpers');
 
 /**
  * Build body param for NR GraphQL request
@@ -36,13 +37,13 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
     });
 
     if (!res.ok) {
-      console.error(`Received status code ${res.status} from the API`);
-      graphqlErrors.push(error);
+      graphqlErrors.push(
+        new Error(`Received status code ${res.status} from the API`)
+      );
     }
 
     results = await res.json();
   } catch (error) {
-    console.error('Encountered a problem querying the GraphQL API', error);
     graphqlErrors.push(error);
   }
 
@@ -58,10 +59,12 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
  */
 const translateMutationErrors = (errors, filename) => {
   console.error(
-    `ERROR: The following validation errors occurred in ${filename}`
+    `ERROR: The following validation errors occurred in ${removeRepoPathPrefix(
+      filename
+    )}`
   );
-  errors.forEach(({ type, message }) => {
-    console.error(`${type}: ${message}`);
+  errors.forEach((error) => {
+    console.error(`${error.type ? `${error.type}:` : ''} ${error.message}`);
   });
 };
 
