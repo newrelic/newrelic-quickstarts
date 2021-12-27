@@ -21,13 +21,13 @@ const GITHUB_RAW_BASE_URL =
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
 
-const VALIDATE_QUICKSTART_MUTATION = `# gql 
+const VALIDATE_QUICKSTART_MUTATION = `# gql
 mutation (
   $dryRun: Boolean
   $id: ID!
   $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
 ) {
-    nr1CatalogUpdateQuickstart(
+    nr1CatalogSubmitQuickstart(
       dryRun: $dryRun
       id: $id
       quickstartMetadata: $quickstartMetadata
@@ -260,7 +260,10 @@ const main = async () => {
   const graphqlResponses = await Promise.all(
     graphqlRequests.map(async ({ variables, filePath }) => {
       const { data, errors } = await fetchNRGraphqlResults(
-        { queryString: VALIDATE_QUICKSTART_MUTATION, variables },
+        {
+          queryString: VALIDATE_QUICKSTART_MUTATION,
+          variables,
+        },
         NR_API_URL,
         NR_API_TOKEN
       );

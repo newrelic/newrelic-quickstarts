@@ -28,7 +28,7 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
     const body = buildRequestBody(queryBody);
 
     const res = await fetch(url, {
-      method: 'post',
+      method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
@@ -40,9 +40,13 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
       graphqlErrors.push(
         new Error(`Received status code ${res.status} from the API`)
       );
+    } else {
+      const { data, errors } = await res.json();
+      results = data;
+      if (errors) {
+        graphqlErrors = [...graphqlErrors, ...errors];
+      }
     }
-
-    results = await res.json();
   } catch (error) {
     graphqlErrors.push(error);
   }
