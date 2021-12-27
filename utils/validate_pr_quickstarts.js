@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const glob = require('glob');
 
 const { fetchPaginatedGHResults } = require('./github-api-helpers');
@@ -268,8 +267,6 @@ const main = async () => {
   );
 
   console.log('RESPONSES', JSON.stringify(responses));
-  // TODO: Map through array of input objects
-  //run mutation (promise.all?)
 
   process.exit(0);
 };
@@ -282,30 +279,6 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
-
-// Promise.resolve(fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN))
-//   .then((response) => {
-//     const uniqueQuickstartConfigs = response
-//       .filter(hasConfig)
-//       .map(({ filename }) => filename);
-
-//     let uniqueQuickstarts = uniqueQuickstartConfigs.map((filename) => {
-//       const splitFilePath = filename.split('/');
-//       return splitFilePath[splitFilePath.length - 2];
-//     });
-//     response.forEach(({ filename }) => {
-//       uniqueQuickstarts.forEach((quickstart) => {
-//         console.log(`${quickstart}, ${filename}`);
-//         if (!filename.includes(quickstart)) {
-//           getParentQuickstart(filename);
-//         }
-//       });
-//     });
-//   process.exit(0);
-// })
-// .catch((error) => {
-//   throw new Error(`Github API returned ${error.message}`);
-// });
 
 module.exports = {
   getQuickstartFromFilename,
