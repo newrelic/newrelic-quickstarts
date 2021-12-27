@@ -4,19 +4,13 @@ const {
   fetchPaginatedGHResults,
   filterInstallPlans,
 } = require('./github-api-helpers');
-const {
-  fetchNRGraphqlResults,
-  translateMutationErrors,
-} = require('./nr-graphql-helpers');
 
-const NR_API_URL = process.env.NR_API_URL;
-const NR_API_TOKEN = process.env.NR_API_TOKEN;
+const { fetchNRGraphqlResults } = require('./nr-graphql-helpers');
 
 const url = pathsToSanitize[0];
 
 const VALIDATE_INSTALL_PLAN_MUTATION = `# gql 
 mutation (
-  $dryRun: Boolean
   $description: String!
   $displayName: String!
   $fallback: Nr1CatalogInstallPlanDirectiveInput
@@ -26,7 +20,7 @@ mutation (
   $target: Nr1CatalogInstallPlanTargetInput!
 ) {
   nr1CatalogSubmitInstallPlanStep(
-    dryRun: $dryRun
+    dryRun: true
     installPlanStep: {
       description: $description
       displayName: $displayName
@@ -55,13 +49,22 @@ const transformInstallPlanTarget = (target) => {
   }, {});
 };
 
-const transformInstallPlanDirective = ({ destination, mode }) => {
-  if (mode === 'targetedInstall') {
-    return { mode: 'TARGETED', destination: destination.recipeName };
-  } else if (mode === 'link') {
-    return { mode: 'LINK', destination: destination.url };
-  } else if (mode === 'nerdlet') {
-    return { mode: 'NERDLET', destination: destination.nerdletId };
+const transformInstallPlanDirective = ({ mode, destination }) => {
+  switch (mode) {
+    case 'targetedInstall':
+      return {
+        mode: 'TARGETED',
+        destination: destination && destination.recipeName,
+      };
+    case 'link':
+      return { mode: 'LINK', destination: destination && destination.url };
+    case 'nerdlet':
+      return {
+        mode: 'NERDLET',
+        destination: destination && destination.nerdletId,
+      };
+    default:
+      return { mode, destination };
   }
 };
 
@@ -73,16 +76,17 @@ const transformContentsToRequest = ({
   target,
   install,
   fallback,
-}) => ({
-  dryRun: true,
-  id,
-  displayName: name,
-  heading: title,
-  description,
-  target: transformInstallPlanTarget(target),
-  primary: transformInstallPlanDirective(install),
-  fallback: transformInstallPlanDirective(fallback),
-});
+}) => {
+  return {
+    id,
+    description,
+    displayName: name,
+    heading: title,
+    target: target ? transformInstallPlanTarget(target) : undefined,
+    primary: install ? transformInstallPlanDirective(install) : undefined,
+    fallback: fallback ? transformInstallPlanDirective(fallback) : undefined,
+  };
+};
 
 const transformInstallPlansToRequestVariables = ({ filename }) => {
   const { contents, path: filePath } = readYamlFile(
@@ -95,22 +99,17 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
   };
 };
 
-const validateInstallPlanSchema = async (files) => {
-  const installFiles = filterInstallPlans(files);
-  const installVariableFiles = installFiles.map(
+const validateInstallPlan = async (files) => {
+  const installFiles = filterInstallPlans(files).map(
     transformInstallPlansToRequestVariables
   );
 
   const graphqlResponses = await Promise.all(
-    installVariableFiles.map(async ({ variables, filePath }) => {
-      const { data, errors } = await fetchNRGraphqlResults(
-        {
-          queryString: VALIDATE_INSTALL_PLAN_MUTATION,
-          variables,
-        },
-        NR_API_URL,
-        NR_API_TOKEN
-      );
+    installFiles.map(async ({ variables, filePath }) => {
+      const { data, errors } = await fetchNRGraphqlResults({
+        queryString: VALIDATE_INSTALL_PLAN_MUTATION,
+        variables,
+      });
       return { data, filePath, errors };
     })
   );
@@ -137,3 +136,8 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
+
+module.exports = {
+  validateInstallPlan,
+  VALIDATE_INSTALL_PLAN_MUTATION,
+};
