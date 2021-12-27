@@ -22,7 +22,6 @@ const buildRequestBody = ({ queryString, variables }) =>
 const fetchNRGraphqlResults = async (queryBody, url, token) => {
   try {
     const body = buildRequestBody(queryBody);
-    console.log(body);
 
     const res = await fetch(url, {
       method: 'post',
@@ -41,7 +40,7 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
 
     return results;
   } catch (error) {
-    console.error('Encountered a problem querying the graphql api', error);
+    console.error('Encountered a problem querying the GraphQL API', error);
   }
 };
 
