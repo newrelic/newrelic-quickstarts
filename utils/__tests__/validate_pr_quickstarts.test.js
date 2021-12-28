@@ -1,6 +1,8 @@
 'use strict';
+
 const path = require('path');
 const { expect } = require('@jest/globals');
+
 const {
   getQuickstartFromFilename,
   getQuickstartConfigPaths,
@@ -49,8 +51,8 @@ const mockGitHubResponseFilenames = [
 
 const expectedUniqueQuickstartDirectories = new Set([
   'aiohttp',
-  'test-quickstart-folder-2',
   'test-quickstart-folder',
+  'test-quickstart-folder-2',
   'pysqlite',
 ]);
 
@@ -137,42 +139,43 @@ const expectedMockQuickstart2MutationInput = {
 
 describe('getQuickstartFromFilename', () => {
   test('returns the quickstart an alert belongs to', () => {
-    expect(
-      getQuickstartFromFilename(
-        'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
-      )
-    ).toEqual('aiohttp');
+    const quickstartFromAlert = getQuickstartFromFilename(
+      'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
+    );
+
+    expect(quickstartFromAlert).toEqual('aiohttp');
   });
 
   test('returns the quickstart a dashboard belongs to', () => {
-    expect(
-      getQuickstartFromFilename(
-        'quickstarts/python/pysqlite/dashboards/python.json'
-      )
-    ).toEqual('pysqlite');
+    const quickstartFromDashboard = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/dashboards/python.json'
+    );
+
+    expect(quickstartFromDashboard).toEqual('pysqlite');
   });
 
   test('returns the quickstart a logo belongs to', () => {
-    expect(
-      getQuickstartFromFilename('quickstarts/python/pysqlite/logo.svg')
-    ).toEqual('pysqlite');
+    const quickstartFromLogo = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/logo.svg'
+    );
+
+    expect(quickstartFromLogo).toEqual('pysqlite');
   });
 });
 
 describe('Utility functions', () => {
-  test('returns a list of unique quickstarts', () => {
+  test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
     const uniqueQuickstarts = mockGitHubResponseFilenames
-      .map((filename) => ({
-        filename,
-      }))
+      .map((filename) => ({ filename }))
       .reduce(buildUniqueQuickstartSet, new Set());
 
     expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
   });
 
-  test('returns list of unique quickstart config filepaths', () => {
-    const foundConfigPaths = getQuickstartConfigPaths(quickstartNames);
-    expect(foundConfigPaths).toEqual(expectedQuickstartConfigFullPaths);
+  test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
+    const configPaths = getQuickstartConfigPaths(quickstartNames);
+
+    expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
   });
 
   test('buildMutationVariables returns expected mutation input from quickstart config', () => {
@@ -181,6 +184,7 @@ describe('Utility functions', () => {
         `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
       )
     );
+
     expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
   });
 });
