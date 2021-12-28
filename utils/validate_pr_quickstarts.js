@@ -51,29 +51,34 @@ const getQuickstartNode = (filePath, targetChild) => {
   ];
 };
 
-const getQuickstartFromFilename = (filename) => {
+/**
+ * Identifies where in a given file path to look for a quickstart directory
+ * @param {String} filePath - Full file path of a file in a quickstart.
+ * @return {Function|undefined} Called function with arguments to determine the quickstart of a given file path.
+ */
+const getQuickstartFromFilename = (filePath) => {
   if (
-    !filename.includes('quickstarts/') &&
-    !filename.includes('mock_quickstarts/')
+    !filePath.includes('quickstarts/') &&
+    !filePath.includes('mock_quickstarts/')
   ) {
     return;
   }
 
-  if (filename.includes('/alerts/')) {
-    return getQuickstartNode(filename, 'alerts');
+  if (filePath.includes('/alerts/')) {
+    return getQuickstartNode(filePath, 'alerts');
   }
 
-  if (filename.includes('/dashboards/')) {
-    return getQuickstartNode(filename, 'dashboards');
+  if (filePath.includes('/dashboards/')) {
+    return getQuickstartNode(filePath, 'dashboards');
   }
 
-  if (filename.includes('/images/')) {
-    return getQuickstartNode(filename, 'images');
+  if (filePath.includes('/images/')) {
+    return getQuickstartNode(filePath, 'images');
   }
 
-  const targetFileName = filename.split('/').pop();
+  const targetChildNode = filePath.split('/').pop();
 
-  return getQuickstartNode(filename, targetFileName);
+  return getQuickstartNode(filePath, targetChildNode);
 };
 
 const getQuickstartConfigPaths = (quickstartNames) => {
