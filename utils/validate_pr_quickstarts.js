@@ -13,14 +13,13 @@ const {
   translateMutationErrors,
 } = require('./nr-graphql-helpers');
 
+const GITHUB_API_URL = process.argv[2];
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
-
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
-
 const VALIDATE_QUICKSTART_MUTATION = `# gql
 mutation (
   $dryRun: Boolean
@@ -38,14 +37,6 @@ mutation (
       }
   }
 `;
-
-const EXCLUDED_DIRECTORY_PATTERNS = [
-  'node_modules/**',
-  'utils/**',
-  'docs/**',
-  '*',
-];
-const url = process.argv[2];
 
 const getQuickstartNode = (filename, target) => {
   const splitFilePath = filename.split('/');
@@ -239,7 +230,7 @@ const getGraphqlRequests = (files) => {
 
 const main = async () => {
   const files = await fetchPaginatedGHResults(
-    url,
+    GITHUB_API_URL,
     process.env.GITHUB_TOKEN
   ).catch((error) => {
     throw new Error(`GitHub API returned: ${error.message}`);
