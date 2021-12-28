@@ -104,7 +104,7 @@ const buildMutationVariables = (quickstartConfig) => {
     summary,
     installPlans,
     id,
-  } = quickstartConfig.contents[0];
+  } = quickstartConfig.contents[0] || {};
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
   const dashboardConfigPaths = getQuickstartDashboardConfigs(
     quickstartConfig.path
@@ -151,18 +151,19 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
 };
 
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
-  alertConfigPaths.length > 0 &&
-  alertConfigPaths.map((alertConfigPath) => {
-    const parsedConfig = readQuickstartFile(alertConfigPath);
-    const { details, name, type } = parsedConfig.contents[0];
+  alertConfigPaths.length > 0
+    ? alertConfigPaths.map((alertConfigPath) => {
+        const parsedConfig = readQuickstartFile(alertConfigPath);
+        const { details, name, type } = parsedConfig.contents[0];
 
-    return {
-      description: details && details.trim(),
-      displayName: name && name.trim(),
-      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-      type: type && type.trim(),
-    };
-  });
+        return {
+          description: details && details.trim(),
+          displayName: name && name.trim(),
+          rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+          type: type && type.trim(),
+        };
+      })
+    : undefined;
 
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -173,19 +174,20 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
 };
 
 const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
-  dashboardConfigPaths.length > 0 &&
-  dashboardConfigPaths.map((dashboardConfigPath) => {
-    const parsedConfig = readQuickstartFile(dashboardConfigPath);
-    const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths =
-      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
-    return {
-      description: description && description.trim(),
-      displayName: name && name.trim(),
-      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-      screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
-    };
-  });
+  dashboardConfigPaths.length > 0
+    ? dashboardConfigPaths.map((dashboardConfigPath) => {
+        const parsedConfig = readQuickstartFile(dashboardConfigPath);
+        const { description, name } = parsedConfig.contents[0];
+        const screenshotPaths =
+          getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+        return {
+          description: description && description.trim(),
+          displayName: name && name.trim(),
+          rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+          screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
+        };
+      })
+    : undefined;
 
 const getScreenshotUrl = (path) => {
   const screenshotFilename = path.split('/').pop();
