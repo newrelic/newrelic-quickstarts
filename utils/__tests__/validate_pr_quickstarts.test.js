@@ -140,6 +140,14 @@ const expectedMockQuickstart2MutationInput = {
   },
 };
 
+const expectedMockQuickstart4MutationInput = {
+  dryRun: true,
+  quickstartMetadata: {
+    sourceUrl:
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-4',
+  },
+};
+
 test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
   const quickstartFromAlert = getQuickstartFromFilename(
     'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
@@ -186,6 +194,16 @@ test('buildMutationVariables returns expected mutation input from quickstart con
   );
 
   expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
+});
+
+test('buildMutationVariables handles an empty config file', () => {
+  const mutationInput = buildMutationVariables(
+    readQuickstartFile(
+      `${process.cwd()}/mock_quickstarts/mock-quickstart-4/config.yml`
+    )
+  );
+
+  expect(mutationInput).toEqual(expectedMockQuickstart4MutationInput);
 });
 
 test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
