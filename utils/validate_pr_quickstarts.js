@@ -302,5 +302,5 @@ module.exports = {
   getQuickstartConfigPaths,
   buildMutationVariables,
   buildUniqueQuickstartSet,
-  main,
+  getGraphqlRequests,
 };
