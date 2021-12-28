@@ -252,7 +252,7 @@ const main = async () => {
     url,
     process.env.GITHUB_TOKEN
   ).catch((error) => {
-    throw new Error(`Github API returned: ${error.message}`);
+    throw new Error(`GitHub API returned: ${error.message}`);
   });
 
   const graphqlRequests = getGraphqlRequests(files);
@@ -284,6 +284,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  process.exit(0);
 };
 
 /**
@@ -300,4 +302,5 @@ module.exports = {
   getQuickstartConfigPaths,
   buildMutationVariables,
   buildUniqueQuickstartSet,
+  main,
 };
