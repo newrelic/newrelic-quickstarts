@@ -24,8 +24,7 @@ jest.mock('../nr-graphql-helpers', () => ({
 const validInstallFilename = 'mock-install-1/install.yml';
 const invalidInstallFilename1 = 'mock-install-2/install.yml';
 const invalidInstallFilename2 = 'mock-install-3/install.yml';
-
-const NR_API_URL = process.env.NR_API_URL;
+const invalidInstallFilename3 = 'mock-install-4/install.yml';
 
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({
@@ -158,6 +157,40 @@ describe('Action: validate install plan id', () => {
     // the first error message should be the ERROR: with the filepath
     expect(global.console.error).toHaveBeenNthCalledWith(2, error.message2);
     expect(global.console.error).toHaveBeenNthCalledWith(3, error.message3);
+    expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
+      requestBody
+    );
+  });
+
+  test('errors and calls NR even with no fields defined', async () => {
+    const files = mockGithubAPIFiles([invalidInstallFilename3]);
+    const requestBody = mockGraphqlRequestBody({
+      id: undefined,
+      displayName: undefined,
+      heading: undefined,
+      description: undefined,
+      target: undefined,
+      primary: undefined,
+      fallback: undefined,
+    });
+
+    const response = mockGraphqlResponse({
+      errors: [
+        {
+          message: 'Variable "id": Expected non-null, found null.',
+        },
+        {
+          message: 'Variable "displayName": Expected non-null, found null.',
+        },
+      ],
+    });
+
+    githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
+    nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+
+    await validateInstallPlan(files);
+
+    expect(global.console.error).toHaveBeenCalled();
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
       requestBody
     );

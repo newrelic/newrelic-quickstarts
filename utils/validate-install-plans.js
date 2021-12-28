@@ -98,7 +98,7 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
 
   return {
     filePath,
-    variables: transformContentsToRequest(contents[0]),
+    variables: contents[0] ? transformContentsToRequest(contents[0]) : {},
   };
 };
 
