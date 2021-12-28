@@ -63,12 +63,18 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
  */
 const translateMutationErrors = (errors, filePath) => {
   console.error(
-    `ERROR: The following validation errors occurred in ${removeRepoPathPrefix(
+    `ERROR: The following errors occured while validating: ${removeRepoPathPrefix(
       filePath
     )}`
   );
   errors.forEach((error) => {
-    console.error(`${error.type ? `${error.type}:` : ''} ${error.message}`);
+    if (error.extensions && error.extensions.argumentPath) {
+      const errorPrefix = error.extensions.argumentPath.join('/');
+
+      console.error(`- ${errorPrefix}: ${error.message}`);
+    } else {
+      console.error(error.message);
+    }
   });
 };
 
