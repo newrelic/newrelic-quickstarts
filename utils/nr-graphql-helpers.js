@@ -1,6 +1,5 @@
 'use strict';
 const fetch = require('node-fetch');
-const { removeRepoPathPrefix } = require('./helpers');
 
 /**
  * Build body param for NR GraphQL request
@@ -63,9 +62,7 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
  */
 const translateMutationErrors = (errors, filePath) => {
   console.error(
-    `ERROR: The following errors occured while validating: ${removeRepoPathPrefix(
-      filePath
-    )}`
+    `ERROR: The following errors occurred while validating: ${filePath}`
   );
   errors.forEach((error) => {
     if (error.extensions && error.extensions.argumentPath) {

@@ -242,7 +242,7 @@ const getGraphqlRequests = (files) => {
   ]);
 
   return quickstartConfigPaths.map((configPath) => ({
-    filePath: configPath,
+    filePath: removeRepoPathPrefix(configPath),
     variables: buildMutationVariables(readQuickstartFile(configPath)),
   }));
 };
