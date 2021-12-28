@@ -52,7 +52,7 @@ const getQuickstartNode = (filePath, targetChild) => {
 };
 
 /**
- * Identifies where in a given file path to look for a quickstart directory
+ * Identifies where in a given file path to look for a quickstart directory.
  * @param {String} filePath - Full file path of a file in a quickstart.
  * @return {Function|undefined} Called function with arguments to determine the quickstart of a given file path.
  */
@@ -81,17 +81,21 @@ const getQuickstartFromFilename = (filePath) => {
   return getQuickstartNode(filePath, targetChildNode);
 };
 
+/**
+ * Looks up corresponding quickstart config files for quickstarts known to have changes in a PR.
+ * @param {Set} quickstartNames - Set of unique quickstart names.
+ * @return {Array} Collection of config file paths
+ */
 const getQuickstartConfigPaths = (quickstartNames) => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return quickstartNames.reduce((acc, quickstartName) => {
-    const match = allQuickstartConfigPaths.find((path) => {
-      return path.split('/').includes(quickstartName);
-    });
+  return [...quickstartNames].reduce((acc, quickstartName) => {
+    const match = allQuickstartConfigPaths.find((path) =>
+      path.split('/').includes(quickstartName)
+    );
     if (match) {
       acc.push(match);
     }
-
     return acc;
   }, []);
 };
@@ -230,10 +234,7 @@ const buildUniqueQuickstartSet = (acc, { filename }) => {
 
 const getGraphqlRequests = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
-
-  const quickstartConfigPaths = getQuickstartConfigPaths([
-    ...uniqueQuickstarts,
-  ]);
+  const quickstartConfigPaths = getQuickstartConfigPaths(uniqueQuickstarts);
 
   return quickstartConfigPaths.map((configPath) => ({
     filePath: removeRepoPathPrefix(configPath),
