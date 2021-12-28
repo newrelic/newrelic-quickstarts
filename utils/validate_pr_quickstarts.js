@@ -38,9 +38,17 @@ mutation (
   }
 `;
 
-const getQuickstartNode = (filename, target) => {
-  const splitFilePath = filename.split('/');
-  return splitFilePath[splitFilePath.findIndex((path) => path === target) - 1];
+/**
+ * Gets the quickstart portion of a given file path.
+ * @param {String} filePath - Full file path of a file in a quickstart.
+ * @param {String} targetChild - Node in file path that should be preceded by a quickstart directory.
+ * @return {String} Node in file path of the quickstart.
+ */
+const getQuickstartNode = (filePath, targetChild) => {
+  const splitFilePath = filePath.split('/');
+  return splitFilePath[
+    splitFilePath.findIndex((path) => path === targetChild) - 1
+  ];
 };
 
 const getQuickstartFromFilename = (filename) => {
