@@ -5,7 +5,10 @@ const {
   filterInstallPlans,
 } = require('./github-api-helpers');
 
-const { fetchNRGraphqlResults } = require('./nr-graphql-helpers');
+const {
+  fetchNRGraphqlResults,
+  translateMutationErrors,
+} = require('./nr-graphql-helpers');
 
 const url = pathsToSanitize[0];
 
@@ -64,7 +67,7 @@ const transformInstallPlanDirective = ({ mode, destination }) => {
         destination: destination && destination.nerdletId,
       };
     default:
-      return { mode, destination };
+      return { mode, destination: undefined };
   }
 };
 
@@ -117,20 +120,22 @@ const validateInstallPlan = async (files) => {
   let hasFailed = false;
 
   graphqlResponses.forEach(({ errors, filePath }) => {
-    if (errors) {
+    if (errors && errors.length > 0) {
       hasFailed = true;
       translateMutationErrors(errors, filePath);
     }
   });
 
-  if (hasFailed) {
-    process.exit(1);
-  }
+  return hasFailed;
 };
 
 const main = async () => {
   const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
-  await validateInstallPlanSchema(files);
+  const hasFailed = await validateInstallPlan(files);
+
+  if (hasFailed) {
+    process.exit(1);
+  }
 };
 
 if (require.main === module) {

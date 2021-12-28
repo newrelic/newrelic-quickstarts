@@ -85,7 +85,7 @@ describe('Action: validate install plan id', () => {
     jest.resetAllMocks();
   });
 
-  test('succeeds with valid install plan id', () => {
+  test('succeeds with valid install plan', async () => {
     const files = mockGithubAPIFiles([validInstallFilename]);
     const requestBody = mockGraphqlRequestBody();
     const response = mockGraphqlResponse();
@@ -93,9 +93,71 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    validateInstallPlan(files);
+    await validateInstallPlan(files);
 
     expect(global.console.error).not.toHaveBeenCalled();
+    expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
+      requestBody
+    );
+  });
+
+  test('errors with invalid install plan', async () => {
+    const files = mockGithubAPIFiles([invalidInstallFilename1]);
+    const requestBody = mockGraphqlRequestBody({
+      fallback: { mode: 'LINK', destination: 'invalid-url' },
+    });
+    const response = mockGraphqlResponse({
+      errors: [
+        buildMockNRError('`url` is not a valid URL', [
+          'installPlanStep',
+          'fallback',
+          'url',
+        ]),
+      ],
+    });
+
+    githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
+    nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+
+    await validateInstallPlan(files);
+
+    expect(global.console.error).toHaveBeenCalled();
+    expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
+      requestBody
+    );
+  });
+
+  test('errors with undefined name in install plan', async () => {
+    const files = mockGithubAPIFiles([invalidInstallFilename2]);
+    const requestBody = mockGraphqlRequestBody({
+      displayName: undefined,
+    });
+
+    const error = {
+      message2:
+        'Argument "installPlanStep" has invalid value {description: $description, displayName: $displayName, fallback: $fallback, heading: $heading, id: $id, primary: $primary, target: $target}.\nIn field "displayName": Expected type "String!", found $displayName.',
+      message3: 'Variable "displayName": Expected non-null, found null.',
+    };
+
+    const response = mockGraphqlResponse({
+      errors: [
+        {
+          message: error.message2,
+        },
+        {
+          message: error.message3,
+        },
+      ],
+    });
+
+    githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
+    nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+
+    await validateInstallPlan(files);
+
+    // the first error message should be the ERROR: with the filepath
+    expect(global.console.error).toHaveBeenNthCalledWith(2, error.message2);
+    expect(global.console.error).toHaveBeenNthCalledWith(3, error.message3);
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
       requestBody
     );
