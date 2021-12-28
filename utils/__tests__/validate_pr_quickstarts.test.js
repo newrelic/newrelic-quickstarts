@@ -140,71 +140,67 @@ const expectedMockQuickstart2MutationInput = {
   },
 };
 
-describe('getQuickstartFromFilename', () => {
-  test('returns the quickstart an alert belongs to', () => {
-    const quickstartFromAlert = getQuickstartFromFilename(
-      'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
-    );
+test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
+  const quickstartFromAlert = getQuickstartFromFilename(
+    'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
+  );
 
-    expect(quickstartFromAlert).toEqual('aiohttp');
-  });
-
-  test('returns the quickstart a dashboard belongs to', () => {
-    const quickstartFromDashboard = getQuickstartFromFilename(
-      'quickstarts/python/pysqlite/dashboards/python.json'
-    );
-
-    expect(quickstartFromDashboard).toEqual('pysqlite');
-  });
-
-  test('returns the quickstart a logo belongs to', () => {
-    const quickstartFromLogo = getQuickstartFromFilename(
-      'quickstarts/python/pysqlite/logo.svg'
-    );
-
-    expect(quickstartFromLogo).toEqual('pysqlite');
-  });
+  expect(quickstartFromAlert).toEqual('aiohttp');
 });
 
-describe('Utility functions', () => {
-  test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
-    const uniqueQuickstarts = mockGitHubResponseFilenames
-      .map(addFilenameObject)
-      .reduce(buildUniqueQuickstartSet, new Set());
+test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
+  const quickstartFromDashboard = getQuickstartFromFilename(
+    'quickstarts/python/pysqlite/dashboards/python.json'
+  );
 
-    expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
-  });
+  expect(quickstartFromDashboard).toEqual('pysqlite');
+});
 
-  test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
-    const configPaths = getQuickstartConfigPaths(quickstartNames);
+test('getQuickstartFromFilenamereturns the quickstart a logo belongs to', () => {
+  const quickstartFromLogo = getQuickstartFromFilename(
+    'quickstarts/python/pysqlite/logo.svg'
+  );
 
-    expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
-  });
+  expect(quickstartFromLogo).toEqual('pysqlite');
+});
 
-  test('buildMutationVariables returns expected mutation input from quickstart config', () => {
-    const mutationInput = buildMutationVariables(
-      readQuickstartFile(
-        `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
-      )
-    );
+test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
+  const uniqueQuickstarts = mockGitHubResponseFilenames
+    .map(addFilenameObject)
+    .reduce(buildUniqueQuickstartSet, new Set());
 
-    expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
-  });
+  expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
+});
 
-  test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
-    const graphqlRequests = getGraphqlRequests(
-      mockGitHubResponseFilenames.map(addFilenameObject)
-    );
+test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
+  const configPaths = getQuickstartConfigPaths(quickstartNames);
 
-    expect(graphqlRequests.length).toEqual(2);
-    expect(
-      graphqlRequests.every(({ variables: { dryRun } }) => dryRun === true)
-    ).toBeTruthy();
-    expect(graphqlRequests[0].variables.id).toEqual(
-      'e7948525-8726-46a5-83fa-04732ad42fd1'
-    );
-    expect(graphqlRequests[0].filePath).toEqual(
-      'quickstarts/python/aiohttp/config.yml'
-    );
-  });
+  expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
+});
+
+test('buildMutationVariables returns expected mutation input from quickstart config', () => {
+  const mutationInput = buildMutationVariables(
+    readQuickstartFile(
+      `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
+    )
+  );
+
+  expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
+});
+
+test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
+  const graphqlRequests = getGraphqlRequests(
+    mockGitHubResponseFilenames.map(addFilenameObject)
+  );
+
+  expect(graphqlRequests.length).toEqual(2);
+  expect(
+    graphqlRequests.every(({ variables: { dryRun } }) => dryRun === true)
+  ).toBeTruthy();
+  expect(graphqlRequests[0].variables.id).toEqual(
+    'e7948525-8726-46a5-83fa-04732ad42fd1'
+  );
+  expect(graphqlRequests[0].filePath).toEqual(
+    'quickstarts/python/aiohttp/config.yml'
+  );
 });
