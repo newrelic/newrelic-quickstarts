@@ -127,12 +127,22 @@ const buildMutationVariables = (quickstartConfig) => {
   };
 };
 
+/**
+ * This gets the name of a quickstart from the root config file path.
+ * It receives the file path to the root config file of a quickstart (String).
+ * It returns the name of the associated quickstart of the config file (String).
+ */
 const getQuickstartRelativePath = (configPath) => {
   const splitConfigPath = configPath.split('/');
   splitConfigPath.pop();
   return removeRepoPathPrefix(splitConfigPath.join('/'));
 };
 
+/**
+ * This gets the quickstart config path within the `alerts` directory of a quickstart.
+ * It receives the file path to the root config file of a quickstart (String).
+ * It returns the file path of the config file within the `alerts` directory of quickstart (String).
+ */
 const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
   splitConfigPath.pop();
@@ -141,6 +151,11 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
   return glob.sync(globPattern);
 };
 
+/**
+ * This formats the data of a quickstart's config file within the `alerts` directory if one exists to match the shape of the alertConditions field of Nr1CatalogSubmitMetadataInput.
+ * It receives an array of config file paths within the `alerts` directory of a quickstart (usually one).
+ * It returns an array of objects.
+ */
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
   alertConfigPaths.length > 0
     ? alertConfigPaths.map((alertConfigPath) => {
@@ -156,6 +171,11 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
       })
     : undefined;
 
+/**
+ * Creates the filepath of a config file within the `dashboards` directory of quickstart.
+ * @param {quickstartConfigPath}- filepath of the root config file (String).
+ * @returns {String} returns the dashboard config file path.
+ */
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
   splitConfigPath.pop();
@@ -164,6 +184,11 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   return glob.sync(globPattern);
 };
 
+/**
+ * This formats the data of a quickstart's config file within the `dashboards` directory to match the shape of the documentation field of Nr1CatalogSubmitMetadataInput.
+ * It receives an array of config file paths  within a quickstart's `dashboards` directory (usually one).
+ * It returns an array of objects.
+ */
 const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.length > 0
     ? dashboardConfigPaths.map((dashboardConfigPath) => {
@@ -180,6 +205,11 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
       })
     : undefined;
 
+/**
+ * This creates the file path of each screenshot within the main directory of a quickstart.
+ * It intakes the file path of a quickstart's screenshot file as a String
+ * It returns a url to the screenshot on github.
+ */
 const getScreenshotUrl = (path) => {
   const screenshotFilename = path.split('/').pop();
 
@@ -190,6 +220,11 @@ const getScreenshotUrl = (path) => {
   };
 };
 
+/**
+ * This creates the file path of each screenshot within the dashboard directory of a quickstart.
+ * It intakes the file path of a quickstart's config file as a String
+ * It returns a file path to the screenshot within the same quickstart as a String.
+ */
 const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
   const splitConfigPath = dashboardConfigPath.split('/');
   splitConfigPath.pop();
@@ -198,6 +233,12 @@ const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
   return glob.sync(globPattern);
 };
 
+/**
+ *This parses through the documentation field returned after parsing the root config file of a quickstart.
+ * It receives an array of objects.
+ * It returns an array of objects for each set of documentation references within the config file.
+ * The objects are in the shape required for the documentation field of Nr1CatalogSubmitMetadataInput.
+ */
 const adaptQuickstartDocumentationInput = (documentation) =>
   documentation &&
   documentation.map((doc) => {
@@ -209,12 +250,20 @@ const adaptQuickstartDocumentationInput = (documentation) =>
     };
   });
 
+/**
+ * ????????
+ */
 const buildUniqueQuickstartSet = (acc, { filename }) => {
   return getQuickstartFromFilename(filename)
     ? acc.add(getQuickstartFromFilename(filename))
     : acc;
 };
 
+/**
+ *This receives array of filePaths for the changed files from the PR and returns an object containing a filePath field and a variables field.
+ * The filePath field is a string of the config file path that is associated with a changed quickstart file from the PR.
+ * The variables field is in the shape of Nr1CatalogSubmitMetadataInput.
+ */
 const getGraphqlRequests = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
 
@@ -228,6 +277,12 @@ const getGraphqlRequests = (files) => {
   }));
 };
 
+/**
+ * This is the function invoked within the script to do the following:
+ * It brings in the changed PR files
+ * runs the query mutation
+ * exits with different codes depending on if errors are present in the response.
+ */
 const main = async () => {
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
