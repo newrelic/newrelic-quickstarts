@@ -115,21 +115,21 @@ const buildMutationVariables = (quickstartConfig) => {
     id: id,
     quickstartMetadata: {
       alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),
-      authors: authors.map((author) => {
-        return { name: author };
-      }),
+      authors: authors && authors.map((author) => ({ name: author })),
       categoryTerms: categoryTerms || keywords,
-      description: description.trim(),
-      displayName: title.trim(),
+      description: description && description.trim(),
+      displayName: title && title.trim(),
       documentation: adaptQuickstartDocumentationInput(documentation),
-      icon: `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
-        quickstartConfig.path
-      )}/${logo}`,
-      keywords: keywords || null,
+      icon:
+        logo &&
+        `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
+          quickstartConfig.path
+        )}/${logo}`,
+      keywords: keywords,
       sourceUrl: `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
         quickstartConfig.path
       )}`,
-      summary: summary.trim(),
+      summary: summary && summary.trim(),
       installPlanStepIds: installPlans,
       dashboards: adaptQuickstartDashboardInput(dashboardConfigPaths),
     },
@@ -150,23 +150,19 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
   return glob.sync(globPattern);
 };
 
-const adaptQuickstartAlertsInput = (alertConfigPaths) => {
-  if (alertConfigPaths.length == 0) {
-    return null;
-  }
-
-  return alertConfigPaths.map((alertConfigPath) => {
+const adaptQuickstartAlertsInput = (alertConfigPaths) =>
+  alertConfigPaths.length > 0 &&
+  alertConfigPaths.map((alertConfigPath) => {
     const parsedConfig = readQuickstartFile(alertConfigPath);
     const { details, name, type } = parsedConfig.contents[0];
 
     return {
-      description: details ? details.trim() : null,
-      displayName: name.trim(),
+      description: details && details.trim(),
+      displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-      type: type.trim(),
+      type: type && type.trim(),
     };
   });
-};
 
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -176,24 +172,20 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   return glob.sync(globPattern);
 };
 
-const adaptQuickstartDashboardInput = (dashboardConfigPaths) => {
-  if (dashboardConfigPaths.length == 0) {
-    return null;
-  }
-
-  return dashboardConfigPaths.map((dashboardConfigPath) => {
+const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
+  dashboardConfigPaths.length > 0 &&
+  dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
     const screenshotPaths =
       getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
-      description: description ? description.trim() : null,
-      displayName: name.trim(),
+      description: description && description.trim(),
+      displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-      screenshots: screenshotPaths.map(getScreenshotUrl),
+      screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
     };
   });
-};
 
 const getScreenshotUrl = (path) => {
   const screenshotFilename = path.split('/').pop();
@@ -213,12 +205,9 @@ const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
   return glob.sync(globPattern);
 };
 
-const adaptQuickstartDocumentationInput = (documentation) => {
-  if (!documentation) {
-    return null;
-  }
-
-  return documentation.map((doc) => {
+const adaptQuickstartDocumentationInput = (documentation) =>
+  documentation &&
+  documentation.map((doc) => {
     const { name, url, description } = doc;
     return {
       displayName: name,
@@ -226,7 +215,6 @@ const adaptQuickstartDocumentationInput = (documentation) => {
       description,
     };
   });
-};
 
 const buildUniqueQuickstartSet = (acc, { filename }) => {
   return getQuickstartFromFilename(filename)
