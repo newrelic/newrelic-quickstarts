@@ -38,51 +38,73 @@ mutation (
   }
 `;
 
-const getQuickstartNode = (filename, target) => {
-  const splitFilePath = filename.split('/');
-  return splitFilePath[splitFilePath.findIndex((path) => path === target) - 1];
+/**
+ * Gets the quickstart portion of a given file path.
+ * @param {String} filePath - Full file path of a file in a quickstart.
+ * @param {String} targetChild - Node in file path that should be preceded by a quickstart directory.
+ * @return {String} Node in file path of the quickstart.
+ */
+const getQuickstartNode = (filePath, targetChild) => {
+  const splitFilePath = filePath.split('/');
+  return splitFilePath[
+    splitFilePath.findIndex((path) => path === targetChild) - 1
+  ];
 };
 
-const getQuickstartFromFilename = (filename) => {
+/**
+ * Identifies where in a given file path to look for a quickstart directory.
+ * @param {String} filePath - Full file path of a file in a quickstart.
+ * @return {Function|undefined} Called function with arguments to determine the quickstart of a given file path.
+ */
+const getQuickstartFromFilename = (filePath) => {
   if (
-    !filename.includes('quickstarts/') &&
-    !filename.includes('mock_quickstarts/')
+    !filePath.includes('quickstarts/') &&
+    !filePath.includes('mock_quickstarts/')
   ) {
     return;
   }
 
-  if (filename.includes('/alerts/')) {
-    return getQuickstartNode(filename, 'alerts');
+  if (filePath.includes('/alerts/')) {
+    return getQuickstartNode(filePath, 'alerts');
   }
 
-  if (filename.includes('/dashboards/')) {
-    return getQuickstartNode(filename, 'dashboards');
+  if (filePath.includes('/dashboards/')) {
+    return getQuickstartNode(filePath, 'dashboards');
   }
 
-  if (filename.includes('/images/')) {
-    return getQuickstartNode(filename, 'images');
+  if (filePath.includes('/images/')) {
+    return getQuickstartNode(filePath, 'images');
   }
 
-  const targetFileName = filename.split('/').pop();
+  const targetChildNode = filePath.split('/').pop();
 
-  return getQuickstartNode(filename, targetFileName);
+  return getQuickstartNode(filePath, targetChildNode);
 };
 
-const getQuickstartConfigPaths = (quickstartNames) => {
+/**
+ * Looks up corresponding quickstart config files for quickstarts known to have changes in a PR.
+ * @param {Set} quickstartDirectories - Set of unique quickstart directories.
+ * @return {Array} Collection of config file paths.
+ */
+const getQuickstartConfigPaths = (quickstartDirectories) => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return quickstartNames.reduce((acc, quickstartName) => {
-    const match = allQuickstartConfigPaths.find((path) => {
-      return path.split('/').includes(quickstartName);
-    });
+  return [...quickstartDirectories].reduce((acc, quickstartDirectory) => {
+    const match = allQuickstartConfigPaths.find((path) =>
+      path.split('/').includes(quickstartDirectory)
+    );
     if (match) {
       acc.push(match);
     }
-
     return acc;
   }, []);
 };
 
+/**
+ * Builds input argument for submitQuickstart GraphQL mutation
+ * @param {Object} quickstartConfig - An object containing the path and contents of a quickstart config file.
+ * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation
+ */
 const buildMutationVariables = (quickstartConfig) => {
   const {
     authors,
@@ -266,10 +288,7 @@ const buildUniqueQuickstartSet = (acc, { filename }) => {
  */
 const getGraphqlRequests = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
-
-  const quickstartConfigPaths = getQuickstartConfigPaths([
-    ...uniqueQuickstarts,
-  ]);
+  const quickstartConfigPaths = getQuickstartConfigPaths(uniqueQuickstarts);
 
   return quickstartConfigPaths.map((configPath) => ({
     filePath: removeRepoPathPrefix(configPath),

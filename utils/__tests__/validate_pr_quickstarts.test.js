@@ -59,13 +59,13 @@ const expectedUniqueQuickstartDirectories = new Set([
   'pysqlite',
 ]);
 
-const quickstartNames = [
+const quickstartNames = new Set([
   'aws-ec2',
   'infrastructure',
   'aiohttp',
   'pysqlite',
   'postgresql',
-];
+]);
 
 const quickstartConfigRelativePaths = [
   '/quickstarts/aws/aws-ec2/config.yml',
