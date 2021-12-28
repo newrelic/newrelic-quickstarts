@@ -21,8 +21,6 @@ const GITHUB_RAW_BASE_URL =
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
 
-console.log('NR_API_TOKEN', NR_API_TOKEN.substring(0, 3));
-
 const VALIDATE_QUICKSTART_MUTATION = `# gql
 mutation (
   $dryRun: Boolean
