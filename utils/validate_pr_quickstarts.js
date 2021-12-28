@@ -83,15 +83,15 @@ const getQuickstartFromFilename = (filePath) => {
 
 /**
  * Looks up corresponding quickstart config files for quickstarts known to have changes in a PR.
- * @param {Set} quickstartNames - Set of unique quickstart names.
- * @return {Array} Collection of config file paths
+ * @param {Set} quickstartDirectories - Set of unique quickstart directories.
+ * @return {Array} Collection of config file paths.
  */
-const getQuickstartConfigPaths = (quickstartNames) => {
+const getQuickstartConfigPaths = (quickstartDirectories) => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return [...quickstartNames].reduce((acc, quickstartName) => {
+  return [...quickstartDirectories].reduce((acc, quickstartDirectory) => {
     const match = allQuickstartConfigPaths.find((path) =>
-      path.split('/').includes(quickstartName)
+      path.split('/').includes(quickstartDirectory)
     );
     if (match) {
       acc.push(match);
