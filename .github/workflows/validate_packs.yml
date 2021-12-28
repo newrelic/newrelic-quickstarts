@@ -18,16 +18,16 @@ jobs:
       - name: Install dependencies
         run: cd utils && yarn install
 
-      # - name: Validate files
-      #   run: cd utils && yarn validate-quickstarts
+      - name: Validate all quickstart files
+        run: cd utils && yarn validate-quickstarts
 
-      - name: Validate pr quickstarts
+      - name: Validate pr quickstart files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NR_API_URL: "https://api.newrelic.com/graphql"
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
         run: |
-          URL="https://api.github.com/repos/tyreer/newrelic-quickstarts/pulls/2/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
           cd utils && yarn validate-pr-quickstarts $URL
 
   ensure-quickstart-names-ids-are-unique:
