@@ -70,7 +70,7 @@ const translateMutationErrors = (errors, filePath) => {
 
       console.error(`- ${errorPrefix}: ${error.message}`);
     } else {
-      console.error(error.message);
+      console.error(`- ${error.message}`);
     }
   });
 };
