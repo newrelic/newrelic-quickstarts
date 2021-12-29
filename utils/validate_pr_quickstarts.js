@@ -27,7 +27,7 @@ mutation (
   $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
 ) {
     nr1CatalogSubmitQuickstart(
-      dryRun: $dryRun
+      dryRun: true
       id: $id
       quickstartMetadata: $quickstartMetadata
     ) {
