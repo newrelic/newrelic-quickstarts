@@ -2,7 +2,10 @@
 
 const glob = require('glob');
 
-const { fetchPaginatedGHResults } = require('./github-api-helpers');
+const {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+} = require('./github-api-helpers');
 const {
   findMainQuickstartConfigFiles,
   readQuickstartFile,
@@ -57,11 +60,8 @@ const getQuickstartNode = (filePath, targetChild) => {
  * @return {Function|undefined} Called function with arguments to determine the quickstart of a given file path.
  */
 const getQuickstartFromFilename = (filePath) => {
-  if (
-    !filePath.includes('quickstarts/') ||
-    filePath.includes('mock_quickstarts/')
-  ) {
-    return;
+  if (!filePath.includes('quickstarts/')) {
+    return undefined;
   }
 
   if (filePath.includes('/alerts/')) {
@@ -306,7 +306,7 @@ const main = async () => {
     throw new Error(`GitHub API returned: ${error.message}`);
   });
 
-  const graphqlRequests = getGraphqlRequests(files);
+  const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
 
   const graphqlResponses = await Promise.all(
     graphqlRequests.map(async ({ variables, filePath }) => {
