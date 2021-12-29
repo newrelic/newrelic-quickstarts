@@ -10,13 +10,14 @@ const {
   findMainQuickstartConfigFiles,
   readQuickstartFile,
   removeRepoPathPrefix,
+  passedProcessArguments,
 } = require('./helpers');
 const {
   fetchNRGraphqlResults,
   translateMutationErrors,
 } = require('./nr-graphql-helpers');
 
-const GITHUB_API_URL = process.argv[2];
+const GITHUB_API_URL = passedProcessArguments[0];
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
