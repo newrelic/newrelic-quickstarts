@@ -164,12 +164,28 @@ test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', 
   expect(quickstartFromDashboard).toEqual('pysqlite');
 });
 
-test('getQuickstartFromFilenamereturns the quickstart a logo belongs to', () => {
+test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
   const quickstartFromLogo = getQuickstartFromFilename(
     'quickstarts/python/pysqlite/logo.svg'
   );
 
   expect(quickstartFromLogo).toEqual('pysqlite');
+});
+
+test('getQuickstartFromFilename does not return non-quickstarts files', () => {
+  const mockQuickstart = getQuickstartFromFilename(
+    '.github/workflows/validate_packs.yml'
+  );
+
+  expect(mockQuickstart).toBeUndefined();
+});
+
+test('getQuickstartFromFilename does not return mock quickstarts', () => {
+  const mockQuickstart = getQuickstartFromFilename(
+    'utils/mock_quickstarts/mock-quickstart-1/config.yml'
+  );
+
+  expect(mockQuickstart).toBeUndefined();
 });
 
 test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {

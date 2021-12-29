@@ -58,8 +58,8 @@ const getQuickstartNode = (filePath, targetChild) => {
  */
 const getQuickstartFromFilename = (filePath) => {
   if (
-    !filePath.includes('quickstarts/') &&
-    !filePath.includes('mock_quickstarts/')
+    !filePath.includes('quickstarts/') ||
+    filePath.includes('mock_quickstarts/')
   ) {
     return;
   }
