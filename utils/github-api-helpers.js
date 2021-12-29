@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml)');
-const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
+const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
  * Pulls the next page off of a `Link` header
@@ -59,7 +59,7 @@ const filterQuickstartConfigFiles = (files) =>
  * @returns {Array} files from Github API excluding test files
  */
 const filterOutTestFiles = (files) => {
-  return files.filter(({ filename }) => !MOCK_QUICKSTART_REGEXP.test(filename));
+  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
 module.exports = {

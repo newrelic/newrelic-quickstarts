@@ -97,10 +97,10 @@ const expectedMockQuickstart2MutationInput = {
         description: 'Description about this doc reference',
       },
     ],
-    icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-2/logo.png',
+    icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/logo.png',
     keywords: ['list', 'of', 'searchable', 'keywords'],
     sourceUrl:
-      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-2',
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2',
     summary: 'A short form description for this quickstart',
     installPlanStepIds: ['infra-agent-targeted'],
     alertConditions: [
@@ -128,13 +128,13 @@ const expectedMockQuickstart2MutationInput = {
         rawConfiguration: mockDashboardRawConfiguration,
         screenshots: [
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-2/dashboards/dotnet.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-2/dashboards/dotnet02.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet02.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_quickstarts/mock-quickstart-2/dashboards/dotnet03.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet03.png',
           },
         ],
       },
@@ -146,7 +146,7 @@ const expectedMockQuickstart4MutationInput = {
   dryRun: true,
   quickstartMetadata: {
     sourceUrl:
-      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_quickstarts/mock-quickstart-4',
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
   },
 };
 
@@ -184,7 +184,7 @@ test('getQuickstartFromFilename does not return non-quickstarts files', () => {
 
 test('getQuickstartFromFilename does not return mock quickstarts', () => {
   const mockQuickstart = getQuickstartFromFilename(
-    'utils/mock_quickstarts/mock-quickstart-1/config.yml'
+    'utils/mock_files/mock-quickstart-1/config.yml'
   );
 
   expect(mockQuickstart).toBeUndefined();
@@ -207,7 +207,7 @@ test('getQuickstartConfigPaths returns list of unique quickstart config filepath
 test('buildMutationVariables returns expected mutation input from quickstart config', () => {
   const mutationInput = buildMutationVariables(
     readQuickstartFile(
-      `${process.cwd()}/mock_quickstarts/mock-quickstart-2/config.yml`
+      `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
     )
   );
 
@@ -217,7 +217,7 @@ test('buildMutationVariables returns expected mutation input from quickstart con
 test('buildMutationVariables handles an empty config file', () => {
   const mutationInput = buildMutationVariables(
     readQuickstartFile(
-      `${process.cwd()}/mock_quickstarts/mock-quickstart-4/config.yml`
+      `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
     )
   );
 
