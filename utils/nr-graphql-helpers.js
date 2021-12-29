@@ -55,7 +55,6 @@ const fetchNRGraphqlResults = async (queryBody, url, token) => {
 
 /**
  * Handle errors from GraphQL request
- * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
  * @returns undefined
