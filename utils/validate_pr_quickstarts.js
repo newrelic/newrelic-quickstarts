@@ -161,9 +161,9 @@ const getQuickstartRelativePath = (configPath) => {
 };
 
 /**
- * Gets the file path of a config file within the `alerts` directory of a quickstart.
+ * Gets the file paths of all config files within the `alerts` directory of a quickstart.
  * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
- * @return {String} Returns the file path of the config file within the `alerts` directory of quickstart. (String).
+ * @return {Array} A set of file-path strings for the config files within the `alerts` directory of a quickstart.
  */
 const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -176,7 +176,7 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
 /**
  * Builds input arguments for the `alertConditions` field.
  * @param {Array} alertConfigPaths - File paths of config files within an `alerts` directory.
- * @param {Array} Returns an object that represents a quickstart's `alertsConditions` in the context of a GraphQL mutation.
+ * @return {Array|undefined} An set of objects that represent a quickstart's alert conditions in the context of a GraphQL mutation.
  */
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
   alertConfigPaths.length > 0
@@ -194,9 +194,9 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
     : undefined;
 
 /**
- * Creates the filepath of a config file within the `dashboards` directory of quickstart.
- * @param {String} quickstartConfigPath - Filepath of the root config file.
- * @returns {String} Returns the dashboard config file path.
+ * Gets the file paths of all config files within the `dashboards` directory of a quickstart.
+ * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
+ * @returns {Array} A set of file-path strings for the config files within the `dashboards` directory of a quickstart.
  */
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -208,8 +208,8 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
 
 /**
  * Builds input arguments for the `dashboards` field.
- * @param {Array} alertConfigPaths - The file paths of config files within a `dashboards` directory.
- * @param {Array} Returns an object that represents a quickstart's dashboards in the context of a GraphQL mutation.
+ * @param {Array} dashboardConfigPaths - File paths of config files within a `dashboards` directory.
+ * @return {Array|undefined} An set of objects that represent a quickstart's dashboards in the context of a GraphQL mutation.
  */
 const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.length > 0
@@ -230,7 +230,7 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
 /**
  * Creates the GitHub url of each screenshot within the main directory of a quickstart.
  * @param {String} path - The file path of a screenshot.
- * @return{Object} Returns an object containing the GitHub url of a screenshot.
+ * @return {Object} Returns an object containing the GitHub url of a screenshot.
  */
 const getScreenshotUrl = (path) => {
   const screenshotFilename = path.split('/').pop();
@@ -245,7 +245,7 @@ const getScreenshotUrl = (path) => {
 /**
  * Creates the file path of each screenshot within the dashboard directory of a quickstart.
  * @param {String} dashboardConfigPath - The file path of the config file within a quickstart's `dashboards` directory.
- * @return {String} Returns file paths of any screenshot within the same `dashboards` directory.
+ * @return {Array} A set of file-path strings for any screenshots within the same `dashboards` directory.
  */
 const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
   const splitConfigPath = dashboardConfigPath.split('/');
@@ -257,8 +257,8 @@ const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
 
 /**
  * Builds input arguments for the `documentation` field.
- * @param {Array} documentation - The documentation sections of a config.yml file.
- * @return {Array} Returns quickstart documentation in the context of a GraphQL mutation.
+ * @param {Array} documentation - The documentation sections of a parsed quickstart config.yml file.
+ * @return {Array|undefined}  An set of objects that represent a quickstart's documentation in the context of a GraphQL mutation.
  */
 const adaptQuickstartDocumentationInput = (documentation) =>
   documentation &&
@@ -272,10 +272,10 @@ const adaptQuickstartDocumentationInput = (documentation) =>
   });
 
 /**
- * Creates a Set of unique quickstarts that were updated.
- * @param {Set} acc - A set of unique quickstarts being built by reducer function
+ * Reducer function that builds a set of unique quickstarts that were updated in a given PR.
+ * @param {Set} acc - A set of unique quickstarts being built by the reducer function.
  * @param {Object} curr - A result from the GitHub API.
- * @return {Set} returns a Set of unique quickstarts that were updated.
+ * @return {Set} A set of strings representing the unique quickstarts updated in a PR.
  */
 const buildUniqueQuickstartSet = (acc, { filename }) => {
   return getQuickstartFromFilename(filename)
@@ -284,9 +284,9 @@ const buildUniqueQuickstartSet = (acc, { filename }) => {
 };
 
 /**
- *Creates graphql requests to be used in the SubmitQuickstartMetadata mutation.
- * @param {Array} files - A list of quickstarts changed in the PR.
- * @return {Array} Returns objects containing the file path of a quickstart's root config file and the variables used in the SubmitQuickstart mutation.
+ * Creates GraphQL requests to be used in the SubmitQuickstartMetadata mutation.
+ * @param {Array} files - A list of all files changed in the PR.
+ * @return {Array} Returns objects containing the file path of a quickstart's root config file and the variables used in the submitQuickstart mutation.
  */
 const getGraphqlRequests = (files) => {
   const uniqueQuickstarts = files.reduce(buildUniqueQuickstartSet, new Set());
