@@ -28,20 +28,23 @@ const getNextLink = (linkHeader) => {
 const fetchPaginatedGHResults = async (url, token) => {
   let files = [];
   let nextPageLink = url;
-  while (nextPageLink) {
-    const resp = await fetch(nextPageLink, {
-      headers: { authorization: `token ${token}` },
-    });
-    if (!resp.ok) {
-      console.error(
-        `ERROR: Github API returned status ${resp.code} - ${resp.message}`
-      );
-      process.exit(1);
+  try {
+    while (nextPageLink) {
+      const resp = await fetch(nextPageLink, {
+        headers: { authorization: `token ${token}` },
+      });
+      const responseJson = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(`Github API returned: ${responseJson.message}`);
+      }
+      nextPageLink = getNextLink(resp.headers.get('Link'));
+      files = [...files, ...responseJson];
     }
-    const page = await resp.json();
-    nextPageLink = getNextLink(resp.headers.get('Link'));
-    files = [...files, ...page];
+  } catch (error) {
+    console.error('Error:', error);
   }
+
   return files;
 };
 

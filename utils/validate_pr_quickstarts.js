@@ -302,9 +302,7 @@ const main = async () => {
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN
-  ).catch((error) => {
-    throw new Error(`GitHub API returned: ${error.message}`);
-  });
+  );
 
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
 
