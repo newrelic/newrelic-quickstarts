@@ -297,12 +297,12 @@ const getGraphqlRequests = (files) => {
   }));
 };
 
-const main = async () => {
-  const files = await fetchPaginatedGHResults(
-    GITHUB_API_URL,
-    process.env.GITHUB_TOKEN
-  );
-
+/**
+ * Builds and sends GraphQL mutations to validate the quickstarts in a PR and prints out any errors
+ * @param {Array} files - A list of all files changed in the PR.
+ * @return {Boolean} A value indicating if the GitHub Action should fail
+ */
+const validateQuickstarts = async (files) => {
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
 
   const graphqlResponses = await Promise.all(
@@ -325,11 +325,20 @@ const main = async () => {
     }
   });
 
+  return hasFailed;
+};
+
+const main = async () => {
+  const files = await fetchPaginatedGHResults(
+    GITHUB_API_URL,
+    process.env.GITHUB_TOKEN
+  );
+
+  const hasFailed = await validateQuickstarts(files);
+
   if (hasFailed) {
     process.exit(1);
   }
-
-  process.exit(0);
 };
 
 /**
