@@ -21,8 +21,6 @@ const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
-const NR_API_URL = process.env.NR_API_URL;
-const NR_API_TOKEN = process.env.NR_API_TOKEN;
 const VALIDATE_QUICKSTART_MUTATION = `# gql
 mutation (
   $id: ID!
@@ -308,14 +306,10 @@ const main = async () => {
 
   const graphqlResponses = await Promise.all(
     graphqlRequests.map(async ({ variables, filePath }) => {
-      const { data, errors } = await fetchNRGraphqlResults(
-        {
-          queryString: VALIDATE_QUICKSTART_MUTATION,
-          variables,
-        },
-        NR_API_URL,
-        NR_API_TOKEN
-      );
+      const { data, errors } = await fetchNRGraphqlResults({
+        queryString: VALIDATE_QUICKSTART_MUTATION,
+        variables,
+      });
 
       return { data, errors, filePath };
     })

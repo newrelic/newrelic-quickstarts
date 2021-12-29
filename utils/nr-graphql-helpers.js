@@ -1,6 +1,9 @@
 'use strict';
 const fetch = require('node-fetch');
 
+const NR_API_URL = process.env.NR_API_URL;
+const NR_API_TOKEN = process.env.NR_API_TOKEN;
+
 /**
  * Build body param for NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
@@ -15,23 +18,21 @@ const buildRequestBody = ({ queryString, variables }) =>
 /**
  * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
- * @param {String} url - request URL
- * @param {String} token - API token for request
  * @returns {Object} An object with the results or errors of a GraphQL request
  */
-const fetchNRGraphqlResults = async (queryBody, url, token) => {
+const fetchNRGraphqlResults = async (queryBody) => {
   let results;
   let graphqlErrors = [];
 
   try {
     const body = buildRequestBody(queryBody);
 
-    const res = await fetch(url, {
+    const res = await fetch(NR_API_URL, {
       method: 'POST',
       body,
       headers: {
         'Content-Type': 'application/json',
-        'Api-Key': token,
+        'Api-Key': NR_API_TOKEN,
       },
     });
 
