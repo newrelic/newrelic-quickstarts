@@ -101,9 +101,9 @@ const getQuickstartConfigPaths = (quickstartDirectories) => {
 };
 
 /**
- * Builds input argument for submitQuickstart GraphQL mutation
+ * Builds input argument for submitQuickstart GraphQL mutation.
  * @param {Object} quickstartConfig - An object containing the path and contents of a quickstart config file.
- * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation
+ * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
  */
 const buildMutationVariables = (quickstartConfig) => {
   const {
