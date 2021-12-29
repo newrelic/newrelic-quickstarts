@@ -125,12 +125,16 @@ const buildMutationVariables = (quickstartConfig) => {
   return {
     id: id,
     quickstartMetadata: {
-      alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),
+      alertConditions:
+        alertConfigPaths.length > 0
+          ? adaptQuickstartAlertsInput(alertConfigPaths)
+          : undefined,
       authors: authors && authors.map((author) => ({ name: author })),
       categoryTerms: categoryTerms || keywords,
       description: description && description.trim(),
       displayName: title && title.trim(),
-      documentation: adaptQuickstartDocumentationInput(documentation),
+      documentation:
+        documentation && adaptQuickstartDocumentationInput(documentation),
       icon:
         logo &&
         `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
@@ -142,7 +146,10 @@ const buildMutationVariables = (quickstartConfig) => {
       )}`,
       summary: summary && summary.trim(),
       installPlanStepIds: installPlans,
-      dashboards: adaptQuickstartDashboardInput(dashboardConfigPaths),
+      dashboards:
+        dashboardConfigPaths.length > 0
+          ? adaptQuickstartDashboardInput(dashboardConfigPaths)
+          : undefined,
     },
   };
 };
@@ -177,19 +184,17 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
  * @return {Array|undefined} An set of objects that represent a quickstart's alert conditions in the context of a GraphQL mutation.
  */
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
-  alertConfigPaths.length > 0
-    ? alertConfigPaths.map((alertConfigPath) => {
-        const parsedConfig = readQuickstartFile(alertConfigPath);
-        const { details, name, type } = parsedConfig.contents[0];
+  alertConfigPaths.map((alertConfigPath) => {
+    const parsedConfig = readQuickstartFile(alertConfigPath);
+    const { details, name, type } = parsedConfig.contents[0];
 
-        return {
-          description: details && details.trim(),
-          displayName: name && name.trim(),
-          rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-          type: type && type.trim(),
-        };
-      })
-    : undefined;
+    return {
+      description: details && details.trim(),
+      displayName: name && name.trim(),
+      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      type: type && type.trim(),
+    };
+  });
 
 /**
  * Gets the file paths of all config files within the `dashboards` directory of a quickstart.
@@ -210,20 +215,18 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
  * @return {Array|undefined} An set of objects that represent a quickstart's dashboards in the context of a GraphQL mutation.
  */
 const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
-  dashboardConfigPaths.length > 0
-    ? dashboardConfigPaths.map((dashboardConfigPath) => {
-        const parsedConfig = readQuickstartFile(dashboardConfigPath);
-        const { description, name } = parsedConfig.contents[0];
-        const screenshotPaths =
-          getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
-        return {
-          description: description && description.trim(),
-          displayName: name && name.trim(),
-          rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
-          screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
-        };
-      })
-    : undefined;
+  dashboardConfigPaths.map((dashboardConfigPath) => {
+    const parsedConfig = readQuickstartFile(dashboardConfigPath);
+    const { description, name } = parsedConfig.contents[0];
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    return {
+      description: description && description.trim(),
+      displayName: name && name.trim(),
+      rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
+    };
+  });
 
 /**
  * Creates the GitHub url of each screenshot within the main directory of a quickstart.
@@ -259,7 +262,6 @@ const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
  * @return {Array|undefined}  An set of objects that represent a quickstart's documentation in the context of a GraphQL mutation.
  */
 const adaptQuickstartDocumentationInput = (documentation) =>
-  documentation &&
   documentation.map((doc) => {
     const { name, url, description } = doc;
     return {
