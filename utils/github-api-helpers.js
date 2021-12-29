@@ -43,6 +43,7 @@ const fetchPaginatedGHResults = async (url, token) => {
     }
   } catch (error) {
     console.error('Error:', error);
+    process.exit(1);
   }
 
   return files;
