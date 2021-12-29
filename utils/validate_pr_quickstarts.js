@@ -25,7 +25,6 @@ const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
 const VALIDATE_QUICKSTART_MUTATION = `# gql
 mutation (
-  $dryRun: Boolean
   $id: ID!
   $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
 ) {
@@ -124,7 +123,6 @@ const buildMutationVariables = (quickstartConfig) => {
   );
 
   return {
-    dryRun: true,
     id: id,
     quickstartMetadata: {
       alertConditions: adaptQuickstartAlertsInput(alertConfigPaths),

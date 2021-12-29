@@ -82,7 +82,6 @@ const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
 );
 
 const expectedMockQuickstart2MutationInput = {
-  dryRun: true,
   id: 'mock-2-id',
   quickstartMetadata: {
     authors: [{ name: 'John Smith' }],
@@ -143,10 +142,23 @@ const expectedMockQuickstart2MutationInput = {
 };
 
 const expectedMockQuickstart4MutationInput = {
-  dryRun: true,
+  id: undefined,
   quickstartMetadata: {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
+    alertConditions: undefined,
+    authors: undefined,
+    categoryTerms: undefined,
+    dashboards: undefined,
+    description: undefined,
+    displayName: undefined,
+    documentation: undefined,
+    icon: undefined,
+    installPlanStepIds: undefined,
+    keywords: undefined,
+    sourceUrl:
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
+    summary: undefined,
   },
 };
 
@@ -231,7 +243,7 @@ test('getGraphqlRequests constructs requests with a filepath and variables struc
 
   expect(graphqlRequests.length).toEqual(2);
   expect(
-    graphqlRequests.every(({ variables: { dryRun } }) => dryRun === true)
+    graphqlRequests.every(({ filePath }) => filePath.includes('quickstarts/'))
   ).toBeTruthy();
   expect(graphqlRequests[0].variables.id).toEqual(
     'e7948525-8726-46a5-83fa-04732ad42fd1'
