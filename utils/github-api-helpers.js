@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml)');
+const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
@@ -55,7 +56,7 @@ const fetchPaginatedGHResults = async (url, token) => {
  * @returns {Array} config files from Github API without test files
  */
 const filterQuickstartConfigFiles = (files) =>
-  files.filter(({ filename }) => CONFIG_REGEXP.test(filename));
+  files.filter(({ filename }) => QUICKSTART_CONFIG_REGEXP.test(filename));
 
 /**
  * Filters out results from the Github API for changes to test files
@@ -66,9 +67,19 @@ const filterOutTestFiles = (files) => {
   return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
+/**
+ * Filters results from the Github API down to install plan config files
+ * @param {Array} files the results from Github API
+ * @returns {Array} install plan config files from Github API
+ */
+const filterInstallPlans = (files) => {
+  return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
+};
+
 module.exports = {
   fetchPaginatedGHResults,
   getNextLink,
   filterQuickstartConfigFiles,
   filterOutTestFiles,
+  filterInstallPlans,
 };
