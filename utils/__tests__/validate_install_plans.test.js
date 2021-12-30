@@ -92,7 +92,9 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    await validateInstallPlan(files);
+    const hasFailed = await validateInstallPlan(files);
+
+    expect(hasFailed).toBe(false);
 
     expect(global.console.error).not.toHaveBeenCalled();
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
@@ -118,7 +120,9 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    await validateInstallPlan(files);
+    const hasFailed = await validateInstallPlan(files);
+
+    expect(hasFailed).toBe(true);
 
     expect(global.console.error).toHaveBeenCalled();
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
@@ -152,11 +156,19 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    await validateInstallPlan(files);
+    const hasFailed = await validateInstallPlan(files);
+
+    expect(hasFailed).toBe(true);
 
     // the first error message should be the ERROR: with the filepath
-    expect(global.console.error).toHaveBeenNthCalledWith(2, error.message2);
-    expect(global.console.error).toHaveBeenNthCalledWith(3, error.message3);
+    expect(global.console.error).toHaveBeenNthCalledWith(
+      2,
+      `- ${error.message2}`
+    );
+    expect(global.console.error).toHaveBeenNthCalledWith(
+      3,
+      `- ${error.message3}`
+    );
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(
       requestBody
     );
@@ -188,7 +200,9 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    await validateInstallPlan(files);
+    const hasFailed = await validateInstallPlan(files);
+
+    expect(hasFailed).toBe(true);
 
     expect(global.console.error).toHaveBeenCalled();
     expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledWith(

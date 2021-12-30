@@ -130,7 +130,10 @@ const validateInstallPlan = async (files) => {
 };
 
 const main = async () => {
-  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  const files = await fetchPaginatedGHResults(
+    GITHUB_API_URL,
+    process.env.GITHUB_TOKEN
+  );
   const hasFailed = await validateInstallPlan(files);
 
   if (hasFailed) {
