@@ -1,5 +1,5 @@
 const path = require('path');
-const { readYamlFile, pathsToSanitize } = require('./helpers');
+const { readYamlFile, passedProcessArguments } = require('./helpers');
 const {
   fetchPaginatedGHResults,
   filterInstallPlans,
@@ -10,7 +10,7 @@ const {
   translateMutationErrors,
 } = require('./nr-graphql-helpers');
 
-const url = pathsToSanitize[0];
+const GITHUB_API_URL = passedProcessArguments[0];
 
 const VALIDATE_INSTALL_PLAN_MUTATION = `# gql 
 mutation (
