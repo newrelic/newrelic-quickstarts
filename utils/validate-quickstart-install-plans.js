@@ -8,10 +8,10 @@ const {
 const {
   findMainInstallConfigFiles,
   readQuickstartFile,
-  pathsToSanitize,
+  passedProcessArguments,
 } = require('./helpers');
 
-const url = pathsToSanitize[0];
+const GITHUB_API_URL = passedProcessArguments[0];
 
 /**
  * Gets all install plain ids under installs/ dir
@@ -92,7 +92,10 @@ const validateInstallPlanIds = (githubFiles) => {
 };
 
 const main = async () => {
-  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  const files = await fetchPaginatedGHResults(
+    GITHUB_API_URL,
+    process.env.GITHUB_TOKEN
+  );
   validateInstallPlanIds(filterOutTestFiles(files));
 };
 

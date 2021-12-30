@@ -1,6 +1,5 @@
 'use strict';
 const fetch = require('node-fetch');
-const { removeRepoPathPrefix } = require('./helpers');
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
@@ -19,8 +18,6 @@ const buildRequestBody = ({ queryString, variables }) =>
 /**
  * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
- * @param {String} url - request URL
- * @param {String} token - API token for request
  * @returns {Object} An object with the results or errors of a GraphQL request
  */
 const fetchNRGraphqlResults = async (queryBody) => {
@@ -59,16 +56,13 @@ const fetchNRGraphqlResults = async (queryBody) => {
 
 /**
  * Handle errors from GraphQL request
- * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
  * @returns undefined
  */
 const translateMutationErrors = (errors, filePath) => {
   console.error(
-    `ERROR: The following errors occured while validating: ${removeRepoPathPrefix(
-      filePath
-    )}`
+    `ERROR: The following errors occurred while validating: ${filePath}`
   );
   errors.forEach((error) => {
     if (error.extensions && error.extensions.argumentPath) {
@@ -76,7 +70,7 @@ const translateMutationErrors = (errors, filePath) => {
 
       console.error(`- ${errorPrefix}: ${error.message}`);
     } else {
-      console.error(error.message);
+      console.error(`- ${error.message}`);
     }
   });
 };
