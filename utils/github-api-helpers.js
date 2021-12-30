@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
 const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml)');
-const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
+const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
  * Pulls the next page off of a `Link` header
@@ -28,20 +28,24 @@ const getNextLink = (linkHeader) => {
 const fetchPaginatedGHResults = async (url, token) => {
   let files = [];
   let nextPageLink = url;
-  while (nextPageLink) {
-    const resp = await fetch(nextPageLink, {
-      headers: { authorization: `token ${token}` },
-    });
-    if (!resp.ok) {
-      console.error(
-        `ERROR: Github API returned status ${resp.code} - ${resp.message}`
-      );
-      process.exit(1);
+  try {
+    while (nextPageLink) {
+      const resp = await fetch(nextPageLink, {
+        headers: { authorization: `token ${token}` },
+      });
+      const responseJson = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(`Github API returned: ${responseJson.message}`);
+      }
+      nextPageLink = getNextLink(resp.headers.get('Link'));
+      files = [...files, ...responseJson];
     }
-    const page = await resp.json();
-    nextPageLink = getNextLink(resp.headers.get('Link'));
-    files = [...files, ...page];
+  } catch (error) {
+    console.error('Error:', error);
+    process.exit(1);
   }
+
   return files;
 };
 
@@ -59,7 +63,7 @@ const filterQuickstartConfigFiles = (files) =>
  * @returns {Array} files from Github API excluding test files
  */
 const filterOutTestFiles = (files) => {
-  return files.filter(({ filename }) => !MOCK_QUICKSTART_REGEXP.test(filename));
+  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
 module.exports = {
