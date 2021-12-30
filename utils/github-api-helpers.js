@@ -68,7 +68,7 @@ const filterOutTestFiles = (files) => {
 };
 
 /**
- * Filters out results from the Github API for changes to test files
+ * Filters results from the Github API down to install plan config files
  * @param {Array} files the results from Github API
  * @returns {Array} install plan config files from Github API
  */
