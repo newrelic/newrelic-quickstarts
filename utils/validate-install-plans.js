@@ -41,7 +41,12 @@ mutation (
 }
 `;
 
-const transformInstallPlanTarget = (target) => {
+/**
+ * Builds the target parameter from the config into the variables for NR Request
+ * @param {Object} target the `target` parameter object
+ * @returns {Object} target transformed for NR request
+ */
+const buildInstallPlanTargetVariable = (target) => {
   return Object.entries(target).reduce((acc, [key, value]) => {
     if (key === 'os') {
       acc[key] = value.map((str) => str.toUpperCase());
@@ -52,7 +57,12 @@ const transformInstallPlanTarget = (target) => {
   }, {});
 };
 
-const transformInstallPlanDirective = ({ mode, destination }) => {
+/**
+ * Builds the target parameter from the config into the variables for NR Request
+ * @param {{mode, destination}} directive `install` or `fallback` parameter object
+ * @returns {{mode, destination}} directive transformed for NR request
+ */
+const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
   switch (mode) {
     case 'targetedInstall':
       return {
@@ -71,44 +81,54 @@ const transformInstallPlanDirective = ({ mode, destination }) => {
   }
 };
 
-const transformContentsToRequest = ({
-  id,
-  name,
-  title,
-  description,
-  target,
-  install,
-  fallback,
-}) => {
+/**
+ * Builds input argument for submitQuickstart GraphQL mutation.
+ * @param {Object} installPlanConfig - An object containing the path and contents of a quickstart config file.
+ * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
+ */
+const buildMutationVariables = (installPlanConfig) => {
+  const { id, name, title, description, target, install, fallback } =
+    installPlanConfig.contents[0] || {};
+
   return {
     id,
     description,
     displayName: name,
     heading: title,
-    target: target ? transformInstallPlanTarget(target) : undefined,
-    primary: install ? transformInstallPlanDirective(install) : undefined,
-    fallback: fallback ? transformInstallPlanDirective(fallback) : undefined,
+    target: target && buildInstallPlanTargetVariable(target),
+    primary: install && buildInstallPlanDirectiveVariable(install),
+    fallback: fallback && buildInstallPlanDirectiveVariable(fallback),
   };
 };
 
+/**
+ * Takes the filenames and returns path and request variables for file for submitInstallPlan mutation.
+ * @param {{filename}} file - An object containing the filename of install plan config file.
+ * @return {{filePath, variables}} - An object containing the path and mutation variables for install plan.
+ */
 const transformInstallPlansToRequestVariables = ({ filename }) => {
-  const { contents, path: filePath } = readYamlFile(
+  const installPlanFile = readYamlFile(
     path.join(process.cwd(), `../${filename}`)
   );
 
   return {
-    filePath,
-    variables: contents[0] ? transformContentsToRequest(contents[0]) : {},
+    filePath: installPlanFile.path,
+    variables: buildMutationVariables(installPlanFile),
   };
 };
 
-const validateInstallPlan = async (files) => {
-  const installFiles = filterInstallPlans(files).map(
+/**
+ * Validates for an array of install plan filenames
+ * @param {Array} installPlanFiles - Array containing install plan file names.
+ * @return {Boolean} - Boolean value indicating whether all files were validated
+ */
+const validateInstallPlan = async (installPlanFiles) => {
+  const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
 
   const graphqlResponses = await Promise.all(
-    installFiles.map(async ({ variables, filePath }) => {
+    installPlanRequests.map(async ({ variables, filePath }) => {
       const { data, errors } = await fetchNRGraphqlResults({
         queryString: VALIDATE_INSTALL_PLAN_MUTATION,
         variables,
@@ -134,7 +154,8 @@ const main = async () => {
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN
   );
-  const hasFailed = await validateInstallPlan(files);
+  const installPlanFiles = filterInstallPlans(files);
+  const hasFailed = await validateInstallPlan(installPlanFiles);
 
   if (hasFailed) {
     process.exit(1);
