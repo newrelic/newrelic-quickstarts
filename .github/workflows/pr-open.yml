@@ -19,4 +19,18 @@ jobs:
       - name: Comment and label
         run: |
           gh pr comment ${{github.event.pull_request.number}} --body "Thank you for your contribution, our team will be reviewing this shortly, please be available for any follow up questions or code review feedback!"
-          gh pr edit ${{github.event.pull_request.number}} --add-label "triage-needed"
+
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Label PR based on Changes
+        run: |
+          echo '${{ steps.file_changes.outputs.files_added}}'
+          if [[ '${{ steps.file_changes.outputs.files_added}}' =~ "config.yml" ]]; then
+              echo "New config.yml added"
+              gh pr edit ${{github.event.pull_request.number}} --add-label "new-quickstart"
+          elif [[ '${{ steps.file_changes.outputs.files_modified}}' =~ quickstarts/.* ]]; then
+              echo "Quickstart Updated"
+              gh pr edit ${{github.event.pull_request.number}} --add-label "improved-quickstart"
+          fi

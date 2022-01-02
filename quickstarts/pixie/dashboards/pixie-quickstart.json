@@ -1,0 +1,308 @@
+{
+    "name": "Pixie Quickstart Dashboard",
+    "description": null,
+    "pages": [
+      {
+        "name": "Pixie Quickstart Dashboard",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "\n![Pixie](https://github.com/cncf/artwork/raw/master/projects/pixie/stacked/color/pixie-stacked-color.png)\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 2,
+              "row": 1,
+              "height": 2,
+              "width": 11
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Pixie Quickstart Dashboard\n---\nPixie is an open source observability tool for Kubernetes applications. Pixie uses eBPF to automatically capture telemetry data without the need for manual instrumentation. This dashboard will provide an overview of latency, error rate and throughput metrics for services running in your Kubernetes clusters.\n\n\nFor more information or support, please go to https://px.dev/ or https://docs.newrelic.com/docs/auto-telemetry-pixie/get-started-auto-telemetry-pixie/."
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Latency\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Slowest HTTP Targets [Top 20]",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select average(duration.ms) where instrumentation.provider = 'pixie' and http.url not like '/health%' and parent.k8s.pod.name is not null facet parent.k8s.pod.name, service.name, k8s.pod.name, k8s.namespace.name, k8s.cluster.name, http.method, http.target limit 20  "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Avg. Response Time by Service [Top 20]",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select average(http.server.duration) where instrumentation.provider = 'pixie' facet service.name limit 20 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Errors\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "height": 3,
+              "width": 12
+            },
+            "title": "HTTP Errors",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet parent.service.name, k8s.pod.name, http.status_code limit 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "height": 3,
+              "width": 6
+            },
+            "title": "HTTP Error Count by Service/Pod",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet parent.service.name, k8s.pod.name, http.status_code limit 100 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 7,
+              "row": 14,
+              "height": 3,
+              "width": 6
+            },
+            "title": "HTTP Error Count by Target",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select count(http.status_code) as 'Count' where instrumentation.provider = 'pixie' and http.status_code > 399 and parent.service.name is NOT NULL and k8s.pod.name is not null facet http.target, http.status_code limit 100 TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "height": 1,
+              "width": 12
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Throughput\n---\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Throughput by Service [Top 20]",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select count(http.server.duration) as 'Total Requests', rate(count(http.server.duration), 1 minute) as 'Req/min' where instrumentation.provider = 'pixie' facet service.name, k8s.namespace.name, k8s.cluster.name limit 20"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 21,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Throughput by Service [Top 20]",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select count(http.server.duration) where instrumentation.provider = 'pixie' facet service.name TIMESERIES limit 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      },
+      {
+        "name": "HTTP Spans",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 8,
+              "width": 12
+            },
+            "title": "HTTP Spans",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Span select * where instrumentation.provider = 'pixie'"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }

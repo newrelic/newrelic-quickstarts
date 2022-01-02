@@ -1,0 +1,2908 @@
+{
+  "name": "Video QoS - theplatform",
+  "description": "",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Attempts",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Attempts' FROM PageAction where actionName = 'CONTENT_REQUEST' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Plays",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND timeSinceStarted > 0 AND timeSinceStarted < 5000) as 'Plays' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 4,
+            "width": 2
+          },
+          "title": "Average Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Connection Buffering Ratio",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Total Connection Buffering Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true)) as 'seconds' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Start Failure %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Total Playtime",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(sum(playtimeSinceLastEvent/1000/60), where contentPlayhead !=0)-filter(sum(timeSincePaused/1000/60), where action = 'CONTENT_RESUME')-filter(sum(timeSinceBufferBegin/1000/60), where actionName = 'CONTENT_BUFFER_END' and bufferType = 'seek')-filter(sum(timeSinceBufferBegin/1000/60), where actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection')-filter(sum(timeSinceBackground/1000/60), where actionName = 'FOREGROUND' and contentplayhead > 0) as 'minutes' from PageAction since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Plays by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Plays' where totalPlaytime > 1000 FACET appName since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Last 24H Peak Concurrent",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max (views) FROM ( SELECT uniquecount(viewId) as 'views' FROM PageAction where totalPlaytime > 1000 timeseries 5 minutes) since 1 day ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Weekly Peak Concurrent",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max (views) FROM ( SELECT uniquecount(viewId) as 'views' FROM PageAction where  totalPlaytime > 1000 timeseries 30 minutes) since 1 week ago facet weekdayOf(timestamp) WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 11,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Playback Failure %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "height": 3,
+            "width": 12
+          },
+          "title": "Peak Concurrent Views",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000 timeseries since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Video Start Time Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago  TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Connection Buffering Ratio Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Start Failure % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago TIMESERIES auto WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Playback Failure % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Playtime",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(sum(playtimeSinceLastEvent/1000/60), where contentPlayhead !=0)-filter(sum(timeSincePaused/1000/60), where action = 'CONTENT_RESUME')-filter(sum(timeSinceBufferBegin/1000/60), where actionName = 'CONTENT_BUFFER_END' and bufferType = 'seek')-filter(sum(timeSinceBufferBegin/1000/60), where actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection')-filter(sum(timeSinceBackground/1000/60), where actionName = 'FOREGROUND' and contentplayhead > 0) as 'minutes' from PageAction since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Video Start Time",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Average Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Plays",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND timeSinceStarted > 0 AND timeSinceStarted < 5000) as 'Plays' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VST Under 5 seconds ",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(count(viewId), where timeSinceRequested < 5000 and timeSinceRequested < 90000 AND actionName = 'CONTENT_START' ) / filter(count(viewId), WHERE actionName = 'CONTENT_START' and timeSinceRequested is not NULL) *100 as'%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Plays Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND timeSinceStarted > 0 AND timeSinceStarted < 5000) as 'Plays' since 1 week ago TIMESERIES auto WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by appName",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM PageAction where actionName = 'CONTENT_START' facet appName since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago  TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Start Time by app",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago facet appName limit 200  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Time Percentile",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(percentile(timeSinceRequested/1000, 50, 90, 95, 99), where actionName = 'CONTENT_START' and timeSinceRequested < 90000 and (timeSinceBackground is NULL OR timeSinceBackground <1000)) as 'seconds' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 8
+          },
+          "title": "VST under 5 seconds Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(count(viewId), where timeSinceRequested < 5000 and actionName = 'CONTENT_START' ) / filter(count(viewId), WHERE actionName = 'CONTENT_START' and timeSinceRequested is not NULL) *100 as'%' since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by city",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM PageAction where actionName = 'CONTENT_START' facet city, regionCode, countryCode  since 1 week ago limit 200  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 10
+          },
+          "title": "Start Time Percentile Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(percentile(timeSinceRequested/1000, 50, 90, 95, 99), where actionName = 'CONTENT_START' and timeSinceRequested < 90000 and (timeSinceBackground is NULL OR timeSinceBackground <1000)) as 'seconds' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Start Tme by city",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago facet city, regionCode, countryCode limit 200  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 10
+          },
+          "title": "Video Start Time by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago TIMESERIES AUTO facet appName WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by Asset Name",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM PageAction where actionName = 'CONTENT_START' facet contentTitle since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 3,
+            "width": 5
+          },
+          "title": "viewSession with the longest Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT percentile(timeSinceRequested/1000, 90) as 'seconds' where actionName = 'CONTENT_START' AND timeSinceRequested < 60000 AND (timeSinceBackground is NULL OR timeSinceBackground <1000) since 1 week ago facet viewSession limit 200  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 16,
+            "height": 3,
+            "width": 5
+          },
+          "title": "viewId with the longest Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT percentile(timeSinceRequested/1000, 90) as 'seconds' where actionName = 'CONTENT_START' AND timeSinceRequested < 60000 AND (timeSinceBackground is NULL OR timeSinceBackground <1000) since 1 week ago facet viewId  limit 200  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Start Time by assetName",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "height": 8,
+            "width": 10
+          },
+          "title": "Start Times over 5 seconds",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT  actionName, timeSinceRequested, viewId, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_START' and timeSinceRequested >5000 and timeSinceRequested < 60000 since 1 week ago limit max WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM MobileVideo, PageAction where actionName = 'CONTENT_START' facet asnOrganization since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 22,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Start Time by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "CIRR",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Total Plays",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "% of Plays with CIRR > 500",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 AND timeSinceBufferBegin > 500 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackgroundEvent is false)) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' since 1 week ago  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Peak concurrent plays",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Total Buffer Seconds",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true)) as 'seconds' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "% Plays with CIRR > 500 ms",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND timeSinceBufferBegin > 500 AND timeSinceBufferBegin < 90000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackgroundEvent is false)) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' since 1 week ago TIMESERIES auto WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "CIRR Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago timeseries auto WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000  facet appName since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR Events",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT  filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true)) as 'Buffer Events' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "CIRR Events Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT  filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true)) as 'Buffer Events' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Average Buffer Length",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 8,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Avg Buffer Length Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackgroundEvent is false since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by App Name",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet appName  limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "CIRR by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago timeseries auto facet appName WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Total buffer seconds trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true)) as 'seconds' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000  facet contentTitle since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 5
+          },
+          "title": "viewSessions with high CIRR",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet viewSession limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 13,
+            "height": 3,
+            "width": 5
+          },
+          "title": "viewId with high CIRR",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet viewId limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 8,
+            "width": 10
+          },
+          "title": "CIRR Buffer Events",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT actionName, bufferType, timeSinceBufferBegin, timeSinceSeekEnd, timeSinceStarted, timeSinceResumed, assetId, assetName, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) since 1 week ago limit MAX WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000  facet asnOrganization since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "cirr by isp",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 22,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by city",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction where totalPlaytime > 1000 facet city, regionCode, countryCode  since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 25,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by city",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet city,regionCode, countryCode  limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Start Failures",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failures",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT count(*) as 'Attempts'where actionName = 'CONTENT_REQUEST' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VSF %",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Attempts",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT count(*) as 'Attempts'where actionName = 'CONTENT_REQUEST' since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Attempts' FROM PageAction where actionName = 'CONTENT_REQUEST' since 1 week ago facet appName limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "VSF % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Start Failure Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago timeseries WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago facet appName limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 10
+          },
+          "title": "Start Failures by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago facet appName  TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' facet appName since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Top Start Failure Message",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where totalPlaytime < 1000 facet message since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 10,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Failure by viewId",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 facet viewId since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Attempts' FROM PageAction where actionName = 'CONTENT_REQUEST' since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Failure by viewSession",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 facet viewSession since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' facet contentTitle since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Attempts' FROM PageAction where actionName = 'CONTENT_REQUEST' facet city, regionCode, countryCode since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 8,
+            "width": 8
+          },
+          "title": "Start Failure Errors",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT actionName, message, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 since 1 week ago limit max WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago facet city, regionCode, countryCode limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' facet city, regionCode, countryCode since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Attempts' FROM PageAction where actionName = 'CONTENT_REQUEST' since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 22,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' facet asnOrganization since 1 week ago limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Playback Failures",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failures",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Plays' FROM MobileVideo, PageAction, RokuVideo where actionName = 'CONTENT_START' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VPF %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Plays Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM MobileVideo, PageAction, RokuVideo where totalPlaytime > 1000  since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by App",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago facet appName limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "VPF % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Playback Failure Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago timeseries WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Start Failures' since 1 week ago facet appName limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Playback Failures by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago facet appName  TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "height": 3,
+            "width": 5
+          },
+          "title": "VPF % by appName",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago facet appName TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by App",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet appName limit 200 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Top Playback Errors",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where totalPlaytime > 1000 WHERE actionName = 'CONTENT_ERROR' facet message since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 10,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Playback Failure by viewId",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 facet viewId limit 200 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Playback Failure by viewSession",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 facet viewSession limit 200 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago facet asnOrganization limit max WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet asnOrganization limit max since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 8,
+            "width": 8
+          },
+          "title": "Errors",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT actionName, message, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 since 1 week ago limit max WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' since 1 week ago facet city, regionCode, countryCode limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 16,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet contentTitle limit 200 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 19,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction where totalPlaytime > 1000 since 1 week ago facet city, regionCode, countryCode limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 22,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet city, regionCode, countryCode limit 200 since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Bitrate",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Average Bitrate",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (sum(MobileVideo.contentBitrate)/1000/1000 + sum(RokuVideo.contentBitrate)/1000/1000 + sum(PageAction.contentRenditionBitrate)/1000/1000) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo) since 1 week ago  WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Bitrate Trend",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (sum(MobileVideo.contentBitrate)/1000/1000 + sum(RokuVideo.contentBitrate)/1000/1000 + sum(PageAction.contentRenditionBitrate)/1000/1000) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo FACET deviceType ) FACET deviceType since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 6,
+            "width": 2
+          },
+          "title": "Avg Bitrate per device",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (sum(MobileVideo.contentBitrate)/1000/1000 + sum(RokuVideo.contentBitrate)/1000/1000 + sum(PageAction.contentRenditionBitrate)/1000/1000) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo FACET deviceType ) FACET deviceType since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (filter(sum(MobileVideo.contentBitrate)/1000/1000, where appName like '%iOS%' or appName like '%tvOS%') + filter(sum(MobileVideo.contentBitrate)/8/1000/1000, where appName like '%Android%') + filter(sum(PageAction.contentRenditionBitrate)/1000/1000, where appName like 'Crave%')) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo facet deviceType, streamFormat, userAgentName, userAgentOS, appName, appVersion limit max ) since 1 week ago limit 200  facet appName WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Bitrate by App Trend",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (filter(sum(MobileVideo.contentBitrate)/1000/1000, where appName like '%iOS%' or appName like '%tvOS%') + filter(sum(MobileVideo.contentBitrate)/8/1000/1000, where appName like '%Android%') + filter(sum(PageAction.contentRenditionBitrate)/1000/1000, where appName like 'Crave%')) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo facet deviceType, streamFormat, userAgentName, userAgentOS, appName, appVersion limit max timeseries) since 1 week ago limit 200 TIMESERIES facet appName WHERE trackerName = 'theplatform'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Web avg bitrate by device",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(bitrate) / sum(number) as 'mbps' from (select (filter(sum(MobileVideo.contentBitrate)/1000/1000, where appName like '%iOS%' or appName like '%tvOS%') + filter(sum(MobileVideo.contentBitrate)/8/1000/1000, where appName like '%Android%') + filter(sum(PageAction.contentRenditionBitrate)/1000/1000, where appName like 'Crave%')) as 'bitrate', count(*) as 'number' from MobileVideo, PageAction, RokuVideo facet deviceType, streamFormat, userAgentName, userAgentOS, appVersi limit max) since 1 week ago limit 200 facet userAgentName, userAgentOS WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Percentile Bitrate Web",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT percentile(PageAction.contentRenditionBitrate, 50, 90, 95, 99) since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Percentile Bitrate Web Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT percentile(PageAction.contentRenditionBitrate, 50, 90, 95, 99) since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "KPI Reporting",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Video Start Time"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Video Start Time",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "height": 3,
+            "width": 9
+          },
+          "title": "Video Start Time Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL and timeSinceRequested < 90000) as 'Seconds' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Video Start Time by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago  facet appName limit 200 WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "height": 3,
+            "width": 9
+          },
+          "title": "Video Start Time by app Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceRequested/1000), where actionName = 'CONTENT_START' and timeSinceRequested < 90000)) / filter(uniqueCount(viewId) , where actionName = 'CONTENT_START' and timeSinceRequested IS NOT NULL) as 'Seconds' since 1 week ago facet appName limit 200 TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 3
+          },
+          "title": "VST % under 5 seconds",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(count(viewId), where timeSinceRequested < 5000  and timeSinceRequested < 90000 and actionName = 'CONTENT_START') / filter(count(viewId), WHERE actionName = 'CONTENT_START' and timeSinceRequested is not NULL) *100 as'%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 10,
+            "height": 3,
+            "width": 9
+          },
+          "title": "VST % under 5 seconds trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(count(viewId), where timeSinceRequested < 5000 and timeSinceRequested < 90000 AND actionName = 'CONTENT_START') / filter(count(viewId), WHERE actionName = 'CONTENT_START' and timeSinceRequested is not NULL) *100 as'%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Connection Induced Rebuffering Ratio"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "height": 3,
+            "width": 3
+          },
+          "title": "CIRR",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 14,
+            "height": 3,
+            "width": 9
+          },
+          "title": "CIRR Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "height": 3,
+            "width": 3
+          },
+          "title": "CIRR % by App",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago facet appName WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 17,
+            "height": 3,
+            "width": 9
+          },
+          "title": "CIRR % by App Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000  and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceBufferBegin < 90000 and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackgroundEvent is true) and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' since 1 week ago TIMESERIES facet appName  WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Plays impacted by CIRR",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND timeSinceBufferBegin > 500 and timeSinceBufferBegin < 90000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackgroundEvent is false)) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' since 1 week ago WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 20,
+            "height": 3,
+            "width": 9
+          },
+          "title": "Plays Impacted by CIRR Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND timeSinceBufferBegin > 500 and timeSinceBufferBegin < 90000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackgroundEvent is false)) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' since 1 week ago TIMESERIES WHERE trackerName = 'theplatform'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}

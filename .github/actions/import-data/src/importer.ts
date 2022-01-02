@@ -2,7 +2,7 @@ import { dashboardBody, importedDashboardBody } from './types/dashboardInput';
 import { GraphQLClient } from 'graphql-request';
 import { addDashboard, checkIfDashboardExists, removeDashboard } from './mutations/dashboard';
 import { addPolicy, checkIfPolicyExists, removePolicy } from './mutations/policy';
-import { baselineMutation, outlierMutation, staticMutation } from './mutations/alerts';
+import { baselineMutation, staticMutation } from './mutations/alerts';
 import * as yargs from 'yargs';
 import fs from 'fs';
 import path from 'path';
@@ -155,7 +155,7 @@ const createAlertLocal = async (accountId: number, quickstart: string, policyId:
 
 	fileNames.forEach(async file => {
 		const loadedYaml = yaml.loadAll(fs.readFileSync(`${dir}/${file}`, 'utf-8'));
-		const parsedAlert = JSON.parse(JSON.stringify(loadedYaml));
+		const parsedAlert = JSON.parse(JSON.stringify(loadedYaml))[0];
 
 		if (parsedAlert.type === 'BASELINE') {
 			const filledFile = transformData(parsedAlert);
@@ -172,15 +172,6 @@ const createAlertLocal = async (accountId: number, quickstart: string, policyId:
 
 			try {
 				await client.rawRequest(staticMutation, variables);
-			} catch (error) {
-				console.error('Alert Failure: ', error.response.errors[0].message);
-			}
-		} else if (parsedAlert.type === 'OUTLIER') {
-			const filledFile = transformData(parsedAlert);
-			variables.condition = filledFile;
-
-			try {
-				await client.rawRequest(outlierMutation, variables);
 			} catch (error) {
 				console.error('Alert Failure: ', error.response.errors[0].message);
 			}

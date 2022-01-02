@@ -4,13 +4,10 @@ export type AlertsNrqlBaselineCondition = {
 	policyId: string | number;
 };
 
-export type AlertsUnion =
-	| AlertsNrqlConditionBaselineInput
-	| AlertsNrqlConditionOutlierInput
-	| AlertsNrqlConditionStaticInput;
+export type AlertsUnion = AlertsNrqlConditionBaselineInput | AlertsNrqlConditionStaticInput;
 
 export type ConditionTypeInput = {
-	condition: AlertsNrqlConditionBaselineInput | AlertsNrqlConditionOutlierInput | AlertsNrqlConditionStaticInput;
+	condition: AlertsNrqlConditionBaselineInput | AlertsNrqlConditionStaticInput;
 };
 
 export type AlertsNrqlConditionBaselineInput = {
@@ -92,22 +89,6 @@ enum AlertsViolationTimeLimit {
 	'TWENTY_FOUR_HOURS',
 	'TWO_HOURS',
 }
-
-export type AlertsNrqlConditionOutlierInput = {
-	descritption: string;
-	enabled: boolean;
-	expectedGroups: number;
-	expiration: AlertsNrqlConditionExpirationInput;
-	name: string;
-	nrql: AlertsNrqlConditionQueryInput;
-	openViolationOnGroupOverlap: boolean;
-	runbookUrl: string;
-	signal: AlertsNrqlConditionSignalInput;
-	terms: AlertsNrqlDynamicConditionTermsInput[];
-	violationTimeLimit: AlertsViolationTimeLimit;
-	violationTimeLimitSeconds: number;
-	type?: string;
-};
 
 export type AlertsNrqlConditionStaticInput = {
 	description: string;
