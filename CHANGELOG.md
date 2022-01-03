@@ -1,3 +1,14 @@
+# [0.81.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.7...v0.81.0) (2022-01-03)
+
+
+### Features
+
+* adding AWS integrations analysis dashboard ([e1143bf](https://github.com/newrelic/newrelic-quickstarts/commit/e1143bfddcb27ee0b071d10260566297b457663c))
+* adding Azure integrations analysis dashboard ([829194f](https://github.com/newrelic/newrelic-quickstarts/commit/829194ffec025a2ccf2e0ce0dd6f8bf893869403))
+* adding GCP integrations analysis dashboard ([24f4c2b](https://github.com/newrelic/newrelic-quickstarts/commit/24f4c2b744666cae8576b04450d0cb99d65a4207))
+* adding OHI analysis dashboard ([9ab6535](https://github.com/newrelic/newrelic-quickstarts/commit/9ab65353e18962409b835fe610f8247490f051f3))
+* refined k8s analysis dashboard ([7097ff3](https://github.com/newrelic/newrelic-quickstarts/commit/7097ff3da4ac98d3f9f5f9a1bd3c642d41d45e31))
+
 ## [0.80.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.6...v0.80.7) (2021-12-21)
 
 ## [0.80.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.5...v0.80.6) (2021-12-21)
