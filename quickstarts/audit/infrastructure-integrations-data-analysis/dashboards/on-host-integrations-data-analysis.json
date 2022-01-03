@@ -1,0 +1,1678 @@
+{
+    "name": "On-Host Integrations Data Analysis",
+    "description": null,
+    "pages": [
+      {
+        "name": "Overview",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "**THE DETAILS IN THIS DASHBOARD ARE ESTIMATES, THE [DATA MANAGEMENT HUB](https://one.newrelic.com/launcher/data-management-nerdlets.data-management-launcher) SHOULD BE USED TO VIEW OFFICIAL INGESTION RATES**\n\nThis page analyzes `Infrastructure Integrations` category of ingest using the known samples created by On-Host integrations. \n\n*If you find a missing integration, please [open an issue](https://github.com/newrelic/newrelic-quickstarts/issues/new/choose) on our GitHub!*\n\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Infrastructure integrations (Data Management Hub)",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(GigabytesIngested) AS '1 DAY (GB)', rate(sum(GigabytesIngested), 1 MONTH) AS '1 MONTH (GB)' FROM NrConsumption WHERE productLine='DataPlatform' AND usageMetric LIKE '%InfraIntegration%' LIMIT MAX SINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "On-Host Integrations (This Dashboard)",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT\nmax(\n  `OHI_Apache` +\n  `OHI_Cassandra` +\n  `OHI_Couchbase` +\n  `OHI_Collectd` +\n  `OHI_Elasticsearch` +\n  `OHI_F5` +\n  `OHI_HAProxy` +\n  `OHI_Consul` +\n  `OHI_Kafka` +\n  `OHI_Memcached` +\n  `OHI_MongoDB` +\n  `OHI_MSSQL` +\n  `OHI_MySQL` +\n  `OHI_Nagios` +\n  `OHI_NFS` +\n  `OHI_NGINX` +\n  `OHI_Oracle` +\n  `OHI_PostgreSQL` +\n  `OHI_Port_Monitor` +\n  `OHI_RabbitMQ` +\n  `OHI_Redis` +\n  `OHI_Varnish_Cache` +\n  `OHI_VMware_Tanzu` +\n  `OHI_VMWare_vSphere` +\n  `OHI_Windows_Event_Log` +\n  `OHI_Apache_Zookeeper`\n  ) AS '1 DAY (GB)',\nrate(max(\n  `OHI_Apache` +\n  `OHI_Cassandra` +\n  `OHI_Couchbase` +\n  `OHI_Collectd` +\n  `OHI_Elasticsearch` +\n  `OHI_F5` +\n  `OHI_HAProxy` +\n  `OHI_Consul` +\n  `OHI_Kafka` +\n  `OHI_Memcached` +\n  `OHI_MongoDB` +\n  `OHI_MSSQL` +\n  `OHI_MySQL` +\n  `OHI_Nagios` +\n  `OHI_NFS` +\n  `OHI_NGINX` +\n  `OHI_Oracle` +\n  `OHI_PostgreSQL` +\n  `OHI_Port_Monitor` +\n  `OHI_RabbitMQ` +\n  `OHI_Redis` +\n  `OHI_Varnish_Cache` +\n  `OHI_VMware_Tanzu` +\n  `OHI_VMWare_vSphere` +\n  `OHI_Windows_Event_Log` +\n  `OHI_Apache_Zookeeper`\n  ), 1 MONTH) AS '1 MONTH (GB)'\nFROM (\nSELECT\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('ApacheSample')) AS 'OHI_Apache',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('CassandraSample', 'CassandraColumnFamilySample')) AS 'OHI_Cassandra',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('CouchbaseBucketSample', 'CouchbaseClusterSample', 'CouchbaseNodeSample', 'CouchbaseQueryEngineSample')) AS 'OHI_Couchbase',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('CollectdSample')) AS 'OHI_Collectd',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('ElasticsearchClusterSample', 'ElasticsearchNodeSample', 'ElasticsearchCommonSample', 'ElasticsearchIndexSample')) AS 'OHI_Elasticsearch',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('F5BigIpSystemSample', 'F5BigIpVirtualServerSample', 'F5BigIpPoolSample', 'F5BigIpPoolMemberSample', 'F5BigIpNodeSample')) AS 'OHI_F5',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('HAProxyBackendSample', 'HAProxyFrontendSample', 'HAProxyServerSample')) AS 'OHI_HAProxy',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('ConsulDatacenterSample', 'ConsulAgentSample')) AS 'OHI_Consul',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('KafkaBrokerSample', 'KafkaConsumerSample', 'KafkaProducerSample', 'KafkaTopicSample', 'KafkaOffsetSample')) AS 'OHI_Kafka',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('MemcachedSample', 'MemcachedSlabSample')) AS 'OHI_Memcached',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('MongoCollectionSample', 'MongoConfigServerSample', 'MongoDatabaseSample', 'MongodTopSample', 'MongoSample', 'MongodSample', 'MongosSample')) AS 'OHI_MongoDB',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('MssqlDatabaseSample', 'MssqlInstanceSample', 'MssqlWaitSample')) AS 'OHI_MSSQL',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('MysqlSample')) AS 'OHI_MySQL',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('NagiosServiceCheckSample')) AS 'OHI_Nagios',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('NFSSample')) AS 'OHI_NFS',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('NginxSample')) AS 'OHI_NGINX',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('OracleDatabaseSample', 'OracleTablespaceSample')) AS 'OHI_Oracle',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('PostgresqlDatabaseSample', 'PostgresqlIndexSample', 'PostgresqlInstanceSample', 'PostgresqlTableSample', 'PgBouncerSample')) AS 'OHI_PostgreSQL',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('NetworkPortSample')) AS 'OHI_Port_Monitor',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('RabbitmqVhostSample', 'RabbitmqNodeSample', 'RabbitmqExchangeSample', 'RabbitmqQueueSample')) AS 'OHI_RabbitMQ',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('RedisSample', 'RedisKeyspaceSample')) AS 'OHI_Redis',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('VarnishSample', 'VarnishLockSample', 'VarnishStorageSample', 'VarnishMempoolSample', 'VarnishBackendSample')) AS 'OHI_Varnish_Cache',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('PCFContainerMetric', 'PCFCounterEvent', 'PCFHttpStartStop', 'PCFLogMessage', 'PCFValueMetric')) AS 'OHI_VMware_Tanzu',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('VSphereHostSample', 'VSphereClusterSample', 'VSphereVmSample', 'VSphereDatastoreSample', 'VSphereDatacenterSample', 'VSphereResourcePoolSample', 'VSphereSnapshotVmSample')) AS 'OHI_VMWare_vSphere',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('Windows Event Logs')) AS 'OHI_Windows_Event_Log',\n  filter(bytecountestimate()/10e8, WHERE eventType() IN ('ZookeeperSample')) AS 'OHI_Apache_Zookeeper'\nFROM \nApacheSample,\nCassandraSample, CassandraColumnFamilySample,\nCouchbaseBucketSample, CouchbaseClusterSample, CouchbaseNodeSample, CouchbaseQueryEngineSample,\nCollectdSample,\nElasticsearchClusterSample, ElasticsearchNodeSample, ElasticsearchCommonSample, ElasticsearchIndexSample,\nF5BigIpSystemSample, F5BigIpVirtualServerSample, F5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpNodeSample,\nHAProxyBackendSample, HAProxyFrontendSample, HAProxyServerSample,\nConsulDatacenterSample, ConsulAgentSample,\nKafkaBrokerSample, KafkaConsumerSample, KafkaProducerSample, KafkaTopicSample, KafkaOffsetSample,\nMemcachedSample, MemcachedSlabSample,\nMongoCollectionSample, MongoConfigServerSample, MongoDatabaseSample, MongodTopSample, MongoSample, MongodSample, MongosSample,\nMssqlDatabaseSample, MssqlInstanceSample, MssqlWaitSample,\nMysqlSample,\nNagiosServiceCheckSample,\nNFSSample,\nNginxSample,\nOracleDatabaseSample, OracleTablespaceSample,\nPostgresqlDatabaseSample, PostgresqlIndexSample, PostgresqlInstanceSample, PostgresqlTableSample, PgBouncerSample,\nNetworkPortSample,\nRabbitmqVhostSample, RabbitmqNodeSample, RabbitmqExchangeSample, RabbitmqQueueSample,\nRedisSample, RedisKeyspaceSample,\nVarnishSample, VarnishLockSample, VarnishStorageSample, VarnishMempoolSample, VarnishBackendSample,\nPCFContainerMetric, PCFCounterEvent, PCFHttpStartStop, PCFLogMessage, PCFValueMetric,\nVSphereHostSample, VSphereClusterSample, VSphereVmSample, VSphereDatastoreSample, VSphereDatacenterSample, VSphereResourcePoolSample, VSphereSnapshotVmSample,\n`Windows Event Logs`,\nZookeeperSample\n)\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 5,
+              "width": 12
+            },
+            "title": "Top 25 - On-Host Integrations Timeline",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ApacheSample,\nCassandraSample, CassandraColumnFamilySample,\nCouchbaseBucketSample, CouchbaseClusterSample, CouchbaseNodeSample, CouchbaseQueryEngineSample,\nCollectdSample,\nElasticsearchClusterSample, ElasticsearchNodeSample, ElasticsearchCommonSample, ElasticsearchIndexSample,\nF5BigIpSystemSample, F5BigIpVirtualServerSample, F5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpNodeSample,\nHAProxyBackendSample, HAProxyFrontendSample, HAProxyServerSample,\nConsulDatacenterSample, ConsulAgentSample,\nKafkaBrokerSample, KafkaConsumerSample, KafkaProducerSample, KafkaTopicSample, KafkaOffsetSample,\nMemcachedSample, MemcachedSlabSample,\nMongoCollectionSample, MongoConfigServerSample, MongoDatabaseSample, MongodTopSample, MongoSample, MongodSample, MongosSample,\nMssqlDatabaseSample, MssqlInstanceSample, MssqlWaitSample,\nMysqlSample,\nNagiosServiceCheckSample,\nNFSSample,\nNginxSample,\nOracleDatabaseSample, OracleTablespaceSample,\nPostgresqlDatabaseSample, PostgresqlIndexSample, PostgresqlInstanceSample, PostgresqlTableSample, PgBouncerSample,\nNetworkPortSample,\nRabbitmqVhostSample, RabbitmqNodeSample, RabbitmqExchangeSample, RabbitmqQueueSample,\nRedisSample, RedisKeyspaceSample,\nVarnishSample, VarnishLockSample, VarnishStorageSample, VarnishMempoolSample, VarnishBackendSample,\nPCFContainerMetric, PCFCounterEvent, PCFHttpStartStop, PCFLogMessage, PCFValueMetric,\nVSphereHostSample, VSphereClusterSample, VSphereVmSample, VSphereDatastoreSample, VSphereDatacenterSample, VSphereResourcePoolSample, VSphereSnapshotVmSample,\n`Windows Event Logs`,\nZookeeperSample\nSELECT bytecountestimate()/10e8\nFACET CASES(\nWHERE eventType() IN ('ApacheSample') AS 'Apache',\nWHERE eventType() IN ('CassandraSample', 'CassandraColumnFamilySample') AS 'Cassandra',\nWHERE eventType() IN ('CouchbaseBucketSample', 'CouchbaseClusterSample', 'CouchbaseNodeSample', 'CouchbaseQueryEngineSample') AS 'Couchbase',\nWHERE eventType() IN ('CollectdSample') AS 'Collectd',\nWHERE eventType() IN ('ElasticsearchClusterSample', 'ElasticsearchNodeSample', 'ElasticsearchCommonSample', 'ElasticsearchIndexSample') AS 'Elasticsearch',\nWHERE eventType() IN ('F5BigIpSystemSample', 'F5BigIpVirtualServerSample', 'F5BigIpPoolSample', 'F5BigIpPoolMemberSample', 'F5BigIpNodeSample') AS 'F5',\nWHERE eventType() IN ('HAProxyBackendSample', 'HAProxyFrontendSample', 'HAProxyServerSample') AS 'HAProxy',\nWHERE eventType() IN ('ConsulDatacenterSample', 'ConsulAgentSample') AS 'Consul',\nWHERE eventType() IN ('KafkaBrokerSample', 'KafkaConsumerSample', 'KafkaProducerSample', 'KafkaTopicSample', 'KafkaOffsetSample') AS 'Kafka',\nWHERE eventType() IN ('MemcachedSample', 'MemcachedSlabSample') AS 'Memcached',\nWHERE eventType() IN ('MongoCollectionSample', 'MongoConfigServerSample', 'MongoDatabaseSample', 'MongodTopSample', 'MongoSample', 'MongodSample', 'MongosSample') AS 'MongoDB',\nWHERE eventType() IN ('MssqlDatabaseSample', 'MssqlInstanceSample', 'MssqlWaitSample') AS 'MSSQL',\nWHERE eventType() IN ('MysqlSample') AS 'MySQL',\nWHERE eventType() IN ('NagiosServiceCheckSample') AS 'Nagios',\nWHERE eventType() IN ('NFSSample') AS 'NFS',\nWHERE eventType() IN ('NginxSample') AS 'NGINX',\nWHERE eventType() IN ('OracleDatabaseSample', 'OracleTablespaceSample') AS 'Oracle',\nWHERE eventType() IN ('PostgresqlDatabaseSample', 'PostgresqlIndexSample', 'PostgresqlInstanceSample', 'PostgresqlTableSample', 'PgBouncerSample') AS 'PostgreSQL',\nWHERE eventType() IN ('NetworkPortSample') AS 'Port Monitor',\nWHERE eventType() IN ('RabbitmqVhostSample', 'RabbitmqNodeSample', 'RabbitmqExchangeSample', 'RabbitmqQueueSample') AS 'RabbitMQ',\nWHERE eventType() IN ('RedisSample', 'RedisKeyspaceSample') AS 'Redis',\nWHERE eventType() IN ('VarnishSample', 'VarnishLockSample', 'VarnishStorageSample', 'VarnishMempoolSample', 'VarnishBackendSample') AS 'Varnish Cache',\nWHERE eventType() IN ('PCFContainerMetric', 'PCFCounterEvent', 'PCFHttpStartStop', 'PCFLogMessage', 'PCFValueMetric') AS 'VMware Tanzu',\nWHERE eventType() IN ('VSphereHostSample', 'VSphereClusterSample', 'VSphereVmSample', 'VSphereDatastoreSample', 'VSphereDatacenterSample', 'VSphereResourcePoolSample', 'VSphereSnapshotVmSample') AS 'VMWare vSphere',\nWHERE eventType() IN ('Windows Event Logs') AS 'Windows Event Log',\nWHERE eventType() IN ('ZookeeperSample') AS 'Apache Zookeeper'\n) OR eventType()\nSINCE 7 DAYS AGO\nTIMESERIES\nLIMIT 25"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      },
+      {
+        "name": "Details per Integration",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 6,
+              "width": 2
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "![New Relic](https://newrelic.com/themes/custom/curio/assets/mediakit/NR_logo_Horizontal.svg)\nThis page analyzes data coming from [On-Host integrations](https://docs.newrelic.com/docs/integrations/host-integrations/host-integrations-list/). Data ingest for these integrations is most easily controlled in each integration's [configuration file](https://docs.newrelic.com/docs/create-integrations/infrastructure-integrations-sdk/specifications/host-integrations-newer-configuration-format/#interval) (newer formats), or [definition file](https://docs.newrelic.com/docs/create-integrations/infrastructure-integrations-sdk/specifications/host-integrations-standard-configuration-format/#definition-file) (older formats).\n\n*Custom event names from integrations such as Flex, `nri-jmx`, `nri-perfmon`, or a custom query from a database integration are not analyzed*"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "height": 6,
+              "width": 10
+            },
+            "title": "On-Host Integrations In Use (Other charts will be blank)",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ApacheSample,\nCassandraSample, CassandraColumnFamilySample,\nCouchbaseBucketSample, CouchbaseClusterSample, CouchbaseNodeSample, CouchbaseQueryEngineSample,\nCollectdSample,\nElasticsearchClusterSample, ElasticsearchNodeSample, ElasticsearchCommonSample, ElasticsearchIndexSample,\nF5BigIpSystemSample, F5BigIpVirtualServerSample, F5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpNodeSample,\nHAProxyBackendSample, HAProxyFrontendSample, HAProxyServerSample,\nConsulDatacenterSample, ConsulAgentSample,\nKafkaBrokerSample, KafkaConsumerSample, KafkaProducerSample, KafkaTopicSample, KafkaOffsetSample,\nMemcachedSample, MemcachedSlabSample,\nMongoCollectionSample, MongoConfigServerSample, MongoDatabaseSample, MongodTopSample, MongoSample, MongodSample, MongosSample,\nMssqlDatabaseSample, MssqlInstanceSample, MssqlWaitSample,\nMysqlSample,\nNagiosServiceCheckSample,\nNFSSample,\nNginxSample,\nOracleDatabaseSample, OracleTablespaceSample,\nPostgresqlDatabaseSample, PostgresqlIndexSample, PostgresqlInstanceSample, PostgresqlTableSample, PgBouncerSample,\nNetworkPortSample,\nRabbitmqVhostSample, RabbitmqNodeSample, RabbitmqExchangeSample, RabbitmqQueueSample,\nRedisSample, RedisKeyspaceSample,\nVarnishSample, VarnishLockSample, VarnishStorageSample, VarnishMempoolSample, VarnishBackendSample,\nPCFContainerMetric, PCFCounterEvent, PCFHttpStartStop, PCFLogMessage, PCFValueMetric,\nVSphereHostSample, VSphereClusterSample, VSphereVmSample, VSphereDatastoreSample, VSphereDatacenterSample, VSphereResourcePoolSample, VSphereSnapshotVmSample,\n`Windows Event Logs`,\nZookeeperSample\nSELECT uniqueCount(hostname) OR 0 AS 'Unique Hosts'\nFACET CASES(\nWHERE eventType() IN ('ApacheSample') AS 'Apache',\nWHERE eventType() IN ('CassandraSample', 'CassandraColumnFamilySample') AS 'Cassandra',\nWHERE eventType() IN ('CouchbaseBucketSample', 'CouchbaseClusterSample', 'CouchbaseNodeSample', 'CouchbaseQueryEngineSample') AS 'Couchbase',\nWHERE eventType() IN ('CollectdSample') AS 'Collectd',\nWHERE eventType() IN ('ElasticsearchClusterSample', 'ElasticsearchNodeSample', 'ElasticsearchCommonSample', 'ElasticsearchIndexSample') AS 'Elasticsearch',\nWHERE eventType() IN ('F5BigIpSystemSample', 'F5BigIpVirtualServerSample', 'F5BigIpPoolSample', 'F5BigIpPoolMemberSample', 'F5BigIpNodeSample') AS 'F5',\nWHERE eventType() IN ('HAProxyBackendSample', 'HAProxyFrontendSample', 'HAProxyServerSample') AS 'HAProxy',\nWHERE eventType() IN ('ConsulDatacenterSample', 'ConsulAgentSample') AS 'Consul',\nWHERE eventType() IN ('KafkaBrokerSample', 'KafkaConsumerSample', 'KafkaProducerSample', 'KafkaTopicSample', 'KafkaOffsetSample') AS 'Kafka',\nWHERE eventType() IN ('MemcachedSample', 'MemcachedSlabSample') AS 'Memcached',\nWHERE eventType() IN ('MongoCollectionSample', 'MongoConfigServerSample', 'MongoDatabaseSample', 'MongodTopSample', 'MongoSample', 'MongodSample', 'MongosSample') AS 'MongoDB',\nWHERE eventType() IN ('MssqlDatabaseSample', 'MssqlInstanceSample', 'MssqlWaitSample') AS 'MSSQL',\nWHERE eventType() IN ('MysqlSample') AS 'MySQL',\nWHERE eventType() IN ('NagiosServiceCheckSample') AS 'Nagios',\nWHERE eventType() IN ('NFSSample') AS 'NFS',\nWHERE eventType() IN ('NginxSample') AS 'NGINX',\nWHERE eventType() IN ('OracleDatabaseSample', 'OracleTablespaceSample') AS 'Oracle',\nWHERE eventType() IN ('PostgresqlDatabaseSample', 'PostgresqlIndexSample', 'PostgresqlInstanceSample', 'PostgresqlTableSample', 'PgBouncerSample') AS 'PostgreSQL',\nWHERE eventType() IN ('NetworkPortSample') AS 'Port Monitor',\nWHERE eventType() IN ('RabbitmqVhostSample', 'RabbitmqNodeSample', 'RabbitmqExchangeSample', 'RabbitmqQueueSample') AS 'RabbitMQ',\nWHERE eventType() IN ('RedisSample', 'RedisKeyspaceSample') AS 'Redis',\nWHERE eventType() IN ('VarnishSample', 'VarnishLockSample', 'VarnishStorageSample', 'VarnishMempoolSample', 'VarnishBackendSample') AS 'Varnish Cache',\nWHERE eventType() IN ('PCFContainerMetric', 'PCFCounterEvent', 'PCFHttpStartStop', 'PCFLogMessage', 'PCFValueMetric') AS 'VMware Tanzu',\nWHERE eventType() IN ('VSphereHostSample', 'VSphereClusterSample', 'VSphereVmSample', 'VSphereDatastoreSample', 'VSphereDatacenterSample', 'VSphereResourcePoolSample', 'VSphereSnapshotVmSample') AS 'VMWare vSphere',\nWHERE eventType() IN ('Windows Event Logs') AS 'Windows Event Log',\nWHERE eventType() IN ('ZookeeperSample') AS 'Apache Zookeeper'\n) OR eventType()\nSINCE 24 HOURS AGO\nLIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Apache OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ApacheSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 7,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Apache OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ApacheSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 7,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Cassandra OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CassandraSample, CassandraColumnFamilySample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Cassandra OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CassandraSample, CassandraColumnFamilySample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Collectd OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CollectdSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 10,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Collectd OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CollectdSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Consul OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ConsulDatacenterSample, ConsulAgentSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Consul OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ConsulDatacenterSample, ConsulAgentSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Couchbase OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CouchbaseBucketSample, CouchbaseClusterSample,\nCouchbaseNodeSample, CouchbaseQueryEngineSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 13,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Couchbase OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM CouchbaseBucketSample, CouchbaseClusterSample,\nCouchbaseNodeSample, CouchbaseQueryEngineSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 13,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Elasticsearch OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ElasticsearchClusterSample, ElasticsearchNodeSample,\nElasticsearchCommonSample, ElasticsearchIndexSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 13,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Elasticsearch OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ElasticsearchClusterSample, ElasticsearchNodeSample,\nElasticsearchCommonSample, ElasticsearchIndexSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "height": 3,
+              "width": 2
+            },
+            "title": "f5 OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM F5BigIpSystemSample, F5BigIpVirtualServerSample,\nF5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpNodeSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 16,
+              "height": 3,
+              "width": 4
+            },
+            "title": "f5 OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM F5BigIpSystemSample, F5BigIpVirtualServerSample,\nF5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpNodeSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 16,
+              "height": 3,
+              "width": 2
+            },
+            "title": "HAProxy OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM HAProxyBackendSample, HAProxyFrontendSample, HAProxyServerSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 16,
+              "height": 3,
+              "width": 4
+            },
+            "title": "HAProxy OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM HAProxyBackendSample, HAProxyFrontendSample, HAProxyServerSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 19,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Kafka OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KafkaBrokerSample, KafkaConsumerSample,\nKafkaProducerSample, KafkaTopicSample, KafkaOffsetSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 19,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Kafka OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KafkaBrokerSample, KafkaConsumerSample,\nKafkaProducerSample, KafkaTopicSample, KafkaOffsetSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 19,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Memcached OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MemcachedSample, MemcachedSlabSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 19,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Memcached OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MemcachedSample, MemcachedSlabSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 22,
+              "height": 3,
+              "width": 2
+            },
+            "title": "MongoDB OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MongoCollectionSample, MongoConfigServerSample,\nMongoDatabaseSample, MongodTopSample, MongoSample,\nMongodSample, MongosSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 22,
+              "height": 3,
+              "width": 4
+            },
+            "title": "MongoDB OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MongoCollectionSample, MongoConfigServerSample,\nMongoDatabaseSample, MongodTopSample, MongoSample,\nMongodSample, MongosSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 22,
+              "height": 3,
+              "width": 2
+            },
+            "title": "MSSQL OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlDatabaseSample, MssqlInstanceSample, MssqlWaitSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 22,
+              "height": 3,
+              "width": 4
+            },
+            "title": "MSSQL OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlDatabaseSample, MssqlInstanceSample, MssqlWaitSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 25,
+              "height": 3,
+              "width": 2
+            },
+            "title": "MySQL OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MysqlSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 25,
+              "height": 3,
+              "width": 4
+            },
+            "title": "MySQL OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MysqlSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 25,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Nagios OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NagiosServiceCheckSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 25,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Nagios OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NagiosServiceCheckSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 28,
+              "height": 3,
+              "width": 2
+            },
+            "title": "NFS OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NFSSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 28,
+              "height": 3,
+              "width": 4
+            },
+            "title": "NFS OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NFSSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 28,
+              "height": 3,
+              "width": 2
+            },
+            "title": "NGINX OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NginxSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 28,
+              "height": 3,
+              "width": 4
+            },
+            "title": "NGINX OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NginxSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 31,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Oracle OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM OracleDatabaseSample, OracleTablespaceSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 31,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Oracle OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM OracleDatabaseSample, OracleTablespaceSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 31,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Port Monitor OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NetworkPortSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 31,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Port Monitor OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM NetworkPortSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 34,
+              "height": 3,
+              "width": 2
+            },
+            "title": "PostgreSQL OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM PostgresqlDatabaseSample, PostgresqlIndexSample,\nPostgresqlInstanceSample, PostgresqlTableSample, PgBouncerSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 34,
+              "height": 3,
+              "width": 4
+            },
+            "title": "PostgreSQL OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM PostgresqlDatabaseSample, PostgresqlIndexSample,\nPostgresqlInstanceSample, PostgresqlTableSample, PgBouncerSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 34,
+              "height": 3,
+              "width": 2
+            },
+            "title": "RabbitMQ OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM RabbitmqVhostSample, RabbitmqNodeSample,\nRabbitmqExchangeSample, RabbitmqQueueSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 34,
+              "height": 3,
+              "width": 4
+            },
+            "title": "RabbitMQ OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM RabbitmqVhostSample, RabbitmqNodeSample,\nRabbitmqExchangeSample, RabbitmqQueueSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 37,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Redis OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM RedisSample, RedisKeyspaceSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 37,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Redis OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM RedisSample, RedisKeyspaceSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 37,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Varnish OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VarnishSample, VarnishLockSample, VarnishStorageSample,\nVarnishMempoolSample, VarnishBackendSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 37,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Varnish OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VarnishSample, VarnishLockSample, VarnishStorageSample,\nVarnishMempoolSample, VarnishBackendSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 40,
+              "height": 3,
+              "width": 2
+            },
+            "title": "VMware Tanzu OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM PCFContainerMetric, PCFCounterEvent,\nPCFHttpStartStop, PCFLogMessage, PCFValueMetric\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 40,
+              "height": 3,
+              "width": 4
+            },
+            "title": "VMware Tanzu OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM PCFContainerMetric, PCFCounterEvent,\nPCFHttpStartStop, PCFLogMessage, PCFValueMetric\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 40,
+              "height": 3,
+              "width": 2
+            },
+            "title": "VMware vSphere OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample, VSphereClusterSample, VSphereVmSample,\nVSphereDatastoreSample, VSphereDatacenterSample,\nVSphereResourcePoolSample, VSphereSnapshotVmSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 40,
+              "height": 3,
+              "width": 4
+            },
+            "title": "VMware vSphere OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample, VSphereClusterSample, VSphereVmSample,\nVSphereDatastoreSample, VSphereDatacenterSample,\nVSphereResourcePoolSample, VSphereSnapshotVmSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 43,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Windows Event Log OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM `Windows Event Logs`\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 3,
+              "row": 43,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Windows Event Log OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM `Windows Event Logs`\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 43,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Zookeeper OHI",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "1 MONTH (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "1 DAY (GB)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ZookeeperSample\nSELECT bytecountestimate()/10e8 AS '1 DAY (GB)', \nrate(bytecountestimate()/10e8, 1 MONTH) AS '1 MONTH (GB)'\nSINCE 24 HOURS AGO COMPARE WITH 1 WEEK AGO\nLIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 43,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Zookeeper OHI - Top 10 Sources",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM ZookeeperSample\nSELECT bytecountestimate()/10e8\nFACET hostname OR clusterName\nSINCE 7 DAYS AGO\nLIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
