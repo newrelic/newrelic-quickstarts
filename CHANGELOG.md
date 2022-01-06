@@ -1,3 +1,15 @@
+# [0.85.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.84.0...v0.85.0) (2022-01-06)
+
+
+### Features
+
+* Add github helpers util ([5406c2d](https://github.com/newrelic/newrelic-quickstarts/commit/5406c2d62938f2cf6aa3274de57fadf9f7460366))
+* Add second quickstart ([0fe01a0](https://github.com/newrelic/newrelic-quickstarts/commit/0fe01a0374fc22c2daafe521358675cc06f95361))
+* Add validate new files step ([a9a1c60](https://github.com/newrelic/newrelic-quickstarts/commit/a9a1c60a76d30dd2a41d26e50ea767aa3bd58e26))
+* checks for install plan id ([7d52ea8](https://github.com/newrelic/newrelic-quickstarts/commit/7d52ea857ce68aa1d9d83d950fdd68dc23874f60))
+* install plan id workflow added to github ([de41531](https://github.com/newrelic/newrelic-quickstarts/commit/de415314b97420950b34bc80f9721b9f76aebc57))
+* **tesing-actions:** Adding mock qs to test actions ([48bff60](https://github.com/newrelic/newrelic-quickstarts/commit/48bff60a6eafaabdc46f34a3b1b84675f3ece78e))
+
 # [0.84.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.83.0...v0.84.0) (2022-01-06)
 
 
