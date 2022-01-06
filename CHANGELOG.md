@@ -1,3 +1,10 @@
+# [0.84.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.83.0...v0.84.0) (2022-01-06)
+
+
+### Features
+
+* **pack:** Added Azure Virtual Network ([0a4ad4c](https://github.com/newrelic/newrelic-quickstarts/commit/0a4ad4c32a4f987fb8f96988aa20dbfae521ec7a))
+
 # [0.83.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.82.0...v0.83.0) (2022-01-06)
 
 
