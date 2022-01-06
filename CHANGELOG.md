@@ -1,3 +1,10 @@
+# [0.83.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.82.0...v0.83.0) (2022-01-06)
+
+
+### Features
+
+* **pack:** Added Azure Cost Management ([76e166a](https://github.com/newrelic/newrelic-quickstarts/commit/76e166abefbe722c8c6a0729b19733f58be45b86))
+
 # [0.82.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.81.1...v0.82.0) (2022-01-06)
 
 
