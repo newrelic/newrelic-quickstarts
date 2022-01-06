@@ -5,6 +5,8 @@ const yaml = require('js-yaml');
 const glob = require('glob');
 const isImage = require('is-image');
 
+const pathsToSanitize = process.argv.slice(2);
+
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
@@ -126,6 +128,13 @@ const findMainQuickstartConfigFiles = () =>
     path.resolve(process.cwd(), '../quickstarts/**/config.+(yml|yaml)')
   );
 
+/**
+ * Finds the path to all top level install configs
+ * @returns {String[]} An array of the file paths
+ */
+const findMainInstallConfigFiles = () =>
+  glob.sync(path.resolve(process.cwd(), '../install/**/install.+(yml|yaml)'));
+
 module.exports = {
   readYamlFile,
   readJsonFile,
@@ -139,4 +148,6 @@ module.exports = {
   globFiles,
   isDirectory,
   findMainQuickstartConfigFiles,
+  findMainInstallConfigFiles,
+  pathsToSanitize,
 };
