@@ -1,3 +1,17 @@
+# [0.82.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.81.1...v0.82.0) (2022-01-06)
+
+
+### Bug Fixes
+
+* Fixed warning in json file ([959e305](https://github.com/newrelic/newrelic-quickstarts/commit/959e3050e4389ec5c3ebf75f873f6764819543ba))
+* pipeline warning ([827b4a3](https://github.com/newrelic/newrelic-quickstarts/commit/827b4a30820375be04ba72befd2b2cbd63214461))
+* removed outlier alert since it has been deprecated ([e713305](https://github.com/newrelic/newrelic-quickstarts/commit/e7133054d180091a5831d6c54d0c37cbc6559282))
+
+
+### Features
+
+* **pack:** Added new pack Azure Virtual Machines ([40c21a9](https://github.com/newrelic/newrelic-quickstarts/commit/40c21a936bd990f79396e5b3d0a6111a26e0bcf3))
+
 ## [0.81.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.81.0...v0.81.1) (2022-01-06)
 
 # [0.81.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.7...v0.81.0) (2022-01-03)
