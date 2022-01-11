@@ -40,6 +40,9 @@
         "destination": {
             "recipeName": "infrastructure-agent-installer",
             "nerdletId": "setup-nerdlets.setup-python-integration",
+            "nerdletState": {
+                "integration": "python"
+            },
             "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
         }
     },
@@ -48,6 +51,9 @@
         "destination": {
             "recipeName": "infrastructure-agent-installer",
             "nerdletId": "setup-nerdlets.setup-python-integration",
+            "nerdletState": {
+                "name": "value"
+            },
             "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
         }
     }
@@ -311,6 +317,9 @@ Must be one of:
     "destination": {
         "recipeName": "infrastructure-agent-installer",
         "nerdletId": "setup-nerdlets.setup-python-integration",
+        "nerdletState": {
+            "integration": "python"
+        },
         "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
     }
 }
@@ -352,12 +361,13 @@ Must be one of:
 
 **Description:** An explanation about the purpose of this instance.
 
-| Property                                         | Pattern | Type   | Deprecated | Definition | Title/Description     |
-| ------------------------------------------------ | ------- | ------ | ---------- | ---------- | --------------------- |
-| - [recipeName](#install_destination_recipeName ) | No      | string | No         | -          | The recipeName schema |
-| - [nerdletId](#install_destination_nerdletId )   | No      | string | No         | -          | The nerdletId schema  |
-| - [url](#install_destination_url )               | No      | string | No         | -          | The url schema        |
-|                                                  |         |        |            |            |                       |
+| Property                                             | Pattern | Type   | Deprecated | Definition | Title/Description       |
+| ---------------------------------------------------- | ------- | ------ | ---------- | ---------- | ----------------------- |
+| - [recipeName](#install_destination_recipeName )     | No      | string | No         | -          | The recipeName schema   |
+| - [nerdletId](#install_destination_nerdletId )       | No      | string | No         | -          | The nerdletId schema    |
+| - [nerdletState](#install_destination_nerdletState ) | No      | object | No         | -          | The nerdletState schema |
+| - [url](#install_destination_url )                   | No      | string | No         | -          | The url schema          |
+|                                                      |         |        |            |            |                         |
 
 **Example:** 
 
@@ -365,6 +375,9 @@ Must be one of:
 {
     "recipeName": "infrastructure-agent-installer",
     "nerdletId": "setup-nerdlets.setup-python-integration",
+    "nerdletState": {
+        "integration": "python"
+    },
     "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
 }
 ```
@@ -403,6 +416,26 @@ Must be one of:
 
 ```json
 "setup-nerdlets.setup-python-integration"
+```
+
+#### <a name="install_destination_nerdletState"></a>5.2.2. [Optional] Property `root > install > destination > nerdletState`
+
+**Title:** The urlState to be passed to the nerdlet
+
+| Type                      | `object`                                                                  |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `{}`                                                                      |
+|                           |                                                                           |
+
+**Description:** State object to be provided to the nerdlet's urlState.
+
+**Example:** 
+
+```json
+{
+    "integration": "python"
+}
 ```
 
 #### <a name="install_destination_url"></a>5.2.3. [Optional] Property `root > install > destination > url`
@@ -449,6 +482,9 @@ Must be one of:
     "destination": {
         "recipeName": "infrastructure-agent-installer",
         "nerdletId": "setup-nerdlets.setup-python-integration",
+        "nerdletState": {
+            "name": "value"
+        },
         "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
     }
 }
@@ -490,12 +526,13 @@ Must be one of:
 
 **Description:** An explanation about the purpose of this instance.
 
-| Property                                          | Pattern | Type   | Deprecated | Definition | Title/Description     |
-| ------------------------------------------------- | ------- | ------ | ---------- | ---------- | --------------------- |
-| - [recipeName](#fallback_destination_recipeName ) | No      | string | No         | -          | The recipeName schema |
-| - [nerdletId](#fallback_destination_nerdletId )   | No      | string | No         | -          | The nerdletId schema  |
-| - [url](#fallback_destination_url )               | No      | string | No         | -          | The url schema        |
-|                                                   |         |        |            |            |                       |
+| Property                                              | Pattern | Type   | Deprecated | Definition | Title/Description       |
+| ----------------------------------------------------- | ------- | ------ | ---------- | ---------- | ----------------------- |
+| - [recipeName](#fallback_destination_recipeName )     | No      | string | No         | -          | The recipeName schema   |
+| - [nerdletId](#fallback_destination_nerdletId )       | No      | string | No         | -          | The nerdletId schema    |
+| - [nerdletState](#fallback_destination_nerdletState ) | No      | object | No         | -          | The nerdletState schema |
+| - [url](#fallback_destination_url )                   | No      | string | No         | -          | The url schema          |
+|                                                       |         |        |            |            |                         |
 
 **Example:** 
 
@@ -503,6 +540,9 @@ Must be one of:
 {
     "recipeName": "infrastructure-agent-installer",
     "nerdletId": "setup-nerdlets.setup-python-integration",
+    "nerdletState": {
+        "name": "value"
+    }
     "url": "https://docs.newrelic.com/docs/agents/python-agent/installation/standard-python-agent-install/#install"
 }
 ```
@@ -541,6 +581,26 @@ Must be one of:
 
 ```json
 "setup-nerdlets.setup-python-integration"
+```
+
+#### <a name="fallback_destination_nerdletState"></a>6.2.2. [Optional] Property `root > fallback > destination > nerdletState`
+
+**Title:** The urlState to be passed to the nerdlet
+
+| Type                      | `object`                                                                  |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `{}`                                                                      |
+|                           |                                                                           |
+
+**Description:** State object to be provided to the nerdlet's urlState.
+
+**Example:** 
+
+```json
+{
+    "name": "value"
+}
 ```
 
 #### <a name="fallback_destination_url"></a>6.2.3. [Optional] Property `root > fallback > destination > url`
