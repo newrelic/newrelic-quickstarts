@@ -28,7 +28,7 @@ accountId=0000000
 apiKey='NRAK-EXAMPLE'
 ```
 
-after that just run the import.sh like so:
+...after that just run the import.sh like so:
 
 ```bash
 ./import.sh pack
