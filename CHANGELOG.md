@@ -1,3 +1,62 @@
+## [0.85.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.2...v0.85.3) (2022-01-13)
+
+## [0.85.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.1...v0.85.2) (2022-01-08)
+
+## [0.85.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.0...v0.85.1) (2022-01-07)
+
+# [0.85.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.84.0...v0.85.0) (2022-01-06)
+
+
+### Features
+
+* Add github helpers util ([5406c2d](https://github.com/newrelic/newrelic-quickstarts/commit/5406c2d62938f2cf6aa3274de57fadf9f7460366))
+* Add second quickstart ([0fe01a0](https://github.com/newrelic/newrelic-quickstarts/commit/0fe01a0374fc22c2daafe521358675cc06f95361))
+* Add validate new files step ([a9a1c60](https://github.com/newrelic/newrelic-quickstarts/commit/a9a1c60a76d30dd2a41d26e50ea767aa3bd58e26))
+* checks for install plan id ([7d52ea8](https://github.com/newrelic/newrelic-quickstarts/commit/7d52ea857ce68aa1d9d83d950fdd68dc23874f60))
+* install plan id workflow added to github ([de41531](https://github.com/newrelic/newrelic-quickstarts/commit/de415314b97420950b34bc80f9721b9f76aebc57))
+* **tesing-actions:** Adding mock qs to test actions ([48bff60](https://github.com/newrelic/newrelic-quickstarts/commit/48bff60a6eafaabdc46f34a3b1b84675f3ece78e))
+
+# [0.84.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.83.0...v0.84.0) (2022-01-06)
+
+
+### Features
+
+* **pack:** Added Azure Virtual Network ([0a4ad4c](https://github.com/newrelic/newrelic-quickstarts/commit/0a4ad4c32a4f987fb8f96988aa20dbfae521ec7a))
+
+# [0.83.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.82.0...v0.83.0) (2022-01-06)
+
+
+### Features
+
+* **pack:** Added Azure Cost Management ([76e166a](https://github.com/newrelic/newrelic-quickstarts/commit/76e166abefbe722c8c6a0729b19733f58be45b86))
+
+# [0.82.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.81.1...v0.82.0) (2022-01-06)
+
+
+### Bug Fixes
+
+* Fixed warning in json file ([959e305](https://github.com/newrelic/newrelic-quickstarts/commit/959e3050e4389ec5c3ebf75f873f6764819543ba))
+* pipeline warning ([827b4a3](https://github.com/newrelic/newrelic-quickstarts/commit/827b4a30820375be04ba72befd2b2cbd63214461))
+* removed outlier alert since it has been deprecated ([e713305](https://github.com/newrelic/newrelic-quickstarts/commit/e7133054d180091a5831d6c54d0c37cbc6559282))
+
+
+### Features
+
+* **pack:** Added new pack Azure Virtual Machines ([40c21a9](https://github.com/newrelic/newrelic-quickstarts/commit/40c21a936bd990f79396e5b3d0a6111a26e0bcf3))
+
+## [0.81.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.81.0...v0.81.1) (2022-01-06)
+
+# [0.81.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.7...v0.81.0) (2022-01-03)
+
+
+### Features
+
+* adding AWS integrations analysis dashboard ([e1143bf](https://github.com/newrelic/newrelic-quickstarts/commit/e1143bfddcb27ee0b071d10260566297b457663c))
+* adding Azure integrations analysis dashboard ([829194f](https://github.com/newrelic/newrelic-quickstarts/commit/829194ffec025a2ccf2e0ce0dd6f8bf893869403))
+* adding GCP integrations analysis dashboard ([24f4c2b](https://github.com/newrelic/newrelic-quickstarts/commit/24f4c2b744666cae8576b04450d0cb99d65a4207))
+* adding OHI analysis dashboard ([9ab6535](https://github.com/newrelic/newrelic-quickstarts/commit/9ab65353e18962409b835fe610f8247490f051f3))
+* refined k8s analysis dashboard ([7097ff3](https://github.com/newrelic/newrelic-quickstarts/commit/7097ff3da4ac98d3f9f5f9a1bd3c642d41d45e31))
+
 ## [0.80.7](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.6...v0.80.7) (2021-12-21)
 
 ## [0.80.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.80.5...v0.80.6) (2021-12-21)
