@@ -191,6 +191,7 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
       description: details && details.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      sourceUrl: getAssetSourceUrl(alertConfigPath),
       type: type && type.trim(),
     };
   });
@@ -223,6 +224,7 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
       description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      sourceUrl: getAssetSourceUrl(dashboardConfigPath),
       screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
     };
   });
@@ -240,6 +242,19 @@ const getScreenshotUrl = (path) => {
       path
     )}/${screenshotFilename}`,
   };
+};
+
+/**
+ * Creates the GitHub url of an asset within the main directory of a quickstart.
+ * @param {String} path - The file path of an asset.
+ * @return {Object} Returns an object containing the GitHub url of an asset.
+ */
+const getAssetSourceUrl = (path) => {
+  const assetFilename = path.split('/').pop();
+
+  return `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
+    path
+  )}/${assetFilename}`;
 };
 
 /**
