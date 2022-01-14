@@ -1,3 +1,10 @@
+# [0.86.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.3...v0.86.0) (2022-01-14)
+
+
+### Features
+
+* kick build ([89b7d7f](https://github.com/newrelic/newrelic-quickstarts/commit/89b7d7f93667a5057e9fbd386507aee0dd430790))
+
 ## [0.85.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.2...v0.85.3) (2022-01-13)
 
 ## [0.85.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.85.1...v0.85.2) (2022-01-08)
