@@ -38,6 +38,11 @@ mutation (
       }
   }
 `;
+/**
+ * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
+ * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release
+ */
+const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
 
 /**
  * Gets the quickstart portion of a given file path.
@@ -122,7 +127,7 @@ const buildMutationVariables = (quickstartConfig) => {
   );
 
   return {
-    id: id,
+    id: id ? id : MOCK_UUID,
     quickstartMetadata: {
       alertConditions:
         alertConfigPaths.length > 0
