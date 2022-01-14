@@ -58,7 +58,7 @@ const fetchNRGraphqlResults = async (queryBody) => {
  * Handle errors from GraphQL request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
- * @returns undefined
+ * @returns {void}
  */
 const translateMutationErrors = (errors, filePath) => {
   console.error(
