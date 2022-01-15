@@ -15,6 +15,7 @@ const {
 const {
   fetchNRGraphqlResults,
   translateMutationErrors,
+  getCategoriesFromKeywords,
 } = require('./nr-graphql-helpers');
 
 const GITHUB_API_URL = passedProcessArguments[0];
@@ -111,7 +112,6 @@ const getQuickstartConfigPaths = (quickstartDirectories) => {
 const buildMutationVariables = (quickstartConfig) => {
   const {
     authors,
-    categoryTerms,
     description,
     title,
     documentation,
@@ -134,7 +134,7 @@ const buildMutationVariables = (quickstartConfig) => {
           ? adaptQuickstartAlertsInput(alertConfigPaths)
           : undefined,
       authors: authors && authors.map((author) => ({ name: author })),
-      categoryTerms: categoryTerms || keywords,
+      categoryTerms: getCategoriesFromKeywords(keywords),
       description: description && description.trim(),
       displayName: title && title.trim(),
       documentation:

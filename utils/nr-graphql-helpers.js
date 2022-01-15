@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const instantObservabilityCategories = require('./instant-observability-categories.json');
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
@@ -75,7 +76,29 @@ const translateMutationErrors = (errors, filePath) => {
   });
 };
 
+/**
+ * Builds array of corresponding categories from keywords specified in a quickstart config.yml
+ * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
+ * @returns {String[] | undefined } An array of quickstart categories
+ */
+const getCategoriesFromKeywords = (configKeywords = []) => {
+  const categoriesFromKeywords = instantObservabilityCategories.reduce(
+    (acc, { associatedKeywords, value }) => {
+      if (
+        associatedKeywords.some((keyword) => configKeywords.includes(keyword))
+      ) {
+        acc.push(value);
+      }
+      return acc;
+    },
+    []
+  );
+
+  return categoriesFromKeywords.length > 0 ? categoriesFromKeywords : undefined;
+};
+
 module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
+  getCategoriesFromKeywords,
 };

@@ -85,7 +85,7 @@ const expectedMockQuickstart2MutationInput = {
   id: 'mock-2-id',
   quickstartMetadata: {
     authors: [{ name: 'John Smith' }],
-    categoryTerms: ['list', 'of', 'searchable', 'keywords'],
+    categoryTerms: undefined,
     description:
       'The template quickstart allows you to get visibility into the performance and available of your example service and dependencies. Use this quickstart together with the mock up integrations.',
     displayName: 'Template Quickstart',
