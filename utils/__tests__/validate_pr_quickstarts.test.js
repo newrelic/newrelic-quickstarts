@@ -142,7 +142,7 @@ const expectedMockQuickstart2MutationInput = {
 };
 
 const expectedMockQuickstart4MutationInput = {
-  id: undefined,
+  id: '00000000-0000-0000-0000-000000000000',
   quickstartMetadata: {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
