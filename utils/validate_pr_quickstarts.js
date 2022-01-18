@@ -41,17 +41,20 @@ mutation (
 `;
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
- * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release
+ * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.
  */
 const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
 
 /**
- * Gets the quickstart portion of a given file path.
+ * Gets the base quickstart directory from a given file path.
+ * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'aiohttp'.
  * @param {String} filePath - Full file path of a file in a quickstart.
- * @param {String} targetChild - Node in file path that should be preceded by a quickstart directory.
+ * @param {String} targetChild - Node in file path that should be preceded by a base quickstart directory.
  * @return {String} Node in file path of the quickstart.
  */
 const getQuickstartNode = (filePath, targetChild) => {
+  console.log('filePath', filePath);
+  console.log('targetChild', targetChild);
   const splitFilePath = filePath.split('/');
   return splitFilePath[
     splitFilePath.findIndex((path) => path === targetChild) - 1
