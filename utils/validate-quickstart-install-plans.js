@@ -41,7 +41,7 @@ const getConfigInstallPlans = (configFiles) => {
 };
 
 /**
- * Gets all the install plans and paths for an array of config files
+ * Gets the set of install plans specified in config files but not actually existing
  * @param {{filePath, installPlans}[]} configInstallPlanFiles - Array of objects with path and install plans for file
  * @param {String[]} installPlanIds - Array of install plan ids
  * @returns {{filePath, installPlans}[]} Array of paths and install plans for file
@@ -58,7 +58,7 @@ const getInstallPlansNoMatches = (configInstallPlanFiles, installPlanIds) => {
 };
 
 /**
- * Gets all the install plans and paths for an array of config files
+ * Main validation logic ensuring install plans specified in config files actually exist
  * @param {Array} githubFiles - Array of results from Github API
  */
 const validateInstallPlanIds = (githubFiles) => {
