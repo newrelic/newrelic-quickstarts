@@ -231,7 +231,7 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
 /**
  * Builds input arguments for the `dashboards` field.
  * @param {Array} dashboardConfigPaths - File paths of config files within a `dashboards` directory.
- * @return {Array|undefined} An set of objects that represent a quickstart's dashboards in the context of a GraphQL mutation.
+ * @return {Array} An set of objects that represent a quickstart's dashboards in the context of a GraphQL mutation.
  */
 const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
@@ -278,7 +278,7 @@ const getQuickstartDashboardScreenshotPaths = (dashboardConfigPath) => {
 /**
  * Builds input arguments for the `documentation` field.
  * @param {Array} documentation - The documentation sections of a parsed quickstart config.yml file.
- * @return {Array|undefined}  An set of objects that represent a quickstart's documentation in the context of a GraphQL mutation.
+ * @return {Array}  An set of objects that represent a quickstart's documentation in the context of a GraphQL mutation.
  */
 const adaptQuickstartDocumentationInput = (documentation) =>
   documentation.map((doc) => {
