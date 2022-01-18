@@ -1,3 +1,10 @@
+# [0.87.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.3...v0.87.0) (2022-01-18)
+
+
+### Features
+
+* **BizTalk360:** Added a quickstart for BizTalk360 ([2ff88b2](https://github.com/newrelic/newrelic-quickstarts/commit/2ff88b2654b0080c20c16025fd9aed688b006871))
+
 ## [0.86.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.2...v0.86.3) (2022-01-14)
 
 ## [0.86.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.1...v0.86.2) (2022-01-14)
