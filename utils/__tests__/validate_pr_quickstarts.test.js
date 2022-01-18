@@ -23,7 +23,14 @@ const buildFullQuickstartFilePaths = (relativePaths) => {
   });
 };
 
-const mockGitHubResponseFilenames = [
+const mockFilenamesDuplicatedDirectory = [
+  'quickstarts/foo/duplicate-directory-name/config.yml',
+  'quickstarts/foo/duplicate-directory-name/alerts/baseline-alert.yml',
+  'quickstarts/bar/duplicate-directory-name/config.yml',
+  'quickstarts/bar/duplicate-directory-name/alerts/baseline-alert.yml',
+];
+
+const mockFilenamesTestQS1 = [
   'quickstarts/test-quickstart-folder/alerts/baseline-alert.yml',
   'quickstarts/test-quickstart-folder/alerts/static-alert.yml',
   'quickstarts/test-quickstart-folder/config.yml',
@@ -31,6 +38,8 @@ const mockGitHubResponseFilenames = [
   'quickstarts/test-quickstart-folder/dashboards/my-dashboard.png',
   'quickstarts/test-quickstart-folder/icon.jpeg',
   'quickstarts/test-quickstart-folder/images/icon.jpeg',
+];
+const mockFilenamesTestQS2 = [
   'quickstarts/test-quickstart-folder-2/logo.png',
   'quickstarts/test-quickstart-folder-2/alerts/baseline-alert.yml',
   'quickstarts/test-quickstart-folder-2/alerts/static-alert.yml',
@@ -40,6 +49,12 @@ const mockGitHubResponseFilenames = [
   'quickstarts/test-quickstart-folder-2/icon.jpeg',
   'quickstarts/test-quickstart-folder-2/images/icon.jpeg',
   'quickstarts/test-quickstart-folder-2/logo.png',
+];
+
+const mockGitHubResponseFilenames = [
+  ...mockFilenamesDuplicatedDirectory,
+  ...mockFilenamesTestQS1,
+  ...mockFilenamesTestQS2,
   'quickstarts/python/aiohttp/alerts/ApdexScore.yml',
   'quickstarts/python/pysqlite/dashboards/python.json',
   'quickstarts/python/pysqlite/logo.svg',
@@ -55,17 +70,19 @@ const mockGitHubResponseFilenames = [
 const addFilenameObject = (filename) => ({ filename });
 
 const expectedUniqueQuickstartDirectories = new Set([
-  'aiohttp',
+  'foo/duplicate-directory-name',
+  'bar/duplicate-directory-name',
+  'python/aiohttp',
   'test-quickstart-folder',
   'test-quickstart-folder-2',
-  'pysqlite',
+  'python/pysqlite',
 ]);
 
 const quickstartNames = new Set([
   'aws-ec2',
   'infrastructure',
-  'aiohttp',
-  'pysqlite',
+  'python/aiohttp',
+  'python/pysqlite',
   'postgresql',
 ]);
 
@@ -167,7 +184,7 @@ test('getQuickstartFromFilename returns the quickstart an alert belongs to', () 
     'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
   );
 
-  expect(quickstartFromAlert).toEqual('aiohttp');
+  expect(quickstartFromAlert).toEqual('python/aiohttp');
 });
 
 test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
@@ -175,7 +192,7 @@ test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', 
     'quickstarts/python/pysqlite/dashboards/python.json'
   );
 
-  expect(quickstartFromDashboard).toEqual('pysqlite');
+  expect(quickstartFromDashboard).toEqual('python/pysqlite');
 });
 
 test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
@@ -183,7 +200,7 @@ test('getQuickstartFromFilename returns the quickstart a logo belongs to', () =>
     'quickstarts/python/pysqlite/logo.svg'
   );
 
-  expect(quickstartFromLogo).toEqual('pysqlite');
+  expect(quickstartFromLogo).toEqual('python/pysqlite');
 });
 
 test('getQuickstartFromFilename does not return non-quickstarts files', () => {

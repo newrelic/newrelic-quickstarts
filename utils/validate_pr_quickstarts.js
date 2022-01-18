@@ -46,19 +46,28 @@ mutation (
 const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
 
 /**
- * Gets the base quickstart directory from a given file path.
- * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'aiohttp'.
+ * Gets the unique base quickstart directory from a given file path.
+ * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'python/aiohttp'.
  * @param {String} filePath - Full file path of a file in a quickstart.
  * @param {String} targetChild - Node in file path that should be preceded by a base quickstart directory.
  * @return {String} Node in file path of the quickstart.
  */
 const getQuickstartNode = (filePath, targetChild) => {
-  console.log('filePath', filePath);
-  console.log('targetChild', targetChild);
   const splitFilePath = filePath.split('/');
-  return splitFilePath[
-    splitFilePath.findIndex((path) => path === targetChild) - 1
-  ];
+
+  const baseQuickstartDirectoryIndex =
+    splitFilePath.findIndex((path) => path === targetChild) - 1;
+
+  let uniqueQuickstartDirectory = splitFilePath[baseQuickstartDirectoryIndex];
+  let indexCounter = baseQuickstartDirectoryIndex;
+
+  while (indexCounter > 1) {
+    uniqueQuickstartDirectory = splitFilePath[indexCounter - 1].concat(
+      `/${uniqueQuickstartDirectory}`
+    );
+    indexCounter--;
+  }
+  return uniqueQuickstartDirectory;
 };
 
 /**
@@ -99,7 +108,7 @@ const getQuickstartConfigPaths = (quickstartDirectories) => {
   return Array.from(quickstartDirectories).reduce(
     (acc, quickstartDirectory) => {
       const match = allQuickstartConfigPaths.find((path) =>
-        path.split('/').includes(quickstartDirectory)
+        path.includes(`/${quickstartDirectory}/`)
       );
       if (match) {
         acc.push(match);
