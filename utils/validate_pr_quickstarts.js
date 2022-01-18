@@ -96,15 +96,18 @@ const getQuickstartFromFilename = (filePath) => {
 const getQuickstartConfigPaths = (quickstartDirectories) => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return [...quickstartDirectories].reduce((acc, quickstartDirectory) => {
-    const match = allQuickstartConfigPaths.find((path) =>
-      path.split('/').includes(quickstartDirectory)
-    );
-    if (match) {
-      acc.push(match);
-    }
-    return acc;
-  }, []);
+  return Array.from(quickstartDirectories).reduce(
+    (acc, quickstartDirectory) => {
+      const match = allQuickstartConfigPaths.find((path) =>
+        path.split('/').includes(quickstartDirectory)
+      );
+      if (match) {
+        acc.push(match);
+      }
+      return acc;
+    },
+    []
+  );
 };
 
 /**
