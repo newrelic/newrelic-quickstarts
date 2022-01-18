@@ -191,7 +191,7 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
 /**
  * Builds input arguments for the `alertConditions` field.
  * @param {Array} alertConfigPaths - File paths of config files within an `alerts` directory.
- * @return {Array|undefined} An set of objects that represent a quickstart's alert conditions in the context of a GraphQL mutation.
+ * @return {Array} An set of objects that represent a quickstart's alert conditions in the context of a GraphQL mutation.
  */
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
   alertConfigPaths.map((alertConfigPath) => {
