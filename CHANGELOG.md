@@ -1,3 +1,10 @@
+# [0.88.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.87.0...v0.88.0) (2022-01-18)
+
+
+### Features
+
+* gcp-pubsub Google Cloud Pub/Sub Java Agent Extension ([9182c81](https://github.com/newrelic/newrelic-quickstarts/commit/9182c811c00c4c757505d5dc5cb225d55522a046))
+
 # [0.87.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.3...v0.87.0) (2022-01-18)
 
 
