@@ -1,14 +1,26 @@
 name: Validate quickstarts
 
-on: [workflow_dispatch, pull_request]
+on:
+  workflow_run:
+    workflows: ["Validation Gate"]
+    types:
+      - completed
 
 jobs:
   ensure-schema-compliance:
     name: Ensure schema compliance
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -34,8 +46,16 @@ jobs:
     name: Ensure quickstart names and ids are unique
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -52,8 +72,16 @@ jobs:
     name: Ensure commits are conventional
     runs-on: ubuntu-latest
     steps:
-      - name: Check repository
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
+      - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Check for non-conventional commits
         run: ./utils/conventional-commits.sh
@@ -62,8 +90,16 @@ jobs:
     name: Ensure images are valid
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -80,8 +116,16 @@ jobs:
     name: Ensure logos exist
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -98,8 +142,16 @@ jobs:
     name: Validate install plan ids
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.pull_requests[] | select( .base.ref == "main") | .number')
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -113,5 +165,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn validate-quickstart-install-plans $URL
