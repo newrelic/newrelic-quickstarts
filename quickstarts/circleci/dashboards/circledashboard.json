@@ -1,0 +1,261 @@
+{
+    "name": "JC Example",
+    "description": null,
+    "pages": [
+      {
+        "name": "JC Example",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 2,
+              "width": 2
+            },
+            "title": "Total Jobs",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(job.id) as 'Jobs Ran' since 30 days ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "height": 2,
+              "width": 3
+            },
+            "title": "Job Health",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(job.id) as 'Jobs' facet job.status since 30 days ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 6,
+              "row": 1,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Summary",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(cases(where job.status = 'success')) as 'Success', count(cases(where job.status='failed')) as 'Failed', percentage(count(job.id), WHERE job.status = 'success') as 'Health' Facet project.name as 'Project' since 30 days ago "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "height": 3,
+              "width": 3
+            },
+            "title": "Jobs Ran Per Project",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT Count(job.id) facet project.name as 'Project' since 30 days ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "height": 2,
+              "width": 5
+            },
+            "title": "Daily Performance",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(job.id) facet job.status TIMESERIES 1 days since 30 days ago"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": false
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 6,
+              "row": 3,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Jobs Per Day",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(job.id) facet project.name TIMESERIES 1 days since 30 days ago"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 10,
+              "row": 4,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Recent Job Duration",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "format": "%x",
+                  "name": "timestamp",
+                  "type": "custom"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT job.name as 'Job Name', job.started_at as 'Started Time', job.stopped_at as 'Stopped Time', timestamp WHERE job.started_at IS NOT NULL since 3 days ago limit 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "height": 3,
+              "width": 5
+            },
+            "title": "10 Most Recent Failed Jobs",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "format": "%b %d, %Y, %X",
+                  "name": "timestamp",
+                  "type": "custom"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT project.name as 'Project', job.name as 'Job Name',  job.number as 'Job Number', workflow.url as 'Workflow URL',job.status as 'Status', timestamp where job.status ='failed' limit 10 since 30 days ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 6,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "10 Most Recent Failed Workflows",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "format": "%b %d, %Y, %X",
+                  "name": "timestamp",
+                  "type": "custom"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT project.name as 'Project',workflow.name as 'workflow Name',  workflow.url as 'Workflow URL',workflow.status as 'status',timestamp where workflow.status ='failed' since 30 days ago limit 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
