@@ -1,3 +1,19 @@
+## [0.88.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.0...v0.88.1) (2022-01-18)
+
+# [0.88.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.87.0...v0.88.0) (2022-01-18)
+
+
+### Features
+
+* gcp-pubsub Google Cloud Pub/Sub Java Agent Extension ([9182c81](https://github.com/newrelic/newrelic-quickstarts/commit/9182c811c00c4c757505d5dc5cb225d55522a046))
+
+# [0.87.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.3...v0.87.0) (2022-01-18)
+
+
+### Features
+
+* **BizTalk360:** Added a quickstart for BizTalk360 ([2ff88b2](https://github.com/newrelic/newrelic-quickstarts/commit/2ff88b2654b0080c20c16025fd9aed688b006871))
+
 ## [0.86.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.2...v0.86.3) (2022-01-14)
 
 ## [0.86.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.86.1...v0.86.2) (2022-01-14)
