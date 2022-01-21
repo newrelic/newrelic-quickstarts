@@ -2,7 +2,7 @@
 
 const {
   createValidateUpdateInstallPlan,
-  VALIDATE_INSTALL_PLAN_MUTATION,
+  INSTALL_PLAN_MUTATION,
 } = require('../create-validate-install-plans');
 
 const githubHelpers = require('../github-api-helpers');
@@ -41,7 +41,7 @@ const mockGithubAPIFiles = (filenames) =>
   }));
 
 const mockGraphqlRequestBody = (variables = {}) => ({
-  queryString: VALIDATE_INSTALL_PLAN_MUTATION,
+  queryString: INSTALL_PLAN_MUTATION,
   variables: {
     id: 'infra-agent-targeted',
     displayName: 'Test Install Agent',
