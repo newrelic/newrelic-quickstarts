@@ -359,8 +359,10 @@ const countErrors = (graphqlResponses) => {
         )
     );
 
-    if (remainingErrors.length > 0) {
-      errorCount += remainingErrors.length;
+    errorCount += remainingErrors.length;
+
+    // we want to print out all errors, including install plan id does not exist
+    if (errors.length > 0) {
       translateMutationErrors(remainingErrors, filePath);
     }
   });
