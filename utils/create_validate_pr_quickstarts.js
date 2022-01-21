@@ -19,7 +19,7 @@ const {
 } = require('./nr-graphql-helpers');
 
 const GITHUB_API_URL = passedProcessArguments[0];
-const DRY_RUN = passedProcessArguments[1];
+const DRY_RUN = Boolean(passedProcessArguments[1] === 'true');
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =

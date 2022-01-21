@@ -11,7 +11,7 @@ const {
 } = require('./nr-graphql-helpers');
 
 const GITHUB_API_URL = passedProcessArguments[0];
-const DRY_RUN = passedProcessArguments[1]
+const DRY_RUN = Boolean(passedProcessArguments[1] === 'true');
 
 const INSTALL_PLAN_MUTATION = `# gql 
 mutation (
