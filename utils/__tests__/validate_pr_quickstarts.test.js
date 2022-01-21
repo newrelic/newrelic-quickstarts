@@ -9,7 +9,7 @@ const {
   buildMutationVariables,
   buildUniqueQuickstartSet,
   getGraphqlRequests,
-} = require('../validate_pr_quickstarts');
+} = require('../create_validate_pr_quickstarts');
 const { readQuickstartFile } = require('../helpers');
 
 const mockDashboardRawConfigurationJSON = require('../mock_files/mock_dashboard_config.json');

@@ -1,9 +1,9 @@
 'use strict';
 
 const {
-  validateInstallPlan,
+  createValidateUpdateInstallPlan,
   VALIDATE_INSTALL_PLAN_MUTATION,
-} = require('../validate-install-plans');
+} = require('../create-validate-install-plans');
 
 const githubHelpers = require('../github-api-helpers');
 const nrGraphqlHelpers = require('../nr-graphql-helpers');
@@ -92,7 +92,7 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    const hasFailed = await validateInstallPlan(files);
+    const hasFailed = await createValidateUpdateInstallPlan(files);
 
     expect(hasFailed).toBe(false);
 
@@ -120,7 +120,7 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    const hasFailed = await validateInstallPlan(files);
+    const hasFailed = await createValidateUpdateInstallPlan(files);
 
     expect(hasFailed).toBe(true);
 
@@ -156,7 +156,7 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    const hasFailed = await validateInstallPlan(files);
+    const hasFailed = await createValidateUpdateInstallPlan(files);
 
     expect(hasFailed).toBe(true);
 
@@ -200,7 +200,7 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
-    const hasFailed = await validateInstallPlan(files);
+    const hasFailed = await createValidateUpdateInstallPlan(files);
 
     expect(hasFailed).toBe(true);
 
