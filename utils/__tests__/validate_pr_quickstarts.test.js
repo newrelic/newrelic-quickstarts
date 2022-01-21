@@ -9,8 +9,11 @@ const {
   buildMutationVariables,
   buildUniqueQuickstartSet,
   getGraphqlRequests,
+  countErrors,
 } = require('../create_validate_pr_quickstarts');
 const { readQuickstartFile } = require('../helpers');
+
+jest.mock('../nr-graphql-helpers');
 
 const mockDashboardRawConfigurationJSON = require('../mock_files/mock_dashboard_config.json');
 const mockDashboardRawConfiguration = JSON.stringify(
@@ -268,4 +271,130 @@ test('getGraphqlRequests constructs requests with a filepath and variables struc
   expect(graphqlRequests[0].filePath).toEqual(
     'quickstarts/python/aiohttp/config.yml'
   );
+});
+
+describe('countErrors', () => {
+  test('no errors returns error count of 0', () => {
+    const graphqlResponses = [
+      {
+        errors: [],
+        filePath: 'fake_file_path',
+      },
+    ];
+
+    const errorCount = countErrors(graphqlResponses);
+
+    expect(errorCount).toBe(0);
+  });
+
+  test(`only 'install plan does not exist' errors returns error count of 0`, () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+    ];
+
+    const errorCount = countErrors(graphqlResponses);
+
+    expect(errorCount).toBe(0);
+  });
+
+  test(`for a single file with multiple errors, 'install plan does not exist' errors are not counted`, () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+    ];
+
+    const errorCount = countErrors(graphqlResponses);
+
+    expect(errorCount).toBe(2);
+  });
+
+  test('for multiple files with multiple errors each, error count is summed correctly', () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path_2',
+      },
+    ];
+
+    const errorCount = countErrors(graphqlResponses);
+
+    expect(errorCount).toBe(4);
+  });
 });

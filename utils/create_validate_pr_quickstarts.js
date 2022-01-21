@@ -240,8 +240,9 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths =
-      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
+      dashboardConfigPath
+    );
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -339,16 +340,37 @@ const createValidateUpdateQuickstarts = async (files) => {
     })
   );
 
-  let hasFailed = false;
+  return Boolean(countErrors(graphqlResponses));
+};
+
+/**
+ * @param {Object[]} graphqlResponses[]
+ * @param {Object[]} graphqlResponses[].errors
+ * @param {string[]} graphqlResponses[].filePath
+ * @returns {number}
+ */
+const countErrors = (graphqlResponses) => {
+  let errorCount = 0;
 
   graphqlResponses.forEach(({ errors, filePath }) => {
+    // filter out errors where install plan id does not exist
+    const remainingErrors = errors.filter(
+      (error) =>
+        !error?.extensions?.argumentPath?.includes('installPlanStepIds') ||
+        !error?.message?.includes(
+          'contains an install plan step that does not exist'
+        )
+    );
+
+    errorCount += remainingErrors.length;
+
+    // we want to print out all errors, including install plan id does not exist
     if (errors.length > 0) {
-      hasFailed = true;
-      translateMutationErrors(errors, filePath);
+      translateMutationErrors(remainingErrors, filePath);
     }
   });
 
-  return hasFailed;
+  return errorCount;
 };
 
 const main = async () => {
@@ -379,4 +401,5 @@ module.exports = {
   buildMutationVariables,
   buildUniqueQuickstartSet,
   getGraphqlRequests,
+  countErrors,
 };
