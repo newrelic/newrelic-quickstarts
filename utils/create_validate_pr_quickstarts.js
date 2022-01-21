@@ -19,12 +19,12 @@ const {
 } = require('./nr-graphql-helpers');
 
 const GITHUB_API_URL = passedProcessArguments[0];
-const DRY_RUN = passedProcessArguments[1]
+const DRY_RUN = passedProcessArguments[1];
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
-const VALIDATE_QUICKSTART_MUTATION = `# gql
+const QUICKSTART_MUTATION = `# gql
 mutation (
   $dryRun: Boolean
   $id: ID!
@@ -240,9 +240,8 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
-      dashboardConfigPath
-    );
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -332,7 +331,7 @@ const createValidateUpdateQuickstarts = async (files) => {
   const graphqlResponses = await Promise.all(
     graphqlRequests.map(async ({ variables, filePath }) => {
       const { data, errors } = await fetchNRGraphqlResults({
-        queryString: VALIDATE_QUICKSTART_MUTATION,
+        queryString: QUICKSTART_MUTATION,
         variables,
       });
 
