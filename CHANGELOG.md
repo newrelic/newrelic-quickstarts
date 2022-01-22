@@ -1,3 +1,20 @@
+# [0.89.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.1...v0.89.0) (2022-01-22)
+
+
+### Bug Fixes
+
+* added docs link instead of blog link ([a86fe69](https://github.com/newrelic/newrelic-quickstarts/commit/a86fe69c406191d92c1fc0e5d2ac295b981c697c))
+* Change keywords for jumpstart to lower case ([0adcad5](https://github.com/newrelic/newrelic-quickstarts/commit/0adcad5d19643032ccd948d4c09b5fdbbc3db938))
+* changes for feat-circleCI quickstart ([0ff5018](https://github.com/newrelic/newrelic-quickstarts/commit/0ff5018c5f62dd7bbae9eee9d44e98408a2a2944))
+* circleci dashboard ([e01a9ce](https://github.com/newrelic/newrelic-quickstarts/commit/e01a9ce6a3b1d711635741632b3c0ecfe34acdba))
+* description for circle installplan ([2a6f5c3](https://github.com/newrelic/newrelic-quickstarts/commit/2a6f5c35eb1380f6241d52984510432d9d196036))
+* remove install plan for jira error inbox ([37f5e00](https://github.com/newrelic/newrelic-quickstarts/commit/37f5e00699dee809f00102828334ecca15b97107))
+
+
+### Features
+
+* New CircleCI quickstart integration ([d17fa7e](https://github.com/newrelic/newrelic-quickstarts/commit/d17fa7e03a5973b6bbaf0653cd7593a614be1a5b))
+
 ## [0.88.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.0...v0.88.1) (2022-01-18)
 
 # [0.88.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.87.0...v0.88.0) (2022-01-18)
