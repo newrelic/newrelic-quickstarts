@@ -1,3 +1,10 @@
+## [0.89.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.0...v0.89.1) (2022-01-24)
+
+
+### Bug Fixes
+
+* Fix the correcrt link to the docs ([dcbdccd](https://github.com/newrelic/newrelic-quickstarts/commit/dcbdccd00c23f569acc158546f742674efd9f3f3))
+
 # [0.89.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.1...v0.89.0) (2022-01-22)
 
 
