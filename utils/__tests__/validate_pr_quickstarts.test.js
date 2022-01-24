@@ -14,6 +14,10 @@ const {
 const { readQuickstartFile } = require('../helpers');
 
 jest.mock('../nr-graphql-helpers');
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  passProcessedArguments: jest.fn()
+}));
 
 const mockDashboardRawConfigurationJSON = require('../mock_files/mock_dashboard_config.json');
 const mockDashboardRawConfiguration = JSON.stringify(
@@ -103,6 +107,7 @@ const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
 
 const expectedMockQuickstart2MutationInput = {
   id: 'mock-2-id',
+  dryRun: true,
   quickstartMetadata: {
     authors: [{ name: 'John Smith' }],
     categoryTerms: undefined,
@@ -163,6 +168,7 @@ const expectedMockQuickstart2MutationInput = {
 
 const expectedMockQuickstart4MutationInput = {
   id: '00000000-0000-0000-0000-000000000000',
+  dryRun: true,
   quickstartMetadata: {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
@@ -237,6 +243,9 @@ test('getQuickstartConfigPaths returns list of unique quickstart config filepath
 });
 
 test('buildMutationVariables returns expected mutation input from quickstart config', () => {
+  const processArgs = ["url", true]
+  helpers.passProcessedArguments.mockReturnValue(processArgs)
+
   const mutationInput = buildMutationVariables(
     readQuickstartFile(
       `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`

@@ -7,6 +7,8 @@ const {
 
 const githubHelpers = require('../github-api-helpers');
 const nrGraphqlHelpers = require('../nr-graphql-helpers');
+const helpers = require('../helpers');
+const { glob } = require('glob');
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -46,6 +48,7 @@ const mockGraphqlRequestBody = (variables = {}) => ({
     id: 'infra-agent-targeted',
     displayName: 'Test Install Agent',
     heading: 'Test Install Install',
+    dryRun: true,
     description: 'this is some description\n',
     target: {
       type: 'AGENT',
@@ -88,9 +91,11 @@ describe('Action: validate install plan id', () => {
     const files = mockGithubAPIFiles([validInstallFilename]);
     const requestBody = mockGraphqlRequestBody();
     const response = mockGraphqlResponse();
+    const processArgs = ["url", true]
 
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+    helpers.passedProcessArguments.mockReturnValue(processArgs)
 
     const hasFailed = await createValidateUpdateInstallPlan(files);
 
@@ -104,6 +109,7 @@ describe('Action: validate install plan id', () => {
 
   test('errors with invalid install plan', async () => {
     const files = mockGithubAPIFiles([invalidInstallFilename1]);
+    const processArgs = ["url", true]
     const requestBody = mockGraphqlRequestBody({
       fallback: { mode: 'LINK', destination: 'invalid-url' },
     });
@@ -119,6 +125,7 @@ describe('Action: validate install plan id', () => {
 
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+    helpers.passedProcessArguments.mockReturnValue(processArgs)
 
     const hasFailed = await createValidateUpdateInstallPlan(files);
 
@@ -132,6 +139,7 @@ describe('Action: validate install plan id', () => {
 
   test('errors with undefined name in install plan', async () => {
     const files = mockGithubAPIFiles([invalidInstallFilename2]);
+    const processArgs = ["url", true]
     const requestBody = mockGraphqlRequestBody({
       displayName: undefined,
     });
@@ -155,6 +163,7 @@ describe('Action: validate install plan id', () => {
 
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
+    helpers.passedProcessArguments.mockReturnValue(processArgs)
 
     const hasFailed = await createValidateUpdateInstallPlan(files);
 
@@ -176,8 +185,10 @@ describe('Action: validate install plan id', () => {
 
   test('errors and calls NR even with no fields defined', async () => {
     const files = mockGithubAPIFiles([invalidInstallFilename3]);
+    const processArgs = ["url", "true"]
     const requestBody = mockGraphqlRequestBody({
       id: undefined,
+      dryRun: true,
       displayName: undefined,
       heading: undefined,
       description: undefined,
@@ -200,6 +211,7 @@ describe('Action: validate install plan id', () => {
     githubHelpers.filterInstallPlans.mockReturnValueOnce(files);
     nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue(response);
 
+    process.argv.push('hi')
     const hasFailed = await createValidateUpdateInstallPlan(files);
 
     expect(hasFailed).toBe(true);

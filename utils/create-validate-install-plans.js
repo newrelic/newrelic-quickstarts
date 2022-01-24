@@ -11,7 +11,8 @@ const {
 } = require('./nr-graphql-helpers');
 
 const GITHUB_API_URL = passedProcessArguments[0];
-const DRY_RUN = passedProcessArguments[1]
+const DRY_RUN = Boolean(passedProcessArguments[1] === 'true');
+console.log("~~~~~~~~", passedProcessArguments)
 
 const INSTALL_PLAN_MUTATION = `# gql 
 mutation (
@@ -126,6 +127,7 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
  * @return {Boolean} - Boolean value indicating whether all files were validated
  */
 const createValidateUpdateInstallPlan = async (installPlanFiles) => {
+  console.log("+++++", installPlanFiles)
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
