@@ -11,7 +11,7 @@ const {
   passedProcessArguments,
 } = require('./helpers');
 
-const GITHUB_API_URL = passedProcessArguments[0];
+const GITHUB_API_URL = passedProcessArguments()[0];
 
 /**
  * Gets all install plain ids under installs/ dir
