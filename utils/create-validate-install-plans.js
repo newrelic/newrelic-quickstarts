@@ -10,10 +10,6 @@ const {
   translateMutationErrors,
 } = require('./nr-graphql-helpers');
 
-const GITHUB_API_URL = passedProcessArguments()[0];
-const DRY_RUN = passedProcessArguments()[1] === 'true';
-console.log("~~~~~~~~", passedProcessArguments())
-
 const INSTALL_PLAN_MUTATION = `# gql 
 mutation (
   $description: String!
@@ -93,9 +89,11 @@ const buildMutationVariables = (installPlanConfig) => {
   const { id, name, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
 
+  const dryRun = passedProcessArguments()[1] === 'true';
+
   return {
     id,
-    dryRun: DRY_RUN,
+    dryRun,
     description,
     displayName: name,
     heading: title,
@@ -127,7 +125,6 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
  * @return {Boolean} - Boolean value indicating whether all files were validated
  */
 const createValidateUpdateInstallPlan = async (installPlanFiles) => {
-  console.log("+++++", installPlanFiles)
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
@@ -155,6 +152,8 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
 };
 
 const main = async () => {
+  const GITHUB_API_URL = passedProcessArguments()[0];
+
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN
