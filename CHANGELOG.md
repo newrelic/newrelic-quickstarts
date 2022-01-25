@@ -1,3 +1,10 @@
+## [0.89.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.2...v0.89.3) (2022-01-25)
+
+
+### Bug Fixes
+
+* Removed accound id from dashboard and typo in description ([75c2a3e](https://github.com/newrelic/newrelic-quickstarts/commit/75c2a3e4d02b2378817380bf10cb7ce1e402eb3e))
+
 ## [0.89.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.1...v0.89.2) (2022-01-24)
 
 
