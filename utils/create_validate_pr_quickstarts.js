@@ -18,8 +18,6 @@ const {
   getCategoriesFromKeywords,
 } = require('./nr-graphql-helpers');
 
-const GITHUB_API_URL = passedProcessArguments()[0];
-const DRY_RUN = Boolean(passedProcessArguments()[1] === 'true');
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
@@ -143,9 +141,11 @@ const buildMutationVariables = (quickstartConfig) => {
     quickstartConfig.path
   );
 
+  const dryRun = Boolean(passedProcessArguments()[1] === 'true');
+
   return {
     id: id ? id : MOCK_UUID,
-    dryRun: DRY_RUN,
+    dryRun,
     quickstartMetadata: {
       alertConditions:
         alertConfigPaths.length > 0
@@ -373,6 +373,8 @@ const countErrors = (graphqlResponses) => {
 };
 
 const main = async () => {
+  const GITHUB_API_URL = passedProcessArguments()[0];
+
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN

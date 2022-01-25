@@ -11,12 +11,13 @@ const {
   getGraphqlRequests,
   countErrors,
 } = require('../create_validate_pr_quickstarts');
-const { readQuickstartFile } = require('../helpers');
+
+const helpers = require('../helpers');
 
 jest.mock('../nr-graphql-helpers');
 jest.mock('../helpers', () => ({
   ...jest.requireActual('../helpers'),
-  passProcessedArguments: jest.fn()
+  passedProcessArguments: jest.fn(),
 }));
 
 const mockDashboardRawConfigurationJSON = require('../mock_files/mock_dashboard_config.json');
@@ -188,98 +189,126 @@ const expectedMockQuickstart4MutationInput = {
   },
 };
 
-test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
-  const quickstartFromAlert = getQuickstartFromFilename(
-    'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
-  );
+describe('quickstart submission and validation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
-  expect(quickstartFromAlert).toEqual('python/aiohttp');
-});
+  test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
+    const quickstartFromAlert = getQuickstartFromFilename(
+      'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
+    );
 
-test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
-  const quickstartFromDashboard = getQuickstartFromFilename(
-    'quickstarts/python/pysqlite/dashboards/python.json'
-  );
+    expect(quickstartFromAlert).toEqual('python/aiohttp');
+  });
 
-  expect(quickstartFromDashboard).toEqual('python/pysqlite');
-});
+  test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
+    const quickstartFromDashboard = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/dashboards/python.json'
+    );
 
-test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
-  const quickstartFromLogo = getQuickstartFromFilename(
-    'quickstarts/python/pysqlite/logo.svg'
-  );
+    expect(quickstartFromDashboard).toEqual('python/pysqlite');
+  });
 
-  expect(quickstartFromLogo).toEqual('python/pysqlite');
-});
+  test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
+    const quickstartFromLogo = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/logo.svg'
+    );
 
-test('getQuickstartFromFilename does not return non-quickstarts files', () => {
-  const mockQuickstart = getQuickstartFromFilename(
-    '.github/workflows/validate_packs.yml'
-  );
+    expect(quickstartFromLogo).toEqual('python/pysqlite');
+  });
 
-  expect(mockQuickstart).toBeUndefined();
-});
+  test('getQuickstartFromFilename does not return non-quickstarts files', () => {
+    const mockQuickstart = getQuickstartFromFilename(
+      '.github/workflows/validate_packs.yml'
+    );
 
-test('getQuickstartFromFilename does not return mock quickstarts', () => {
-  const mockQuickstart = getQuickstartFromFilename(
-    'utils/mock_files/mock-quickstart-1/config.yml'
-  );
+    expect(mockQuickstart).toBeUndefined();
+  });
 
-  expect(mockQuickstart).toBeUndefined();
-});
+  test('getQuickstartFromFilename does not return mock quickstarts', () => {
+    const mockQuickstart = getQuickstartFromFilename(
+      'utils/mock_files/mock-quickstart-1/config.yml'
+    );
 
-test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
-  const uniqueQuickstarts = mockGitHubResponseFilenames
-    .map(addFilenameObject)
-    .reduce(buildUniqueQuickstartSet, new Set());
+    expect(mockQuickstart).toBeUndefined();
+  });
 
-  expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
-});
+  test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
+    const uniqueQuickstarts = mockGitHubResponseFilenames
+      .map(addFilenameObject)
+      .reduce(buildUniqueQuickstartSet, new Set());
 
-test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
-  const configPaths = getQuickstartConfigPaths(quickstartNames);
+    expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
+  });
 
-  expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
-});
+  test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
+    const configPaths = getQuickstartConfigPaths(quickstartNames);
 
-test('buildMutationVariables returns expected mutation input from quickstart config', () => {
-  const processArgs = ["url", true]
-  helpers.passProcessedArguments.mockReturnValue(processArgs)
+    expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
+  });
 
-  const mutationInput = buildMutationVariables(
-    readQuickstartFile(
-      `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
-    )
-  );
+  test('buildMutationVariables returns expected mutation input from quickstart config', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
 
-  expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
-});
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+      )
+    );
 
-test('buildMutationVariables handles an empty config file', () => {
-  const mutationInput = buildMutationVariables(
-    readQuickstartFile(
-      `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
-    )
-  );
+    expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
+  });
 
-  expect(mutationInput).toEqual(expectedMockQuickstart4MutationInput);
-});
+  test('buildMutationVariables returns expected mutation input from quickstart config for submission', () => {
+    const processArgs = ['url', 'false'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
 
-test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
-  const graphqlRequests = getGraphqlRequests(
-    mockGitHubResponseFilenames.map(addFilenameObject)
-  );
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+      )
+    );
 
-  expect(graphqlRequests.length).toEqual(2);
-  expect(
-    graphqlRequests.every(({ filePath }) => filePath.includes('quickstarts/'))
-  ).toBeTruthy();
-  expect(graphqlRequests[0].variables.id).toEqual(
-    'e7948525-8726-46a5-83fa-04732ad42fd1'
-  );
-  expect(graphqlRequests[0].filePath).toEqual(
-    'quickstarts/python/aiohttp/config.yml'
-  );
+    expect(mutationInput).toEqual({
+      ...expectedMockQuickstart2MutationInput,
+      dryRun: false,
+    });
+  });
+
+  test('buildMutationVariables handles an empty config file', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
+      )
+    );
+
+    expect(mutationInput).toEqual(expectedMockQuickstart4MutationInput);
+  });
+
+  test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const graphqlRequests = getGraphqlRequests(
+      mockGitHubResponseFilenames.map(addFilenameObject)
+    );
+
+    expect(graphqlRequests.length).toEqual(2);
+    expect(
+      graphqlRequests.every(({ filePath }) => filePath.includes('quickstarts/'))
+    ).toBeTruthy();
+    expect(graphqlRequests[0].variables.id).toEqual(
+      'e7948525-8726-46a5-83fa-04732ad42fd1'
+    );
+    expect(graphqlRequests[0].filePath).toEqual(
+      'quickstarts/python/aiohttp/config.yml'
+    );
+  });
 });
 
 describe('countErrors', () => {
