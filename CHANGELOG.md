@@ -1,3 +1,20 @@
+## [0.89.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.3...v0.89.4) (2022-01-25)
+
+## [0.89.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.2...v0.89.3) (2022-01-25)
+
+
+### Bug Fixes
+
+* Removed accound id from dashboard and typo in description ([75c2a3e](https://github.com/newrelic/newrelic-quickstarts/commit/75c2a3e4d02b2378817380bf10cb7ce1e402eb3e))
+
+## [0.89.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.1...v0.89.2) (2022-01-24)
+
+
+### Bug Fixes
+
+* alert issue on jumpstart quickstart ([6c649dc](https://github.com/newrelic/newrelic-quickstarts/commit/6c649dce42dd864e99bd614bc033d3cfc6103cfa))
+* Circle logo ([ca9c8ac](https://github.com/newrelic/newrelic-quickstarts/commit/ca9c8ac1e7b68a7081838482dc211d6fb6d1c044))
+
 ## [0.89.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.0...v0.89.1) (2022-01-24)
 
 
