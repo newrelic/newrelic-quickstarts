@@ -81,18 +81,17 @@ const translateMutationErrors = (errors, filePath) => {
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
  * @returns {String[] | undefined } An array of quickstart categories
  */
-const getCategoriesFromKeywords = (configKeywords = []) => {
-  const categoriesFromKeywords = instantObservabilityCategories.reduce(
-    (acc, { associatedKeywords, value }) => {
-      if (
-        associatedKeywords.some((keyword) => configKeywords.includes(keyword))
-      ) {
-        acc.push(value);
-      }
-      return acc;
-    },
-    []
-  );
+const getCategoryTermsFromKeywords = (configKeywords = []) => {
+  // for each keyword in config, push into categories terms if its a restricted keyword
+
+  const categoryKeywords = instantObservabilityCategories.flatMap(category => category.associatedKeywords);
+
+  const categoriesFromKeywords = configKeywords.reduce((acc, keyword) => {
+    if (categoryKeywords.includes(keyword)){
+      acc.push(keyword);
+    }
+    return  acc;
+  }, []);
 
   return categoriesFromKeywords.length > 0 ? categoriesFromKeywords : undefined;
 };
@@ -100,5 +99,5 @@ const getCategoriesFromKeywords = (configKeywords = []) => {
 module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
-  getCategoriesFromKeywords,
+  getCategoryTermsFromKeywords,
 };
