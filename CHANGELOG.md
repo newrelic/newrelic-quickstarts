@@ -1,3 +1,10 @@
+# [0.92.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.91.1...v0.92.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for elasticsearch queries ([982806b](https://github.com/newrelic/newrelic-quickstarts/commit/982806bf6bce60df28453526dc4aed258fea1b1e))
+
 ## [0.91.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.91.0...v0.91.1) (2022-01-26)
 
 # [0.91.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.90.0...v0.91.0) (2022-01-26)
