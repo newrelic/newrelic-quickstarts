@@ -1,3 +1,10 @@
+# [0.90.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.5...v0.90.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for apache camel ([cf286ff](https://github.com/newrelic/newrelic-quickstarts/commit/cf286ff0b65880c2c416d8d0f115c934800a69cd))
+
 ## [0.89.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.4...v0.89.5) (2022-01-26)
 
 ## [0.89.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.3...v0.89.4) (2022-01-25)
