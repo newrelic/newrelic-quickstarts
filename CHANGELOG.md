@@ -1,3 +1,10 @@
+# [0.91.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.90.0...v0.91.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for jdbc execute batch ([f6a05f6](https://github.com/newrelic/newrelic-quickstarts/commit/f6a05f6535ce7a3426a2fb6876ef85147789a335))
+
 # [0.90.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.5...v0.90.0) (2022-01-26)
 
 
