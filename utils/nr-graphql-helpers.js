@@ -77,23 +77,28 @@ const translateMutationErrors = (errors, filePath) => {
 };
 
 /**
- * Builds array of corresponding categories from keywords specified in a quickstart config.yml
+ * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
- * @returns {String[] | undefined } An array of quickstart categories
+ * @returns {String[] | undefined } An array of quickstart categoryTerms
+ * 
+ * @example 
+ * // input 
+ * ['python', 'featured', 'infrastructure', 'banana', 'animal']
+ * 
+ * // return
+ * ['featured', 'infrastructure']
  */
 const getCategoryTermsFromKeywords = (configKeywords = []) => {
-  // for each keyword in config, push into categories terms if its a restricted keyword
+  const allCategoryKeywords = instantObservabilityCategories.flatMap(category => category.associatedKeywords);
 
-  const categoryKeywords = instantObservabilityCategories.flatMap(category => category.associatedKeywords);
-
-  const categoriesFromKeywords = configKeywords.reduce((acc, keyword) => {
-    if (categoryKeywords.includes(keyword)){
+  const categoryKeywords = configKeywords.reduce((acc, keyword) => {
+    if (allCategoryKeywords.includes(keyword)){
       acc.push(keyword);
     }
     return  acc;
   }, []);
 
-  return categoriesFromKeywords.length > 0 ? categoriesFromKeywords : undefined;
+  return categoryKeywords.length > 0 ? categoryKeywords : undefined;
 };
 
 module.exports = {
