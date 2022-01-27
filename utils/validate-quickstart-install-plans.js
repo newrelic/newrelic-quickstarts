@@ -8,10 +8,10 @@ const {
 const {
   findMainInstallConfigFiles,
   readQuickstartFile,
-  pathsToSanitize,
+  passedProcessArguments,
 } = require('./helpers');
 
-const url = pathsToSanitize[0];
+const GITHUB_API_URL = passedProcessArguments[0];
 
 /**
  * Gets all install plain ids under installs/ dir
@@ -41,7 +41,7 @@ const getConfigInstallPlans = (configFiles) => {
 };
 
 /**
- * Gets all the install plans and paths for an array of config files
+ * Gets the set of install plans specified in config files but not actually existing
  * @param {{filePath, installPlans}[]} configInstallPlanFiles - Array of objects with path and install plans for file
  * @param {String[]} installPlanIds - Array of install plan ids
  * @returns {{filePath, installPlans}[]} Array of paths and install plans for file
@@ -58,7 +58,7 @@ const getInstallPlansNoMatches = (configInstallPlanFiles, installPlanIds) => {
 };
 
 /**
- * Gets all the install plans and paths for an array of config files
+ * Main validation logic ensuring install plans specified in config files actually exist
  * @param {Array} githubFiles - Array of results from Github API
  */
 const validateInstallPlanIds = (githubFiles) => {
@@ -92,7 +92,10 @@ const validateInstallPlanIds = (githubFiles) => {
 };
 
 const main = async () => {
-  const files = await fetchPaginatedGHResults(url, process.env.GITHUB_TOKEN);
+  const files = await fetchPaginatedGHResults(
+    GITHUB_API_URL,
+    process.env.GITHUB_TOKEN
+  );
   validateInstallPlanIds(filterOutTestFiles(files));
 };
 
