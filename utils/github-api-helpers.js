@@ -3,8 +3,11 @@
 const fetch = require('node-fetch');
 const parseLinkHeader = require('parse-link-header');
 
-const CONFIG_REGEXP = new RegExp('quickstarts/.+/config.+(yml|yaml)');
-const MOCK_QUICKSTART_REGEXP = new RegExp('mock_quickstarts/.+');
+const QUICKSTART_CONFIG_REGEXP = new RegExp(
+  'quickstarts/.+/config.+(yml|yaml)'
+);
+const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
+const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
  * Pulls the next page off of a `Link` header
@@ -28,20 +31,24 @@ const getNextLink = (linkHeader) => {
 const fetchPaginatedGHResults = async (url, token) => {
   let files = [];
   let nextPageLink = url;
-  while (nextPageLink) {
-    const resp = await fetch(nextPageLink, {
-      headers: { authorization: `token ${token}` },
-    });
-    if (!resp.ok) {
-      console.error(
-        `ERROR: Github API returned status ${resp.code} - ${resp.message}`
-      );
-      process.exit(1);
+  try {
+    while (nextPageLink) {
+      const resp = await fetch(nextPageLink, {
+        headers: { authorization: `token ${token}` },
+      });
+      const responseJson = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(`Github API returned: ${responseJson.message}`);
+      }
+      nextPageLink = getNextLink(resp.headers.get('Link'));
+      files = [...files, ...responseJson];
     }
-    const page = await resp.json();
-    nextPageLink = getNextLink(resp.headers.get('Link'));
-    files = [...files, ...page];
+  } catch (error) {
+    console.error('Error:', error);
+    process.exit(1);
   }
+
   return files;
 };
 
@@ -51,7 +58,7 @@ const fetchPaginatedGHResults = async (url, token) => {
  * @returns {Array} config files from Github API without test files
  */
 const filterQuickstartConfigFiles = (files) =>
-  files.filter(({ filename }) => CONFIG_REGEXP.test(filename));
+  files.filter(({ filename }) => QUICKSTART_CONFIG_REGEXP.test(filename));
 
 /**
  * Filters out results from the Github API for changes to test files
@@ -59,7 +66,16 @@ const filterQuickstartConfigFiles = (files) =>
  * @returns {Array} files from Github API excluding test files
  */
 const filterOutTestFiles = (files) => {
-  return files.filter(({ filename }) => !MOCK_QUICKSTART_REGEXP.test(filename));
+  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
+};
+
+/**
+ * Filters results from the Github API down to install plan config files
+ * @param {Array} files the results from Github API
+ * @returns {Array} install plan config files from Github API
+ */
+const filterInstallPlans = (files) => {
+  return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
 };
 
 module.exports = {
@@ -67,4 +83,5 @@ module.exports = {
   getNextLink,
   filterQuickstartConfigFiles,
   filterOutTestFiles,
+  filterInstallPlans,
 };

@@ -5,8 +5,6 @@ const yaml = require('js-yaml');
 const glob = require('glob');
 const isImage = require('is-image');
 
-const pathsToSanitize = process.argv.slice(2);
-
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
@@ -135,6 +133,12 @@ const findMainQuickstartConfigFiles = () =>
 const findMainInstallConfigFiles = () =>
   glob.sync(path.resolve(process.cwd(), '../install/**/install.+(yml|yaml)'));
 
+/**
+ * Removes the first two arguments injected by Node
+ * @returns {String[]} An array of arguments explicitly passed in via the command line
+ */
+const passedProcessArguments = process.argv.slice(2);
+
 module.exports = {
   readYamlFile,
   readJsonFile,
@@ -149,5 +153,5 @@ module.exports = {
   isDirectory,
   findMainQuickstartConfigFiles,
   findMainInstallConfigFiles,
-  pathsToSanitize,
+  passedProcessArguments,
 };
