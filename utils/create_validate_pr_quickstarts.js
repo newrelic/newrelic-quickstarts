@@ -15,7 +15,7 @@ const {
 const {
   fetchNRGraphqlResults,
   translateMutationErrors,
-  getCategoriesFromKeywords,
+  getCategoryTermsFromKeywords,
 } = require('./nr-graphql-helpers');
 
 const GITHUB_REPO_BASE_URL =
@@ -152,7 +152,7 @@ const buildMutationVariables = (quickstartConfig) => {
           ? adaptQuickstartAlertsInput(alertConfigPaths)
           : undefined,
       authors: authors && authors.map((author) => ({ name: author })),
-      categoryTerms: getCategoriesFromKeywords(keywords),
+      categoryTerms: getCategoryTermsFromKeywords(keywords),
       description: description && description.trim(),
       displayName: title && title.trim(),
       documentation:
@@ -214,6 +214,7 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
       description: details && details.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      sourceUrl: getAssetSourceUrl(alertConfigPath),
       type: type && type.trim(),
     };
   });
@@ -246,6 +247,7 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
       description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
+      sourceUrl: getAssetSourceUrl(dashboardConfigPath),
       screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
     };
   });
@@ -263,6 +265,19 @@ const getScreenshotUrl = (path) => {
       path
     )}/${screenshotFilename}`,
   };
+};
+
+/**
+ * Creates the GitHub url of an asset within the main directory of a quickstart.
+ * @param {String} path - The file path of an asset.
+ * @return {Object} Returns an object containing the GitHub url of an asset.
+ */
+const getAssetSourceUrl = (path) => {
+  const assetFilename = path.split('/').pop();
+
+  return `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
+    path
+  )}/${assetFilename}`;
 };
 
 /**
@@ -353,19 +368,24 @@ const countErrors = (graphqlResponses) => {
 
   graphqlResponses.forEach(({ errors, filePath }) => {
     // filter out errors where install plan id does not exist
-    const remainingErrors = errors.filter(
-      (error) =>
+
+    const installPlanErrorExists = (error) =>
+      !(
         !error?.extensions?.argumentPath?.includes('installPlanStepIds') ||
         !error?.message?.includes(
           'contains an install plan step that does not exist'
         )
+      );
+
+    const installPlanErrors = errors.filter(installPlanErrorExists);
+    const remainingErrors = errors.filter(
+      (error) => !installPlanErrorExists(error)
     );
 
     errorCount += remainingErrors.length;
 
-    // we want to print out all errors, including install plan id does not exist
     if (errors.length > 0) {
-      translateMutationErrors(remainingErrors, filePath);
+      translateMutationErrors(remainingErrors, filePath, installPlanErrors);
     }
   });
 

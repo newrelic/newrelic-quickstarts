@@ -1,33 +1,30 @@
 'use strict';
-const { getCategoriesFromKeywords } = require('../nr-graphql-helpers');
+const { getCategoryTermsFromKeywords } = require('../nr-graphql-helpers');
 
-test('getCategoriesFromKeywords returns undefined if no keywords are provided', () => {
+test('getCategoryTermsFromKeywords returns undefined if no keywords are provided', () => {
   const mockKeywords = undefined;
-  const categoriesFromKeywords = getCategoriesFromKeywords(mockKeywords);
+  const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
   expect(categoriesFromKeywords).toEqual(undefined);
 });
 
-test('getCategoriesFromKeywords returns undefined if no keywords match a category', () => {
+test('getCategoryTermsFromKeywords returns undefined if no keywords match a category', () => {
   const mockKeywords = ['python', 'apm', 'http'];
-  const categoriesFromKeywords = getCategoriesFromKeywords(mockKeywords);
+  const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
   expect(categoriesFromKeywords).toEqual(undefined);
 });
 
-test('getCategoriesFromKeywords returns 1 category given a set of keywords where a keyword belong to 1 category', () => {
-  const mockKeywords = ['python', 'featured'];
-  const categoriesFromKeywords = getCategoriesFromKeywords(mockKeywords);
+test('getCategoryTermsFromKeywords returns 1 categoryTerm given a set of keywords where a keyword belong to 1 category', () => {
+  const mockKeywords = ['python', 'azure'];
+  const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
-  expect(categoriesFromKeywords).toEqual(['featured']);
+  expect(categoriesFromKeywords).toEqual(['azure']);
 });
 
-test('getCategoriesFromKeywords returns 2 categories given a set of keywords where keywords belong to 2 categories', () => {
-  const mockKeywords = ['python', 'featured', 'containers'];
-  const categoriesFromKeywords = getCategoriesFromKeywords(mockKeywords);
+test('getCategoryTermsFromKeywords returns 2 categoryTerms given a set of keywords where keywords belong to 2 categories', () => {
+  const mockKeywords = ['python', 'os', 'containers'];
+  const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
-  expect(categoriesFromKeywords).toEqual([
-    'featured',
-    'kubernetes-and-containers',
-  ]);
+  expect(categoriesFromKeywords).toEqual(['os', 'containers']);
 });
