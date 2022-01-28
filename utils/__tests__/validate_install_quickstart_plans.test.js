@@ -45,6 +45,14 @@ describe('Action: validate install plan id', () => {
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
+  test.only(`succeeds when quickstart doesn't contain any install plan`, () => {
+    const files = mockGithubAPIFiles(['mock-quickstart-5/config.yml']);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+
+    validateInstallPlanIds(files);
+    expect(global.console.error).not.toHaveBeenCalled();
+  });
+
   test('fails with invalid install plan id', () => {
     const files = mockGithubAPIFiles([invalidQuickstartFilename1]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
