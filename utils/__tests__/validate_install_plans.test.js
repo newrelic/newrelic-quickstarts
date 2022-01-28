@@ -10,7 +10,7 @@ const nrGraphqlHelpers = require('../nr-graphql-helpers');
 const helpers = require('../helpers');
 
 jest.mock('@actions/core');
-jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.spyOn(global.console, 'error').mockImplementation(() => { });
 
 jest.mock('../github-api-helpers', () => ({
   ...jest.requireActual('../github-api-helpers'),
