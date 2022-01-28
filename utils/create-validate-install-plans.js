@@ -73,6 +73,7 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
       return {
         nerdlet: {
           nerdletId: destination && destination.nerdletId,
+          nerdletState: destination && destination.nerdletState,
         },
       };
     default:
