@@ -17,6 +17,7 @@ jest.mock('../github-api-helpers', () => ({
 const validQuickstartFilename = 'mock-quickstart-2/config.yml';
 const invalidQuickstartFilename1 = 'mock-quickstart-1/config.yml';
 const invalidQuickstartFilename2 = 'mock-quickstart-3/config.yml';
+const validQuickstartWithoutInstallPlan = 'mock-quickstart-5/config.yml';
 
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({
@@ -45,8 +46,8 @@ describe('Action: validate install plan id', () => {
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
-  test.only(`succeeds when quickstart doesn't contain any install plan`, () => {
-    const files = mockGithubAPIFiles(['mock-quickstart-5/config.yml']);
+  test.only(`succeeds when valid quickstart doesn't contain any install plan`, () => {
+    const files = mockGithubAPIFiles([validQuickstartWithoutInstallPlan]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
     validateInstallPlanIds(files);
