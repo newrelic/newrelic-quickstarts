@@ -65,15 +65,15 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
   switch (mode) {
     case 'targetedInstall':
       return {
-        mode: 'TARGETED',
-        destination: destination && destination.recipeName,
+        targeted: { recipeName: destination && destination.recipeName },
       };
     case 'link':
-      return { mode: 'LINK', destination: destination && destination.url };
+      return { link: { url: destination && destination.url } };
     case 'nerdlet':
       return {
-        mode: 'NERDLET',
-        destination: destination && destination.nerdletId,
+        nerdlet: {
+          nerdletId: destination && destination.nerdletId,
+        },
       };
     default:
       return { mode, destination: undefined };

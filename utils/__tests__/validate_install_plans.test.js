@@ -60,13 +60,14 @@ const mockGraphqlRequestBody = (variables = {}) => ({
       os: ['LINUX', 'WINDOWS'],
     },
     primary: {
-      mode: 'TARGETED',
-      destination: 'test-install-installer',
+      targeted: {
+        recipeName: 'test-install-installer',
+      },
     },
     fallback: {
-      mode: 'LINK',
-      destination:
-        'https://docs.newrelic.com/docs/infrastructure/install-infrastructure-agent/linux-installation/install-infrastructure-monitoring-agent-linux/#manual-install',
+      link: {
+        url: 'https://docs.newrelic.com/docs/infrastructure/install-infrastructure-agent/linux-installation/install-infrastructure-monitoring-agent-linux/#manual-install',
+      },
     },
     ...variables,
   },
@@ -116,7 +117,7 @@ describe('Action: validate install plan id', () => {
     const files = mockGithubAPIFiles([invalidInstallFilename1]);
     const processArgs = ['url', 'true'];
     const requestBody = mockGraphqlRequestBody({
-      fallback: { mode: 'LINK', destination: 'invalid-url' },
+      fallback: { link: { url: 'invalid-url' } },
     });
     const response = mockGraphqlResponse({
       errors: [
