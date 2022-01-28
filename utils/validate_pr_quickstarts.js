@@ -366,19 +366,24 @@ const countErrors = (graphqlResponses) => {
 
   graphqlResponses.forEach(({ errors, filePath }) => {
     // filter out errors where install plan id does not exist
-    const remainingErrors = errors.filter(
-      (error) =>
+
+    const installPlanErrorExists = (error) =>
+      !(
         !error?.extensions?.argumentPath?.includes('installPlanStepIds') ||
         !error?.message?.includes(
           'contains an install plan step that does not exist'
         )
+      );
+
+    const installPlanErrors = errors.filter(installPlanErrorExists);
+    const remainingErrors = errors.filter(
+      (error) => !installPlanErrorExists(error)
     );
 
     errorCount += remainingErrors.length;
 
-    // we want to print out all errors, including install plan id does not exist
     if (errors.length > 0) {
-      translateMutationErrors(errors, filePath);
+      translateMutationErrors(remainingErrors, filePath, installPlanErrors);
     }
   });
 
