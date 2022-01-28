@@ -1,3 +1,11 @@
+## [0.94.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.0...v0.94.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* add missing summary to elasticsearch quickstart ([2875e9a](https://github.com/newrelic/newrelic-quickstarts/commit/2875e9a0d60549eb62c960ba6a8524703873b5be))
+* Remove linked entity ID from dasbhoard ([84e1600](https://github.com/newrelic/newrelic-quickstarts/commit/84e1600e5e9347a50047ba9b620976be1365f910))
+
 # [0.94.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.4...v0.94.0) (2022-01-28)
 
 
