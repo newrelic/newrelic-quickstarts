@@ -59,7 +59,7 @@ const fetchNRGraphqlResults = async (queryBody) => {
  * Handle errors from GraphQL request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
- * @param {Object[]} installPlanErrors - Array of install plan errors which are handled differently
+ * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
  * @returns {void}
  */
 const translateMutationErrors = (errors, filePath, installPlanErrors = []) => {
