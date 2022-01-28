@@ -16,18 +16,15 @@ test('getCategoryTermsFromKeywords returns undefined if no keywords match a cate
 });
 
 test('getCategoryTermsFromKeywords returns 1 categoryTerm given a set of keywords where a keyword belong to 1 category', () => {
-  const mockKeywords = ['python', 'featured'];
+  const mockKeywords = ['python', 'azure'];
   const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
-  expect(categoriesFromKeywords).toEqual(['featured']);
+  expect(categoriesFromKeywords).toEqual(['azure']);
 });
 
 test('getCategoryTermsFromKeywords returns 2 categoryTerms given a set of keywords where keywords belong to 2 categories', () => {
-  const mockKeywords = ['python', 'featured', 'containers'];
+  const mockKeywords = ['python', 'os', 'containers'];
   const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
 
-  expect(categoriesFromKeywords).toEqual([
-    'featured',
-    'containers',
-  ]);
+  expect(categoriesFromKeywords).toEqual(['os', 'containers']);
 });
