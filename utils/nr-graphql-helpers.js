@@ -80,22 +80,24 @@ const translateMutationErrors = (errors, filePath) => {
  * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
  * @returns {String[] | undefined } An array of quickstart categoryTerms
- * 
- * @example 
- * // input 
- * ['python', 'featured', 'infrastructure', 'banana', 'animal']
- * 
+ *
+ * @example
+ * // input
+ * ['python', 'azure', 'infrastructure', 'banana', 'animal']
+ *
  * // return
- * ['featured', 'infrastructure']
+ * ['azure', 'infrastructure']
  */
 const getCategoryTermsFromKeywords = (configKeywords = []) => {
-  const allCategoryKeywords = instantObservabilityCategories.flatMap(category => category.associatedKeywords);
+  const allCategoryKeywords = instantObservabilityCategories.flatMap(
+    (category) => category.associatedKeywords
+  );
 
   const categoryKeywords = configKeywords.reduce((acc, keyword) => {
-    if (allCategoryKeywords.includes(keyword)){
+    if (allCategoryKeywords.includes(keyword)) {
       acc.push(keyword);
     }
-    return  acc;
+    return acc;
   }, []);
 
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
