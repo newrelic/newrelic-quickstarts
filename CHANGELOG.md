@@ -1,3 +1,10 @@
+## [0.93.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.1...v0.93.2) (2022-01-28)
+
+
+### Bug Fixes
+
+* update pr number interpolation in check ([2445fdb](https://github.com/newrelic/newrelic-quickstarts/commit/2445fdb21b04aa052da30783bba424d057d5da1b))
+
 ## [0.93.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.0...v0.93.1) (2022-01-27)
 
 # [0.93.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.92.0...v0.93.0) (2022-01-27)
