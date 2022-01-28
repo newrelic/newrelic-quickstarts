@@ -10,47 +10,53 @@ details: |+
   Try to be as descriptive as possible and provide "The Why".
 
 # Type of alert
-type: BASELINE
+type: STATIC
 
 # NRQL query
 nrql:
-  # Baseline alerts can use an optional FACET
-  query: "FROM Metric SELECT average(metric.name) FACET entity.name"
+  query: "FROM SystemSample SELECT average(cpuPercent) FACET entityName"
 
-# Direction in which baseline is set (Default: LOWER_ONLY)
-baselineDirection: LOWER_ONLY | UPPER_AND_LOWER | UPPER_ONLY
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
 
 # List of Critical and Warning thresholds for the condition
 terms:
 - priority: CRITICAL
+  # Operator used to compare against the threshold.
+  operator: ABOVE
   # Value that triggers a violation
-  threshold: 3
-  # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
-  thresholdDuration: 120
+  threshold: 90
+  # Time in seconds; 120 - 3600
+  thresholdDuration: 600
   # How many data points must be in violation for the duration
-  thresholdOccurrences: ALL | AT_LEAST_ONCE
+  thresholdOccurrences: AT_LEAST_ONCE
 
 # Adding a Warning threshold is optional
 - priority: WARNING
-  threshold: 1
+  threshold: 80
+  operator: ABOVE
   thresholdDuration: 300
-  thresholdOccurrences: ALL | AT_LEAST_ONCE
+  thresholdOccurrences: ALL
 
 # Loss of Signal Settings
 expiration:
   # Close open violations if signal is lost (Default: false)
-  closeViolationsOnExpiration: true | false
+  closeViolationsOnExpiration: true
   # Open "Loss of Signal" violation if signal is lost (Default: false)
-  openViolationOnExpiration: true | false
+  openViolationOnExpiration: false
   # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
   expirationDuration:
 
 # Advanced Signal Settings
 signal:
-  # Max Value for Baseline conditions = 20
+  # Duration of the time window used to evaluate the NRQL Condition
+  # Time in seconds; 30 - 900 (Default: 60)
+  aggregationWindow: 60
+  # The number of windows we look back at the aggregated data
+  # Max 20 minutes, multiple of aggregationWindow
   evaluationOffset: 3
   # Type of value that should be used to fill gaps
-  fillOption: LAST_VALUE | NONE | STATIC
+  fillOption: LAST_VALUE
   # Integer; Used in conjunction with STATIC fillOption, otherwise null
   fillValue:
 
