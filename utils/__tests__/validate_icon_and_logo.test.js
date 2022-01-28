@@ -4,10 +4,7 @@ const fs = require('fs');
 
 const helpers = require('../helpers');
 
-const {
-  validateLogo,
-  handleErrors,
-} = require('../validate_logos');
+const { validateLogo, handleErrors } = require('../validate_logos');
 
 jest.mock('../helpers');
 jest.mock('fs');
@@ -74,8 +71,6 @@ describe('validate logo tests', () => {
       ];
 
       const errorMessages = validateLogo(mainConfigPaths);
-
-      console.warn(errorMessages);
 
       expect(errorMessages.length).toBe(3);
     });
