@@ -1,3 +1,10 @@
+## [0.93.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.3...v0.93.4) (2022-01-28)
+
+
+### Bug Fixes
+
+* featured quickstart validation ([67cb991](https://github.com/newrelic/newrelic-quickstarts/commit/67cb991f1fe2de066eea9c7289a64f86479f8214))
+
 ## [0.93.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.2...v0.93.3) (2022-01-28)
 
 ## [0.93.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.1...v0.93.2) (2022-01-28)
