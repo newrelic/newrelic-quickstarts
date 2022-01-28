@@ -1,3 +1,18 @@
+# [0.94.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.4...v0.94.0) (2022-01-28)
+
+
+### Bug Fixes
+
+* fix cs dir ([471bbef](https://github.com/newrelic/newrelic-quickstarts/commit/471bbefb6afab257dfef1c41eab3bdcc6c1fcce0))
+
+
+### Features
+
+* moved to codestream dir ([d9c0858](https://github.com/newrelic/newrelic-quickstarts/commit/d9c08584331f5f9efa626299ffbf92d0c2ae967d))
+* new quickstart ([dbea719](https://github.com/newrelic/newrelic-quickstarts/commit/dbea7192f0f386a09630dc17ade4970d49ef8171))
+* new quickstart ([0b0015c](https://github.com/newrelic/newrelic-quickstarts/commit/0b0015c4ebab3e92b017e528dc18ec9a8d818d4a))
+* new quickstart ([5c7270b](https://github.com/newrelic/newrelic-quickstarts/commit/5c7270bc5b2a71a949865ca1609253a00d8dec63))
+
 ## [0.93.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.3...v0.93.4) (2022-01-28)
 
 
