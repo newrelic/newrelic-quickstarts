@@ -105,4 +105,5 @@ module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
   getCategoryTermsFromKeywords,
+  buildRequestBody,
 };
