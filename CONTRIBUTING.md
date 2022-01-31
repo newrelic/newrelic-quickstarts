@@ -23,6 +23,7 @@
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Levels](#levels)
+      - [Dashboard JSON](#dashboard-json)
       - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
       - [Logos](#logos)
@@ -241,6 +242,24 @@ documentation:
 - Levels can only be modified by New Relic employees.
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
 - The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
+
+
+#### Dashboard JSON
+
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md) for more details on `dashboards`
+
+- When copying dashboard JSON from the New Relic One platform a `permissions` field is included in the code. You do not need this in a quickstart's dashboard JSON.
+- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard` locally. This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) will check and remove code that may cause an issue when submitting a PR.
+- If you wish to import a quickstart's dashboard into New Relic outside of the quickstart install flow, you will need to include this `permissions` field.
+- Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform.
+
+```json
+{
+  "name": "Dashboard Name",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+}
+```
 
 #### Dashboard screenshots
 
