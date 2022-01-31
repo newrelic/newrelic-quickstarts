@@ -18,18 +18,18 @@ const {
   getCategoryTermsFromKeywords,
 } = require('./nr-graphql-helpers');
 
-const GITHUB_API_URL = passedProcessArguments[0];
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
-const VALIDATE_QUICKSTART_MUTATION = `# gql
+const QUICKSTART_MUTATION = `# gql
 mutation (
+  $dryRun: Boolean
   $id: ID!
   $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
 ) {
     nr1CatalogSubmitQuickstart(
-      dryRun: true
+      dryRun: $dryRun
       id: $id
       quickstartMetadata: $quickstartMetadata
     ) {
@@ -141,8 +141,11 @@ const buildMutationVariables = (quickstartConfig) => {
     quickstartConfig.path
   );
 
+  const dryRun = Boolean(passedProcessArguments()[1] === 'true');
+
   return {
     id: id ? id : MOCK_UUID,
+    dryRun,
     quickstartMetadata: {
       alertConditions:
         alertConfigPaths.length > 0
@@ -238,9 +241,8 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
-      dashboardConfigPath
-    );
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -338,13 +340,13 @@ const getGraphqlRequests = (files) => {
  * @param {Array} files - A list of all files changed in the PR.
  * @return {Boolean} A value indicating if the GitHub Action should fail
  */
-const validateQuickstarts = async (files) => {
+const createValidateUpdateQuickstarts = async (files) => {
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
 
   const graphqlResponses = await Promise.all(
     graphqlRequests.map(async ({ variables, filePath }) => {
       const { data, errors } = await fetchNRGraphqlResults({
-        queryString: VALIDATE_QUICKSTART_MUTATION,
+        queryString: QUICKSTART_MUTATION,
         variables,
       });
 
@@ -391,12 +393,14 @@ const countErrors = (graphqlResponses) => {
 };
 
 const main = async () => {
+  const GITHUB_API_URL = passedProcessArguments()[0];
+
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN
   );
 
-  const hasFailed = await validateQuickstarts(files);
+  const hasFailed = await createValidateUpdateQuickstarts(files);
 
   if (hasFailed) {
     process.exit(1);
