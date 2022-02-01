@@ -22,7 +22,11 @@ const filterData = (data) => {
       __schema: { types },
     },
   } = data;
-  const endpoints = types.filter((type) => type.name.startsWith('Nr1Catalog'));
+  const endpoints = types.filter(
+    (type) =>
+      type.name.startsWith('Nr1CatalogQuickstart') ||
+      type.name.startsWith('Nr1CatalogInstall')
+  );
 
   return { __schema: { types: endpoints } };
 };
