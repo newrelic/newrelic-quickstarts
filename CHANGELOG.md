@@ -1,3 +1,144 @@
+## [0.94.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.2...v0.94.3) (2022-01-31)
+
+## [0.94.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.1...v0.94.2) (2022-01-28)
+
+## [0.94.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.0...v0.94.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* add missing summary to elasticsearch quickstart ([2875e9a](https://github.com/newrelic/newrelic-quickstarts/commit/2875e9a0d60549eb62c960ba6a8524703873b5be))
+* Remove linked entity ID from dasbhoard ([84e1600](https://github.com/newrelic/newrelic-quickstarts/commit/84e1600e5e9347a50047ba9b620976be1365f910))
+
+# [0.94.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.4...v0.94.0) (2022-01-28)
+
+
+### Bug Fixes
+
+* fix cs dir ([471bbef](https://github.com/newrelic/newrelic-quickstarts/commit/471bbefb6afab257dfef1c41eab3bdcc6c1fcce0))
+
+
+### Features
+
+* moved to codestream dir ([d9c0858](https://github.com/newrelic/newrelic-quickstarts/commit/d9c08584331f5f9efa626299ffbf92d0c2ae967d))
+* new quickstart ([dbea719](https://github.com/newrelic/newrelic-quickstarts/commit/dbea7192f0f386a09630dc17ade4970d49ef8171))
+* new quickstart ([0b0015c](https://github.com/newrelic/newrelic-quickstarts/commit/0b0015c4ebab3e92b017e528dc18ec9a8d818d4a))
+* new quickstart ([5c7270b](https://github.com/newrelic/newrelic-quickstarts/commit/5c7270bc5b2a71a949865ca1609253a00d8dec63))
+
+## [0.93.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.3...v0.93.4) (2022-01-28)
+
+
+### Bug Fixes
+
+* featured quickstart validation ([67cb991](https://github.com/newrelic/newrelic-quickstarts/commit/67cb991f1fe2de066eea9c7289a64f86479f8214))
+
+## [0.93.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.2...v0.93.3) (2022-01-28)
+
+## [0.93.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.1...v0.93.2) (2022-01-28)
+
+
+### Bug Fixes
+
+* update pr number interpolation in check ([2445fdb](https://github.com/newrelic/newrelic-quickstarts/commit/2445fdb21b04aa052da30783bba424d057d5da1b))
+
+## [0.93.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.93.0...v0.93.1) (2022-01-27)
+
+# [0.93.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.92.0...v0.93.0) (2022-01-27)
+
+
+### Bug Fixes
+
+* ensure QUICKSTART_CONFIG_REGEXP variable name matches usage ([c5c2c71](https://github.com/newrelic/newrelic-quickstarts/commit/c5c2c71ce19a1bc01e738d2a7fb810060ac62bf8))
+* **getQuickstartFromFilename:** ensure mock quickstarts are not included in the Set sent to NerdGraph for validation ([192f028](https://github.com/newrelic/newrelic-quickstarts/commit/192f028eed6e20c6fd08cef1b9ac3adc9b440d49))
+* Remove invalidated key ([400c50e](https://github.com/newrelic/newrelic-quickstarts/commit/400c50e2581a069a2ead87c4c4d6e62579aeeec2))
+* remove unused dryRun variable ([ff9ce47](https://github.com/newrelic/newrelic-quickstarts/commit/ff9ce47311e1f78e9ed8a3620ee683ee742938ac))
+* update install plan test with renamed passedProcessArguments array ([a3551b1](https://github.com/newrelic/newrelic-quickstarts/commit/a3551b1b484138e89f2e9734ba791462f2a536fb))
+* use submitMetadata mutation and handle response accurately ([300ad72](https://github.com/newrelic/newrelic-quickstarts/commit/300ad7225f7955344dfc538b186b7f44376d9af2))
+* **validate_pr_quickstarts:** matching of quickstart config paths ([fb1d581](https://github.com/newrelic/newrelic-quickstarts/commit/fb1d5819907469ffd9f97594c5548a49e0d3fd58))
+
+
+### Features
+
+* add error handling to validation script ([ff23fb2](https://github.com/newrelic/newrelic-quickstarts/commit/ff23fb25238e4649a5c087940384f6972e3cd9aa))
+* Add input value for dashboards ([4cd6ab0](https://github.com/newrelic/newrelic-quickstarts/commit/4cd6ab07487991b9ce52497ac24f03a2d810566e))
+* add sourceUrl to dashboard and alert assets ([657e023](https://github.com/newrelic/newrelic-quickstarts/commit/657e023183790a6d9be1315b6e24d561f9a8fb57))
+* created workflow to run install plans ([a62abf5](https://github.com/newrelic/newrelic-quickstarts/commit/a62abf54b0d974a60e1d2b6cc96b1fe515f451a0))
+* Handle error messages ([ad2775c](https://github.com/newrelic/newrelic-quickstarts/commit/ad2775c5c11c2672fb3f0cdf17f432d289e8eb87))
+* Return uniqueQuickstartFilenames ([e98a130](https://github.com/newrelic/newrelic-quickstarts/commit/e98a13093101ff96b28858f61be5231f176472f6))
+
+
+### Reverts
+
+* Revert "test: remove authors on quickstart" ([87ddb67](https://github.com/newrelic/newrelic-quickstarts/commit/87ddb674cdd74f1b2d4c6f337d6976694daeaf4e))
+* Revert "test: remove validate all prs in workflow" ([b20d3ee](https://github.com/newrelic/newrelic-quickstarts/commit/b20d3eec49eb046de69bd50472f5fa24fcfc2304))
+* Revert "test: log out partial token" ([2c5a7c2](https://github.com/newrelic/newrelic-quickstarts/commit/2c5a7c2ecfb0736594090c734cfda6ee2c52cb7a))
+
+# [0.92.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.91.1...v0.92.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for elasticsearch queries ([982806b](https://github.com/newrelic/newrelic-quickstarts/commit/982806bf6bce60df28453526dc4aed258fea1b1e))
+
+## [0.91.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.91.0...v0.91.1) (2022-01-26)
+
+# [0.91.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.90.0...v0.91.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for jdbc execute batch ([f6a05f6](https://github.com/newrelic/newrelic-quickstarts/commit/f6a05f6535ce7a3426a2fb6876ef85147789a335))
+
+# [0.90.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.5...v0.90.0) (2022-01-26)
+
+
+### Features
+
+* added java instrumentation for apache camel ([cf286ff](https://github.com/newrelic/newrelic-quickstarts/commit/cf286ff0b65880c2c416d8d0f115c934800a69cd))
+
+## [0.89.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.4...v0.89.5) (2022-01-26)
+
+## [0.89.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.3...v0.89.4) (2022-01-25)
+
+## [0.89.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.2...v0.89.3) (2022-01-25)
+
+
+### Bug Fixes
+
+* Removed accound id from dashboard and typo in description ([75c2a3e](https://github.com/newrelic/newrelic-quickstarts/commit/75c2a3e4d02b2378817380bf10cb7ce1e402eb3e))
+
+## [0.89.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.1...v0.89.2) (2022-01-24)
+
+
+### Bug Fixes
+
+* alert issue on jumpstart quickstart ([6c649dc](https://github.com/newrelic/newrelic-quickstarts/commit/6c649dce42dd864e99bd614bc033d3cfc6103cfa))
+* Circle logo ([ca9c8ac](https://github.com/newrelic/newrelic-quickstarts/commit/ca9c8ac1e7b68a7081838482dc211d6fb6d1c044))
+
+## [0.89.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.89.0...v0.89.1) (2022-01-24)
+
+
+### Bug Fixes
+
+* Fix the correcrt link to the docs ([dcbdccd](https://github.com/newrelic/newrelic-quickstarts/commit/dcbdccd00c23f569acc158546f742674efd9f3f3))
+
+# [0.89.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.1...v0.89.0) (2022-01-22)
+
+
+### Bug Fixes
+
+* added docs link instead of blog link ([a86fe69](https://github.com/newrelic/newrelic-quickstarts/commit/a86fe69c406191d92c1fc0e5d2ac295b981c697c))
+* Change keywords for jumpstart to lower case ([0adcad5](https://github.com/newrelic/newrelic-quickstarts/commit/0adcad5d19643032ccd948d4c09b5fdbbc3db938))
+* changes for feat-circleCI quickstart ([0ff5018](https://github.com/newrelic/newrelic-quickstarts/commit/0ff5018c5f62dd7bbae9eee9d44e98408a2a2944))
+* circleci dashboard ([e01a9ce](https://github.com/newrelic/newrelic-quickstarts/commit/e01a9ce6a3b1d711635741632b3c0ecfe34acdba))
+* description for circle installplan ([2a6f5c3](https://github.com/newrelic/newrelic-quickstarts/commit/2a6f5c35eb1380f6241d52984510432d9d196036))
+* remove install plan for jira error inbox ([37f5e00](https://github.com/newrelic/newrelic-quickstarts/commit/37f5e00699dee809f00102828334ecca15b97107))
+
+
+### Features
+
+* New CircleCI quickstart integration ([d17fa7e](https://github.com/newrelic/newrelic-quickstarts/commit/d17fa7e03a5973b6bbaf0653cd7593a614be1a5b))
+
 ## [0.88.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.88.0...v0.88.1) (2022-01-18)
 
 # [0.88.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.87.0...v0.88.0) (2022-01-18)

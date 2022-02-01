@@ -10,11 +10,10 @@ const {
   translateMutationErrors,
 } = require('./nr-graphql-helpers');
 
-const GITHUB_API_URL = passedProcessArguments[0];
-
-const VALIDATE_INSTALL_PLAN_MUTATION = `# gql 
+const INSTALL_PLAN_MUTATION = `# gql 
 mutation (
   $description: String!
+  $dryRun: Boolean
   $displayName: String!
   $fallback: Nr1CatalogInstallPlanDirectiveInput
   $heading: String!
@@ -23,7 +22,7 @@ mutation (
   $target: Nr1CatalogInstallPlanTargetInput!
 ) {
   nr1CatalogSubmitInstallPlanStep(
-    dryRun: true
+    dryRun: $dryRun
     installPlanStep: {
       description: $description
       displayName: $displayName
@@ -66,15 +65,15 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
   switch (mode) {
     case 'targetedInstall':
       return {
-        mode: 'TARGETED',
-        destination: destination && destination.recipeName,
+        targeted: { recipeName: destination && destination.recipeName },
       };
     case 'link':
-      return { mode: 'LINK', destination: destination && destination.url };
+      return { link: { url: destination && destination.url } };
     case 'nerdlet':
       return {
-        mode: 'NERDLET',
-        destination: destination && destination.nerdletId,
+        nerdlet: {
+          nerdletId: destination && destination.nerdletId,
+        },
       };
     default:
       return { mode, destination: undefined };
@@ -90,8 +89,11 @@ const buildMutationVariables = (installPlanConfig) => {
   const { id, name, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
 
+  const dryRun = passedProcessArguments()[1] === 'true';
+
   return {
     id,
+    dryRun,
     description,
     displayName: name,
     heading: title,
@@ -122,7 +124,7 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
  * @param {Array} installPlanFiles - Array containing install plan file names.
  * @return {Boolean} - Boolean value indicating whether all files were validated
  */
-const validateInstallPlan = async (installPlanFiles) => {
+const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
@@ -130,7 +132,7 @@ const validateInstallPlan = async (installPlanFiles) => {
   const graphqlResponses = await Promise.all(
     installPlanRequests.map(async ({ variables, filePath }) => {
       const { data, errors } = await fetchNRGraphqlResults({
-        queryString: VALIDATE_INSTALL_PLAN_MUTATION,
+        queryString: INSTALL_PLAN_MUTATION,
         variables,
       });
       return { data, filePath, errors };
@@ -150,12 +152,14 @@ const validateInstallPlan = async (installPlanFiles) => {
 };
 
 const main = async () => {
+  const GITHUB_API_URL = passedProcessArguments()[0];
+
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
     process.env.GITHUB_TOKEN
   );
   const installPlanFiles = filterInstallPlans(files);
-  const hasFailed = await validateInstallPlan(installPlanFiles);
+  const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
 
   if (hasFailed) {
     process.exit(1);
@@ -167,6 +171,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  validateInstallPlan,
-  VALIDATE_INSTALL_PLAN_MUTATION,
+  createValidateUpdateInstallPlan,
+  INSTALL_PLAN_MUTATION,
 };
