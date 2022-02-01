@@ -66,7 +66,7 @@ const getTestFile = (schemaType) => {
           description: 'fakeDescription',
           authors: ['fakeAuthor'],
           level: 'New Relic',
-          logo: 'logo.png'
+          icon: 'logo.png'
         },
       ],
     },

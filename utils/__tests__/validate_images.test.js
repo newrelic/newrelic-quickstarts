@@ -24,7 +24,7 @@ jest.mock('../helpers', () => ({
   readQuickstartFile: jest.fn(),
 }));
 
-const globMockSize = ['test/path/logo.png'];
+const globMockSize = ['test/path/icon.png'];
 const mockGlobSync = (files) => glob.sync.mockReturnValueOnce(files);
 const mockPathResolve = (returnPath) =>
   path.resolve.mockReturnValue(returnPath);

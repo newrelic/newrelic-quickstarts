@@ -8,11 +8,11 @@ const {
 } = require('./helpers');
 
 /**
- * Method to validate logos exist if supplied.
+ * Method to validate icons exist if supplied.
  * @param {string[]} mainConfigPaths array of absolute paths for each main config
  * @returns {string[]} error messages for errors encountered
  */
-const validateLogo = (mainConfigPaths) => {
+const validateIcon = (mainConfigPaths) => {
   const errorMessages = [];
 
   for (const configPath of mainConfigPaths) {
@@ -20,11 +20,11 @@ const validateLogo = (mainConfigPaths) => {
       contents: [config],
     } = readQuickstartFile(configPath);
 
-    if ('logo' in config) {
-      const logoPath = path.join(path.dirname(configPath), config.logo);
-      if (fs.existsSync(logoPath) === false) {
+    if ('icon' in config) {
+      const iconPath = path.join(path.dirname(configPath), config.icon);
+      if (fs.existsSync(iconPath) === false) {
         errorMessages.push(
-          `Logo for ${configPath} is supplied but does not exist at ${logoPath}`
+          `Icon for ${configPath} is supplied but does not exist at ${iconPath}`
         );
       }
     }
@@ -39,7 +39,7 @@ const validateLogo = (mainConfigPaths) => {
  */
 const handleErrors = (errorMessages) => {
   if (errorMessages.length === 0) {
-    console.log('No errors found. Logo validation passed.');
+    console.log('No errors found. Icon validation passed.');
   }
 
   if (errorMessages.length > 0) {
@@ -54,7 +54,7 @@ const handleErrors = (errorMessages) => {
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
   var mainConfigPaths = findMainQuickstartConfigFiles();
-  var errorMessages = validateLogo(mainConfigPaths);
+  var errorMessages = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
 };
@@ -68,4 +68,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { validateLogo, handleErrors };
+module.exports = { validateIcon, handleErrors };
