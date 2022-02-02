@@ -130,7 +130,7 @@ const buildMutationVariables = (quickstartConfig) => {
     description,
     title,
     documentation,
-    logo,
+    icon,
     keywords,
     summary,
     installPlans,
@@ -158,10 +158,10 @@ const buildMutationVariables = (quickstartConfig) => {
       documentation:
         documentation && adaptQuickstartDocumentationInput(documentation),
       icon:
-        logo &&
+        icon &&
         `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
           quickstartConfig.path
-        )}/${logo}`,
+        )}/${icon}`,
       keywords: keywords,
       sourceUrl: `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
         quickstartConfig.path
