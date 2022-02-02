@@ -213,12 +213,12 @@ describe('quickstart submission and validation', () => {
     expect(quickstartFromDashboard).toEqual('python/pysqlite');
   });
 
-  test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
-    const quickstartFromLogo = getQuickstartFromFilename(
+  test('getQuickstartFromFilename returns the quickstart a icon belongs to', () => {
+    const quickstartFromIcon = getQuickstartFromFilename(
       'quickstarts/python/pysqlite/logo.svg'
     );
 
-    expect(quickstartFromLogo).toEqual('python/pysqlite');
+    expect(quickstartFromIcon).toEqual('python/pysqlite');
   });
 
   test('getQuickstartFromFilename does not return non-quickstarts files', () => {

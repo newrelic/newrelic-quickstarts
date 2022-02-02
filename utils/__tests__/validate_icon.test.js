@@ -4,62 +4,62 @@ const fs = require('fs');
 
 const helpers = require('../helpers');
 
-const { validateLogo, handleErrors } = require('../validate_logos');
+const { validateIcon, handleErrors } = require('../validate_icons');
 
 jest.mock('../helpers');
 jest.mock('fs');
 
-describe('validate logo tests', () => {
+describe('validate icon tests', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  describe('validateLogo', () => {
-    test('returns no errors when logo is not supplied', () => {
+  describe('validateIcon', () => {
+    test('returns no errors when icon is not supplied', () => {
       helpers.readQuickstartFile.mockReturnValueOnce({ contents: [{}] });
 
-      const errorMessages = validateLogo(['fake_config_path']);
+      const errorMessages = validateIcon(['fake_config_path']);
 
       expect(errorMessages).toStrictEqual([]);
     });
 
-    test('returns no errors when logo is supplied and exists', () => {
+    test('returns no errors when icon is supplied and exists', () => {
       helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
-            logo: 'fake_logo_path',
+            icon: 'fake_icon_path',
           },
         ],
       });
       fs.existsSync.mockReturnValue(true);
 
-      const errorMessages = validateLogo(['fake_config_path']);
+      const errorMessages = validateIcon(['fake_config_path']);
 
       expect(errorMessages.length).toBe(0);
     });
 
-    test('returns logo errors when logo errors are detected', () => {
+    test('returns icon errors when icon errors are detected', () => {
       helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
-            logo: 'fake_logo_path',
+            icon: 'fake_icon_path',
           },
         ],
       });
       fs.existsSync.mockReturnValue(false);
 
-      const [errorMessage] = validateLogo(['fake_config_path']);
+      const [errorMessage] = validateIcon(['fake_config_path']);
 
       expect(errorMessage).toBe(
-        'Logo for fake_config_path is supplied but does not exist at fake_logo_path'
+        'Icon for fake_config_path is supplied but does not exist at fake_icon_path'
       );
     });
 
-    test('returns logo errors across multiple files', () => {
+    test('returns icon errors across multiple files', () => {
       helpers.readQuickstartFile.mockReturnValue({
         contents: [
           {
-            logo: 'fake_logo_path',
+            icon: 'fake_icon_path',
           },
         ],
       });
@@ -70,7 +70,7 @@ describe('validate logo tests', () => {
         'fake_config_path_3',
       ];
 
-      const errorMessages = validateLogo(mainConfigPaths);
+      const errorMessages = validateIcon(mainConfigPaths);
 
       expect(errorMessages.length).toBe(3);
     });
@@ -83,7 +83,7 @@ describe('validate logo tests', () => {
       handleErrors([]);
 
       expect(logMock).toHaveBeenCalledWith(
-        'No errors found. Logo validation passed.'
+        'No errors found. Icon validation passed.'
       );
       expect(process.exitCode).toBe(undefined);
     });
