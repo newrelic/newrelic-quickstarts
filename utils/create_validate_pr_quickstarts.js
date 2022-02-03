@@ -208,10 +208,10 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
   alertConfigPaths.map((alertConfigPath) => {
     const parsedConfig = readQuickstartFile(alertConfigPath);
-    const { details, name, type } = parsedConfig.contents[0];
+    const { description, name, type } = parsedConfig.contents[0];
 
     return {
-      description: details && details.trim(),
+      description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
       sourceUrl: getAssetSourceUrl(alertConfigPath),
