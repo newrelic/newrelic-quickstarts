@@ -1,3 +1,10 @@
+# [0.96.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.95.1...v0.96.0) (2022-02-03)
+
+
+### Features
+
+* **[oma-data-gov]:** Added [data-ingest-baseline] ([b6bfb37](https://github.com/newrelic/newrelic-quickstarts/commit/b6bfb375037af37b5816198a0a022ca604c36613))
+
 ## [0.95.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.95.0...v0.95.1) (2022-02-03)
 
 # [0.95.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.3...v0.95.0) (2022-02-02)
