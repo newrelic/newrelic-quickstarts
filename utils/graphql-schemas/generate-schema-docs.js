@@ -8,7 +8,7 @@ const { renderSchema } = require('graphql-markdown');
  * @param {String} data - The data to write to the file
  */
 const printData = (data) => {
-  fs.appendFileSync('./schema-docs/graphql-schema-docs.md', `${data}\n`);
+  fs.appendFileSync('../docs/graphql-schema-docs.md', `${data}\n`);
 };
 
 /**
@@ -55,7 +55,7 @@ const main = async () => {
   const endpoints = filterData(result);
 
   // Clear the file before writing to it, as each line is written separately
-  fs.writeFileSync('./schema-docs/graphql-schema-docs.md', '');
+  fs.writeFileSync('../docs/graphql-schema-docs.md', '');
   renderSchema(endpoints, { printer: printData });
   process.exit(0);
 };
