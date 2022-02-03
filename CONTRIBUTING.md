@@ -26,7 +26,7 @@
       - [Dashboard JSON](#dashboard-json)
       - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory](#images-directory)
-      - [Logos](#logos)
+      - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
@@ -289,13 +289,13 @@ documentation:
   - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
   - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
 
-#### Logos
+#### Icons
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
-> If you don't have a logo for your quickstart, you can use a [generic new relic logo](./images/newrelic-generic-logo.svg).
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `icons`
+> If you don't have an icon for your quickstart, you can use a [generic new relic icon](./images/newrelic-generic-logo.svg).
 
-- Logo files should go in the root quickstart directory, `/quickstarts_name01`
-- Logos are `required` and are used in both the Public Catalog and in New Relic One.
+- Icon files should go in the root quickstart directory, `/quickstarts_name01`
+- Icon are `required` and are used in both the Public Catalog and in New Relic One.
 - `.png` or `.jpeg` or `.svg` format
 - Max 1
 - Aspect ratio: 1:1
