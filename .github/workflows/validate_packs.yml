@@ -1,86 +1,308 @@
-name: Validate Packs
+name: Validate quickstarts
 
-on: [push, workflow_dispatch, pull_request]
+on:
+  workflow_run:
+    workflows: ["Validation Gate"]
+    types:
+      - completed
 
 jobs:
   ensure-schema-compliance:
     name: Ensure schema compliance
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
-  
+          node-version: 16
+
       - name: Install dependencies
         run: cd utils && yarn install
 
-      - name: Validate files
-        run: cd utils && yarn validate-packs 
+      - name: Validate all quickstart files
+        run: cd utils && yarn validate-quickstarts
 
-  ensure-pack-names-are-unique:
-    name: Ensure pack names are unique
+      - name: Validate pr quickstart files
+        id: validation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NR_API_URL: ${{ secrets.NR_API_URL }}
+          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
+          DRY_RUN=true
+          cd utils && yarn create-validate-pr-quickstarts $URL $DRY_RUN
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Quickstart schema compliance"
+            }'
+
+  ensure-quickstart-names-ids-are-unique:
+    name: Ensure quickstart names and ids are unique
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
-  
+          node-version: 16
+
       - name: Install dependencies
         run: cd utils && yarn install
 
-      - name: Check for matching names
-        run: cd utils && yarn check-for-matching-names
+      - name: Check for unique names and ids
+        id: validation
+        run: cd utils && yarn check-quickstart-uniqueness
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Quickstart id & name are unique"
+            }'
 
   ensure-commits-are-conventional:
     name: Ensure commits are conventional
     runs-on: ubuntu-latest
     steps:
-      - name: Check repository
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
+      - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Check for non-conventional commits
+        id: validation
         run: ./utils/conventional-commits.sh
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Conventional commit compliance"
+            }'
 
   ensure-images-are-valid:
     name: Ensure images are valid
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
 
       - name: Validate Images
+        id: validation
         run: cd utils && yarn validate-images
 
-  ensure-icons-and-logos-exist:
-    name: Ensure icons and logos exist
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Image count and extension compliance"
+            }'
+
+  ensure-logos-exist:
+    name: Ensure logos exist
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
 
-      - name: Validate Icons and Logos
-        run: cd utils && yarn validate-icons-and-logos
+      - name: Validate Logos
+        id: validation
+        run: cd utils && yarn validate-logos
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Ensure logos exist"
+            }'
+
+  validate-install-plan-ids:
+    name: Validate install plan ids
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Validate new files
+        id: validation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
+          cd utils && yarn validate-quickstart-install-plans $URL
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ steps.validation.outcome }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Install plan ids exist"
+            }'

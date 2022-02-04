@@ -4,63 +4,42 @@ const fs = require('fs');
 
 const helpers = require('../helpers');
 
-const {
-  validateIconAndLogo,
-  handleErrors,
-} = require('../validate_icons_and_logos');
+const { validateLogo, handleErrors } = require('../validate_logos');
 
 jest.mock('../helpers');
 jest.mock('fs');
 
-describe('validate icon and logo tests', () => {
+describe('validate logo tests', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  describe('validateIconAndLogo', () => {
-    test('returns no errors when icon and logo are not supplied', () => {
-      helpers.readPackFile.mockReturnValueOnce({ contents: [{}] });
+  describe('validateLogo', () => {
+    test('returns no errors when logo is not supplied', () => {
+      helpers.readQuickstartFile.mockReturnValueOnce({ contents: [{}] });
 
-      const errorMessages = validateIconAndLogo(['fake_config_path']);
+      const errorMessages = validateLogo(['fake_config_path']);
 
       expect(errorMessages).toStrictEqual([]);
     });
 
-    test('returns no errors when icon and logo are supplied and exist', () => {
-      helpers.readPackFile.mockReturnValueOnce({
+    test('returns no errors when logo is supplied and exists', () => {
+      helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
-            icon: 'fake_icon_path',
             logo: 'fake_logo_path',
           },
         ],
       });
       fs.existsSync.mockReturnValue(true);
 
-      const errorMessages = validateIconAndLogo(['fake_config_path']);
+      const errorMessages = validateLogo(['fake_config_path']);
 
       expect(errorMessages.length).toBe(0);
     });
 
-    test('returns icon errors when icon errors are detected', () => {
-      helpers.readPackFile.mockReturnValueOnce({
-        contents: [
-          {
-            icon: 'fake_icon_path',
-          },
-        ],
-      });
-      fs.existsSync.mockReturnValue(false);
-
-      const [errorMessage] = validateIconAndLogo(['fake_config_path']);
-
-      expect(errorMessage).toBe(
-        'Icon for fake_config_path is supplied but does not exist at fake_icon_path'
-      );
-    });
-
     test('returns logo errors when logo errors are detected', () => {
-      helpers.readPackFile.mockReturnValueOnce({
+      helpers.readQuickstartFile.mockReturnValueOnce({
         contents: [
           {
             logo: 'fake_logo_path',
@@ -69,18 +48,17 @@ describe('validate icon and logo tests', () => {
       });
       fs.existsSync.mockReturnValue(false);
 
-      const [errorMessage] = validateIconAndLogo(['fake_config_path']);
+      const [errorMessage] = validateLogo(['fake_config_path']);
 
       expect(errorMessage).toBe(
         'Logo for fake_config_path is supplied but does not exist at fake_logo_path'
       );
     });
 
-    test('returns icon and logo errors across multiple files', () => {
-      helpers.readPackFile.mockReturnValue({
+    test('returns logo errors across multiple files', () => {
+      helpers.readQuickstartFile.mockReturnValue({
         contents: [
           {
-            icon: 'fake_icon_path',
             logo: 'fake_logo_path',
           },
         ],
@@ -92,11 +70,9 @@ describe('validate icon and logo tests', () => {
         'fake_config_path_3',
       ];
 
-      const errorMessages = validateIconAndLogo(mainConfigPaths);
+      const errorMessages = validateLogo(mainConfigPaths);
 
-      console.warn(errorMessages);
-
-      expect(errorMessages.length).toBe(6);
+      expect(errorMessages.length).toBe(3);
     });
   });
 
@@ -107,7 +83,7 @@ describe('validate icon and logo tests', () => {
       handleErrors([]);
 
       expect(logMock).toHaveBeenCalledWith(
-        'No errors found. Logo and icon validation passed.'
+        'No errors found. Logo validation passed.'
       );
       expect(process.exitCode).toBe(undefined);
     });

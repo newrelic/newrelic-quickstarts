@@ -1,0 +1,359 @@
+{
+  "name": "Lacework Security Overview",
+  "description": "",
+  "pages": [
+    {
+      "name": "Lacework Security Overview",
+      "description": "",
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 2,
+            "width": 4
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "---\n![Add Images](https://researchpatents.s3.us-west-2.amazonaws.com/lacework-logo.png)"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 2,
+            "width": 8
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Lacework Security Overview\n\n**How to use this dashboard:**\n\nThe following dashboard gives you a highlevel overview of your systems and is meant to surface if there is anything worth delving deeper into.  If something appears anomalous you can head to the \"Lacework Anomaly Detections\" to drill in further or if you want to more proactively harden your systems you can head to \"Lacework Compliance Violations\" to find a list of potential configuration changes that would make your systems more secure. \n\n***Tip:*** *You can find all Lacework dashboards by searching for 'Lacework' on the Dashboards view.*"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Lacework Security Summary\n\nThis section details high level information about your overall Lacework events.  It includes both detected anomalies in your systems as well as compliance events which represent opportunities to improve your security posture.\n\n--- "
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Total Compliance Violations",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Compliance Violations' FROM LaceworkSecurityEvent FACET CASES (WHERE alertDataType LIKE '%COMPLIANCE%' AS 'Compliance Violations', WHERE alertDataType NOT LIKE '%COMPLIANCE%' AS 'Anomalies Detections') SINCE 3 days ago"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Events by Severity",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Priority' FROM LaceworkSecurityEvent WHERE alertDataType NOT LIKE '%COMPLIANCE%' FACET CASES (WHERE eventSeverity = '1' AS 'Critical', WHERE eventSeverity = '2' AS 'High', WHERE eventSeverity = '3' AS 'Medium', WHERE eventSeverity = '4' AS 'Low', WHERE eventSeverity = '5' AS 'Info') SINCE 3 days ago"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Potential Indicators of Compromise\n\nThis section shows metrics that could potentially be impacted by a security breach. including CPU, network traffic, or never before seen network traffic/processes.\n\n--- "
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Request Count by Application",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Transaction TIMESERIES AUTO FACET name"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Response Time By Application",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(duration) as 'Response Time' FROM Transaction TIMESERIES AUTO FACET appName "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Average CPU by Host",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(cpuPercent) as 'CPU Average' FROM SystemSample TIMESERIES FACET hostname  LIMIT 100 SINCE 60 minutes ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Bytes Transmitted",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(transmitBytesPerSecond) AS 'Bytes Transmitted' FROM NetworkSample TIMESERIES FACET entityAndInterface LIMIT 100 SINCE 2 days ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 11,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Bytes Received",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(receiveBytesPerSecond) AS 'Bytes Received' FROM NetworkSample TIMESERIES FACET entityAndInterface LIMIT 100 SINCE 2 days ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Host Security Events",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'Host Security Events' FROM LaceworkSecurityEvent WHERE alertDataType = 'AGENT_EVENTS' SINCE 1 day ago TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "height": 3,
+            "width": 4
+          },
+          "title": "New Processes",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'New Processes' FROM LaceworkSecurityEvent WHERE eventName = 'New Application' SINCE 3 days ago TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "height": 3,
+            "width": 4
+          },
+          "title": "New Connections",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) as 'New Connections' FROM LaceworkSecurityEvent WHERE eventName LIKE 'New Internal%' OR eventName LIKE 'New External%' FACET CASES (WHERE eventName LIKE '%External%' AS 'External', WHERE eventName LIKE '%Internal%' AS 'Internal') SINCE 3 days ago TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}

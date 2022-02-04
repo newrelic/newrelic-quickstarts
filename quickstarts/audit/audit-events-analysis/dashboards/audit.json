@@ -1,0 +1,147 @@
+{
+	"name": "New Relic Audit",
+	"description": null,
+	"pages": [
+		{
+			"name": "New Relic ",
+			"description": null,
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 2
+					},
+					"title": "",
+					"rawConfiguration": {
+						"text": "::: beyond\nAudit Events"
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"layout": {
+						"column": 3,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Account Changes made",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT count(*) AS 'Actions' FROM NrAuditEvent SINCE 1 week AGO FACET actionIdentifier"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 7,
+						"row": 1,
+						"height": 3,
+						"width": 2
+					},
+					"title": "Actor Types",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT uniqueCount(actorType) FROM NrAuditEvent FACET actorType  SINCE 1 week AGO"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"layout": {
+						"column": 9,
+						"row": 1,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Active Users making changes(actor Id are users making changes)",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT count(*) as Users from NrAuditEvent where actorType = 'user' FACET actorEmail,actorId SINCE 1 week ago LIMIT 1000"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 3,
+						"width": 6
+					},
+					"title": "Who added new Admin?",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT count(*) FROM NrAuditEvent WHERE description LIKE '%admin' SINCE 60 days ago FACET description, actorEmail, actorId"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 7,
+						"row": 4,
+						"height": 3,
+						"width": 6
+					},
+					"title": "Who added user and what role was assigned?",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT count(*) From NrAuditEvent   SINCE 1 week ago FACET description,actorEmail,actorType,actorId LIMIT 1000"
+							}
+						]
+					}
+				},
+				{
+					"visualization": {
+						"id": "viz.table"
+					},
+					"layout": {
+						"column": 1,
+						"row": 7,
+						"height": 4,
+						"width": 12
+					},
+					"title": "What account changes have been made using an API key?",
+					"rawConfiguration": {
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT * FROM NrAuditEvent WHERE actorType ='api_key' SINCE 1 week AGO"
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}
