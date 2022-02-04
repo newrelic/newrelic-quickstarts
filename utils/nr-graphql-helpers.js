@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const { Policy } = require('cockatiel');
 const instantObservabilityCategories = require('./instant-observability-categories.json');
 
 const NR_API_URL = process.env.NR_API_URL;
@@ -24,18 +25,21 @@ const buildRequestBody = ({ queryString, variables }) =>
 const fetchNRGraphqlResults = async (queryBody) => {
   let results;
   let graphqlErrors = [];
+  const retry = Policy.handleAll().retry().attempts(3).exponential();
 
   try {
     const body = buildRequestBody(queryBody);
 
-    const res = await fetch(NR_API_URL, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': NR_API_TOKEN,
-      },
-    });
+    const res = await retry.execute(() =>
+      fetch(NR_API_URL, {
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': NR_API_TOKEN,
+        },
+      })
+    );
 
     if (!res.ok) {
       graphqlErrors.push(
