@@ -343,9 +343,10 @@ const getGraphqlRequests = (files) => {
  */
 const createValidateUpdateQuickstarts = async (files) => {
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
-  const chunkedRequests = chunk(graphqlRequests, 5);
+  const chunkedRequests = chunk(graphqlRequests, 5); // Run requests in groups of 5
 
   let graphqlResponses = [];
+  // using a For Of loop so that it respects the `await`
   for (const reqChunk of chunkedRequests) {
     const chunkRes = await Promise.all(
       reqChunk.map(async ({ variables, filePath }) => {

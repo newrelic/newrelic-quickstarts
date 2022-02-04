@@ -129,9 +129,10 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
-  const chunkedInstallPlanRequests = chunk(installPlanRequests, 5);
+  const chunkedInstallPlanRequests = chunk(installPlanRequests, 5); // Run requests in groups of 5
 
   let graphqlResponses = [];
+  // using a For Of loop so that it respects the `await`
   for (const reqChunk of chunkedInstallPlanRequests) {
     const chunkRes = await Promise.all(
       reqChunk.map(async ({ variables, filePath }) => {

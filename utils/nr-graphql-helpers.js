@@ -25,6 +25,9 @@ const buildRequestBody = ({ queryString, variables }) =>
 const fetchNRGraphqlResults = async (queryBody) => {
   let results;
   let graphqlErrors = [];
+
+  // To help us ensure that the request hits and is processed by nerdgraph
+  // This will try the request 3 times, waiting a little longer between each attempt
   const retry = Policy.handleAll().retry().attempts(3).exponential();
 
   try {
