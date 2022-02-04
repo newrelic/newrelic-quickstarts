@@ -8,6 +8,7 @@ const {
 const {
   fetchNRGraphqlResults,
   translateMutationErrors,
+  chunk,
 } = require('./nr-graphql-helpers');
 
 const INSTALL_PLAN_MUTATION = `# gql 
@@ -122,22 +123,28 @@ const transformInstallPlansToRequestVariables = ({ filename }) => {
 /**
  * Validates for an array of install plan filenames
  * @param {Array} installPlanFiles - Array containing install plan file names.
- * @return {Boolean} - Boolean value indicating whether all files were validated
+ * @return {Promise.<Boolean>} - Boolean value indicating whether all files were validated
  */
 const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
   );
+  const chunkedInstallPlanRequests = chunk(installPlanRequests, 5);
 
-  const graphqlResponses = await Promise.all(
-    installPlanRequests.map(async ({ variables, filePath }) => {
-      const { data, errors } = await fetchNRGraphqlResults({
-        queryString: INSTALL_PLAN_MUTATION,
-        variables,
-      });
-      return { data, filePath, errors };
-    })
-  );
+  let graphqlResponses = [];
+  for (const reqChunk of chunkedInstallPlanRequests) {
+    const chunkRes = await Promise.all(
+      reqChunk.map(async ({ variables, filePath }) => {
+        const { data, errors } = await fetchNRGraphqlResults({
+          queryString: INSTALL_PLAN_MUTATION,
+          variables,
+        });
+
+        return { data, filePath, errors };
+      })
+    );
+    graphqlResponses = [...graphqlResponses, ...chunkRes];
+  }
 
   let hasFailed = false;
 

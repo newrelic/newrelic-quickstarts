@@ -120,8 +120,30 @@ const getCategoryTermsFromKeywords = (configKeywords = []) => {
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
 };
 
+/**
+ * Breaks an array up into parts, the last part may have less elements
+ * @param {Array} array - an array of anything
+ * @param {Number} chunkSize - the size of the parts
+ * @returns {Array} the array broken out into smaller array chunks
+ */
+const chunk = (array, chunkSize) => {
+  let chunkedArray = [];
+  let j = array.length;
+
+  if (chunkSize < 1) {
+    return chunkedArray;
+  }
+
+  for (let i = 0; i < j; i += chunkSize) {
+    chunkedArray = [...chunkedArray, array.slice(i, i + chunkSize)];
+  }
+
+  return chunkedArray;
+};
+
 module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
   getCategoryTermsFromKeywords,
+  chunk,
 };
