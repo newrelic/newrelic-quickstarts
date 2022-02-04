@@ -7,15 +7,14 @@ env:
   DRY_RUN: false
 
 on:
-  pull_request:
-    branches:
-      - main
-    types: [closed]
+  workflow_run:
+    workflows: ["Submit Gate"]
+    types:
+      - completed
 
 jobs:
   generate-uuid:
     name: Generate UUID
-    if: ${{github.event.pull_request.merged}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -105,9 +104,14 @@ jobs:
   submit-install-plans:
     name: Submit install plans
     needs: [generate-uuid]
-    if: ${{github.event.pull_request.merged}}
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
       - name: Checkout repo
         uses: actions/checkout@v2
         # Ensure we have the most recent commit to `main`
@@ -128,7 +132,7 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL_STAGING }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_STAGING }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
 
       - name: Update install plans - production
@@ -136,7 +140,7 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
 
       - name: Update install plans - EU
@@ -144,13 +148,12 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL_EU }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_EU }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
       
   submit-quickstarts:
     name: Submit quickstarts
     needs: [generate-uuid, submit-install-plans]
-    if: ${{github.event.pull_request.merged}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -173,7 +176,7 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL_STAGING }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_STAGING }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
 
       - name: Update quickstarts - production
@@ -181,7 +184,7 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN}}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
 
       - name: Update quickstarts - EU
@@ -189,5 +192,5 @@ jobs:
           NR_API_URL: ${{ secrets.NR_API_URL_EU }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_EU }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
           cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
