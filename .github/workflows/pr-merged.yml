@@ -106,6 +106,12 @@ jobs:
     needs: [generate-uuid]
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: submit_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
       - name: Get PR number
         id: get_pr_number
         run: |
@@ -156,6 +162,18 @@ jobs:
     needs: [generate-uuid, submit-install-plans]
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: submit_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+          
       - name: Checkout repo
         uses: actions/checkout@v2
         # Ensure we have the most recent commit to `main`
