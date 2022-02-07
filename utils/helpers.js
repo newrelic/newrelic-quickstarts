@@ -137,7 +137,7 @@ const findMainInstallConfigFiles = () =>
  * Removes the first two arguments injected by Node
  * @returns {String[]} An array of arguments explicitly passed in via the command line
  */
-const passedProcessArguments = process.argv.slice(2);
+const passedProcessArguments = () => process.argv.slice(2);
 
 module.exports = {
   readYamlFile,

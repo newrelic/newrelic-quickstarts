@@ -41,7 +41,6 @@ jobs:
           git add ./quickstarts/*
           git diff-index --quiet HEAD ./quickstarts/* || git commit -m 'chore: generate UUID(s) [skip ci]'
           echo "::set-output name=commit::true"
-
       - name: Temporarily disable branch protections
         id: disable-branch-protection
         if: always()
@@ -60,7 +59,6 @@ jobs:
               required_pull_request_reviews: null
             })
             console.log("Result:", result)
-
       - name: Push Commit
         if: steps.commit-changes.outputs.commit == 'true'
         run: git push origin HEAD
@@ -97,9 +95,9 @@ jobs:
               }
             })
             console.log("Result:", result)
-
+            
   generate-schema-docs:
-    name: Generate schema documentation
+    name: Generate GraphQL schema documentation
     needs: [generate-uuid]
     runs-on: ubuntu-latest
     steps:
@@ -110,17 +108,17 @@ jobs:
           ref: 'main'
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.8'
+          node-version: 16
 
       - name: Install dependencies
-        run: cd utils/schema-doc-generator && pip install -r requirements.txt
+        run: cd utils && yarn install
 
-      - name: Generate documentation
-        id: generate-docs
-        run: python utils/schema-doc-generator/script.py
+      - name: Generate schema docs for GraphQl
+        id: generate-schema
+        run: cd utils && yarn generate-schema-docs
 
       - name: Commit changes
         id: commit-changes

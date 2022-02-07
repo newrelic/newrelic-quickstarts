@@ -59,11 +59,12 @@ const fetchNRGraphqlResults = async (queryBody) => {
  * Handle errors from GraphQL request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
+ * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
  * @returns {void}
  */
-const translateMutationErrors = (errors, filePath) => {
+const translateMutationErrors = (errors, filePath, installPlanErrors = []) => {
   console.error(
-    `ERROR: The following errors occurred while validating: ${filePath}`
+    `\nERROR: The following errors occurred while validating: ${filePath}`
   );
   errors.forEach((error) => {
     if (error.extensions && error.extensions.argumentPath) {
@@ -74,28 +75,46 @@ const translateMutationErrors = (errors, filePath) => {
       console.error(`- ${error.message}`);
     }
   });
+
+  if (installPlanErrors.length > 0) {
+    console.error(
+      `DEBUG: The following are install plan errors that occured while validating: ${filePath} and can be safely ignored.`
+    );
+
+    installPlanErrors.forEach((error) => {
+      if (error.extensions && error.extensions.argumentPath) {
+        const errorPrefix = error.extensions.argumentPath.join('/');
+
+        console.error(`- ${errorPrefix}: ${error.message}`);
+      } else {
+        console.error(`- ${error.message}`);
+      }
+    });
+  }
 };
 
 /**
  * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
  * @returns {String[] | undefined } An array of quickstart categoryTerms
- * 
- * @example 
- * // input 
- * ['python', 'featured', 'infrastructure', 'banana', 'animal']
- * 
+ *
+ * @example
+ * // input
+ * ['python', 'azure', 'infrastructure', 'banana', 'animal']
+ *
  * // return
- * ['featured', 'infrastructure']
+ * ['azure', 'infrastructure']
  */
 const getCategoryTermsFromKeywords = (configKeywords = []) => {
-  const allCategoryKeywords = instantObservabilityCategories.flatMap(category => category.associatedKeywords);
+  const allCategoryKeywords = instantObservabilityCategories.flatMap(
+    (category) => category.associatedKeywords
+  );
 
   const categoryKeywords = configKeywords.reduce((acc, keyword) => {
-    if (allCategoryKeywords.includes(keyword)){
+    if (allCategoryKeywords.includes(keyword)) {
       acc.push(keyword);
     }
-    return  acc;
+    return acc;
   }, []);
 
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
