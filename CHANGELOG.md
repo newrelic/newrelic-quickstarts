@@ -1,3 +1,41 @@
+# [0.96.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.95.1...v0.96.0) (2022-02-03)
+
+
+### Features
+
+* **[oma-data-gov]:** Added [data-ingest-baseline] ([b6bfb37](https://github.com/newrelic/newrelic-quickstarts/commit/b6bfb375037af37b5816198a0a022ca604c36613))
+
+## [0.95.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.95.0...v0.95.1) (2022-02-03)
+
+# [0.95.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.3...v0.95.0) (2022-02-02)
+
+
+### Bug Fixes
+
+* add env vars to workflow ([81a39ef](https://github.com/newrelic/newrelic-quickstarts/commit/81a39efaef23b828bc5751853249e4796b4bb76b))
+* remove author from quickstart ([bdba7c0](https://github.com/newrelic/newrelic-quickstarts/commit/bdba7c053856d026972b6870dc1486939848b984))
+* testing the creation of a new install/quickstart ([39bb047](https://github.com/newrelic/newrelic-quickstarts/commit/39bb04746d5b510128dc24c24e2f69b32df1a736))
+* testing the creation of a new install/quickstart ([5f3bd6a](https://github.com/newrelic/newrelic-quickstarts/commit/5f3bd6a983117eb96886cfe36012b499dad9ee70))
+* update branch referrenced in workflow ([9364227](https://github.com/newrelic/newrelic-quickstarts/commit/93642277d9b2a5cc71caa007f9760bea4f3c725f))
+* update directory names ([c76fe0c](https://github.com/newrelic/newrelic-quickstarts/commit/c76fe0ce8fc9b9111106edea7e06a58165ac97f0))
+* update mutation import name ([7aca22d](https://github.com/newrelic/newrelic-quickstarts/commit/7aca22d8824c1d9c7f272b8eed7dfce318097636))
+* update quickstart description ([59bf58a](https://github.com/newrelic/newrelic-quickstarts/commit/59bf58a83c23076a13bb03dec2df894bd0e1109e))
+* update quickstart description ([da86c58](https://github.com/newrelic/newrelic-quickstarts/commit/da86c58497c01ea7c028f2140617003593d68684))
+* update quickstart directories, update URL in install plan ([92e746a](https://github.com/newrelic/newrelic-quickstarts/commit/92e746a2266779deeef8b3e5ab496e8aa58c8f13))
+* update quickstart directories, update URL in install plan ([776bae9](https://github.com/newrelic/newrelic-quickstarts/commit/776bae9782297e13d56996879a518462e365a394))
+* update quickstart mutation name ([b709c2a](https://github.com/newrelic/newrelic-quickstarts/commit/b709c2a32c028c890c855b511bc52fc07193b0e0))
+* update workflow to use node 16 ([6101f27](https://github.com/newrelic/newrelic-quickstarts/commit/6101f273b79dcd625e2bc37887e7e1fc56256137))
+* update workflow trigger ([944b525](https://github.com/newrelic/newrelic-quickstarts/commit/944b525256cb3b3b26e34b2f5e711441af91490d))
+
+
+### Features
+
+* change workflow logic to test PR stuff ([505a742](https://github.com/newrelic/newrelic-quickstarts/commit/505a742c00ba23e017a4e9bc43b5866602552010))
+* new quickstart -codestream ([7292481](https://github.com/newrelic/newrelic-quickstarts/commit/7292481be78ce3692a5cb6e56daf799a6a9a7cc0))
+* refactor validate_pr_quickstarts tests for submission logic ([e8acf7c](https://github.com/newrelic/newrelic-quickstarts/commit/e8acf7c97c86478966d93aabdf0f901a436ecd42))
+* small refactor for install plan unit testing ([9df3c85](https://github.com/newrelic/newrelic-quickstarts/commit/9df3c85ad8cf62fa7cb493351ed7cc5d7f23606b))
+* trigger workflow based on quickstart update ([06a0743](https://github.com/newrelic/newrelic-quickstarts/commit/06a0743eaaa2c95c42e9f600196be66dd8b80ee4))
+
 ## [0.94.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.2...v0.94.3) (2022-01-31)
 
 ## [0.94.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.94.1...v0.94.2) (2022-01-28)

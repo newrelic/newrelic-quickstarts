@@ -1,0 +1,26 @@
+# This looks like a confusing workflow, but it has a purpose (✿ ◕‿◕)
+# It functions kind of as a workflow shim. We can't setup other important workflows to run on pull_request (due to forks), so we setup this workflow to be triggered by pull_request and it is always able to run.
+# When it is finished running, it triggers the other important workflows -- submit_packs, submit_install_plans.
+# Having it setup this way allows us to have manual approval for this workflow run, and then the subsequent triggered runs can access secrets in the repository for validation (even for forked PRs).
+name: Submit Gate
+
+on: 
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  upload-artifact:
+    runs-on: ubuntu-latest
+    if: ${{github.event.pull_request.merged}}
+    steps:
+      # This is used so that subsequent triggered workflows have access to the PR number that triggered this workflow.
+      # This is needed for PRs from forks which don't have access to certain information on github.event (or it isn't even available in the first place).
+      - name: write pr number
+        run: echo "${{ github.event.pull_request.number }}" > pr_number_submit.txt
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: pr_number_submit.txt
