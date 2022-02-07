@@ -16,6 +16,7 @@ const {
   fetchNRGraphqlResults,
   translateMutationErrors,
   getCategoryTermsFromKeywords,
+  chunk,
 } = require('./nr-graphql-helpers');
 
 const GITHUB_REPO_BASE_URL =
@@ -338,22 +339,27 @@ const getGraphqlRequests = (files) => {
 /**
  * Builds and sends GraphQL mutations to validate the quickstarts in a PR and prints out any errors
  * @param {Array} files - A list of all files changed in the PR.
- * @return {Boolean} A value indicating if the GitHub Action should fail
+ * @return {Promise.<Boolean>} A value indicating if the GitHub Action should fail
  */
 const createValidateUpdateQuickstarts = async (files) => {
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
+  const chunkedRequests = chunk(graphqlRequests, 5); // Run requests in groups of 5
 
-  const graphqlResponses = await Promise.all(
-    graphqlRequests.map(async ({ variables, filePath }) => {
-      const { data, errors } = await fetchNRGraphqlResults({
-        queryString: QUICKSTART_MUTATION,
-        variables,
-      });
+  let graphqlResponses = [];
+  // using a For Of loop so that it respects the `await`
+  for (const reqChunk of chunkedRequests) {
+    const chunkRes = await Promise.all(
+      reqChunk.map(async ({ variables, filePath }) => {
+        const { data, errors } = await fetchNRGraphqlResults({
+          queryString: QUICKSTART_MUTATION,
+          variables,
+        });
 
-      return { data, errors, filePath };
-    })
-  );
-
+        return { data, errors, filePath };
+      })
+    );
+    graphqlResponses = [...graphqlResponses, ...chunkRes];
+  }
   return Boolean(countErrors(graphqlResponses));
 };
 
