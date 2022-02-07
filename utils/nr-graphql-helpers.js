@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const { Policy } = require('cockatiel');
 const instantObservabilityCategories = require('./instant-observability-categories.json');
 
 const NR_API_URL = process.env.NR_API_URL;
@@ -25,17 +26,27 @@ const fetchNRGraphqlResults = async (queryBody) => {
   let results;
   let graphqlErrors = [];
 
+  // To help us ensure that the request hits and is processed by nerdgraph
+  // This will try the request 3 times, waiting a little longer between each attempt
+  // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
+  const retry = Policy.handleWhenResult((response) => response.status >= 400)
+    .retry()
+    .attempts(3)
+    .exponential();
+
   try {
     const body = buildRequestBody(queryBody);
 
-    const res = await fetch(NR_API_URL, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': NR_API_TOKEN,
-      },
-    });
+    const res = await retry.execute(() =>
+      fetch(NR_API_URL, {
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': NR_API_TOKEN,
+        },
+      })
+    );
 
     if (!res.ok) {
       graphqlErrors.push(
@@ -120,8 +131,30 @@ const getCategoryTermsFromKeywords = (configKeywords = []) => {
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
 };
 
+/**
+ * Breaks an array up into parts, the last part may have less elements
+ * @param {Array} array - an array of anything
+ * @param {Number} chunkSize - the size of the parts
+ * @returns {Array} the array broken out into smaller array chunks
+ */
+const chunk = (array, chunkSize) => {
+  let chunkedArray = [];
+  let j = array.length;
+
+  if (chunkSize < 1) {
+    return chunkedArray;
+  }
+
+  for (let i = 0; i < j; i += chunkSize) {
+    chunkedArray = [...chunkedArray, array.slice(i, i + chunkSize)];
+  }
+
+  return chunkedArray;
+};
+
 module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
   getCategoryTermsFromKeywords,
+  chunk,
 };
