@@ -1,3 +1,10 @@
+## [0.98.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.0...v0.98.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* serialize nerdlet state ([cc1878b](https://github.com/newrelic/newrelic-quickstarts/commit/cc1878bdfa233d46215dd8cbc7fc52c7dbe03fda))
+
 # [0.98.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.97.0...v0.98.0) (2022-02-08)
 
 
