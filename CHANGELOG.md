@@ -1,3 +1,10 @@
+## [0.98.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.3...v0.98.4) (2022-02-08)
+
+
+### Bug Fixes
+
+* Add dummy install plan ([4c6eed4](https://github.com/newrelic/newrelic-quickstarts/commit/4c6eed4588a7609002deb300f13400f5b4b452bb))
+
 ## [0.98.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.2...v0.98.3) (2022-02-08)
 
 
