@@ -137,7 +137,6 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   for (const reqChunk of chunkedInstallPlanRequests) {
     const chunkRes = await Promise.all(
       reqChunk.map(async ({ variables, filePath }) => {
-        console.log(JSON.stringify(variables));
         const { data, errors } = await fetchNRGraphqlResults({
           queryString: INSTALL_PLAN_MUTATION,
           variables,
