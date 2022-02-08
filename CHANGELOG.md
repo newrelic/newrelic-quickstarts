@@ -1,3 +1,10 @@
+## [0.98.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.2...v0.98.3) (2022-02-08)
+
+
+### Bug Fixes
+
+* kohana summary ([c76bbb3](https://github.com/newrelic/newrelic-quickstarts/commit/c76bbb3b7a555818743b36bba7f395423ee939b7))
+
 ## [0.98.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.1...v0.98.2) (2022-02-08)
 
 ## [0.98.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.0...v0.98.1) (2022-02-08)
