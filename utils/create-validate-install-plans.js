@@ -12,7 +12,7 @@ const {
 } = require('./nr-graphql-helpers');
 
 const INSTALL_PLAN_MUTATION = `# gql 
-mutation (
+mutation QuickstartRepoInstallPlanMutation (
   $description: String!
   $dryRun: Boolean
   $displayName: String!
@@ -74,7 +74,7 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
       return {
         nerdlet: {
           nerdletId: destination && destination.nerdletId,
-          nerdletState: destination && destination.nerdletState,
+          nerdletState: destination && JSON.stringify(destination.nerdletState),
         },
       };
     default:
@@ -137,6 +137,7 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   for (const reqChunk of chunkedInstallPlanRequests) {
     const chunkRes = await Promise.all(
       reqChunk.map(async ({ variables, filePath }) => {
+        console.log(JSON.stringify(variables));
         const { data, errors } = await fetchNRGraphqlResults({
           queryString: INSTALL_PLAN_MUTATION,
           variables,
