@@ -1,3 +1,17 @@
+# [0.98.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.97.0...v0.98.0) (2022-02-08)
+
+
+### Bug Fixes
+
+* add a description for each dashboard ([c72da16](https://github.com/newrelic/newrelic-quickstarts/commit/c72da160a7be9cd4cfc8d3c6a557ce833376b3e4))
+* add missing operator to alerts ([989db19](https://github.com/newrelic/newrelic-quickstarts/commit/989db19c47009358c519d0354395d162564e0fed))
+
+
+### Features
+
+* **install plan:** Added Netlify install plan ([8f327ba](https://github.com/newrelic/newrelic-quickstarts/commit/8f327ba1fd290c0a3be33814d5bc3e17b3ac5842))
+* **new quickstart:** Add Netlify quickstart ([a6bb976](https://github.com/newrelic/newrelic-quickstarts/commit/a6bb9766401ab0d601aaec54de5d8c86401e6cfc))
+
 # [0.97.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.96.0...v0.97.0) (2022-02-08)
 
 
