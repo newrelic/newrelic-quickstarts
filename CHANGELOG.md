@@ -1,3 +1,31 @@
+# [0.97.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.96.0...v0.97.0) (2022-02-08)
+
+
+### Bug Fixes
+
+* changed name of cli quickstart ([12a34be](https://github.com/newrelic/newrelic-quickstarts/commit/12a34be5f17dac7632680f90fb226403c30b45c7))
+* remove unchecked concurrency ([135a2a5](https://github.com/newrelic/newrelic-quickstarts/commit/135a2a563ea43d23459c7dc22c988e5830e994a7))
+* removed line in json ([9ba700b](https://github.com/newrelic/newrelic-quickstarts/commit/9ba700ba4ab97568d9d6535681dfa92be260dfea))
+* Update target type for new install plans ([bfefd28](https://github.com/newrelic/newrelic-quickstarts/commit/bfefd2877880cdf3d6c7bdfc7f89ff60ec552c82))
+
+
+### Features
+
+* add install plans for cloud quickstarts ([f96c31f](https://github.com/newrelic/newrelic-quickstarts/commit/f96c31fd7d9d70e283d4ad24dbdcd2909d0e2cf9))
+* add nerdletState to validation query ([c20081b](https://github.com/newrelic/newrelic-quickstarts/commit/c20081b404d50616f2d230bc8a3ead721a78ff58))
+* add retries to nerdgraph calls ([2ce0bc4](https://github.com/newrelic/newrelic-quickstarts/commit/2ce0bc4497efedd33ccf0e07aab967d35d3c718c))
+* added CLI quickstart ([3555333](https://github.com/newrelic/newrelic-quickstarts/commit/355533369c8429e9ac95d8735f5690a2f49f6dcc))
+* added pulumi quickstart ([d0a9e1d](https://github.com/newrelic/newrelic-quickstarts/commit/d0a9e1de97206e1ff6aa40df96f4f5adf1d1c860))
+* added terraform quickstart ([41eb8c8](https://github.com/newrelic/newrelic-quickstarts/commit/41eb8c8ba6a8e580d320160f3c6cb1d8491b0ba8))
+* **contentsquare:** Added a quickstart for Contentsquare ([001629a](https://github.com/newrelic/newrelic-quickstarts/commit/001629af531cc1889cd9236fbba87596945097e1))
+* generate docs from graphql schema ([0e9ab55](https://github.com/newrelic/newrelic-quickstarts/commit/0e9ab55b8e2aa76d7459a9699bd15b6566092322))
+* generate schema docs from GraphQL ([039b9c5](https://github.com/newrelic/newrelic-quickstarts/commit/039b9c5f44862e6943a862cb739a12e15be2af5a))
+* **mssql-queryplan:** Adding dashboard to [#785](https://github.com/newrelic/newrelic-quickstarts/issues/785) ([a2985fe](https://github.com/newrelic/newrelic-quickstarts/commit/a2985fe33bf1ff15a9614b4c01d43be4b18704ca))
+* **oac:** improved descriptions and summary ([dff1b54](https://github.com/newrelic/newrelic-quickstarts/commit/dff1b54aa68445a4f911ceb0e571d343e277c435))
+* **pack:** Updated ec2 quickstart ([4397f94](https://github.com/newrelic/newrelic-quickstarts/commit/4397f9439518f17144fc32f587f952341fd43308))
+* restructure primary/fallback install plan step input ([711ca3b](https://github.com/newrelic/newrelic-quickstarts/commit/711ca3b4b0231c93537476b15361538819cc25b0))
+* retry graphql request for specific status codes ([5010595](https://github.com/newrelic/newrelic-quickstarts/commit/5010595aa71c04322730f3c33b5e99adeb4aec5c))
+
 # [0.96.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.95.1...v0.96.0) (2022-02-03)
 
 
