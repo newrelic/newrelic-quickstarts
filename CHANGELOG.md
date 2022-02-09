@@ -1,3 +1,10 @@
+## [0.99.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.0...v0.99.1) (2022-02-09)
+
+
+### Bug Fixes
+
+* validation pathing ([0383b86](https://github.com/newrelic/newrelic-quickstarts/commit/0383b864935cbb24ceb91606b011573a1daf153a))
+
 # [0.99.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.5...v0.99.0) (2022-02-09)
 
 
