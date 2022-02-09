@@ -1,3 +1,10 @@
+# [0.99.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.5...v0.99.0) (2022-02-09)
+
+
+### Features
+
+* **pack:** Improved Lambda quickstart ([bb7ed58](https://github.com/newrelic/newrelic-quickstarts/commit/bb7ed58fb310dc8b895e30954ca55ef79ca2108b))
+
 ## [0.98.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.4...v0.98.5) (2022-02-09)
 
 ## [0.98.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.98.3...v0.98.4) (2022-02-08)
