@@ -24,7 +24,7 @@ const GITHUB_REPO_BASE_URL =
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
 const QUICKSTART_MUTATION = `# gql
-mutation (
+mutation QuickstartRepoQuickstartMutation (
   $dryRun: Boolean
   $id: ID!
   $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!

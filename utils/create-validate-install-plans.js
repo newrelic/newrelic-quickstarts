@@ -12,7 +12,7 @@ const {
 } = require('./nr-graphql-helpers');
 
 const INSTALL_PLAN_MUTATION = `# gql 
-mutation (
+mutation QuickstartRepoInstallPlanMutation (
   $description: String!
   $dryRun: Boolean
   $displayName: String!
@@ -74,7 +74,7 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
       return {
         nerdlet: {
           nerdletId: destination && destination.nerdletId,
-          nerdletState: destination && destination.nerdletState,
+          nerdletState: destination && JSON.stringify(destination.nerdletState),
         },
       };
     default:
