@@ -10,7 +10,7 @@ jest.spyOn(global.console, 'error').mockImplementation(() => {});
 const getTestFile = (schemaType) => {
   const files = {
     alert: {
-      path: '/alerts/',
+      path: '/quickstarts/testname/alerts/',
       contents: [
         {
           name: 'fakealert',
@@ -23,7 +23,7 @@ const getTestFile = (schemaType) => {
       ],
     },
     dashboard: {
-      path: '/dashboards/',
+      path: '/quickstarts/testname/dashboards/',
       contents: [
         {
           name: 'fakedashboard',
@@ -39,7 +39,7 @@ const getTestFile = (schemaType) => {
       ],
     },
     flex: {
-      path: '/instrumentation/flex/',
+      path: '/quickstarts/testname/instrumentation/flex/',
       contents: [
         {
           name: 'fakeflexconfig',
@@ -50,7 +50,7 @@ const getTestFile = (schemaType) => {
       ],
     },
     synthetic: {
-      path: '/instrumentation/synthetics/',
+      path: '/quickstarts/testname/instrumentation/synthetics/',
       contents: [
         {
           name: 'fakesynthetic',
@@ -58,7 +58,7 @@ const getTestFile = (schemaType) => {
       ],
     },
     main_config: {
-      path: '/main_config/', // this can be any path
+      path: '/quickstarts/testname/main_config/', // this can be any path
       contents: [
         {
           title: 'Fake Quickstart',
@@ -66,7 +66,7 @@ const getTestFile = (schemaType) => {
           description: 'fakeDescription',
           authors: ['fakeAuthor'],
           level: 'New Relic',
-          logo: 'logo.png'
+          logo: 'logo.png',
         },
       ],
     },
