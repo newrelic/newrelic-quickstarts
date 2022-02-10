@@ -1,3 +1,10 @@
+## [0.99.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.2...v0.99.3) (2022-02-10)
+
+
+### Bug Fixes
+
+* report job status instead of step ([3c146bd](https://github.com/newrelic/newrelic-quickstarts/commit/3c146bdb6a393f6d4c5d102cc7ed9b831a6ddc36))
+
 ## [0.99.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.1...v0.99.2) (2022-02-10)
 
 ## [0.99.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.0...v0.99.1) (2022-02-09)
