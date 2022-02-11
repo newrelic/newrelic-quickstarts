@@ -242,6 +242,20 @@ export const getQuickstartFromFilename = (
 };
 
 /**
+ * Finds the path to all top level quickstart configs
+ * @param {"dashboards" | "alerts"} componentType
+ * @returns {String[]} An array of the file paths
+ */
+export const findQuickstartComponentConfiguration = (
+  componentType: 'dashboards' | 'alerts'
+): string[] => {
+  const ext = componentType === 'dashboards' ? 'json' : '+(yml|yaml)';
+  return glob.sync(
+    path.resolve(process.cwd(), `../quickstarts/**/${componentType}/*.${ext}`)
+  );
+};
+
+/**
  * Reducer function that builds a set of unique quickstarts that were updated in a given PR.
  * @param acc - A set of unique quickstarts being built by the reducer function.
  * @param curr - A result from the GitHub API.
