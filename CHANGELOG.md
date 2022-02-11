@@ -1,3 +1,17 @@
+# [0.100.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.3...v0.100.0) (2022-02-11)
+
+
+### Bug Fixes
+
+* format of install link ([63659e9](https://github.com/newrelic/newrelic-quickstarts/commit/63659e901de3edc4c4a45fea8c9eb5d60c14305d))
+* name battlesnake install plan to install.yml ([331a360](https://github.com/newrelic/newrelic-quickstarts/commit/331a3609ba8881997c2730cd473c31c58cbd55d1))
+
+
+### Features
+
+* added a dashboard for battlesnake-specific stats ([b6045e4](https://github.com/newrelic/newrelic-quickstarts/commit/b6045e45c6fe7abfc52b44dca93cb41ea9d1e932))
+* added battlesnake server status dashboard ([e6038d2](https://github.com/newrelic/newrelic-quickstarts/commit/e6038d2f5bfb1dad8fca301da9d983fa615fff0b))
+
 ## [0.99.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.2...v0.99.3) (2022-02-10)
 
 
