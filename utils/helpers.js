@@ -134,6 +134,18 @@ const findMainInstallConfigFiles = () =>
   glob.sync(path.resolve(process.cwd(), '../install/**/install.+(yml|yaml)'));
 
 /**
+ * Finds the path to all top level quickstart configs
+ * @param {"dashboards" | "alerts"} componentType
+ * @returns {String[]} An array of the file paths
+ */
+const findQuickstartComponentConfiguration = (componentType) => {
+  const ext = componentType === 'dashboards' ? 'json' : '+(yml|yaml)';
+  return glob.sync(
+    path.resolve(process.cwd(), `../quickstarts/**/${componentType}/*.${ext}`)
+  );
+};
+
+/**
  * Removes the first two arguments injected by Node
  * @returns {String[]} An array of arguments explicitly passed in via the command line
  */
@@ -153,5 +165,6 @@ module.exports = {
   isDirectory,
   findMainQuickstartConfigFiles,
   findMainInstallConfigFiles,
+  findQuickstartComponentConfiguration,
   passedProcessArguments,
 };
