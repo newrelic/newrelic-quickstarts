@@ -1,3 +1,11 @@
+# [0.101.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.100.0...v0.101.0) (2022-02-14)
+
+
+### Features
+
+* **pack:** Added DynamoDB ([9eca37e](https://github.com/newrelic/newrelic-quickstarts/commit/9eca37e42e7fca8e3b16bdc0b04a289bbdbe8d9f))
+* **pack:** Added DynamoDB ([db6c110](https://github.com/newrelic/newrelic-quickstarts/commit/db6c110a0cddd09d9cc7345a6f18fb9129fbfba6))
+
 # [0.100.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.99.3...v0.100.0) (2022-02-11)
 
 
