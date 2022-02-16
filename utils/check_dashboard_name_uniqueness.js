@@ -6,7 +6,6 @@ const {
   findMainQuickstartConfigFiles,
 } = require('./helpers');
 
-// get quickstartconfig path
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
   splitConfigPath.pop();
@@ -14,14 +13,28 @@ const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
 
   return glob.sync(globPattern);
 };
-//read quickstart dashboard config path
-// extract name
-// const parsedConfig = readQuickstartFile(dashboardConfigPath);
-// const { name } = parsedConfig.contents[0];
-// compare incoming to already existing
 
-const main = () => {
+const getMatchingNames = (namesAndPaths) => {
+  return namesAndPaths.reduce((acc, { name, path }) => {
+    const duplicates = namesAndPaths.filter(
+      (quickstart) => quickstart.name === name && quickstart.path !== path
+    );
+
+    return [...new Set([...acc, ...duplicates])];
+  }, []);
+};
+
+const cleanQuickstartName = (str) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/, '-')
+    .replace(/[^a-z0-9-]/g, '');
+
+const findMatchingDashboardNames = () => {
   const quickstartConfigFilepaths = findMainQuickstartConfigFiles();
+
   const dashboardConfigs = quickstartConfigFilepaths
     .map((configFile) => {
       return getQuickstartDashboardConfigs(configFile);
@@ -29,7 +42,32 @@ const main = () => {
     .filter((x) => x.length !== 0)
     .flat();
 
-  console.log(dashboardConfigs);
+  const parsedDashboardConfigs = dashboardConfigs.map(readQuickstartFile);
+
+  const dashboardNamesAndPaths = parsedDashboardConfigs.map((configFile) => ({
+    name: cleanQuickstartName(configFile.contents[0].name),
+    path: configFile.path,
+  }));
+
+  return getMatchingNames(dashboardNamesAndPaths);
+};
+
+const main = () => {
+  const nameMatches = findMatchingDashboardNames();
+  if (nameMatches.length > 0) {
+    console.error(`ERROR: Found matching quickstart dashboard names`);
+    console.error(`Punctuation and white space are removed before comparison`);
+    nameMatches.forEach((m) =>
+      console.error(`${m.name} in ${removeRepoPathPrefix(m.path)}`)
+    );
+    console.error(
+      `Please update your quickstart dashboard's name to be unique\n`
+    );
+  }
+
+  if (require.main === module) {
+    process.exit(1);
+  }
 };
 
 if (require.main === module) {
