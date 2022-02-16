@@ -9,6 +9,8 @@ jest.mock('../helpers', () => ({
   readQuickstartFile: jest.fn(),
   removeRepoPathPrefix: jest.fn(),
   findMainQuickstartConfigFiles: jest.fn(),
+  cleanQuickstartName: jest.fn(),
+  getMatchingNames: jest.fn(),
 }));
 
 describe('Action: check quickstart uniqueness', () => {
@@ -49,7 +51,7 @@ describe('Action: check quickstart uniqueness', () => {
       })
       .mockReturnValueOnce({
         path: 'testpathother',
-        contents: [{ name: 'also-unique',id: '12345' }],
+        contents: [{ name: 'also-unique', id: '12345' }],
       });
 
     checkQuickstartUniqueness();

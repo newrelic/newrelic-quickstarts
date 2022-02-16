@@ -141,7 +141,6 @@ const passedProcessArguments = () => process.argv.slice(2);
 
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
-  console.log(splitConfigPath);
   splitConfigPath.pop();
   const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
 
