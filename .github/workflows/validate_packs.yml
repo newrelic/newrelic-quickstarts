@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -43,11 +43,12 @@ jobs:
         id: validation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NR_API_URL: "https://api.newrelic.com/graphql"
+          NR_API_URL: ${{ secrets.NR_API_URL }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
-          cd utils && yarn validate-pr-quickstarts $URL
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
+          DRY_RUN=true
+          cd utils && yarn create-validate-pr-quickstarts $URL $DRY_RUN
 
       - name: Add commit status
         if: always()
@@ -60,7 +61,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Quickstart schema compliance"
             }'
@@ -89,7 +90,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -109,7 +110,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Quickstart id & name are unique"
             }'
@@ -150,7 +151,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Conventional commit compliance"
             }'
@@ -179,7 +180,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -199,7 +200,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Image count and extension compliance"
             }'
@@ -228,7 +229,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -248,7 +249,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Ensure logos exist"
             }'
@@ -277,7 +278,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -301,7 +302,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Install plan ids exist"
             }'

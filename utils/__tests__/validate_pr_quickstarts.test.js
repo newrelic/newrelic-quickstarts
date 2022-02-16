@@ -9,8 +9,16 @@ const {
   buildMutationVariables,
   buildUniqueQuickstartSet,
   getGraphqlRequests,
-} = require('../validate_pr_quickstarts');
-const { readQuickstartFile } = require('../helpers');
+  countErrors,
+} = require('../create_validate_pr_quickstarts');
+
+const helpers = require('../helpers');
+
+jest.mock('../nr-graphql-helpers');
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  passedProcessArguments: jest.fn(),
+}));
 
 const mockDashboardRawConfigurationJSON = require('../mock_files/mock_dashboard_config.json');
 const mockDashboardRawConfiguration = JSON.stringify(
@@ -100,6 +108,7 @@ const expectedQuickstartConfigFullPaths = buildFullQuickstartFilePaths(
 
 const expectedMockQuickstart2MutationInput = {
   id: 'mock-2-id',
+  dryRun: true,
   quickstartMetadata: {
     authors: [{ name: 'John Smith' }],
     categoryTerms: undefined,
@@ -127,6 +136,7 @@ const expectedMockQuickstart2MutationInput = {
         rawConfiguration:
           '{"name":"Cluster Health","details":"This alert triggers when the reported health of an Elasticsearch cluster is \'red\'.\\n","type":"STATIC","nrql":{"query":"FROM ElasticsearchClusterSample SELECT uniqueCount(displayName) WHERE cluster.status = \'red\' FACET displayName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":0,"thresholdDuration":300,"thresholdOccurrences":"AT_LEAST_ONCE"}],"violationTimeLimitSeconds":86400}',
         type: 'STATIC',
+        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/Cluster Health.yml',
       },
       {
         description:
@@ -135,6 +145,7 @@ const expectedMockQuickstart2MutationInput = {
         rawConfiguration:
           '{"name":"Errors","details":"This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.\\n","type":"STATIC","nrql":{"query":"from Transaction select percentage(count(*), where error is not false) as \'Errors\' where transactionType = \'Web\' facet appName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":10,"thresholdDuration":300,"thresholdOccurrences":"ALL"}],"expiration":{"closeViolationsOnExpiration":true,"openViolationOnExpiration":false,"expirationDuration":86400},"violationTimeLimitSeconds":86400}',
         type: 'STATIC',
+        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/errors.yml',
       },
     ],
     dashboards: [
@@ -142,6 +153,7 @@ const expectedMockQuickstart2MutationInput = {
         description: '.NET',
         displayName: '.NET',
         rawConfiguration: mockDashboardRawConfiguration,
+        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet.json',
         screenshots: [
           {
             url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet.png',
@@ -160,6 +172,7 @@ const expectedMockQuickstart2MutationInput = {
 
 const expectedMockQuickstart4MutationInput = {
   id: '00000000-0000-0000-0000-000000000000',
+  dryRun: true,
   quickstartMetadata: {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
@@ -179,93 +192,250 @@ const expectedMockQuickstart4MutationInput = {
   },
 };
 
-test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
-  const quickstartFromAlert = getQuickstartFromFilename(
-    'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
-  );
+describe('quickstart submission and validation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
-  expect(quickstartFromAlert).toEqual('python/aiohttp');
+  test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
+    const quickstartFromAlert = getQuickstartFromFilename(
+      'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
+    );
+
+    expect(quickstartFromAlert).toEqual('python/aiohttp');
+  });
+
+  test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
+    const quickstartFromDashboard = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/dashboards/python.json'
+    );
+
+    expect(quickstartFromDashboard).toEqual('python/pysqlite');
+  });
+
+  test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
+    const quickstartFromLogo = getQuickstartFromFilename(
+      'quickstarts/python/pysqlite/logo.svg'
+    );
+
+    expect(quickstartFromLogo).toEqual('python/pysqlite');
+  });
+
+  test('getQuickstartFromFilename does not return non-quickstarts files', () => {
+    const mockQuickstart = getQuickstartFromFilename(
+      '.github/workflows/validate_packs.yml'
+    );
+
+    expect(mockQuickstart).toBeUndefined();
+  });
+
+  test('getQuickstartFromFilename does not return mock quickstarts', () => {
+    const mockQuickstart = getQuickstartFromFilename(
+      'utils/mock_files/mock-quickstart-1/config.yml'
+    );
+
+    expect(mockQuickstart).toBeUndefined();
+  });
+
+  test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
+    const uniqueQuickstarts = mockGitHubResponseFilenames
+      .map(addFilenameObject)
+      .reduce(buildUniqueQuickstartSet, new Set());
+
+    expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
+  });
+
+  test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
+    const configPaths = getQuickstartConfigPaths(quickstartNames);
+
+    expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
+  });
+
+  test('buildMutationVariables returns expected mutation input from quickstart config', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+      )
+    );
+
+    expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
+  });
+
+  test('buildMutationVariables returns expected mutation input from quickstart config for submission', () => {
+    const processArgs = ['url', 'false'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+      )
+    );
+
+    expect(mutationInput).toEqual({
+      ...expectedMockQuickstart2MutationInput,
+      dryRun: false,
+    });
+  });
+
+  test('buildMutationVariables handles an empty config file', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const mutationInput = buildMutationVariables(
+      helpers.readQuickstartFile(
+        `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
+      )
+    );
+
+    expect(mutationInput).toEqual(expectedMockQuickstart4MutationInput);
+  });
+
+  test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
+    const processArgs = ['url', 'true'];
+    helpers.passedProcessArguments.mockReturnValue(processArgs);
+
+    const graphqlRequests = getGraphqlRequests(
+      mockGitHubResponseFilenames.map(addFilenameObject)
+    );
+
+    expect(graphqlRequests.length).toEqual(2);
+    expect(
+      graphqlRequests.every(({ filePath }) => filePath.includes('quickstarts/'))
+    ).toBeTruthy();
+    expect(graphqlRequests[0].variables.id).toEqual(
+      'e7948525-8726-46a5-83fa-04732ad42fd1'
+    );
+    expect(graphqlRequests[0].filePath).toEqual(
+      'quickstarts/python/aiohttp/config.yml'
+    );
+  });
 });
 
-test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
-  const quickstartFromDashboard = getQuickstartFromFilename(
-    'quickstarts/python/pysqlite/dashboards/python.json'
-  );
+describe('countErrors', () => {
+  test('no errors returns error count of 0', () => {
+    const graphqlResponses = [
+      {
+        errors: [],
+        filePath: 'fake_file_path',
+      },
+    ];
 
-  expect(quickstartFromDashboard).toEqual('python/pysqlite');
-});
+    const errorCount = countErrors(graphqlResponses);
 
-test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
-  const quickstartFromLogo = getQuickstartFromFilename(
-    'quickstarts/python/pysqlite/logo.svg'
-  );
+    expect(errorCount).toBe(0);
+  });
 
-  expect(quickstartFromLogo).toEqual('python/pysqlite');
-});
+  test(`only 'install plan does not exist' errors returns error count of 0`, () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+    ];
 
-test('getQuickstartFromFilename does not return non-quickstarts files', () => {
-  const mockQuickstart = getQuickstartFromFilename(
-    '.github/workflows/validate_packs.yml'
-  );
+    const errorCount = countErrors(graphqlResponses);
 
-  expect(mockQuickstart).toBeUndefined();
-});
+    expect(errorCount).toBe(0);
+  });
 
-test('getQuickstartFromFilename does not return mock quickstarts', () => {
-  const mockQuickstart = getQuickstartFromFilename(
-    'utils/mock_files/mock-quickstart-1/config.yml'
-  );
+  test(`for a single file with multiple errors, 'install plan does not exist' errors are not counted`, () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+    ];
 
-  expect(mockQuickstart).toBeUndefined();
-});
+    const errorCount = countErrors(graphqlResponses);
 
-test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
-  const uniqueQuickstarts = mockGitHubResponseFilenames
-    .map(addFilenameObject)
-    .reduce(buildUniqueQuickstartSet, new Set());
+    expect(errorCount).toBe(2);
+  });
 
-  expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
-});
+  test('for multiple files with multiple errors each, error count is summed correctly', () => {
+    const graphqlResponses = [
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path',
+      },
+      {
+        errors: [
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'installPlanStepIds'],
+            },
+            message:
+              "`installPlanStepIds` contains an install plan step that does not exist: 'fake_install_plan'",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'description'],
+            },
+            message: "`description` can't be blank",
+          },
+          {
+            extensions: {
+              argumentPath: ['quickstartMetadata', 'summary'],
+            },
+            message: "`summary` can't be blank",
+          },
+        ],
+        filePath: 'fake_file_path_2',
+      },
+    ];
 
-test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
-  const configPaths = getQuickstartConfigPaths(quickstartNames);
+    const errorCount = countErrors(graphqlResponses);
 
-  expect(configPaths).toEqual(expectedQuickstartConfigFullPaths);
-});
-
-test('buildMutationVariables returns expected mutation input from quickstart config', () => {
-  const mutationInput = buildMutationVariables(
-    readQuickstartFile(
-      `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
-    )
-  );
-
-  expect(mutationInput).toEqual(expectedMockQuickstart2MutationInput);
-});
-
-test('buildMutationVariables handles an empty config file', () => {
-  const mutationInput = buildMutationVariables(
-    readQuickstartFile(
-      `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
-    )
-  );
-
-  expect(mutationInput).toEqual(expectedMockQuickstart4MutationInput);
-});
-
-test('getGraphqlRequests constructs requests with a filepath and variables structure', () => {
-  const graphqlRequests = getGraphqlRequests(
-    mockGitHubResponseFilenames.map(addFilenameObject)
-  );
-
-  expect(graphqlRequests.length).toEqual(2);
-  expect(
-    graphqlRequests.every(({ filePath }) => filePath.includes('quickstarts/'))
-  ).toBeTruthy();
-  expect(graphqlRequests[0].variables.id).toEqual(
-    'e7948525-8726-46a5-83fa-04732ad42fd1'
-  );
-  expect(graphqlRequests[0].filePath).toEqual(
-    'quickstarts/python/aiohttp/config.yml'
-  );
+    expect(errorCount).toBe(4);
+  });
 });

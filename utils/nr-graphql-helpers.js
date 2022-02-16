@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const { Policy } = require('cockatiel');
 const instantObservabilityCategories = require('./instant-observability-categories.json');
 
 const NR_API_URL = process.env.NR_API_URL;
@@ -25,17 +26,27 @@ const fetchNRGraphqlResults = async (queryBody) => {
   let results;
   let graphqlErrors = [];
 
+  // To help us ensure that the request hits and is processed by nerdgraph
+  // This will try the request 3 times, waiting a little longer between each attempt
+  // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
+  const retry = Policy.handleWhenResult((response) => response.status >= 400)
+    .retry()
+    .attempts(3)
+    .exponential();
+
   try {
     const body = buildRequestBody(queryBody);
 
-    const res = await fetch(NR_API_URL, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': NR_API_TOKEN,
-      },
-    });
+    const res = await retry.execute(() =>
+      fetch(NR_API_URL, {
+        method: 'POST',
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': NR_API_TOKEN,
+        },
+      })
+    );
 
     if (!res.ok) {
       graphqlErrors.push(
@@ -59,11 +70,12 @@ const fetchNRGraphqlResults = async (queryBody) => {
  * Handle errors from GraphQL request
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
+ * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
  * @returns {void}
  */
-const translateMutationErrors = (errors, filePath) => {
+const translateMutationErrors = (errors, filePath, installPlanErrors = []) => {
   console.error(
-    `ERROR: The following errors occurred while validating: ${filePath}`
+    `\nERROR: The following errors occurred while validating: ${filePath}`
   );
   errors.forEach((error) => {
     if (error.extensions && error.extensions.argumentPath) {
@@ -74,31 +86,75 @@ const translateMutationErrors = (errors, filePath) => {
       console.error(`- ${error.message}`);
     }
   });
+
+  if (installPlanErrors.length > 0) {
+    console.error(
+      `DEBUG: The following are install plan errors that occured while validating: ${filePath} and can be safely ignored.`
+    );
+
+    installPlanErrors.forEach((error) => {
+      if (error.extensions && error.extensions.argumentPath) {
+        const errorPrefix = error.extensions.argumentPath.join('/');
+
+        console.error(`- ${errorPrefix}: ${error.message}`);
+      } else {
+        console.error(`- ${error.message}`);
+      }
+    });
+  }
 };
 
 /**
- * Builds array of corresponding categories from keywords specified in a quickstart config.yml
+ * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
- * @returns {String[] | undefined } An array of quickstart categories
+ * @returns {String[] | undefined } An array of quickstart categoryTerms
+ *
+ * @example
+ * // input
+ * ['python', 'azure', 'infrastructure', 'banana', 'animal']
+ *
+ * // return
+ * ['azure', 'infrastructure']
  */
-const getCategoriesFromKeywords = (configKeywords = []) => {
-  const categoriesFromKeywords = instantObservabilityCategories.reduce(
-    (acc, { associatedKeywords, value }) => {
-      if (
-        associatedKeywords.some((keyword) => configKeywords.includes(keyword))
-      ) {
-        acc.push(value);
-      }
-      return acc;
-    },
-    []
+const getCategoryTermsFromKeywords = (configKeywords = []) => {
+  const allCategoryKeywords = instantObservabilityCategories.flatMap(
+    (category) => category.associatedKeywords
   );
 
-  return categoriesFromKeywords.length > 0 ? categoriesFromKeywords : undefined;
+  const categoryKeywords = configKeywords.reduce((acc, keyword) => {
+    if (allCategoryKeywords.includes(keyword)) {
+      acc.push(keyword);
+    }
+    return acc;
+  }, []);
+
+  return categoryKeywords.length > 0 ? categoryKeywords : undefined;
+};
+
+/**
+ * Breaks an array up into parts, the last part may have less elements
+ * @param {Array} array - an array of anything
+ * @param {Number} chunkSize - the size of the parts
+ * @returns {Array} the array broken out into smaller array chunks
+ */
+const chunk = (array, chunkSize) => {
+  let chunkedArray = [];
+  let j = array.length;
+
+  if (chunkSize < 1) {
+    return chunkedArray;
+  }
+
+  for (let i = 0; i < j; i += chunkSize) {
+    chunkedArray = [...chunkedArray, array.slice(i, i + chunkSize)];
+  }
+
+  return chunkedArray;
 };
 
 module.exports = {
   fetchNRGraphqlResults,
   translateMutationErrors,
-  getCategoriesFromKeywords,
+  getCategoryTermsFromKeywords,
+  chunk,
 };

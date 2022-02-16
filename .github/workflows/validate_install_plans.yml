@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
@@ -40,15 +40,16 @@ jobs:
         id: validation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NR_API_URL: 'https://api.newrelic.com/graphql'
+          NR_API_URL: ${{ secrets.NR_API_URL }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
         run: 
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn validate-install-plans $URL
+          DRY_RUN=true
+          cd utils && yarn create-validate-install-plans $URL $DRY_RUN
 
       - name: Add commit status
         if: always()
-        run: | 
+        run: |
           export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
           curl \
             -X POST \
@@ -57,7 +58,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Install plan schema compliance"
             }'

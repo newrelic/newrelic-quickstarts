@@ -1,226 +1,284 @@
 {
-    "pages": [
-        {
-            "name": "AWS DynamoDB",
-            "description": "",
-            "widgets": [
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 1,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "Request Latency, by Operation",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.SuccessfulRequestLatency.get`) as 'GetItem',average(`aws.dynamodb.SuccessfulRequestLatency.put`) as 'PutItem', average(`aws.dynamodb.SuccessfulRequestLatency.delete`) as 'DeleteItem',average(`aws.dynamodb.SuccessfulRequestLatency.update`) as 'UpdateItem',average(`aws.dynamodb.SuccessfulRequestLatency.query`) as 'Query',average(`aws.dynamodb.SuccessfulRequestLatency.scan`) as 'Scan',average(`aws.dynamodb.SuccessfulRequestLatency.batchGet`) as 'BatchGetItem',average(`aws.dynamodb.SuccessfulRequestLatency.batchWrite`) as 'BatchWriteItem' from Metric WHERE collector.name='cloudwatch-metric-streams' since yesterday TIMESERIES 30 minutes"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.markdown"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 1,
-                        "height": 6,
-                        "width": 4
-                    },
-                    "rawConfiguration": {
-                        "text": "![Amazon DynamoDB Icon](https://integrations.nr-assets.net/providers/aws_dynamodb.png) **Amazon DynamoDB** \n\nAmazon DynamoDB is a fully managed NoSQL database service that provides fast and predictable performance with seamless scalability. DynamoDB lets you offload the administrative burdens of operating and scaling a distributed database, so that you don't have to worry about hardware provisioning, setup and configuration, replication, software patching, or cluster scaling.\n\n\n\n\n"
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 4,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Throttled Requests",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT sum(`aws.dynamodb.WriteThrottleEvents`) as 'Write', sum(`aws.dynamodb.ReadThrottleEvents`) as 'Read' FROM Metric WHERE collector.name='cloudwatch-metric-streams' since 1 hour ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 4,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "User Errors",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT sum(`aws.dynamodb.UserErrors`) FROM Metric WHERE collector.name='cloudwatch-metric-streams' TIMESERIES since 6 hours ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 7,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "% of provisioned read consumed",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.ConsumedReadCapacityUnits` / (`aws.dynamodb.ProvisionedReadCapacityUnits` * 60 * 5)) * 100 as 'provisioned read consumed' FROM Metric WHERE collector.name='cloudwatch-metric-streams' since 1 day ago timeseries 30 minutes"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 7,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "% of provisioned write consumed",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.ConsumedWriteCapacityUnits` / (`aws.dynamodb.ProvisionedWriteCapacityUnits` * 60 * 5)) * 100 as 'provisioned write consumed' FROM Metric WHERE collector.name='cloudwatch-metric-streams' since 1 day ago timeseries 30 minutes"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "System Errors",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT sum(`aws.dynamodb.ScanSystemErrors`) + sum(`aws.dynamodb.QuerySystemErrors`) + sum(`aws.dynamodb.DeleteSystemErrors`) + sum(`aws.dynamodb.updateSystemErrors`) + sum(`aws.dynamodb.updateSystemErrors`) + sum(`aws.dynamodb.batchWriteSystemErrors`) + sum(`aws.dynamodb.batchGetSystemErrors`) + sum(`aws.dynamodb.getSystemErrors`) as SystemErrors FROM Metric WHERE collector.name='cloudwatch-metric-streams' TIMESERIES since 6 hours ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Read Throttled Requests, by Table",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.ReadThrottleEvents.byTable`) as 'Read Throttled Requests' FROM Metric WHERE collector.name='cloudwatch-metric-streams' since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "layout": {
-                        "column": 9,
-                        "row": 10,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Write Throttled Requests, by Table",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.WriteThrottleEvents.byTable`) as 'Write Throttled Requests' FROM Metric WHERE collector.name='cloudwatch-metric-streams' since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.area"
-                    },
-                    "layout": {
-                        "column": 1,
-                        "row": 13,
-                        "height": 3,
-                        "width": 4
-                    },
-                    "title": "Pending Replication Count, by Table",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.PendingReplicationCount`) FROM Metric WHERE collector.name='cloudwatch-metric-streams' TIMESERIES auto FACET `aws.dynamodb.TableName` UNTIL 5 minutes ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "visualization": {
-                        "id": "viz.area"
-                    },
-                    "layout": {
-                        "column": 5,
-                        "row": 13,
-                        "height": 3,
-                        "width": 8
-                    },
-                    "title": "Replication Latency (millis), by Table",
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.dynamodb.ReplicationLatency`) FROM Metric WHERE collector.name='cloudwatch-metric-streams' TIMESERIES auto FACET `aws.dynamodb.TableName` UNTIL 5 minutes ago"
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    ],
-    "name": "AWS DynamoDB",
-    "description": ""
+	"name": "AWS DynamoDB",
+	"description": "",
+	"pages": [
+		{
+			"name": "AWS DynamoDB",
+			"description": null,
+			"widgets": [
+				{
+					"visualization": {
+						"id": "viz.area"
+					},
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"height": 3,
+						"width": 6
+					},
+					"title": "Request Latency, by Operation",
+					"rawConfiguration": {
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`provider.getSuccessfulRequestLatency.Average`) as 'GetItem',average(`provider.putSuccessfulRequestLatency.Average`) as 'PutItem', average(`provider.deleteSuccessfulRequestLatency.Average`) as 'DeleteItem',average(`provider.updateSuccessfulRequestLatency.Average`) as 'UpdateItem',average(`provider.querySuccessfulRequestLatency.Average`) as 'Query',average(`provider.scanSuccessfulRequestLatency.Average`) as 'Scan',average(`provider.batchGetSuccessfulRequestLatency.Average`) as 'BatchGetItem',average(`provider.batchWriteSuccessfulRequestLatency.Average`) as 'BatchWriteItem' FROM DatastoreSample WHERE collector.name LIKE '%' since yesterday TIMESERIES 30 minutes"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 7,
+						"row": 1,
+						"height": 3,
+						"width": 6
+					},
+					"title": "% of provisioned write consumed",
+					"rawConfiguration": {
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`provider.consumedWriteCapacityUnits.Sum` / (`provider.provisionedWriteCapacityUnits.Average` * 60 * 5)) * 100 FROM DatastoreSample WHERE collector.name LIKE '%' since 1 day ago timeseries 30 minutes"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"height": 3,
+						"width": 6
+					},
+					"title": "% of provisioned read consumed",
+					"rawConfiguration": {
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`provider.consumedReadCapacityUnits.Sum` / (`provider.provisionedReadCapacityUnits.Average` * 60 * 5)) * 100 FROM DatastoreSample WHERE collector.name LIKE '%' since 1 day ago timeseries 30 minutes"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 7,
+						"row": 4,
+						"height": 3,
+						"width": 6
+					},
+					"title": "Write Throttled Requests, by Table",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`aws.dynamodb.WriteThrottleEvents.byTable`) as 'Write Throttled Requests' FROM DatastoreSample WHERE collector.name LIKE '%' since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.area"
+					},
+					"layout": {
+						"column": 1,
+						"row": 7,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Replication Latency (millis), by Table",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`aws.dynamodb.ReplicationLatency`) FROM DatastoreSample WHERE collector.name LIKE '%' TIMESERIES auto FACET displayName UNTIL 5 minutes ago"
+							}
+						]
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 5,
+						"row": 7,
+						"height": 3,
+						"width": 4
+					},
+					"title": "User Errors",
+					"rawConfiguration": {
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT sum(`aws.dynamodb.UserErrors`) FROM DatastoreSample WHERE collector.name LIKE '%' TIMESERIES since 6 hours ago"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 9,
+						"row": 7,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Read Throttled Requests, by Table",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`aws.dynamodb.ReadThrottleEvents.byTable`) as 'Read Throttled Requests' FROM DatastoreSample WHERE collector.name LIKE '%' since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"layout": {
+						"column": 1,
+						"row": 10,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Throttled Requests",
+					"rawConfiguration": {
+						"dataFormatters": [],
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT sum(`aws.dynamodb.WriteThrottleEvents`) as 'Write', sum(`aws.dynamodb.ReadThrottleEvents`) as 'Read' FROM DatastoreSample WHERE collector.name LIKE '%' since 1 hour ago"
+							}
+						],
+						"thresholds": []
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.line"
+					},
+					"layout": {
+						"column": 5,
+						"row": 10,
+						"height": 3,
+						"width": 4
+					},
+					"title": "System Errors",
+					"rawConfiguration": {
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT sum(`aws.dynamodb.ScanSystemErrors`) + sum(`aws.dynamodb.QuerySystemErrors`) + sum(`aws.dynamodb.DeleteSystemErrors`) + sum(`aws.dynamodb.updateSystemErrors`) + sum(`aws.dynamodb.updateSystemErrors`) + sum(`aws.dynamodb.batchWriteSystemErrors`) + sum(`aws.dynamodb.batchGetSystemErrors`) + sum(`aws.dynamodb.getSystemErrors`) as SystemErrors FROM DatastoreSample WHERE collector.name LIKE '%' TIMESERIES since 6 hours ago"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					},
+					"linkedEntityGuids": null
+				},
+				{
+					"visualization": {
+						"id": "viz.area"
+					},
+					"layout": {
+						"column": 9,
+						"row": 10,
+						"height": 3,
+						"width": 4
+					},
+					"title": "Pending Replication Count, by Table",
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT average(`aws.dynamodb.PendingReplicationCount`) FROM DatastoreSample WHERE collector.name LIKE '%' TIMESERIES auto FACET displayName UNTIL 5 minutes ago"
+							}
+						]
+					},
+					"linkedEntityGuids": null
+				}
+			]
+		}
+	]
 }

@@ -84,22 +84,26 @@ const validateFile = (file) => {
 
   console.log(`Validating ${removeRepoPathPrefix(filePath)}`);
   switch (true) {
-    case filePath.includes('/alerts/'): // validate using alert schema
+    case filePath.includes('/quickstarts/') && filePath.includes('/alerts/'): // validate using alert schema
       errors = validateAgainstSchema(file.contents[0], alertSchema);
       break;
-    case filePath.includes('/dashboards/'): // validate using dashboard schema
+    case filePath.includes('/quickstarts/') &&
+      filePath.includes('/dashboards/'): // validate using dashboard schema
       errors = validateAgainstSchema(file.contents[0], dashboardSchema);
       break;
     case filePath.includes('/install/'): // validate using install schema
       errors = validateAgainstSchema(file.contents[0], installSchema);
       break;
-    case filePath.includes('/instrumentation/synthetics/'): // validate using synthetics schema
+    case filePath.includes('/quickstarts/') &&
+      filePath.includes('/instrumentation/synthetics/'): // validate using synthetics schema
       errors = validateAgainstSchema(file.contents[0], syntheticSchema);
       break;
-    case filePath.includes('/instrumentation/logging/'): // validate using logging schema
+    case filePath.includes('/quickstarts/') &&
+      filePath.includes('/instrumentation/logging/'): // validate using logging schema
       errors = validateAgainstSchema(file.contents[0], loggingSchema);
       break;
-    case filePath.includes('/instrumentation/flex/'): // validate using flex config schema.
+    case filePath.includes('/quickstarts/') &&
+      filePath.includes('/instrumentation/flex/'): // validate using flex config schema.
       // The flex YAML is two documents, validate each of them
       errors = [
         ...validateAgainstSchema(file.contents[0], flexConfigSchema),

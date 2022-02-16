@@ -11,7 +11,7 @@ const {
   passedProcessArguments,
 } = require('./helpers');
 
-const GITHUB_API_URL = passedProcessArguments[0];
+const GITHUB_API_URL = passedProcessArguments()[0];
 
 /**
  * Gets all install plain ids under installs/ dir
@@ -34,7 +34,8 @@ const getAllInstallPlanIds = () => {
 const getConfigInstallPlans = (configFiles) => {
   return configFiles.map(({ filename }) => {
     const filePath = path.join(process.cwd(), `../${filename}`);
-    const { installPlans } = readQuickstartFile(filePath).contents[0];
+    const installPlans =
+      readQuickstartFile(filePath).contents[0]?.installPlans || [];
 
     return { filePath, installPlans };
   });
