@@ -4,33 +4,10 @@ const {
   readQuickstartFile,
   removeRepoPathPrefix,
   findMainQuickstartConfigFiles,
+  getMatchingNames,
+  getQuickstartDashboardConfigs,
+  cleanQuickstartName,
 } = require('./helpers');
-
-const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
-  const splitConfigPath = quickstartConfigPath.split('/');
-  splitConfigPath.pop();
-  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
-
-  return glob.sync(globPattern);
-};
-
-const getMatchingNames = (namesAndPaths) => {
-  return namesAndPaths.reduce((acc, { name, path }) => {
-    const duplicates = namesAndPaths.filter(
-      (quickstart) => quickstart.name === name && quickstart.path !== path
-    );
-
-    return [...new Set([...acc, ...duplicates])];
-  }, []);
-};
-
-const cleanQuickstartName = (str) =>
-  str
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/-+/, '-')
-    .replace(/[^a-z0-9-]/g, '');
 
 const findMatchingDashboardNames = () => {
   const quickstartMainConfigFilepaths = findMainQuickstartConfigFiles();
@@ -39,7 +16,7 @@ const findMatchingDashboardNames = () => {
     .map((configFile) => {
       return getQuickstartDashboardConfigs(configFile);
     })
-    .filter((x) => x.length !== 0)
+    .filter((filePaths) => filePaths.length !== 0)
     .flat();
 
   const parsedDashboardConfigs = dashboardConfigs.map(readQuickstartFile);

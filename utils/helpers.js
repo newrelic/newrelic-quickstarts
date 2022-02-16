@@ -139,6 +139,55 @@ const findMainInstallConfigFiles = () =>
  */
 const passedProcessArguments = () => process.argv.slice(2);
 
+const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
+  const splitConfigPath = quickstartConfigPath.split('/');
+  console.log(splitConfigPath);
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
+
+  return glob.sync(globPattern);
+};
+
+/**
+ * Returns any quickstarts with matching names
+ * @param {Object[]} namesAndPaths an array of objects containing the path and name of a quickstart
+ * @returns {Object[]} an array of matching values
+ */
+const getMatchingNames = (namesAndPaths) => {
+  return namesAndPaths.reduce((acc, { name, path }) => {
+    const duplicates = namesAndPaths.filter(
+      (quickstart) => quickstart.name === name && quickstart.path !== path
+    );
+
+    return [...new Set([...acc, ...duplicates])];
+  }, []);
+};
+
+/**
+ * Removes whitespace and punctuation from a string
+ * @returns {String} The string with `-` replacing whitespace and punctuation removed
+ */
+const cleanQuickstartName = (str) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/, '-')
+    .replace(/[^a-z0-9-]/g, '');
+
+/**
+ * Gets the file paths of all config files within the `dashboards` directory of a quickstart.
+ * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
+ * @returns {Array} A set of file-path strings for the config files within the `dashboards` directory of a quickstart.
+ */
+const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
+  const splitConfigPath = quickstartConfigPath.split('/');
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
+
+  return glob.sync(globPattern);
+};
+
 module.exports = {
   readYamlFile,
   readJsonFile,
@@ -154,4 +203,7 @@ module.exports = {
   findMainQuickstartConfigFiles,
   findMainInstallConfigFiles,
   passedProcessArguments,
+  getMatchingNames,
+  getQuickstartDashboardConfigs,
+  cleanQuickstartName,
 };
