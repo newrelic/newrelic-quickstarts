@@ -33,9 +33,9 @@ const cleanQuickstartName = (str) =>
     .replace(/[^a-z0-9-]/g, '');
 
 const findMatchingDashboardNames = () => {
-  const quickstartConfigFilepaths = findMainQuickstartConfigFiles();
+  const quickstartMainConfigFilepaths = findMainQuickstartConfigFiles();
 
-  const dashboardConfigs = quickstartConfigFilepaths
+  const dashboardConfigs = quickstartMainConfigFilepaths
     .map((configFile) => {
       return getQuickstartDashboardConfigs(configFile);
     })
