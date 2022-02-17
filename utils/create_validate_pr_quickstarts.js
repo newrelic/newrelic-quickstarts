@@ -11,7 +11,6 @@ const {
   readQuickstartFile,
   removeRepoPathPrefix,
   passedProcessArguments,
-  getQuickstartDashboardConfigs,
 } = require('./helpers');
 const {
   fetchNRGraphqlResults,
@@ -220,6 +219,19 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
       type: type && type.trim(),
     };
   });
+
+/**
+ * Gets the file paths of all config files within the `dashboards` directory of a quickstart.
+ * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
+ * @returns {Array} A set of file-path strings for the config files within the `dashboards` directory of a quickstart.
+ */
+const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
+  const splitConfigPath = quickstartConfigPath.split('/');
+  splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
+
+  return glob.sync(globPattern);
+};
 
 /**
  * Builds input arguments for the `dashboards` field.

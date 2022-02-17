@@ -1,11 +1,10 @@
 'use strict';
 const glob = require('glob');
+const path = require('path');
 const {
   readQuickstartFile,
   removeRepoPathPrefix,
-  findMainQuickstartConfigFiles,
   getMatchingNames,
-  getQuickstartDashboardConfigs,
   cleanQuickstartName,
 } = require('./helpers');
 
@@ -14,14 +13,9 @@ const {
  * @returns {[{name: string, path: string}]} An array of objects containing the name and filepath of a dashboard that is not unique
  */
 const findMatchingDashboardNames = () => {
-  const quickstartMainConfigFilepaths = findMainQuickstartConfigFiles();
-
-  const dashboardConfigs = quickstartMainConfigFilepaths
-    .map((configFile) => {
-      return getQuickstartDashboardConfigs(configFile);
-    })
-    .filter((filePaths) => filePaths.length !== 0)
-    .flat();
+  const dashboardConfigs = glob.sync(
+    path.resolve(process.cwd(), '../quickstarts/**/dashboards/*.+(json)')
+  );
 
   const parsedDashboardConfigs = dashboardConfigs.map(readQuickstartFile);
 

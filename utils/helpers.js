@@ -139,14 +139,6 @@ const findMainInstallConfigFiles = () =>
  */
 const passedProcessArguments = () => process.argv.slice(2);
 
-const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
-  const splitConfigPath = quickstartConfigPath.split('/');
-  splitConfigPath.pop();
-  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
-
-  return glob.sync(globPattern);
-};
-
 /**
  * Returns any quickstarts with matching names
  * @param {Object[]} namesAndPaths an array of objects containing the path and name of a quickstart
@@ -190,6 +182,5 @@ module.exports = {
   findMainInstallConfigFiles,
   passedProcessArguments,
   getMatchingNames,
-  getQuickstartDashboardConfigs,
   cleanQuickstartName,
 };
