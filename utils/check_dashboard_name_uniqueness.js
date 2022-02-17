@@ -9,6 +9,10 @@ const {
   cleanQuickstartName,
 } = require('./helpers');
 
+/**
+ * Returns any quickstart dashboards with matching names and their filepaths
+ * @returns {[{name: string, path: string}]} An array of objects containing the name and filepath of a dashboard that is not unique
+ */
 const findMatchingDashboardNames = () => {
   const quickstartMainConfigFilepaths = findMainQuickstartConfigFiles();
 
