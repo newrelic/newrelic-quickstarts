@@ -1,3 +1,15 @@
+# [0.104.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.103.0...v0.104.0) (2022-02-17)
+
+
+### Bug Fixes
+
+* Improved some labeles and adjusted some time series params ([42a07e9](https://github.com/newrelic/newrelic-quickstarts/commit/42a07e9d31cbd28abbd07df7a822883ac37e5398))
+
+
+### Features
+
+* add 30 day sum billboard chart ([cd2f0dc](https://github.com/newrelic/newrelic-quickstarts/commit/cd2f0dc3b115a3f3483e38087185ef7e56dd2590))
+
 # [0.103.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.102.0...v0.103.0) (2022-02-17)
 
 
