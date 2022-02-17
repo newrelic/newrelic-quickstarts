@@ -6,11 +6,10 @@ jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
   readQuickstartFile: jest.fn(),
   removeRepoPathPrefix: jest.fn(),
   findMainQuickstartConfigFiles: jest.fn(),
-  cleanQuickstartName: jest.fn(),
-  getMatchingNames: jest.fn(),
 }));
 
 describe('Action: check quickstart uniqueness', () => {
