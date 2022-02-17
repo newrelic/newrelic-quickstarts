@@ -1,3 +1,15 @@
+# [0.103.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.102.0...v0.103.0) (2022-02-17)
+
+
+### Bug Fixes
+
+* updated queries ([353ed2c](https://github.com/newrelic/newrelic-quickstarts/commit/353ed2ca4346513083c5adbd9ac4e34483823618))
+
+
+### Features
+
+* **pack:** Updated AWS RDS ([f90bcb2](https://github.com/newrelic/newrelic-quickstarts/commit/f90bcb25eb367717be64233376b1061a13f97e07))
+
 # [0.102.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.101.0...v0.102.0) (2022-02-17)
 
 
