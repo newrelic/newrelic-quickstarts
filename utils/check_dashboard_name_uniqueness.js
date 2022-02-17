@@ -38,9 +38,6 @@ const main = () => {
     console.error(
       `Please update your quickstart dashboard's name to be unique\n`
     );
-  }
-
-  if (require.main === module) {
     process.exit(1);
   }
 };
