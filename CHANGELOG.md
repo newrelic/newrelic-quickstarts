@@ -1,3 +1,10 @@
+## [0.104.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.0...v0.104.1) (2022-02-18)
+
+
+### Bug Fixes
+
+* sets community levels updates contributing doc ([e774f33](https://github.com/newrelic/newrelic-quickstarts/commit/e774f331e9b2ce5b60eeff5a95b0184ef95c1279))
+
 # [0.104.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.103.0...v0.104.0) (2022-02-17)
 
 
