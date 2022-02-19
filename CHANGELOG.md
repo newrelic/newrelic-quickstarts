@@ -1,3 +1,10 @@
+# [0.105.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.1...v0.105.0) (2022-02-19)
+
+
+### Features
+
+* Add MetricsBytes page ([425f6c9](https://github.com/newrelic/newrelic-quickstarts/commit/425f6c9d7c7a0983fb1d33d6bc5e2768c3859323))
+
 ## [0.104.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.0...v0.104.1) (2022-02-18)
 
 
