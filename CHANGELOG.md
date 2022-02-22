@@ -1,3 +1,10 @@
+# [0.106.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.105.0...v0.106.0) (2022-02-22)
+
+
+### Features
+
+* Added a quickstart for ReleaseIQ ([a39cb76](https://github.com/newrelic/newrelic-quickstarts/commit/a39cb764b7482e588b8cc8cb17024affb004fab5))
+
 # [0.105.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.1...v0.105.0) (2022-02-19)
 
 
