@@ -241,7 +241,27 @@ documentation:
 - All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
 - Levels can only be modified by New Relic employees.
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
-- The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
+- The shield icon is only applied to those quickstarts with support level `New Relic` OR support Level `Verified`.
+- In most cases a quickstart that is referencing an [experimental open source project](https://github.com/newrelic-experimental) should be set to the `Community` level.
+- If you are referencing an experimental project and want to set the quickstart to `Verified` please be aware of the support requirements below.
+
+**New Relic**
+
+- Verified for quality by New Relic
+- Created by New Relics employees
+- Supported by New Relic
+
+**Verified**
+
+- Verified for quality by New Relic
+- Created by New Relics employees or partners
+- Supported by individual authors or partners
+
+**Community**
+
+- Contributed & supported by the community
+- Created by community members
+- Supported by individual authors and community members
 
 
 #### Dashboard JSON
