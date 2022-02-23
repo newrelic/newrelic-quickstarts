@@ -37,11 +37,11 @@ const main = () => {
   const nameMatches = getMatchingNames(nameAndPaths);
   const idMatches = getMatchingIds(idsAndPaths);
 
-  if (nameMatches?.length == 0 && idMatches.length == 0) {
+  if (nameMatches.length == 0 && idMatches.length == 0) {
     return console.log(`All quickstart names and ids are unique`);
   }
 
-  if (nameMatches?.length > 0) {
+  if (nameMatches.length > 0) {
     console.error(`ERROR: Found matching quickstart names`);
     console.error(`Punctuation and white space are removed before comparison`);
     nameMatches.forEach((m) =>
