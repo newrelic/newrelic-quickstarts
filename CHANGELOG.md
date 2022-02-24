@@ -1,3 +1,26 @@
+## [0.107.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.107.0...v0.107.1) (2022-02-23)
+
+# [0.107.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.106.0...v0.107.0) (2022-02-23)
+
+
+### Features
+
+* **pack:** Updated AWS SQS ([d0d1f78](https://github.com/newrelic/newrelic-quickstarts/commit/d0d1f78b6f08ff6de916c30775efaa04de0dab84))
+
+# [0.106.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.105.0...v0.106.0) (2022-02-22)
+
+
+### Features
+
+* Added a quickstart for ReleaseIQ ([a39cb76](https://github.com/newrelic/newrelic-quickstarts/commit/a39cb764b7482e588b8cc8cb17024affb004fab5))
+
+# [0.105.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.1...v0.105.0) (2022-02-19)
+
+
+### Features
+
+* Add MetricsBytes page ([425f6c9](https://github.com/newrelic/newrelic-quickstarts/commit/425f6c9d7c7a0983fb1d33d6bc5e2768c3859323))
+
 ## [0.104.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.104.0...v0.104.1) (2022-02-18)
 
 
