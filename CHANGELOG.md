@@ -1,3 +1,12 @@
+## [0.107.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.107.0...v0.107.1) (2022-02-23)
+
+# [0.107.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.106.0...v0.107.0) (2022-02-23)
+
+
+### Features
+
+* **pack:** Updated AWS SQS ([d0d1f78](https://github.com/newrelic/newrelic-quickstarts/commit/d0d1f78b6f08ff6de916c30775efaa04de0dab84))
+
 # [0.106.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.105.0...v0.106.0) (2022-02-22)
 
 
