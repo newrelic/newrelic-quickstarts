@@ -11,7 +11,7 @@ if (pathsToSanitize.length < 1)
 const sanitizeDashboard = (fileContent) => {
   return fileContent
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
-    .replace(/\"linkedEntityGuids\"\s*:\s*\[.*\]/g, '"linkedEntityGuids": null') // Set linkedEntityGuids to null
+    .replace(/\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g, '"linkedEntityGuids": null') // Set linkedEntityGuids to null
     .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
     .replace(/[\}\)\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
 };
