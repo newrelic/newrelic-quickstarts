@@ -1,3 +1,10 @@
+# [0.110.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.109.0...v0.110.0) (2022-02-24)
+
+
+### Features
+
+* **pack:** Added new dashoard and alert ([84db08b](https://github.com/newrelic/newrelic-quickstarts/commit/84db08b11c4085cf5567ec0388e6823aaa3eac88))
+
 # [0.109.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.2...v0.109.0) (2022-02-24)
 
 
