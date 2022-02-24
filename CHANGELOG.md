@@ -1,3 +1,11 @@
+# [0.109.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.2...v0.109.0) (2022-02-24)
+
+
+### Features
+
+* **pack:** Updated aws s3 ([62556af](https://github.com/newrelic/newrelic-quickstarts/commit/62556af3acb1595a004f0b20a1b99cd6278effb1))
+* **prometheus:** added dashboards for prometheus-remote-write ([86d09cf](https://github.com/newrelic/newrelic-quickstarts/commit/86d09cf32899738789bb982ecd1d64f459d06107))
+
 ## [0.108.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.1...v0.108.2) (2022-02-24)
 
 ## [0.108.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.0...v0.108.1) (2022-02-24)
