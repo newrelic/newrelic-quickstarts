@@ -1,3 +1,10 @@
+## [0.108.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.0...v0.108.1) (2022-02-24)
+
+
+### Bug Fixes
+
+* **util:** expand santization for linkedEntityGuids ([61dcb92](https://github.com/newrelic/newrelic-quickstarts/commit/61dcb92352d8c365856c40c841301e28163a280b))
+
 # [0.108.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.107.1...v0.108.0) (2022-02-24)
 
 
