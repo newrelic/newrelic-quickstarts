@@ -46,6 +46,12 @@ mutation QuickstartRepoQuickstartMutation (
  */
 const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
 
+const SUPPORT_LEVEL_ENUMS = {
+  'New Relic': 'NEW_RELIC',
+  Community: 'COMMUNITY',
+  Verified: 'VERIFIED',
+};
+
 /**
  * Gets the unique base quickstart directory from a given file path.
  * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'python/aiohttp'.
@@ -136,6 +142,7 @@ const buildMutationVariables = (quickstartConfig) => {
     summary,
     installPlans,
     id,
+    level,
   } = quickstartConfig.contents[0] || {};
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
   const dashboardConfigPaths = getQuickstartDashboardConfigs(
@@ -168,6 +175,7 @@ const buildMutationVariables = (quickstartConfig) => {
         quickstartConfig.path
       )}`,
       summary: summary && summary.trim(),
+      supportLevel: SUPPORT_LEVEL_ENUMS[level],
       installPlanStepIds: installPlans,
       dashboards:
         dashboardConfigPaths.length > 0

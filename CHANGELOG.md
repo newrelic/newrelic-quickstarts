@@ -1,3 +1,17 @@
+# [0.111.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.110.0...v0.111.0) (2022-02-25)
+
+
+### Bug Fixes
+
+* fix dashboard.json ([c5e02b0](https://github.com/newrelic/newrelic-quickstarts/commit/c5e02b0205563ac2f3125493cc9b21f1e0cbf9f7))
+* fixing an issue with releaseiq quickstart ([d609505](https://github.com/newrelic/newrelic-quickstarts/commit/d609505e6b8b87be17fd7c42209f1891735190e5))
+* Send support level when submitting a quickstart ([1568810](https://github.com/newrelic/newrelic-quickstarts/commit/15688101b1579dae58e856fcfa9dd0594fad7bc7))
+
+
+### Features
+
+* new quickstart-glassbox ([59d1d23](https://github.com/newrelic/newrelic-quickstarts/commit/59d1d237208f7bb358d8f49bfbcef0bdceb27ad7))
+
 # [0.110.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.109.0...v0.110.0) (2022-02-24)
 
 
