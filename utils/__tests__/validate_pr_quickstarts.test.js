@@ -127,6 +127,7 @@ const expectedMockQuickstart2MutationInput = {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2',
     summary: 'A short form description for this quickstart',
+    supportLevel: 'COMMUNITY',
     installPlanStepIds: ['infra-agent-targeted'],
     alertConditions: [
       {

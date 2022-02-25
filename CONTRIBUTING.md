@@ -271,8 +271,7 @@ documentation:
 - When copying dashboard JSON from the New Relic One platform a `permissions` field is included in the code. You do not need this in a quickstart's dashboard JSON.
 - If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard` locally. This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) will check and remove code that may cause an issue when submitting a PR.
 - If you wish to import a quickstart's dashboard into New Relic outside of the quickstart install flow, you will need to include this `permissions` field.
-- Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform.
-
+- Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform. 
 ```json
 {
   "name": "Dashboard Name",
@@ -280,7 +279,10 @@ documentation:
   "permissions": "PUBLIC_READ_WRITE",
 }
 ```
-
+- A dashboard's name must be unique. After providing a name in the `dashboard.json`, you can check if your dashboard's name already exists by running this script from the `utils` directory.
+ ```
+ node check_dashboard_name_uniqueness
+ ```
 #### Dashboard screenshots
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatadashboardinput) for more details on `dashboards screnshots`

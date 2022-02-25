@@ -1298,6 +1298,15 @@ A short summary detailing the functionality of the quickstart
 
 </td>
 </tr>
+<tr>
+<td colspan="2" valign="top"><strong>supportLevel</strong></td>
+<td valign="top">Nr1CatalogSupportLevel</td>
+<td>
+
+Level of support for the quickstart
+
+</td>
+</tr>
 </tbody>
 </table>
 

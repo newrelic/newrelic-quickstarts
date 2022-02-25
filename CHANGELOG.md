@@ -1,3 +1,59 @@
+# [0.111.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.110.0...v0.111.0) (2022-02-25)
+
+
+### Bug Fixes
+
+* fix dashboard.json ([c5e02b0](https://github.com/newrelic/newrelic-quickstarts/commit/c5e02b0205563ac2f3125493cc9b21f1e0cbf9f7))
+* fixing an issue with releaseiq quickstart ([d609505](https://github.com/newrelic/newrelic-quickstarts/commit/d609505e6b8b87be17fd7c42209f1891735190e5))
+* Send support level when submitting a quickstart ([1568810](https://github.com/newrelic/newrelic-quickstarts/commit/15688101b1579dae58e856fcfa9dd0594fad7bc7))
+
+
+### Features
+
+* new quickstart-glassbox ([59d1d23](https://github.com/newrelic/newrelic-quickstarts/commit/59d1d237208f7bb358d8f49bfbcef0bdceb27ad7))
+
+# [0.110.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.109.0...v0.110.0) (2022-02-24)
+
+
+### Features
+
+* **pack:** Added new dashoard and alert ([84db08b](https://github.com/newrelic/newrelic-quickstarts/commit/84db08b11c4085cf5567ec0388e6823aaa3eac88))
+
+# [0.109.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.2...v0.109.0) (2022-02-24)
+
+
+### Features
+
+* **pack:** Updated aws s3 ([62556af](https://github.com/newrelic/newrelic-quickstarts/commit/62556af3acb1595a004f0b20a1b99cd6278effb1))
+* **prometheus:** added dashboards for prometheus-remote-write ([86d09cf](https://github.com/newrelic/newrelic-quickstarts/commit/86d09cf32899738789bb982ecd1d64f459d06107))
+
+## [0.108.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.1...v0.108.2) (2022-02-24)
+
+## [0.108.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.108.0...v0.108.1) (2022-02-24)
+
+
+### Bug Fixes
+
+* **util:** expand santization for linkedEntityGuids ([61dcb92](https://github.com/newrelic/newrelic-quickstarts/commit/61dcb92352d8c365856c40c841301e28163a280b))
+
+# [0.108.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.107.1...v0.108.0) (2022-02-24)
+
+
+### Features
+
+* Add console errors based upon if duplicate names exist ([97dc44f](https://github.com/newrelic/newrelic-quickstarts/commit/97dc44f56a3dac1c61a505b45804e48e6eb27297))
+* Add dashboard name check into workflow ([2c1a0f7](https://github.com/newrelic/newrelic-quickstarts/commit/2c1a0f7b4c4fa9130515859b2ea0f92781e17004))
+* Rename dotnet dashboard names ([b21f44d](https://github.com/newrelic/newrelic-quickstarts/commit/b21f44d8414f87f691769fe2ceae6215e0f1b804))
+* Update dashboard names Java ([4e2cde4](https://github.com/newrelic/newrelic-quickstarts/commit/4e2cde4d976e82e93ffc9a7044ecb6aafb3a6777))
+* Validation for dashboard name uniqueness ([0eeced1](https://github.com/newrelic/newrelic-quickstarts/commit/0eeced10d19c746746b385b27b2d335b57724160))
+
+
+### Reverts
+
+* Revert "chore: Update workflow description" ([5485102](https://github.com/newrelic/newrelic-quickstarts/commit/5485102b41468df297bd8bdd9c5fb88407226ae9))
+
+## [0.107.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.107.0...v0.107.1) (2022-02-23)
+
 # [0.107.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.106.0...v0.107.0) (2022-02-23)
 
 
