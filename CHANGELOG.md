@@ -1,3 +1,26 @@
+## [0.111.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.0...v0.111.1) (2022-02-25)
+
+
+### Bug Fixes
+
+* Fix spacing/indentation in validate_packs yaml ([8352b8c](https://github.com/newrelic/newrelic-quickstarts/commit/8352b8cf69a1fc59044dfb75f01e490583655fae))
+* Remove duplicate function ([8f51e79](https://github.com/newrelic/newrelic-quickstarts/commit/8f51e79096b349a6c509b692501c877f5dce7636))
+* Update imports and remove consolelogs ([794b93c](https://github.com/newrelic/newrelic-quickstarts/commit/794b93cf30c3e9ff15b7934852f71f2851b923ba))
+
+# [0.111.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.110.0...v0.111.0) (2022-02-25)
+
+
+### Bug Fixes
+
+* fix dashboard.json ([c5e02b0](https://github.com/newrelic/newrelic-quickstarts/commit/c5e02b0205563ac2f3125493cc9b21f1e0cbf9f7))
+* fixing an issue with releaseiq quickstart ([d609505](https://github.com/newrelic/newrelic-quickstarts/commit/d609505e6b8b87be17fd7c42209f1891735190e5))
+* Send support level when submitting a quickstart ([1568810](https://github.com/newrelic/newrelic-quickstarts/commit/15688101b1579dae58e856fcfa9dd0594fad7bc7))
+
+
+### Features
+
+* new quickstart-glassbox ([59d1d23](https://github.com/newrelic/newrelic-quickstarts/commit/59d1d237208f7bb358d8f49bfbcef0bdceb27ad7))
+
 # [0.110.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.109.0...v0.110.0) (2022-02-24)
 
 
