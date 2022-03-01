@@ -1,3 +1,10 @@
+# [0.112.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.2...v0.112.0) (2022-03-01)
+
+
+### Features
+
+* new charts to comply with current solutions guide ([1ee15c9](https://github.com/newrelic/newrelic-quickstarts/commit/1ee15c91291ffba5d4a024ff2fe9e7ff171950d0))
+
 ## [0.111.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.1...v0.111.2) (2022-03-01)
 
 
