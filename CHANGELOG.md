@@ -1,3 +1,19 @@
+## [0.112.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.0...v0.112.1) (2022-03-01)
+
+# [0.112.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.2...v0.112.0) (2022-03-01)
+
+
+### Features
+
+* new charts to comply with current solutions guide ([1ee15c9](https://github.com/newrelic/newrelic-quickstarts/commit/1ee15c91291ffba5d4a024ff2fe9e7ff171950d0))
+
+## [0.111.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.1...v0.111.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* updates readme and contributor guide ([f8436b0](https://github.com/newrelic/newrelic-quickstarts/commit/f8436b051347e9be24f4267233aff41825a9a4e6))
+
 ## [0.111.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.0...v0.111.1) (2022-02-25)
 
 
