@@ -1,3 +1,10 @@
+## [0.111.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.1...v0.111.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* updates readme and contributor guide ([f8436b0](https://github.com/newrelic/newrelic-quickstarts/commit/f8436b051347e9be24f4267233aff41825a9a4e6))
+
 ## [0.111.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.0...v0.111.1) (2022-02-25)
 
 
