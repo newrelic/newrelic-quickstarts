@@ -6,6 +6,7 @@ jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
   readQuickstartFile: jest.fn(),
   removeRepoPathPrefix: jest.fn(),
   findMainQuickstartConfigFiles: jest.fn(),
@@ -49,7 +50,7 @@ describe('Action: check quickstart uniqueness', () => {
       })
       .mockReturnValueOnce({
         path: 'testpathother',
-        contents: [{ name: 'also-unique',id: '12345' }],
+        contents: [{ name: 'also-unique', id: '12345' }],
       });
 
     checkQuickstartUniqueness();
