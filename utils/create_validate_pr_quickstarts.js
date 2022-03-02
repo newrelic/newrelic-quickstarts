@@ -1,5 +1,6 @@
 'use strict';
 
+const newrelic = require('newrelic');
 const glob = require('glob');
 
 const {
@@ -407,7 +408,7 @@ const countErrors = (graphqlResponses) => {
 };
 
 const main = async () => {
-  const GITHUB_API_URL = passedProcessArguments()[0];
+  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
@@ -415,6 +416,11 @@ const main = async () => {
   );
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
+
+  newrelic.recordCustomEvent('validate_or_update_quickstarts', {
+    status: hasFailed ? 'failed' : 'success',
+    isDryRun: isDryRun === 'true',
+  });
 
   if (hasFailed) {
     process.exit(1);
