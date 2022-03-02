@@ -1,3 +1,10 @@
+## [0.113.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.0...v0.113.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* **installPlans:** Remove nerdlets from cloud install plans ([f9744e0](https://github.com/newrelic/newrelic-quickstarts/commit/f9744e03823f7c7b0e092875217ea7f40474f437))
+
 # [0.113.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.1...v0.113.0) (2022-03-02)
 
 
