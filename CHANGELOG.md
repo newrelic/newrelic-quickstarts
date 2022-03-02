@@ -1,3 +1,17 @@
+## [0.113.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.0...v0.113.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* **installPlans:** Remove nerdlets from cloud install plans ([f9744e0](https://github.com/newrelic/newrelic-quickstarts/commit/f9744e03823f7c7b0e092875217ea7f40474f437))
+
+# [0.113.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.1...v0.113.0) (2022-03-02)
+
+
+### Features
+
+* add NR events to validate/publish workflows ([a704ab9](https://github.com/newrelic/newrelic-quickstarts/commit/a704ab99d85b7fd8975cdea00dd25bd4e3a0a67f))
+
 ## [0.112.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.0...v0.112.1) (2022-03-01)
 
 # [0.112.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.2...v0.112.0) (2022-03-01)
