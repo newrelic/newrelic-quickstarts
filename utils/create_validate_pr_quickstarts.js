@@ -407,6 +407,23 @@ const countErrors = (graphqlResponses) => {
   return errorCount;
 };
 
+/**
+ * @param {boolean} hasFailed if the validation or submission has failed
+ * @param {boolean} isDryRun - true for validation, false for submission
+ */
+const recordCustomNREvent = (hasFailed, isDryRun) => {
+  const status = hasFailed ? 'failed' : 'success';
+  if (isDryRun) {
+    newrelic.recordCustomEvent('ValidateQuickstarts', {
+      status,
+    });
+  } else {
+    newrelic.recordCustomEvent('UpdateQuickstarts', {
+      status,
+    });
+  }
+};
+
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
@@ -416,11 +433,7 @@ const main = async () => {
   );
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
-
-  newrelic.recordCustomEvent('ValidateOrUpdateQuickstarts', {
-    status: hasFailed ? 'failed' : 'success',
-    isDryRun: isDryRun === 'true',
-  });
+  recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
