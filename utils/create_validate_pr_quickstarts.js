@@ -1,5 +1,6 @@
 'use strict';
 
+const newrelic = require('newrelic');
 const glob = require('glob');
 
 const {
@@ -406,8 +407,25 @@ const countErrors = (graphqlResponses) => {
   return errorCount;
 };
 
+/**
+ * @param {boolean} hasFailed if the validation or submission has failed
+ * @param {boolean} isDryRun - true for validation, false for submission
+ */
+const recordCustomNREvent = (hasFailed, isDryRun) => {
+  const status = hasFailed ? 'failed' : 'success';
+  if (isDryRun) {
+    newrelic.recordCustomEvent('ValidateQuickstarts', {
+      status,
+    });
+  } else {
+    newrelic.recordCustomEvent('UpdateQuickstarts', {
+      status,
+    });
+  }
+};
+
 const main = async () => {
-  const GITHUB_API_URL = passedProcessArguments()[0];
+  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
@@ -415,6 +433,7 @@ const main = async () => {
   );
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
+  recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
