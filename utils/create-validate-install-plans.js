@@ -1,3 +1,5 @@
+'use strict';
+const newrelic = require('newrelic');
 const path = require('path');
 const { readYamlFile, passedProcessArguments } = require('./helpers');
 const {
@@ -160,8 +162,25 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   return hasFailed;
 };
 
+/**
+ * @param {boolean} hasFailed if the validation or submission has failed
+ * @param {boolean} isDryRun - true for validation, false for submission
+ */
+const recordCustomNREvent = (hasFailed, isDryRun) => {
+  const status = hasFailed ? 'failed' : 'success';
+  if (isDryRun) {
+    newrelic.recordCustomEvent('ValidateInstallPlans', {
+      status,
+    });
+  } else {
+    newrelic.recordCustomEvent('UpdateInstallPlans', {
+      status,
+    });
+  }
+};
+
 const main = async () => {
-  const GITHUB_API_URL = passedProcessArguments()[0];
+  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
@@ -169,6 +188,7 @@ const main = async () => {
   );
   const installPlanFiles = filterInstallPlans(files);
   const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
+  recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
