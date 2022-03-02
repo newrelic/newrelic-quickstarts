@@ -172,7 +172,7 @@ const main = async () => {
   const installPlanFiles = filterInstallPlans(files);
   const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
 
-  newrelic.recordCustomEvent('validate_or_update_install_plans', {
+  newrelic.recordCustomEvent('ValidateOrUpdateInstallPlans', {
     status: hasFailed ? 'failed' : 'success',
     isDryRun: isDryRun === 'true',
   });

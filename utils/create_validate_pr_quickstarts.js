@@ -417,7 +417,7 @@ const main = async () => {
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
 
-  newrelic.recordCustomEvent('validate_or_update_quickstarts', {
+  newrelic.recordCustomEvent('ValidateOrUpdateQuickstarts', {
     status: hasFailed ? 'failed' : 'success',
     isDryRun: isDryRun === 'true',
   });
