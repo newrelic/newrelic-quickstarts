@@ -1,3 +1,10 @@
+# [0.114.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.2...v0.114.0) (2022-03-03)
+
+
+### Features
+
+* **pack:** Added Synthetics Page Link Crawler quickstart ([1df1302](https://github.com/newrelic/newrelic-quickstarts/commit/1df13024f9ee5b570c812e310e97035b461a578d))
+
 ## [0.113.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.1...v0.113.2) (2022-03-03)
 
 
