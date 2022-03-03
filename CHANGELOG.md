@@ -1,3 +1,10 @@
+## [0.113.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.1...v0.113.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* corrects logo ([fccc3c0](https://github.com/newrelic/newrelic-quickstarts/commit/fccc3c055e00bdd6aa8dfdcad8b731eb16674e11))
+
 ## [0.113.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.0...v0.113.1) (2022-03-02)
 
 
