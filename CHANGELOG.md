@@ -1,3 +1,10 @@
+# [0.115.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.1...v0.115.0) (2022-03-07)
+
+
+### Features
+
+* **pack:** Added Amazon Linux ([ba829d6](https://github.com/newrelic/newrelic-quickstarts/commit/ba829d655b0682b529d3af37b25a46ee26eadb53))
+
 ## [0.114.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.0...v0.114.1) (2022-03-07)
 
 # [0.114.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.2...v0.114.0) (2022-03-03)
