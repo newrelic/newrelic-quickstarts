@@ -1,3 +1,5 @@
+## [0.115.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.0...v0.115.1) (2022-03-08)
+
 # [0.115.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.1...v0.115.0) (2022-03-07)
 
 
