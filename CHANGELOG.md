@@ -1,3 +1,33 @@
+# [0.115.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.1...v0.115.0) (2022-03-07)
+
+
+### Features
+
+* **pack:** Added Amazon Linux ([ba829d6](https://github.com/newrelic/newrelic-quickstarts/commit/ba829d655b0682b529d3af37b25a46ee26eadb53))
+
+## [0.114.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.0...v0.114.1) (2022-03-07)
+
+# [0.114.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.2...v0.114.0) (2022-03-03)
+
+
+### Features
+
+* **pack:** Added Synthetics Page Link Crawler quickstart ([1df1302](https://github.com/newrelic/newrelic-quickstarts/commit/1df13024f9ee5b570c812e310e97035b461a578d))
+
+## [0.113.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.1...v0.113.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* corrects logo ([fccc3c0](https://github.com/newrelic/newrelic-quickstarts/commit/fccc3c055e00bdd6aa8dfdcad8b731eb16674e11))
+
+## [0.113.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.0...v0.113.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* **installPlans:** Remove nerdlets from cloud install plans ([f9744e0](https://github.com/newrelic/newrelic-quickstarts/commit/f9744e03823f7c7b0e092875217ea7f40474f437))
+
 # [0.113.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.1...v0.113.0) (2022-03-02)
 
 
