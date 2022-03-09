@@ -9,9 +9,9 @@ env:
   THIRD_PARTY_GIT_AUTHOR_EMAIL: opensource+bot@newrelic.com
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
-jobs:
-  generate-uuid:
-    name: Generate UUID
+jobs:          
+  generate-schema-docs:
+    name: Generate GraphQL schema documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,103 +24,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Install dependencies
         run: cd utils && yarn install
 
-      - name: Generate UUIDs for quickstarts
-        id: generate-uuids
-        run: cd utils && yarn generate-uuids
-
-      - name: Commit changes
-        id: commit-changes
-        run: |
-          git config --local user.email "${{ env.THIRD_PARTY_GIT_AUTHOR_EMAIL }}"
-          git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
-          git add ./quickstarts/*
-          git diff-index --quiet HEAD ./quickstarts/* || git commit -m 'chore: generate UUID(s) [skip ci]'
-          echo "::set-output name=commit::true"
-
-      - name: Temporarily disable branch protections
-        id: disable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: null,
-              restrictions: null,
-              enforce_admins: null,
-              required_pull_request_reviews: null
-            })
-            console.log("Result:", result)
-
-      - name: Push Commit
-        if: steps.commit-changes.outputs.commit == 'true'
-        run: git push origin HEAD
-
-      - name: Re-enable branch protections
-        id: enable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: {
-                strict: true,
-                contexts: []
-              },
-              restrictions: {
-                "users":[],
-                "teams":[],
-                "apps":[]
-              },
-              enforce_admins: null,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                required_approving_review_count: 1,
-                dismissal_restrictions: {
-                  users: [],
-                  teams: []
-                }
-              }
-            })
-            console.log("Result:", result)
-
-  generate-schema-docs:
-    name: Generate schema documentation
-    needs: [generate-uuid]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: 'main'
-          fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - name: Install dependencies
-        run: cd utils/schema-doc-generator && pip install -r requirements.txt
-
-      - name: Generate documentation
-        id: generate-docs
-        run: python utils/schema-doc-generator/script.py
+      - name: Generate schema docs for GraphQl
+        id: generate-schema
+        env:
+          NR_API_URL: ${{ secrets.NR_API_URL }}
+          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
+        run: cd utils && yarn generate-schema-docs
 
       - name: Commit changes
         id: commit-changes
@@ -168,7 +82,15 @@ jobs:
               branch: 'main',
               required_status_checks: {
                 strict: true,
-                contexts: []
+                contexts: [
+                    'Validation / Image count and extension compliance',
+                    'Validation / Quickstart schema compliance',
+                    'Validation / Conventional commit compliance',
+                    'Validation / Ensure logos exist',
+                    'Validation / Install plan ids exist',
+                    'Validation / Install plan schema compliance',
+                    'Validation / Quickstart id & name are unique'
+                ]
               },
               restrictions: {
                 "users":[],
@@ -189,7 +111,7 @@ jobs:
 
   job-generate-release:
     name: Create Release
-    needs: [generate-uuid, generate-schema-docs]
+    needs: [generate-schema-docs]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -251,7 +173,15 @@ jobs:
               branch: 'main',
               required_status_checks: {
                 strict: true,
-                contexts: []
+                contexts: [
+                    'Validation / Image count and extension compliance',
+                    'Validation / Quickstart schema compliance',
+                    'Validation / Conventional commit compliance',
+                    'Validation / Ensure logos exist',
+                    'Validation / Install plan ids exist',
+                    'Validation / Install plan schema compliance',
+                    'Validation / Quickstart id & name are unique'
+                ]
               },
               restrictions: {
                 "users":[],

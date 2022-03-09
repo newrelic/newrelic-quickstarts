@@ -1,3 +1,3 @@
 # Documentation
 
-Each file in this directory (minus this readme) is generated from its equivalent schema found in [utils/schemas](../utils/schemas).
+Each file in this directory (minus this readme) is generated from New Relic NerdGraph GraphQL schema.

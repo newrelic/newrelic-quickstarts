@@ -2,7 +2,7 @@ name: Validate quickstarts
 
 on:
   workflow_run:
-    workflows: ["Validation Gate"]
+    workflows: ['Validation Gate']
     types:
       - completed
 
@@ -45,9 +45,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NR_API_URL: ${{ secrets.NR_API_URL }}
           NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
+          NEW_RELIC_NO_CONFIG_FILE: true
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+          NEW_RELIC_HOST: staging-collector.newrelic.com
+          NODE_ENV: production
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn validate-pr-quickstarts $URL
+          DRY_RUN=true
+          cd utils && yarn create-validate-pr-quickstarts $URL $DRY_RUN
 
       - name: Add commit status
         if: always()
@@ -60,7 +66,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Quickstart schema compliance"
             }'
@@ -109,7 +115,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Quickstart id & name are unique"
             }'
@@ -150,7 +156,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Conventional commit compliance"
             }'
@@ -199,7 +205,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Image count and extension compliance"
             }'
@@ -248,7 +254,7 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Ensure logos exist"
             }'
@@ -301,7 +307,56 @@ jobs:
             https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
             -d '
             {
-              "state": "${{ steps.validation.outcome }}", 
+              "state": "${{ job.status }}", 
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Install plan ids exist"
+            }'
+
+  ensure-quickstart-dashboard-names-are-unique:
+    name: Ensure quickstart dashboard names are unique
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Check for unique dashboard names
+        id: validation
+        run: cd utils && yarn check-dashboard-name-uniqueness
+
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ job.status }}", 
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Quickstart dashboard name is unique"
             }'

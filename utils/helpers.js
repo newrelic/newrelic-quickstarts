@@ -137,7 +137,34 @@ const findMainInstallConfigFiles = () =>
  * Removes the first two arguments injected by Node
  * @returns {String[]} An array of arguments explicitly passed in via the command line
  */
-const passedProcessArguments = process.argv.slice(2);
+const passedProcessArguments = () => process.argv.slice(2);
+
+/**
+ * Returns any quickstarts with matching names
+ * @param {Object[]} namesAndPaths an array of objects containing the path and name of a quickstart
+ * @returns {Object[]} an array of matching values
+ */
+const getMatchingNames = (namesAndPaths) => {
+  return namesAndPaths.reduce((acc, { name, path }) => {
+    const duplicates = namesAndPaths.filter(
+      (quickstart) => quickstart.name === name && quickstart.path !== path
+    );
+
+    return [...new Set([...acc, ...duplicates])];
+  }, []);
+};
+
+/**
+ * Removes whitespace and punctuation from a string
+ * @returns {String} The string with `-` replacing whitespace and punctuation removed
+ */
+const cleanQuickstartName = (str) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/, '-')
+    .replace(/[^a-z0-9-]/g, '');
 
 module.exports = {
   readYamlFile,
@@ -154,4 +181,6 @@ module.exports = {
   findMainQuickstartConfigFiles,
   findMainInstallConfigFiles,
   passedProcessArguments,
+  getMatchingNames,
+  cleanQuickstartName,
 };
