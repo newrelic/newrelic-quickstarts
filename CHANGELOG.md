@@ -1,3 +1,10 @@
+# [0.117.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.116.0...v0.117.0) (2022-03-10)
+
+
+### Features
+
+* new cloudlfare quickstart ([5a942be](https://github.com/newrelic/newrelic-quickstarts/commit/5a942beeb69997b0462377eff05072dbfd48bc62))
+
 # [0.116.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.3...v0.116.0) (2022-03-10)
 
 
