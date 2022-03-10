@@ -1,3 +1,10 @@
+## [0.117.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.0...v0.117.1) (2022-03-10)
+
+
+### Bug Fixes
+
+* removes quickstart ([71a9045](https://github.com/newrelic/newrelic-quickstarts/commit/71a90450214ea6be861bff1e0ff267c24cd72fb1))
+
 # [0.117.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.116.0...v0.117.0) (2022-03-10)
 
 
