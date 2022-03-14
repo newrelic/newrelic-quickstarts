@@ -1,3 +1,32 @@
+## [0.117.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.1...v0.117.2) (2022-03-11)
+
+## [0.117.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.0...v0.117.1) (2022-03-10)
+
+
+### Bug Fixes
+
+* removes quickstart ([71a9045](https://github.com/newrelic/newrelic-quickstarts/commit/71a90450214ea6be861bff1e0ff267c24cd72fb1))
+
+# [0.117.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.116.0...v0.117.0) (2022-03-10)
+
+
+### Features
+
+* new cloudlfare quickstart ([5a942be](https://github.com/newrelic/newrelic-quickstarts/commit/5a942beeb69997b0462377eff05072dbfd48bc62))
+
+# [0.116.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.3...v0.116.0) (2022-03-10)
+
+
+### Features
+
+* **kubernetes:** add state for kubernetes install plan ([945988a](https://github.com/newrelic/newrelic-quickstarts/commit/945988a500a1b0f1294fc3f913ce184a2fe811ba))
+
+## [0.115.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.2...v0.115.3) (2022-03-08)
+
+## [0.115.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.1...v0.115.2) (2022-03-08)
+
+## [0.115.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.0...v0.115.1) (2022-03-08)
+
 # [0.115.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.1...v0.115.0) (2022-03-07)
 
 
