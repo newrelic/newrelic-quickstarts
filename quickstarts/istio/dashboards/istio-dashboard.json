@@ -1,0 +1,481 @@
+{
+  "name": "Istio Service",
+  "description": "Get a high level overview of your Istio Service Mesh",
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Throughput per Second",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' FACET cases(WHERE reporter = 'destination' as 'Inbound', WHERE reporter = 'source' as 'Outbound')"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": " Response Codes",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(istio_requests_total) WHERE reporter = 'destination' FACET response_code"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Latency",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (rate(sum(istio_request_duration_milliseconds_sum), 1 minute) / rate(sum(istio_request_duration_milliseconds_count), 1 minute)) AS 'Milliseconds' WHERE reporter = 'destination'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Server (inbound) Metrics"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Server Throughput",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'destination' TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 5,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Server Error Rate (5xx responses)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100 ) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'destination' TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Server Request Duration (Average)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(istio_request_duration_milliseconds_sum) / sum(istio_request_duration_milliseconds_count) WHERE reporter = 'destination' TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.histogram"
+          },
+          "layout": {
+            "column": 10,
+            "row": 5,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Server Request Duration Ms (Histogram)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT histogram(istio_request_duration_milliseconds_bucket, 1000) AS 'Requests' WHERE reporter = 'destination'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Inbound Requests by Source and Response Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'destination' FACET deploymentName, response_code TIMESERIES "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Inbound Errors by Service",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter(rate(sum(istio_requests_total), 1 minute), WHERE response_code LIKE '5%')) AS 'Errors' WHERE reporter = 'destination' FACET deploymentName TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.heatmap"
+          },
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Inbound Request Duration by Source",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT histogram(istio_request_duration_milliseconds_bucket, 1000) WHERE reporter = 'destination' FACET source_canonical_service"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "height": 1,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# Client (outbound) Metrics"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Client Throughput",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'source' TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 12,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Client Error Rate (5xx responses)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'source' TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 12,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Client Request Duration (Average)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(istio_request_duration_milliseconds_sum) / sum(istio_request_duration_milliseconds_count) WHERE reporter = 'source' TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.histogram"
+          },
+          "layout": {
+            "column": 10,
+            "row": 12,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Client Request Duration Ms (Histogram)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT histogram(istio_request_duration_milliseconds_bucket, 1000) AS 'Requests' WHERE reporter = 'source'"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Outbound Requests by Source and Response Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'source' FACET destination_service_name, response_code TIMESERIES "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Outbound Errors by Service",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter(rate(sum(istio_requests_total), 1 minute), WHERE response_code LIKE '5%')) AS 'Errors' WHERE reporter = 'source' FACET destination_canonical_service TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.heatmap"
+          },
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Outbound Request Duration by Source",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT histogram(istio_request_duration_milliseconds_bucket, 1000) WHERE reporter = 'source' FACET destination_canonical_service"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}
