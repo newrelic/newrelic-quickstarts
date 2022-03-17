@@ -1,3 +1,11 @@
+## [0.118.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.0...v0.118.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* removes extra logo file ([813698f](https://github.com/newrelic/newrelic-quickstarts/commit/813698fa27341bea3bfa6b76843183e5778d253f))
+* removes extra logo file ([33aaf3d](https://github.com/newrelic/newrelic-quickstarts/commit/33aaf3d141a21d593e5d6367e6f7e6fc12bdc1f6))
+
 # [0.118.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.3...v0.118.0) (2022-03-17)
 
 
