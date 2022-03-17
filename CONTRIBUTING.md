@@ -24,6 +24,8 @@
       - [Documentation](#documentation)
       - [Support Levels](#support-levels)
       - [Dashboard JSON](#dashboard-json)
+      - [Dashboard Permissions](#dashboard-permissions)
+      - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory & preview images](#images-directory--preview-images)
       - [Logos > Icons](#logos--icons)
@@ -263,14 +265,19 @@ documentation:
 - Created by community members
 - Supported by individual authors and community members
 
-
 #### Dashboard JSON
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdashboard) for more details on `dashboards`
 
-- When copying dashboard JSON from the New Relic One platform a `permissions` field is included in the code. You do not need this in a quickstart's dashboard JSON.
-- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` where the argument is the path to the dashboard directory. This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) will check and remove code that may cause an issue when submitting a PR.
-- If you wish to import a quickstart's dashboard into New Relic outside of the quickstart install flow, you will need to include this `permissions` field.
+- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` or `yarn sanitize-dashboard catchpoint` where the argument is quickstart name you wish to sanitize.
+- This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) needs to be run from the `Utils` directory.
+- This script will check and remove code that may cause an issue when submitting a PR.
+- As a best practice you should run this script when creating a new dashboard.
+
+#### Dashboard Permissions
+
+- When copying dashboard JSON from the New Relic One platform a `permissions` field is always included in the code. You do not need this in a quickstart's dashboard JSON.
+- However if you wish to import a quickstart's dashboard into New Relic outside of the quickstart installation flow, you will need to include this `permissions` field.
 - Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform.
 
 ```json
@@ -281,7 +288,12 @@ documentation:
 }
 ```
 
-- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness` this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+#### Dashboard name uniqueness
+
+- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness`.
+- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+- this script needs to run from the `Utils` directory.
+- As a best practice you should run this script when creating a new dashboard.
 
 #### Dashboard screenshots
 
