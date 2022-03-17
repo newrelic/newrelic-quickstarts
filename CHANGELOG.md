@@ -1,3 +1,19 @@
+# [0.118.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.3...v0.118.0) (2022-03-17)
+
+
+### Bug Fixes
+
+* fixes typo ([de81ca9](https://github.com/newrelic/newrelic-quickstarts/commit/de81ca946beccc429bed71ef0e92656eed37548d))
+* newline change to trigger publish ([1d791e7](https://github.com/newrelic/newrelic-quickstarts/commit/1d791e746e216d1f5e9430e6f0b6e895cc445375))
+* resolved validation failures ([f9013d4](https://github.com/newrelic/newrelic-quickstarts/commit/f9013d4e1376f32d320fa32aabe666daae32865c))
+* resolves alert issues ([500bdbb](https://github.com/newrelic/newrelic-quickstarts/commit/500bdbb355733414ea04b84ebde9fe40435a5bff))
+* updates contributor guide ([e03e3d3](https://github.com/newrelic/newrelic-quickstarts/commit/e03e3d3e19f3f59122563408eec48f75ce7e2b66))
+
+
+### Features
+
+* added prometheus install plan + fixes ([b755b52](https://github.com/newrelic/newrelic-quickstarts/commit/b755b5299f53ab65bf388073a764fe21be86d7e2))
+
 ## [0.117.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.2...v0.117.3) (2022-03-16)
 
 ## [0.117.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.1...v0.117.2) (2022-03-11)
