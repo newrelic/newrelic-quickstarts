@@ -1,3 +1,11 @@
+# [0.119.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.1...v0.119.0) (2022-03-18)
+
+
+### Features
+
+* add filtering to dashboard ([8676de6](https://github.com/newrelic/newrelic-quickstarts/commit/8676de6845fad4e62d9758ecd5f956d4f42ec4d1))
+* add new win/loss tracking dashboard ([b72bdce](https://github.com/newrelic/newrelic-quickstarts/commit/b72bdce6a7e39b6262107b57b6081f75649d9d95))
+
 ## [0.118.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.0...v0.118.1) (2022-03-17)
 
 
