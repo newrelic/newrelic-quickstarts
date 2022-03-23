@@ -1,3 +1,42 @@
+## [0.119.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.0...v0.119.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* renames netlify qs due to 404 url issue ([c17ef12](https://github.com/newrelic/newrelic-quickstarts/commit/c17ef1252ea427c88e4592a5b446abce1bcdc1c9))
+
+# [0.119.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.1...v0.119.0) (2022-03-18)
+
+
+### Features
+
+* add filtering to dashboard ([8676de6](https://github.com/newrelic/newrelic-quickstarts/commit/8676de6845fad4e62d9758ecd5f956d4f42ec4d1))
+* add new win/loss tracking dashboard ([b72bdce](https://github.com/newrelic/newrelic-quickstarts/commit/b72bdce6a7e39b6262107b57b6081f75649d9d95))
+
+## [0.118.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.0...v0.118.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* removes extra logo file ([813698f](https://github.com/newrelic/newrelic-quickstarts/commit/813698fa27341bea3bfa6b76843183e5778d253f))
+* removes extra logo file ([33aaf3d](https://github.com/newrelic/newrelic-quickstarts/commit/33aaf3d141a21d593e5d6367e6f7e6fc12bdc1f6))
+
+# [0.118.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.3...v0.118.0) (2022-03-17)
+
+
+### Bug Fixes
+
+* fixes typo ([de81ca9](https://github.com/newrelic/newrelic-quickstarts/commit/de81ca946beccc429bed71ef0e92656eed37548d))
+* newline change to trigger publish ([1d791e7](https://github.com/newrelic/newrelic-quickstarts/commit/1d791e746e216d1f5e9430e6f0b6e895cc445375))
+* resolved validation failures ([f9013d4](https://github.com/newrelic/newrelic-quickstarts/commit/f9013d4e1376f32d320fa32aabe666daae32865c))
+* resolves alert issues ([500bdbb](https://github.com/newrelic/newrelic-quickstarts/commit/500bdbb355733414ea04b84ebde9fe40435a5bff))
+* updates contributor guide ([e03e3d3](https://github.com/newrelic/newrelic-quickstarts/commit/e03e3d3e19f3f59122563408eec48f75ce7e2b66))
+
+
+### Features
+
+* added prometheus install plan + fixes ([b755b52](https://github.com/newrelic/newrelic-quickstarts/commit/b755b5299f53ab65bf388073a764fe21be86d7e2))
+
 ## [0.117.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.2...v0.117.3) (2022-03-16)
 
 ## [0.117.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.1...v0.117.2) (2022-03-11)
