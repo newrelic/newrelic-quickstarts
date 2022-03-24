@@ -1,3 +1,13 @@
+# [0.120.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.2...v0.120.0) (2022-03-24)
+
+
+### Features
+
+* Update install/third-party/postman/install.yml ([d9655bb](https://github.com/newrelic/newrelic-quickstarts/commit/d9655bb21aaf00028b564a69689639e157db746a))
+* Update postman/config.yml ([923b231](https://github.com/newrelic/newrelic-quickstarts/commit/923b23160a310dba24cc5e36a0aa6da13e3f73f0))
+* Updated the description as per suggestion. ([a2edf24](https://github.com/newrelic/newrelic-quickstarts/commit/a2edf24d962e07be09aac91638557fa6fb6c15b5))
+* Updated the summary and description. Sanitized the dashboard.json ([43e87b2](https://github.com/newrelic/newrelic-quickstarts/commit/43e87b24b0120bc26dc2afdcccf68dabb3c0e5bb))
+
 ## [0.119.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.1...v0.119.2) (2022-03-24)
 
 ## [0.119.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.0...v0.119.1) (2022-03-23)
