@@ -1,3 +1,10 @@
+## [0.120.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.0...v0.120.1) (2022-03-24)
+
+
+### Bug Fixes
+
+* (Browser segment list dashboard): Ran sanitize script against dashboard ([7c600a9](https://github.com/newrelic/newrelic-quickstarts/commit/7c600a9d804e299344d54e32bae509510a9a34e7))
+
 # [0.120.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.2...v0.120.0) (2022-03-24)
 
 
