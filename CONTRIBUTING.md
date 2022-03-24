@@ -9,7 +9,6 @@
     - [Dashboards](#dashboards)
     - [Data sources](#data-sources)
     - [Install plan](#install-plan)
-  - [Quickstart install flow](#quickstart-install-flow)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -20,6 +19,7 @@
       - [Authors](#authors)
       - [Install plans](#install-plans)
         - [Creating a new installPlan](#creating-a-new-installplan)
+      - [Name & title fields](#name--title-fields)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Support Levels](#support-levels)
@@ -61,8 +61,6 @@ New Relic I/O Catalog. At this time there isn't any easy way to preview a quicks
 This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
 [here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
 
-> please note,  the internal catalog follows a very similar UI pattern.
-
 ### Main config
 
 ![main config](./images/main.png)
@@ -82,12 +80,6 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 ### Install plan
 
 ![install plan](./images/install-plan.png)
-
-## Quickstart install flow
-
-The diagram below explains the installation flow each type of quickstart follows.
-
-![alt text](./images/quickstart-install-flow.png)
 
 ## Quickstarts style guide
 
@@ -197,6 +189,16 @@ You can define multiple author names, but it's recommended to use one of the fol
 - All third party install plans should be store in the[third-party directory](./install/third-party)
 - The configuration file name should be `install.yml`.
 - keep the install plan `description` succinct as it's informational only.
+
+#### Name & title fields
+
+`https://newrelic.com/instant-observability/{name}/{id}`
+
+ The quickstart `name` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes.
+
+ > We will soon handle redirects more effectively for the I/O site to account for name changes.
+
+ The quickstart `title` field defines the title of the quickstart in the UI and can be changed.
 
 #### Summary & descriptions
 
