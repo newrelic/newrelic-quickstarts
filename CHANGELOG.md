@@ -1,3 +1,10 @@
+## [0.119.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.0...v0.119.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* renames netlify qs due to 404 url issue ([c17ef12](https://github.com/newrelic/newrelic-quickstarts/commit/c17ef1252ea427c88e4592a5b446abce1bcdc1c9))
+
 # [0.119.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.1...v0.119.0) (2022-03-18)
 
 
