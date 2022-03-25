@@ -1,0 +1,238 @@
+{
+  "name": "HPA Dashboard",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "HPA Dashboard",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 2,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "## Horizontal Pod Autoscaler\nTo target a specific Cluster or HPA use the following filters: `clusterName=<clustername>` and `displayName=<hpa_deployment_name>`.  \n\nFilter current page by selecting the HPA Name from `HPA Apps` widget.\n\nLegend: `<hpa_lable_name>, <hpa_namespace>`"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 3,
+            "width": 6
+          },
+          "title": "HPA Apps",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select count(*) facet displayName "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "height": 3,
+            "width": 6
+          },
+          "title": "HPA Active",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "isActive",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select latest(isActive) Facet displayName, label.namespace LIMIT MAX TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Maximum Replicas",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select latest(maxReplicas) Facet displayName, label.namespace LIMIT MAX TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Minimum Replicas",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select latest(minReplicas) Facet displayName, label.namespace LIMIT MAX TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Current Replicas",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select max(currentReplicas) facet label.hpa, label.namespace LIMIT MAX TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Desired Replicas",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM K8sHpaSample select max(desiredReplicas) facet label.hpa, label.namespace LIMIT MAX  since 1 day ago TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "height": 4,
+            "width": 12
+          },
+          "title": "HPA Events (Cluster)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 1234,
+                "query": "FROM InfrastructureEvent select event.involvedObject.kind as ObjectKind, event.involvedObject.name as Name, summary as Summary, verb as Operation, event.involvedObject.namespace as Namespace, event.reason as Reason, clusterName  where (event.involvedObject.kind = 'HorizontalPodAutoscaler') LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}
