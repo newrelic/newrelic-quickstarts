@@ -1,3 +1,10 @@
+## [0.120.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.4...v0.120.5) (2022-03-25)
+
+
+### Bug Fixes
+
+* changes title for slugification ([9847750](https://github.com/newrelic/newrelic-quickstarts/commit/9847750aa254f28cdc7984db3e2f39df99012b5f))
+
 ## [0.120.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.3...v0.120.4) (2022-03-25)
 
 
