@@ -1,3 +1,20 @@
+## [0.120.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.5...v0.120.6) (2022-03-25)
+
+## [0.120.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.4...v0.120.5) (2022-03-25)
+
+
+### Bug Fixes
+
+* changes title for slugification ([9847750](https://github.com/newrelic/newrelic-quickstarts/commit/9847750aa254f28cdc7984db3e2f39df99012b5f))
+
+## [0.120.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.3...v0.120.4) (2022-03-25)
+
+
+### Bug Fixes
+
+* changes name to match title for URL consistency ([ac0138e](https://github.com/newrelic/newrelic-quickstarts/commit/ac0138e8c7f7a733627e18e3adaf3443528ecb2c))
+* corrected the postman integration ([9c7b162](https://github.com/newrelic/newrelic-quickstarts/commit/9c7b162565ea4e5e9b76635141e04a6e67ee91b8))
+
 ## [0.120.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.2...v0.120.3) (2022-03-24)
 
 ## [0.120.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.1...v0.120.2) (2022-03-24)
