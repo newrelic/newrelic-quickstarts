@@ -122,7 +122,7 @@ describe('Action: validate images', () => {
       'for',
       '2',
       'is',
-      '12',
+      '24',
       '>:(',
     ]);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });

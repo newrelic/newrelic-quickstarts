@@ -72,13 +72,13 @@ const validateImageCounts = (quickstartDirs) => {
     });
 
   if (screenshotDirectories.length) {
-    core.setFailed('Each component should contain no more than 6 screenshots');
+    core.setFailed('Each component should contain no more than 12 screenshots');
     console.warn(`\nPlease check the following directories:`);
     screenshotDirectories.forEach((dir) => console.warn(dir));
   }
 
   if (imagesDirectories.length) {
-    core.setFailed('The `images` directory should contain no more than 6 images per component');
+    core.setFailed('The `images` directory should contain no more than 12 images per component');
     console.warn(`\nPlease check the following directories:`);
     imagesDirectories.forEach((dir) => console.warn(dir));
   }
