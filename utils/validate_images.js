@@ -14,7 +14,7 @@ const path = require('path');
 const BASE_PATH = '../quickstarts/';
 const DASHBOARD_IMAGES_PATH = '/images/';
 const MAX_SIZE = 4000000;
-const MAX_NUM_IMG = 6;
+const MAX_NUM_IMG = 12;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 
 /**
@@ -37,12 +37,12 @@ const validateImageCounts = (quickstartDirs) => {
       const logoPath = quickstartConfig.logo
         ? path.resolve(quickstartDirName, quickstartConfig.logo)
         : null;
-      
+
       // Max images is per dashboard so we need to account for this by getting the number of dashboards
       const dashboardCount = glob.sync(
         path.resolve(quickstartDirName, 'dashboards/*.json')
       ).length;
-      
+
       const screenshotPaths = imagePaths.filter(
         (p) => p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
       );
@@ -50,7 +50,7 @@ const validateImageCounts = (quickstartDirs) => {
       const dashboardImagePaths = imagePaths.filter(
         (p) => p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
       );
-      
+
       // Each dashboard is allowed MAX_NUM_IMG dashboards
       if (screenshotPaths.length > (MAX_NUM_IMG * dashboardCount)) {
         screenshotDirectories.push({
