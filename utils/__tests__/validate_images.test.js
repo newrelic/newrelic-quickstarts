@@ -77,7 +77,7 @@ describe('Action: validate images', () => {
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
-  test('validateImageCounts, given <= 6 image files per dashboard in a directory, does not throw an error', () => {
+  test('validateImageCounts, given <= 12 image files per dashboard in a directory, does not throw an error', () => {
     const globMock = ['test/path/config'];
     mockGlobSync(['pineapple']);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
@@ -87,9 +87,11 @@ describe('Action: validate images', () => {
     expect(global.console.warn).not.toHaveBeenCalled();
   });
 
-  test('validateImageCounts, given > 6 image files per dashboard in a directory, throws an error', () => {
+  //13
+  test('validateImageCounts, given > 12 image files per dashboard in a directory, throws an error', () => {
     const globMock = ['test/path/'];
-    mockGlobSync(['I', 'have', 'too', 'many', 'images', '>:)', '>:(']);
+    const images = Array.from('img'.repeat(13));
+    mockGlobSync(images);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
     mockGlobSync(['1 dashboard']);
     validateImageCounts(globMock);
@@ -97,9 +99,10 @@ describe('Action: validate images', () => {
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
-  test('validateImageCounts, given > 6 image files per dashboard in the images directory, throws an error', () => {
+  test('validateImageCounts, given > 12 image files per dashboard in the images directory, throws an error', () => {
     const globMock = ['test/path/images/'];
-    mockGlobSync(['I', 'have', 'too', 'many', 'images', '>:)', '>:(']);
+    const images = Array.from('img'.repeat(13));
+    mockGlobSync(images);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
     mockGlobSync(['1 dashboard']);
 
@@ -108,23 +111,10 @@ describe('Action: validate images', () => {
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
 
-  test('validateImageCounts, given 2 dashboards and > 6 image files per dashboard in the images directory, throws an error', () => {
+  test('validateImageCounts, given 2 dashboards and > 12 image files per dashboard in the images directory, throws an error', () => {
     const globMock = ['test/path/'];
-    mockGlobSync([
-      'I',
-      'have',
-      'too',
-      'many',
-      'images',
-      '>:)',
-      'the',
-      'max',
-      'for',
-      '2',
-      'is',
-      '12',
-      '>:(',
-    ]);
+    const images = Array.from('img'.repeat(25));
+    mockGlobSync(images);
     helpers.readQuickstartFile.mockReturnValue({ contents: [{}] });
     mockGlobSync(['2', 'dashboards']);
 
