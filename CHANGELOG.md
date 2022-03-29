@@ -1,3 +1,10 @@
+## [0.121.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.0...v0.121.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* handle when quickstarts are removed ([2b4d9cd](https://github.com/newrelic/newrelic-quickstarts/commit/2b4d9cd0a8213723a4c79cc89160920e41754369))
+
 # [0.121.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.6...v0.121.0) (2022-03-29)
 
 
