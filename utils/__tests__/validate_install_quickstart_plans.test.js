@@ -46,7 +46,7 @@ describe('Action: validate install plan id', () => {
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
-  test.only(`succeeds when valid quickstart doesn't contain any install plan`, () => {
+  test(`succeeds when valid quickstart doesn't contain any install plan`, () => {
     const files = mockGithubAPIFiles([validQuickstartWithoutInstallPlan]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
@@ -80,5 +80,15 @@ describe('Action: validate install plan id', () => {
 
     validateInstallPlanIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(5);
+  });
+
+  test('does not fail for deleted quickstart', () => {
+    const removedQuickstartFilename = 'fake-removed-quickstart/config.yml';
+    const files = mockGithubAPIFiles([removedQuickstartFilename]);
+    files[0].status = 'removed';
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+
+    validateInstallPlanIds(files);
+    expect(global.console.error).toHaveBeenCalledTimes(0);
   });
 });
