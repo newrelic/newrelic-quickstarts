@@ -1,7 +1,6 @@
 {
   "name": "Istio Service",
-  "description": "Get a high level overview of your Istio Service Mesh",
-  "permissions": "PUBLIC_READ_WRITE",
+  "description": null,
   "pages": [
     {
       "name": "Overview",
@@ -9,13 +8,29 @@
       "widgets": [
         {
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.markdown"
           },
           "layout": {
             "column": 1,
             "row": 1,
             "height": 3,
             "width": 4
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "\n![Add Images](https://miro.medium.com/max/766/0*XRtdBll-FcyV_i-f.jpeg)\n\n\nTo scope page to single cluster, filter by `clusterName=<cluster_name>`.\n\nDashboard gives an overview of the services integrated with Istio."
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 2
           },
           "title": "Throughput per Second",
           "rawConfiguration": {
@@ -35,7 +50,7 @@
             "id": "viz.pie"
           },
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 1,
             "height": 3,
             "width": 4
@@ -59,10 +74,10 @@
             "id": "viz.billboard"
           },
           "layout": {
-            "column": 9,
+            "column": 11,
             "row": 1,
             "height": 3,
-            "width": 4
+            "width": 2
           },
           "title": "Latency",
           "rawConfiguration": {
@@ -79,11 +94,41 @@
         },
         {
           "visualization": {
-            "id": "viz.markdown"
+            "id": "viz.line"
           },
           "layout": {
             "column": 1,
             "row": 4,
+            "height": 3,
+            "width": 12
+          },
+          "title": "Global Request Volume",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(istio_requests_total) FROM Metric Facet reporter   LIMIT MAX TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
             "height": 1,
             "width": 12
           },
@@ -99,7 +144,7 @@
           },
           "layout": {
             "column": 1,
-            "row": 5,
+            "row": 8,
             "height": 3,
             "width": 3
           },
@@ -126,19 +171,22 @@
           },
           "layout": {
             "column": 4,
-            "row": 5,
+            "row": 8,
             "height": 3,
             "width": 3
           },
           "title": "Server Error Rate (5xx responses)",
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100 ) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'destination' TIMESERIES "
+                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100 ) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'destination' FACET source_workload LIMIT 1000 TIMESERIES "
               }
             ],
             "yAxisLeft": {
@@ -153,7 +201,7 @@
           },
           "layout": {
             "column": 7,
-            "row": 5,
+            "row": 8,
             "height": 3,
             "width": 3
           },
@@ -180,7 +228,7 @@
           },
           "layout": {
             "column": 10,
-            "row": 5,
+            "row": 8,
             "height": 3,
             "width": 3
           },
@@ -204,7 +252,7 @@
           },
           "layout": {
             "column": 1,
-            "row": 8,
+            "row": 11,
             "height": 3,
             "width": 4
           },
@@ -219,7 +267,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'destination' FACET deploymentName, response_code TIMESERIES "
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'destination' FACET source_workload, response_code TIMESERIES "
               }
             ]
           },
@@ -231,7 +279,7 @@
           },
           "layout": {
             "column": 5,
-            "row": 8,
+            "row": 11,
             "height": 3,
             "width": 4
           },
@@ -246,7 +294,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (filter(rate(sum(istio_requests_total), 1 minute), WHERE response_code LIKE '5%')) AS 'Errors' WHERE reporter = 'destination' FACET deploymentName TIMESERIES "
+                "query": "FROM Metric SELECT (filter(rate(sum(istio_requests_total), 1 minute), WHERE response_code LIKE '5%')) AS 'Errors' WHERE reporter = 'destination' FACET source_workload TIMESERIES "
               }
             ],
             "yAxisLeft": {
@@ -261,7 +309,7 @@
           },
           "layout": {
             "column": 9,
-            "row": 8,
+            "row": 11,
             "height": 3,
             "width": 4
           },
@@ -282,7 +330,7 @@
           },
           "layout": {
             "column": 1,
-            "row": 11,
+            "row": 14,
             "height": 1,
             "width": 12
           },
@@ -298,7 +346,7 @@
           },
           "layout": {
             "column": 1,
-            "row": 12,
+            "row": 15,
             "height": 3,
             "width": 3
           },
@@ -325,19 +373,22 @@
           },
           "layout": {
             "column": 4,
-            "row": 12,
+            "row": 15,
             "height": 3,
             "width": 3
           },
           "title": "Client Error Rate (5xx responses)",
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'source' TIMESERIES "
+                "query": "FROM Metric SELECT (filter(sum(istio_requests_total), WHERE response_code LIKE '5%') * 100) / sum(istio_requests_total) AS 'Error Rate (%)' WHERE reporter = 'source' Facet destination_workload_namespace, destination_workload LIMIT 10 TIMESERIES "
               }
             ],
             "yAxisLeft": {
@@ -352,7 +403,7 @@
           },
           "layout": {
             "column": 7,
-            "row": 12,
+            "row": 15,
             "height": 3,
             "width": 3
           },
@@ -379,7 +430,7 @@
           },
           "layout": {
             "column": 10,
-            "row": 12,
+            "row": 15,
             "height": 3,
             "width": 3
           },
@@ -403,7 +454,7 @@
           },
           "layout": {
             "column": 1,
-            "row": 15,
+            "row": 18,
             "height": 3,
             "width": 4
           },
@@ -418,7 +469,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'source' FACET destination_service_name, response_code TIMESERIES "
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECOND) AS 'Req/Sec' where reporter = 'source' FACET destination_canonical_service, response_code TIMESERIES "
               }
             ]
           },
@@ -430,7 +481,7 @@
           },
           "layout": {
             "column": 5,
-            "row": 15,
+            "row": 18,
             "height": 3,
             "width": 4
           },
@@ -460,7 +511,7 @@
           },
           "layout": {
             "column": 9,
-            "row": 15,
+            "row": 18,
             "height": 3,
             "width": 4
           },
@@ -472,6 +523,433 @@
                 "query": "FROM Metric SELECT histogram(istio_request_duration_milliseconds_bucket, 1000) WHERE reporter = 'source' FACET destination_canonical_service"
               }
             ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Ingress Gateways",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Requests % by cluster",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECONDS) WHERE label.app='istio-ingressgateway' FACET clusterName LIMIT MAX "
+              }
+            ]
+          },
+          "linkedEntityGuids": [
+            "MTQzNDc4NHxWSVp8REFTSEJPQVJEfDIwODI5Mg"
+          ]
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Total Requests - Ingress Gateway",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(istio_requests_total) FROM Metric WHERE label.app='istio-ingressgateway'  Facet clusterName LIMIT MAX  TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Requests % by namespace",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(istio_requests_total), 1 SECONDS) WHERE label.app='istio-ingressgateway' FACET namespaceName LIMIT MAX "
+              }
+            ]
+          },
+          "linkedEntityGuids": [
+            "MTQzNDc4NHxWSVp8REFTSEJPQVJEfDIwODI5Mg"
+          ]
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Errors in logs",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE labels.app LIKE 'istio-ingressgateway%' AND message LIKE '%error%' FACET cluster_name,namespace_name TIMESERIES AUTO LIMIT MAX "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 12
+          },
+          "title": "Requests total by Cluster, Namespace and Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(istio_requests_total) FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]'  FACET clusterName, namespaceName,response_code TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 12
+          },
+          "title": "Average requests-duration-milliseconds-sum by Cluster, Namespace and Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_request_duration_milliseconds_sum) FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code LIKE '2%' FACET clusterName,namespaceName,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_request_duration_milliseconds_sum) * -1 FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code NOT LIKE '2%' FACET clusterName,namespaceName,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Response code 2xx (envoy)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(envoy_cluster_upstream_rq) WHERE response_code_class = '2xx' AND label.app='istio-ingressgateway' FACET clusterName  TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Response code 5xx (envoy)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(envoy_cluster_upstream_rq) WHERE response_code_class = '5xx' AND label.app='istio-ingressgateway' FACET clusterName TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Average request-bytes-sum by Source Cluster, Namespace and Code (istio)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_request_bytes_sum) FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code LIKE '2%' FACET clusterName,source_workload_namespace,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_request_bytes_sum) * -1 FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code NOT LIKE '2%' FACET clusterName, source_workload_namespace,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Average response-bytes-sum by Source Cluster, Namespace and Code",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_response_bytes_sum) FROM Metric WHERE label.app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code LIKE '2%' FACET clusterName,namespaceName,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_response_bytes_sum) * -1 FROM Metric WHERE app = 'istio-ingressgateway' AND response_code RLIKE '[0-9][0-9][0-9]' AND response_code NOT LIKE '2%' FACET clusterName, namespaceName,response_code TIMESERIES 5 minutes SLIDE BY AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Average tcp-sent-bytes-total by Source Cluster, Namespace and Code (Top 10)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_tcp_sent_bytes_total) FROM Metric FACET clusterName, namespaceName, source_workload TIMESERIES LIMIT 10"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 19,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Average tcp-received-bytes-total by Source Cluster, Namespace and Code (Top 10)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(istio_tcp_received_bytes_total) FROM Metric FACET clusterName, namespaceName, source_workload TIMESERIES LIMIT 10"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": false
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "height": 3,
+            "width": 6
+          },
+          "title": "RX Bytes (Top 10) (envoy)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(envoy_cluster_upstream_cx_rx_bytes_total) WHERE label.app='istio-ingressgateway' FACET clusterName, namespaceName TIMESERIES AUTO"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 22,
+            "height": 3,
+            "width": 6
+          },
+          "title": "TX Bytes (Top 10)",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(envoy_cluster_upstream_cx_tx_bytes_total) WHERE label.app='istio-ingressgateway' FACET clusterName, namespaceName  TIMESERIES AUTO "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
           },
           "linkedEntityGuids": null
         }
