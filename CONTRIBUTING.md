@@ -142,8 +142,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 5`: Resolve feedback from code reviews.
 - `Step 6`: After approval, merge your PR.
 
-When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Quickstart PR review workflow
 
