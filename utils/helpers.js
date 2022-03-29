@@ -144,15 +144,6 @@ const passedProcessArguments = () => process.argv.slice(2);
  * @param {Object[]} namesAndPaths an array of objects containing the path and name of a quickstart
  * @returns {Object[]} an array of matching values
  */
-const getMatchingNames = (namesAndPaths) => {
-  return namesAndPaths.reduce((acc, { name, path }) => {
-    const duplicates = namesAndPaths.filter(
-      (quickstart) => quickstart.name === name && quickstart.path !== path
-    );
-
-    return [...new Set([...acc, ...duplicates])];
-  }, []);
-};
 
 /**
  * Removes whitespace and punctuation from a string
