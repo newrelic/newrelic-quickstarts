@@ -1,3 +1,10 @@
+## [0.121.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.1...v0.121.2) (2022-03-29)
+
+
+### Bug Fixes
+
+* refactored image tests ([b726af3](https://github.com/newrelic/newrelic-quickstarts/commit/b726af31ef915d192fdfbc769f7d143a8d4618f5))
+
 ## [0.121.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.0...v0.121.1) (2022-03-29)
 
 
