@@ -12,6 +12,7 @@ const {
   translateMutationErrors,
   chunk,
 } = require('./nr-graphql-helpers');
+const { track } = require('./newrelic/customEvent');
 
 const INSTALL_PLAN_MUTATION = `# gql 
 mutation QuickstartRepoInstallPlanMutation (
@@ -164,16 +165,16 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
 
 /**
  * @param {boolean} hasFailed if the validation or submission has failed
- * @param {boolean} isDryRun - true for validation, false for submission
+ * @param {Promise<boolean>} isDryRun - true for validation, false for submission
  */
-const recordCustomNREvent = (hasFailed, isDryRun) => {
+const recordCustomNREvent = async (hasFailed, isDryRun) => {
   const status = hasFailed ? 'failed' : 'success';
   if (isDryRun) {
-    newrelic.recordCustomEvent('ValidateInstallPlans', {
+    await track('ValidateQuickstarts', {
       status,
     });
   } else {
-    newrelic.recordCustomEvent('UpdateInstallPlans', {
+    await track('UpdateQuickstarts', {
       status,
     });
   }
@@ -188,7 +189,7 @@ const main = async () => {
   );
   const installPlanFiles = filterInstallPlans(files);
   const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
-  recordCustomNREvent(hasFailed, isDryRun === 'true');
+  await recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);

@@ -19,6 +19,7 @@ const {
   getCategoryTermsFromKeywords,
   chunk,
 } = require('./nr-graphql-helpers');
+const { track } = require('./newrelic/customEvent');
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
@@ -411,14 +412,14 @@ const countErrors = (graphqlResponses) => {
  * @param {boolean} hasFailed if the validation or submission has failed
  * @param {boolean} isDryRun - true for validation, false for submission
  */
-const recordCustomNREvent = (hasFailed, isDryRun) => {
+const recordCustomNREvent = async (hasFailed, isDryRun) => {
   const status = hasFailed ? 'failed' : 'success';
   if (isDryRun) {
-    newrelic.recordCustomEvent('ValidateQuickstarts', {
+    await track('ValidateQuickstarts', {
       status,
     });
   } else {
-    newrelic.recordCustomEvent('UpdateQuickstarts', {
+    await track('UpdateQuickstarts', {
       status,
     });
   }
@@ -433,7 +434,7 @@ const main = async () => {
   );
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
-  recordCustomNREvent(hasFailed, isDryRun === 'true');
+  await recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
