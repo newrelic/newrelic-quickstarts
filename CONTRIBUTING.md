@@ -32,10 +32,6 @@
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
-  - [Using conventional commits](#using-conventional-commits)
-    - [Use `chore`](#use-chore)
-    - [Use `fix`](#use-fix)
-    - [Use `feat`](#use-feat)
   - [Contributor license agreement](#contributor-license-agreement)
   - [Slack](#slack)
   - [Partnerships](#partnerships)
@@ -402,37 +398,6 @@ Before submitting an Issue, please search for similar ones in the
 3. Ensure that all status checks are passing.
 4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
 5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
-
-## Using conventional commits
-
-Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
-standards in your pull request title and commit messages.
-
-### Use `chore`
-
-- for minor changes / additions / corrections to content.
-- for minor changes / additions / corrections to images.
-- for minor non-functional changes / additions to github actions, github templates, package or config updates, etc
-
-```bash
-git commit -m "chore: adjusting config and content"
-```
-
-### Use `fix`
-
-- for minor functional corrections to code.
-
-```bash
-git commit -m "fix: typo and prop error in the code of conduct"
-```
-
-### Use `feat`
-
-- for major functional changes or additions to code.
-
-```bash
-git commit -m "feat(media): creating a video landing page"
-```
 
 ## Contributor license agreement
 
