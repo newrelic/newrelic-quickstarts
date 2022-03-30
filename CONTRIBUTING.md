@@ -306,7 +306,7 @@ documentation:
 - Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
@@ -320,7 +320,7 @@ documentation:
 - These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart.
 - See our Python quickstart for examples:
   - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
   - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
