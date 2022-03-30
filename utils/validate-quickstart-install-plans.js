@@ -64,8 +64,11 @@ const getInstallPlansNoMatches = (configInstallPlanFiles, installPlanIds) => {
  */
 const validateInstallPlanIds = (githubFiles) => {
   const configFiles = filterQuickstartConfigFiles(githubFiles);
+  const existingConfigFiles = configFiles.filter(
+    (cf) => cf.status !== 'removed'
+  ); // Filter out deleted files
 
-  const configInstallPlansFiles = getConfigInstallPlans(configFiles);
+  const configInstallPlansFiles = getConfigInstallPlans(existingConfigFiles);
 
   const installPlanIds = getAllInstallPlanIds();
 
