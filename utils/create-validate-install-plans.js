@@ -1,5 +1,4 @@
 'use strict';
-const newrelic = require('newrelic');
 const path = require('path');
 const { readYamlFile, passedProcessArguments } = require('./helpers');
 const {

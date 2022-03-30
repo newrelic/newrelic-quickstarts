@@ -1,6 +1,5 @@
 'use strict';
 
-const newrelic = require('newrelic');
 const glob = require('glob');
 
 const {
@@ -410,7 +409,7 @@ const countErrors = (graphqlResponses) => {
 
 /**
  * @param {boolean} hasFailed if the validation or submission has failed
- * @param {boolean} isDryRun - true for validation, false for submission
+ * @param {Promise<boolean>} isDryRun - true for validation, false for submission
  */
 const recordCustomNREvent = async (hasFailed, isDryRun) => {
   const status = hasFailed ? 'failed' : 'success';
