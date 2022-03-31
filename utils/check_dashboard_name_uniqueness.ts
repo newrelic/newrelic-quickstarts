@@ -1,23 +1,16 @@
 import * as glob from 'glob';
 import * as path from 'path';
+
 import {
+  cleanQuickstartName,
+  getMatchingNames,
   readQuickstartFile,
   removeRepoPathPrefix,
-  getMatchingNames,
-  cleanQuickstartName,
 } from './helpers';
 
 interface DashboardNamesAndPaths {
   name: string;
   path: string;
-}
-
-// TODO: move this to a types file when we convert other scripts to typescript
-interface DashboardConfigs {
-  path: string;
-  contents: {
-    name: string;
-  }[];
 }
 
 /** Returns any quickstart dashboards with matching names and their filepaths */
