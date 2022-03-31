@@ -9,7 +9,7 @@ env:
   THIRD_PARTY_GIT_AUTHOR_EMAIL: opensource+bot@newrelic.com
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
-jobs:          
+jobs:
   generate-schema-docs:
     name: Generate GraphQL schema documentation
     runs-on: ubuntu-latest
@@ -108,6 +108,67 @@ jobs:
               }
             })
             console.log("Result:", result)
+
+  generate-third-party-notices:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout fetch-depth: 2 because there's a check to see if package.json
+      # was updated, and need at least 2 commits for the check to function properly
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install OSS CLI
+        run: |
+          yarn global add @newrelic/newrelic-oss-cli
+
+      - name: Generate Third Party Notices
+        id: generate-notices
+        run: |
+          if [ ! -f "third_party_manifest.json" ]; then
+            echo "::error::third_party_manifest.json is missing. Must generate using the newrelic-oss-cli."
+            exit 1
+          fi
+
+          # latest commit
+          LATEST_COMMIT=$(git rev-parse HEAD)
+
+          # latest commit where package.json was changed
+          LAST_CHANGED_COMMIT=$(git log -1 --format=format:%H --full-diff package.json)
+
+          if [ $LAST_CHANGED_COMMIT = $LATEST_COMMIT ]; then
+            git config user.email "${{ env.BOT_EMAIL }}"
+            git config user.name "${{ env.BOT_NAME }}"
+            oss third-party manifest
+            oss third-party notices
+            git add third_party_manifest.json
+            git add THIRD_PARTY_NOTICES.md
+            git commit -m 'chore: update third-party manifest and notices [skip-cd]'
+            echo "::set-output name=commit::true"
+          else
+            echo "No change in package.json, not regenerating third-party notices"
+          fi
 
   job-generate-release:
     name: Create Release
