@@ -9,7 +9,7 @@ env:
   THIRD_PARTY_GIT_AUTHOR_EMAIL: opensource+bot@newrelic.com
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
-jobs:          
+jobs:
   generate-schema-docs:
     name: Generate GraphQL schema documentation
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: 'main'
+          ref: "main"
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -84,103 +84,10 @@ jobs:
                 strict: true,
                 contexts: [
                     'Validation / Image count and extension compliance',
-                    'Validation / Quickstart schema compliance',
-                    'Validation / Conventional commit compliance',
                     'Validation / Ensure logos exist',
                     'Validation / Install plan ids exist',
                     'Validation / Install plan schema compliance',
-                    'Validation / Quickstart id & name are unique'
-                ]
-              },
-              restrictions: {
-                "users":[],
-                "teams":[],
-                "apps":[]
-              },
-              enforce_admins: null,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                required_approving_review_count: 1,
-                dismissal_restrictions: {
-                  users: [],
-                  teams: []
-                }
-              }
-            })
-            console.log("Result:", result)
-
-  job-generate-release:
-    name: Create Release
-    needs: [generate-schema-docs]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-        # Ensure we have the most recent commit to `main`
-        with:
-          ref: 'main'
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-
-      - name: Add plugins for semantic release
-        run: npm install @semantic-release/git @semantic-release/changelog
-
-      - name: Temporarily disable branch protections
-        id: disable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: null,
-              restrictions: null,
-              enforce_admins: null,
-              required_pull_request_reviews: null
-            })
-            console.log("Result:", result)
-
-      - name: Run semantic-release
-        env:
-          # Use nr-opensource-bot for authoring commits done by
-          # semantic-release (rather than using @semantic-release-bot)
-          GIT_AUTHOR_NAME: "nr-opensource-bot"
-          GIT_AUTHOR_EMAIL: "opensource+bot@newrelic.com"
-          GIT_COMMITTER_NAME: "nr-opensource-bot"
-          GIT_COMMITTER_EMAIL: "opensource+bot@newrelic.com"
-          GITHUB_TOKEN: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-        run: npx semantic-release@^18.0.0
-
-      - name: Re-enable branch protections
-        id: enable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: {
-                strict: true,
-                contexts: [
-                    'Validation / Image count and extension compliance',
-                    'Validation / Quickstart schema compliance',
-                    'Validation / Conventional commit compliance',
-                    'Validation / Ensure logos exist',
-                    'Validation / Install plan ids exist',
-                    'Validation / Install plan schema compliance',
-                    'Validation / Quickstart id & name are unique'
+                    'Validation / Quickstart id are unique'
                 ]
               },
               restrictions: {
