@@ -32,10 +32,6 @@
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
-  - [Using conventional commits](#using-conventional-commits)
-    - [Use `chore`](#use-chore)
-    - [Use `fix`](#use-fix)
-    - [Use `feat`](#use-feat)
   - [Contributor license agreement](#contributor-license-agreement)
   - [Slack](#slack)
   - [Partnerships](#partnerships)
@@ -142,8 +138,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 5`: Resolve feedback from code reviews.
 - `Step 6`: After approval, merge your PR.
 
-When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Quickstart PR review workflow
 
@@ -306,7 +300,7 @@ documentation:
 - Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
@@ -320,7 +314,7 @@ documentation:
 - These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart.
 - See our Python quickstart for examples:
   - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
   - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
@@ -397,42 +391,10 @@ Before submitting an Issue, please search for similar ones in the
 
 ## Pull requests
 
-1. Ensure that all new commits follow the [Conventional Commit](#using-conventional-commits) syntax.
-2. Provide a short description of the changes and screenshots of any visual changes.
-3. Ensure that all status checks are passing.
-4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
-5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
-
-## Using conventional commits
-
-Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
-standards in your pull request title and commit messages.
-
-### Use `chore`
-
-- for minor changes / additions / corrections to content.
-- for minor changes / additions / corrections to images.
-- for minor non-functional changes / additions to github actions, github templates, package or config updates, etc
-
-```bash
-git commit -m "chore: adjusting config and content"
-```
-
-### Use `fix`
-
-- for minor functional corrections to code.
-
-```bash
-git commit -m "fix: typo and prop error in the code of conduct"
-```
-
-### Use `feat`
-
-- for major functional changes or additions to code.
-
-```bash
-git commit -m "feat(media): creating a video landing page"
-```
+1. Provide a short description of the changes and screenshots of any visual changes.
+2. Ensure that all status checks are passing.
+3. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+4. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
 ## Contributor license agreement
 
