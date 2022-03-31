@@ -1,13 +1,24 @@
-/**
- * This module is intended for use only with SSR pages.
- * For monitoring & creating events for browser pages, use the browser agent instead.
- */
+'use strict';
+const fetch = require('node-fetch');
 
-// taken from gatsby-config.js
 const NEW_RELIC_ACCOUNT_ID = '11554270';
 const NEW_RELIC_LICENSE_KEY = process.env.NEW_RELIC_LICENSE_KEY;
 
-const fetch = require('node-fetch');
+/**
+ * Enum of custom events that we currently track.
+ * @readonly
+ * @enum {string}
+ */
+const CUSTOM_EVENT = {
+  /** Event name which corresponds to tracking the validation of quickstarts. */
+  VALIDATE_QUICKSTARTS: 'ValidateQuickstarts',
+  /** Event name which corresponds to tracking the submission or update of quickstarts. */
+  UPDATE_QUICKSTARTS: 'UpdateQuickstarts',
+  /** Event name which corresponds to tracking the validation of install plans. */
+  VALIDATE_INSTALL_PLANS: 'ValidateInstallPlans',
+  /** Event name which corresponds to tracking the submission or update of install plans. */
+  UPDATE_INSTALL_PLANS: 'UpdateInstallPlans',
+};
 
 /**
  * Helper function to make an API request to the Events API.
@@ -59,5 +70,6 @@ const track = async (eventType, metadata = {}) =>
   });
 
 module.exports = {
-  track
+  track,
+  CUSTOM_EVENT,
 };

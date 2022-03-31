@@ -18,7 +18,7 @@ const {
   getCategoryTermsFromKeywords,
   chunk,
 } = require('./nr-graphql-helpers');
-const { track } = require('./newrelic/customEvent');
+const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
@@ -251,8 +251,9 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths =
-      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
+      dashboardConfigPath
+    );
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -409,19 +410,15 @@ const countErrors = (graphqlResponses) => {
 
 /**
  * @param {boolean} hasFailed if the validation or submission has failed
- * @param {Promise<boolean>} isDryRun - true for validation, false for submission
+ * @param {boolean} isDryRun - true for validation, false for submission
  */
 const recordCustomNREvent = async (hasFailed, isDryRun) => {
   const status = hasFailed ? 'failed' : 'success';
-  if (isDryRun) {
-    await track('ValidateQuickstarts', {
-      status,
-    });
-  } else {
-    await track('UpdateQuickstarts', {
-      status,
-    });
-  }
+  const event = isDryRun
+    ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
+    : CUSTOM_EVENT.UPDATE_QUICKSTARTS;
+
+  await track(event, { status });
 };
 
 const main = async () => {
