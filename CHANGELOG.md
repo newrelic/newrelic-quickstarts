@@ -1,3 +1,186 @@
+## [0.121.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.5...v0.121.6) (2022-03-31)
+
+## [0.121.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.4...v0.121.5) (2022-03-30)
+
+## [0.121.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.3...v0.121.4) (2022-03-30)
+
+## [0.121.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.2...v0.121.3) (2022-03-30)
+
+## [0.121.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.1...v0.121.2) (2022-03-29)
+
+
+### Bug Fixes
+
+* refactored image tests ([b726af3](https://github.com/newrelic/newrelic-quickstarts/commit/b726af31ef915d192fdfbc769f7d143a8d4618f5))
+
+## [0.121.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.0...v0.121.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* handle when quickstarts are removed ([2b4d9cd](https://github.com/newrelic/newrelic-quickstarts/commit/2b4d9cd0a8213723a4c79cc89160920e41754369))
+
+# [0.121.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.6...v0.121.0) (2022-03-29)
+
+
+### Bug Fixes
+
+* resolved conflicts ([2aa37aa](https://github.com/newrelic/newrelic-quickstarts/commit/2aa37aab2123ca01e6311b23c2bd02644a8f1c4d))
+
+
+### Features
+
+* add network-ktranslate-health quickstart ([60382f1](https://github.com/newrelic/newrelic-quickstarts/commit/60382f1de07601939abe99e218f103406866eeb4))
+* adds apollo server config ([e8c34fe](https://github.com/newrelic/newrelic-quickstarts/commit/e8c34fe64f3aacaebe589240fbfe8d5abd5497bb))
+* netlify logs ([a51e3a7](https://github.com/newrelic/newrelic-quickstarts/commit/a51e3a703bcae8a8b269b1b7356ee892d7676767))
+
+## [0.120.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.5...v0.120.6) (2022-03-25)
+
+## [0.120.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.4...v0.120.5) (2022-03-25)
+
+
+### Bug Fixes
+
+* changes title for slugification ([9847750](https://github.com/newrelic/newrelic-quickstarts/commit/9847750aa254f28cdc7984db3e2f39df99012b5f))
+
+## [0.120.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.3...v0.120.4) (2022-03-25)
+
+
+### Bug Fixes
+
+* changes name to match title for URL consistency ([ac0138e](https://github.com/newrelic/newrelic-quickstarts/commit/ac0138e8c7f7a733627e18e3adaf3443528ecb2c))
+* corrected the postman integration ([9c7b162](https://github.com/newrelic/newrelic-quickstarts/commit/9c7b162565ea4e5e9b76635141e04a6e67ee91b8))
+
+## [0.120.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.2...v0.120.3) (2022-03-24)
+
+## [0.120.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.1...v0.120.2) (2022-03-24)
+
+## [0.120.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.0...v0.120.1) (2022-03-24)
+
+
+### Bug Fixes
+
+* (Browser segment list dashboard): Ran sanitize script against dashboard ([7c600a9](https://github.com/newrelic/newrelic-quickstarts/commit/7c600a9d804e299344d54e32bae509510a9a34e7))
+
+# [0.120.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.2...v0.120.0) (2022-03-24)
+
+
+### Features
+
+* Update install/third-party/postman/install.yml ([d9655bb](https://github.com/newrelic/newrelic-quickstarts/commit/d9655bb21aaf00028b564a69689639e157db746a))
+* Update postman/config.yml ([923b231](https://github.com/newrelic/newrelic-quickstarts/commit/923b23160a310dba24cc5e36a0aa6da13e3f73f0))
+* Updated the description as per suggestion. ([a2edf24](https://github.com/newrelic/newrelic-quickstarts/commit/a2edf24d962e07be09aac91638557fa6fb6c15b5))
+* Updated the summary and description. Sanitized the dashboard.json ([43e87b2](https://github.com/newrelic/newrelic-quickstarts/commit/43e87b24b0120bc26dc2afdcccf68dabb3c0e5bb))
+
+## [0.119.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.1...v0.119.2) (2022-03-24)
+
+## [0.119.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.119.0...v0.119.1) (2022-03-23)
+
+
+### Bug Fixes
+
+* renames netlify qs due to 404 url issue ([c17ef12](https://github.com/newrelic/newrelic-quickstarts/commit/c17ef1252ea427c88e4592a5b446abce1bcdc1c9))
+
+# [0.119.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.1...v0.119.0) (2022-03-18)
+
+
+### Features
+
+* add filtering to dashboard ([8676de6](https://github.com/newrelic/newrelic-quickstarts/commit/8676de6845fad4e62d9758ecd5f956d4f42ec4d1))
+* add new win/loss tracking dashboard ([b72bdce](https://github.com/newrelic/newrelic-quickstarts/commit/b72bdce6a7e39b6262107b57b6081f75649d9d95))
+
+## [0.118.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.118.0...v0.118.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* removes extra logo file ([813698f](https://github.com/newrelic/newrelic-quickstarts/commit/813698fa27341bea3bfa6b76843183e5778d253f))
+* removes extra logo file ([33aaf3d](https://github.com/newrelic/newrelic-quickstarts/commit/33aaf3d141a21d593e5d6367e6f7e6fc12bdc1f6))
+
+# [0.118.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.3...v0.118.0) (2022-03-17)
+
+
+### Bug Fixes
+
+* fixes typo ([de81ca9](https://github.com/newrelic/newrelic-quickstarts/commit/de81ca946beccc429bed71ef0e92656eed37548d))
+* newline change to trigger publish ([1d791e7](https://github.com/newrelic/newrelic-quickstarts/commit/1d791e746e216d1f5e9430e6f0b6e895cc445375))
+* resolved validation failures ([f9013d4](https://github.com/newrelic/newrelic-quickstarts/commit/f9013d4e1376f32d320fa32aabe666daae32865c))
+* resolves alert issues ([500bdbb](https://github.com/newrelic/newrelic-quickstarts/commit/500bdbb355733414ea04b84ebde9fe40435a5bff))
+* updates contributor guide ([e03e3d3](https://github.com/newrelic/newrelic-quickstarts/commit/e03e3d3e19f3f59122563408eec48f75ce7e2b66))
+
+
+### Features
+
+* added prometheus install plan + fixes ([b755b52](https://github.com/newrelic/newrelic-quickstarts/commit/b755b5299f53ab65bf388073a764fe21be86d7e2))
+
+## [0.117.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.2...v0.117.3) (2022-03-16)
+
+## [0.117.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.1...v0.117.2) (2022-03-11)
+
+## [0.117.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.117.0...v0.117.1) (2022-03-10)
+
+
+### Bug Fixes
+
+* removes quickstart ([71a9045](https://github.com/newrelic/newrelic-quickstarts/commit/71a90450214ea6be861bff1e0ff267c24cd72fb1))
+
+# [0.117.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.116.0...v0.117.0) (2022-03-10)
+
+
+### Features
+
+* new cloudlfare quickstart ([5a942be](https://github.com/newrelic/newrelic-quickstarts/commit/5a942beeb69997b0462377eff05072dbfd48bc62))
+
+# [0.116.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.3...v0.116.0) (2022-03-10)
+
+
+### Features
+
+* **kubernetes:** add state for kubernetes install plan ([945988a](https://github.com/newrelic/newrelic-quickstarts/commit/945988a500a1b0f1294fc3f913ce184a2fe811ba))
+
+## [0.115.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.2...v0.115.3) (2022-03-08)
+
+## [0.115.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.1...v0.115.2) (2022-03-08)
+
+## [0.115.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.115.0...v0.115.1) (2022-03-08)
+
+# [0.115.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.1...v0.115.0) (2022-03-07)
+
+
+### Features
+
+* **pack:** Added Amazon Linux ([ba829d6](https://github.com/newrelic/newrelic-quickstarts/commit/ba829d655b0682b529d3af37b25a46ee26eadb53))
+
+## [0.114.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.114.0...v0.114.1) (2022-03-07)
+
+# [0.114.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.2...v0.114.0) (2022-03-03)
+
+
+### Features
+
+* **pack:** Added Synthetics Page Link Crawler quickstart ([1df1302](https://github.com/newrelic/newrelic-quickstarts/commit/1df13024f9ee5b570c812e310e97035b461a578d))
+
+## [0.113.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.1...v0.113.2) (2022-03-03)
+
+
+### Bug Fixes
+
+* corrects logo ([fccc3c0](https://github.com/newrelic/newrelic-quickstarts/commit/fccc3c055e00bdd6aa8dfdcad8b731eb16674e11))
+
+## [0.113.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.113.0...v0.113.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* **installPlans:** Remove nerdlets from cloud install plans ([f9744e0](https://github.com/newrelic/newrelic-quickstarts/commit/f9744e03823f7c7b0e092875217ea7f40474f437))
+
+# [0.113.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.1...v0.113.0) (2022-03-02)
+
+
+### Features
+
+* add NR events to validate/publish workflows ([a704ab9](https://github.com/newrelic/newrelic-quickstarts/commit/a704ab99d85b7fd8975cdea00dd25bd4e3a0a67f))
+
 ## [0.112.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.112.0...v0.112.1) (2022-03-01)
 
 # [0.112.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.111.2...v0.112.0) (2022-03-01)

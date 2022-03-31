@@ -9,7 +9,6 @@
     - [Dashboards](#dashboards)
     - [Data sources](#data-sources)
     - [Install plan](#install-plan)
-  - [Quickstart install flow](#quickstart-install-flow)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -20,20 +19,19 @@
       - [Authors](#authors)
       - [Install plans](#install-plans)
         - [Creating a new installPlan](#creating-a-new-installplan)
+      - [Name & title fields](#name--title-fields)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Support Levels](#support-levels)
       - [Dashboard JSON](#dashboard-json)
+      - [Dashboard Permissions](#dashboard-permissions)
+      - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory & preview images](#images-directory--preview-images)
       - [Logos > Icons](#logos--icons)
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
-  - [Using conventional commits](#using-conventional-commits)
-    - [Use `chore`](#use-chore)
-    - [Use `fix`](#use-fix)
-    - [Use `feat`](#use-feat)
   - [Contributor license agreement](#contributor-license-agreement)
   - [Slack](#slack)
   - [Partnerships](#partnerships)
@@ -59,8 +57,6 @@ New Relic I/O Catalog. At this time there isn't any easy way to preview a quicks
 This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
 [here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
 
-> please note,  the internal catalog follows a very similar UI pattern.
-
 ### Main config
 
 ![main config](./images/main.png)
@@ -80,12 +76,6 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 ### Install plan
 
 ![install plan](./images/install-plan.png)
-
-## Quickstart install flow
-
-The diagram below explains the installation flow each type of quickstart follows.
-
-![alt text](./images/quickstart-install-flow.png)
 
 ## Quickstarts style guide
 
@@ -148,8 +138,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 5`: Resolve feedback from code reviews.
 - `Step 6`: After approval, merge your PR.
 
-When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Quickstart PR review workflow
 
@@ -195,6 +183,16 @@ You can define multiple author names, but it's recommended to use one of the fol
 - All third party install plans should be store in the[third-party directory](./install/third-party)
 - The configuration file name should be `install.yml`.
 - keep the install plan `description` succinct as it's informational only.
+
+#### Name & title fields
+
+`https://newrelic.com/instant-observability/{name}/{id}`
+
+ The quickstart `name` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes.
+
+ > We will soon handle redirects more effectively for the I/O site to account for name changes.
+
+ The quickstart `title` field defines the title of the quickstart in the UI and can be changed.
 
 #### Summary & descriptions
 
@@ -263,14 +261,19 @@ documentation:
 - Created by community members
 - Supported by individual authors and community members
 
-
 #### Dashboard JSON
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdashboard) for more details on `dashboards`
 
-- When copying dashboard JSON from the New Relic One platform a `permissions` field is included in the code. You do not need this in a quickstart's dashboard JSON.
-- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` where the argument is the path to the dashboard directory. This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) will check and remove code that may cause an issue when submitting a PR.
-- If you wish to import a quickstart's dashboard into New Relic outside of the quickstart install flow, you will need to include this `permissions` field.
+- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` or `yarn sanitize-dashboard catchpoint` where the argument is quickstart name you wish to sanitize.
+- This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) needs to be run from the `Utils` directory.
+- This script will check and remove code that may cause an issue when submitting a PR.
+- As a best practice you should run this script when creating a new dashboard.
+
+#### Dashboard Permissions
+
+- When copying dashboard JSON from the New Relic One platform a `permissions` field is always included in the code. You do not need this in a quickstart's dashboard JSON.
+- However if you wish to import a quickstart's dashboard into New Relic outside of the quickstart installation flow, you will need to include this `permissions` field.
 - Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform.
 
 ```json
@@ -281,7 +284,12 @@ documentation:
 }
 ```
 
-- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness` this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+#### Dashboard name uniqueness
+
+- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness`.
+- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+- this script needs to run from the `Utils` directory.
+- As a best practice you should run this script when creating a new dashboard.
 
 #### Dashboard screenshots
 
@@ -292,7 +300,7 @@ documentation:
 - Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
@@ -306,7 +314,7 @@ documentation:
 - These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12`  dashboard or images per quickstart.
 - See our Python quickstart for examples:
   - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
   - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
@@ -383,42 +391,10 @@ Before submitting an Issue, please search for similar ones in the
 
 ## Pull requests
 
-1. Ensure that all new commits follow the [Conventional Commit](#using-conventional-commits) syntax.
-2. Provide a short description of the changes and screenshots of any visual changes.
-3. Ensure that all status checks are passing.
-4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
-5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
-
-## Using conventional commits
-
-Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
-standards in your pull request title and commit messages.
-
-### Use `chore`
-
-- for minor changes / additions / corrections to content.
-- for minor changes / additions / corrections to images.
-- for minor non-functional changes / additions to github actions, github templates, package or config updates, etc
-
-```bash
-git commit -m "chore: adjusting config and content"
-```
-
-### Use `fix`
-
-- for minor functional corrections to code.
-
-```bash
-git commit -m "fix: typo and prop error in the code of conduct"
-```
-
-### Use `feat`
-
-- for major functional changes or additions to code.
-
-```bash
-git commit -m "feat(media): creating a video landing page"
-```
+1. Provide a short description of the changes and screenshots of any visual changes.
+2. Ensure that all status checks are passing.
+3. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+4. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
 ## Contributor license agreement
 

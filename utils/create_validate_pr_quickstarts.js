@@ -18,6 +18,7 @@ const {
   getCategoryTermsFromKeywords,
   chunk,
 } = require('./nr-graphql-helpers');
+const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
@@ -250,8 +251,9 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths =
-      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
+      dashboardConfigPath
+    );
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -406,8 +408,21 @@ const countErrors = (graphqlResponses) => {
   return errorCount;
 };
 
+/**
+ * @param {boolean} hasFailed if the validation or submission has failed
+ * @param {boolean} isDryRun - true for validation, false for submission
+ */
+const recordCustomNREvent = async (hasFailed, isDryRun) => {
+  const status = hasFailed ? 'failed' : 'success';
+  const event = isDryRun
+    ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
+    : CUSTOM_EVENT.UPDATE_QUICKSTARTS;
+
+  await track(event, { status });
+};
+
 const main = async () => {
-  const GITHUB_API_URL = passedProcessArguments()[0];
+  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
@@ -415,6 +430,7 @@ const main = async () => {
   );
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
+  await recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
@@ -422,7 +438,7 @@ const main = async () => {
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node create_validate_pr_quickstarts.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */

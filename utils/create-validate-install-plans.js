@@ -1,3 +1,4 @@
+'use strict';
 const path = require('path');
 const { readYamlFile, passedProcessArguments } = require('./helpers');
 const {
@@ -10,6 +11,7 @@ const {
   translateMutationErrors,
   chunk,
 } = require('./nr-graphql-helpers');
+const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
 
 const INSTALL_PLAN_MUTATION = `# gql 
 mutation QuickstartRepoInstallPlanMutation (
@@ -160,8 +162,21 @@ const createValidateUpdateInstallPlan = async (installPlanFiles) => {
   return hasFailed;
 };
 
+/**
+ * @param {boolean} hasFailed if the validation or submission has failed
+ * @param {boolean} isDryRun - true for validation, false for submission
+ */
+const recordCustomNREvent = async (hasFailed, isDryRun) => {
+  const status = hasFailed ? 'failed' : 'success';
+  const event = isDryRun
+    ? CUSTOM_EVENT.VALIDATE_INSTALL_PLANS
+    : CUSTOM_EVENT.UPDATE_INSTALL_PLANS;
+
+  await track(event, { status });
+};
+
 const main = async () => {
-  const GITHUB_API_URL = passedProcessArguments()[0];
+  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
@@ -169,6 +184,7 @@ const main = async () => {
   );
   const installPlanFiles = filterInstallPlans(files);
   const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
+  await recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
