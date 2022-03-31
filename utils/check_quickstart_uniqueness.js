@@ -3,8 +3,6 @@ const {
   readQuickstartFile,
   removeRepoPathPrefix,
   findMainQuickstartConfigFiles,
-  getMatchingNames,
-  cleanQuickstartName,
 } = require('./helpers');
 
 /**
@@ -26,28 +24,15 @@ const getMatchingIds = (idsAndPaths) => {
 const main = () => {
   const configPaths = findMainQuickstartConfigFiles();
   const configs = configPaths.map(readQuickstartFile);
-  const nameAndPaths = configs.map((c) => ({
-    name: cleanQuickstartName(c.contents[0].name),
-    path: c.path,
-  }));
+
   const idsAndPaths = configs.map((c) => ({
     id: c.contents[0].id,
     path: c.path,
   }));
-  const nameMatches = getMatchingNames(nameAndPaths);
   const idMatches = getMatchingIds(idsAndPaths);
 
-  if (nameMatches.length == 0 && idMatches.length == 0) {
-    return console.log(`All quickstart names and ids are unique`);
-  }
-
-  if (nameMatches.length > 0) {
-    console.error(`ERROR: Found matching quickstart names`);
-    console.error(`Punctuation and white space are removed before comparison`);
-    nameMatches.forEach((m) =>
-      console.error(`${m.name} in ${removeRepoPathPrefix(m.path)}`)
-    );
-    console.error(`Please update your quickstart's name to be unique\n`);
+  if (idMatches.length == 0) {
+    return console.log(`All quickstart ids are unique`);
   }
 
   if (idMatches.length > 0) {
