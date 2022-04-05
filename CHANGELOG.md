@@ -1,3 +1,39 @@
+## [0.121.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.5...v0.121.6) (2022-03-31)
+
+## [0.121.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.4...v0.121.5) (2022-03-30)
+
+## [0.121.4](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.3...v0.121.4) (2022-03-30)
+
+## [0.121.3](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.2...v0.121.3) (2022-03-30)
+
+## [0.121.2](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.1...v0.121.2) (2022-03-29)
+
+
+### Bug Fixes
+
+* refactored image tests ([b726af3](https://github.com/newrelic/newrelic-quickstarts/commit/b726af31ef915d192fdfbc769f7d143a8d4618f5))
+
+## [0.121.1](https://github.com/newrelic/newrelic-quickstarts/compare/v0.121.0...v0.121.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* handle when quickstarts are removed ([2b4d9cd](https://github.com/newrelic/newrelic-quickstarts/commit/2b4d9cd0a8213723a4c79cc89160920e41754369))
+
+# [0.121.0](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.6...v0.121.0) (2022-03-29)
+
+
+### Bug Fixes
+
+* resolved conflicts ([2aa37aa](https://github.com/newrelic/newrelic-quickstarts/commit/2aa37aab2123ca01e6311b23c2bd02644a8f1c4d))
+
+
+### Features
+
+* add network-ktranslate-health quickstart ([60382f1](https://github.com/newrelic/newrelic-quickstarts/commit/60382f1de07601939abe99e218f103406866eeb4))
+* adds apollo server config ([e8c34fe](https://github.com/newrelic/newrelic-quickstarts/commit/e8c34fe64f3aacaebe589240fbfe8d5abd5497bb))
+* netlify logs ([a51e3a7](https://github.com/newrelic/newrelic-quickstarts/commit/a51e3a703bcae8a8b269b1b7356ee892d7676767))
+
 ## [0.120.6](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.5...v0.120.6) (2022-03-25)
 
 ## [0.120.5](https://github.com/newrelic/newrelic-quickstarts/compare/v0.120.4...v0.120.5) (2022-03-25)
