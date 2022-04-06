@@ -13,7 +13,7 @@ const {
 } = require('./nr-graphql-helpers');
 const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
 
-const INSTALL_PLAN_MUTATION = `# gql 
+const INSTALL_PLAN_MUTATION = `# gql
 mutation QuickstartRepoInstallPlanMutation (
   $description: String!
   $dryRun: Boolean
@@ -90,7 +90,7 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
  * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
  */
 const buildMutationVariables = (installPlanConfig) => {
-  const { id, name, title, description, target, install, fallback } =
+  const { id, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
 
   const dryRun = passedProcessArguments()[1] === 'true';
@@ -99,7 +99,7 @@ const buildMutationVariables = (installPlanConfig) => {
     id,
     dryRun,
     description,
-    displayName: name,
+    displayName: title,
     heading: title,
     target: target && buildInstallPlanTargetVariable(target),
     primary: install && buildInstallPlanDirectiveVariable(install),
