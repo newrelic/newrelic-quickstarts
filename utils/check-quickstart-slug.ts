@@ -24,7 +24,7 @@ export interface QuickstartConfig {
   installPlans: Array<string>;
 }
 
-interface YamlFile {
+export interface YamlFile {
   path: string;
   contents: QuickstartConfig[];
 }
