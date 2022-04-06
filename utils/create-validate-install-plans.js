@@ -90,7 +90,7 @@ const buildInstallPlanDirectiveVariable = ({ mode, destination }) => {
  * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
  */
 const buildMutationVariables = (installPlanConfig) => {
-  const { id, title, description, target, install, fallback } =
+  const { id, name, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
 
   const dryRun = passedProcessArguments()[1] === 'true';
@@ -99,7 +99,7 @@ const buildMutationVariables = (installPlanConfig) => {
     id,
     dryRun,
     description,
-    displayName: title,
+    displayName: name,
     heading: title,
     target: target && buildInstallPlanTargetVariable(target),
     primary: install && buildInstallPlanDirectiveVariable(install),
