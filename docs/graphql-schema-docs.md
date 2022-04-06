@@ -21,6 +21,7 @@
     * [Nr1CatalogQuickstartMetadata](#nr1catalogquickstartmetadata)
     * [Nr1CatalogQuickstartsListing](#nr1catalogquickstartslisting)
   * [Inputs](#inputs)
+    * [Nr1CatalogInstallDirectiveInput](#nr1cataloginstalldirectiveinput)
     * [Nr1CatalogInstallPlanDirectiveInput](#nr1cataloginstallplandirectiveinput)
     * [Nr1CatalogInstallPlanStepInput](#nr1cataloginstallplanstepinput)
     * [Nr1CatalogInstallPlanTargetInput](#nr1cataloginstallplantargetinput)
@@ -828,6 +829,40 @@ The total number of quickstart results
 </table>
 
 ## Inputs
+
+### Nr1CatalogInstallDirectiveInput
+
+Set of attributes which represent how an install takes place
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>link</strong></td>
+<td valign="top">Nr1CatalogLinkInstallDirectiveInput</td>
+<td>
+
+Link information for this directive. Cannot be used with a nerdlet directive.
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>nerdlet</strong></td>
+<td valign="top">Nr1CatalogNerdletInstallDirectiveInput</td>
+<td>
+
+Nerdlet information for this directive. Cannot be used with a link directive.
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Nr1CatalogInstallPlanDirectiveInput
 
