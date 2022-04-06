@@ -1,30 +1,43 @@
-'use strict';
-const glob = require('glob');
-const path = require('path');
-const {
+import * as glob from 'glob';
+import * as path from 'path';
+import {
   readQuickstartFile,
   removeRepoPathPrefix,
   getMatchingNames,
   cleanQuickstartName,
-} = require('./helpers');
+} from './helpers';
 
-/**
- * Returns any quickstart dashboards with matching names and their filepaths
- * @returns {[{name: string, path: string}]} An array of objects containing the name and filepath of a dashboard that is not unique
- */
-const findMatchingDashboardNames = () => {
+interface DashboardNamesAndPaths {
+  name: string;
+  path: string;
+}
+
+// TODO: move this to a types file when we convert other scripts to typescript
+interface DashboardConfigs {
+  path: string;
+  contents: {
+    name: string;
+  }[];
+}
+
+/** Returns any quickstart dashboards with matching names and their filepaths */
+const findMatchingDashboardNames = (): DashboardNamesAndPaths[] => {
   const dashboardConfigs = glob.sync(
     path.resolve(process.cwd(), '../quickstarts/**/dashboards/*.+(json)')
   );
 
-  const parsedDashboardConfigs = dashboardConfigs.map(readQuickstartFile);
+  // TODO: remove 'as' when we update readQuickstartFile to typescript
+  const parsedDashboardConfigs = dashboardConfigs.map(
+    readQuickstartFile
+  ) as DashboardConfigs[];
 
   const dashboardNamesAndPaths = parsedDashboardConfigs.map((configFile) => ({
     name: cleanQuickstartName(configFile.contents[0].name),
     path: configFile.path,
   }));
 
-  return getMatchingNames(dashboardNamesAndPaths);
+  // TODO: remove 'as' when we update getMatchingNames to typescript
+  return getMatchingNames(dashboardNamesAndPaths) as DashboardNamesAndPaths[];
 };
 
 const main = () => {
