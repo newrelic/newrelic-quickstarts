@@ -151,10 +151,11 @@ export const iterateQuickstarts = (
     ) as YamlFile;
 
     const { name, title }: QuickstartConfig = yaml.contents[0];
-    const slugName: string = slugify(name);
     const slugTitle: string = slugify(title);
 
-    !isSlugSame(slugName, slugTitle)
+    // we only send in `name` to make sure the service receives a slugified
+    // field
+    !isSlugSame(name, slugTitle)
       ? diffs.push([filename, yaml.contents[0]])
       : similars.push([filename, yaml.contents[0]]);
   });
@@ -176,10 +177,15 @@ export const getFailedQuickstartURLs = async (
   const filePaths = findMainQuickstartConfigFiles();
   iterateQuickstarts(filePaths, diffs, similars);
 
-  const responses = await checkUrlResponse(diffs);
-  const results = responses.filter(Boolean);
+  // check the URLs of all quickstarts that have different name and title
+  const diffsResponse = await checkUrlResponse(diffs);
 
-  return Promise.resolve(results);
+  // check
+  const similarResponse = await checkUrlResponse(similars);
+  const diffsResults = diffsResponse.filter(Boolean);
+  const similarResults = similarResponse.filter(Boolean);
+
+  return Promise.resolve([...diffsResults, ...similarResults]);
 };
 
 const main = async (): Promise<void> => {
