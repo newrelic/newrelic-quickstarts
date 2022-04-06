@@ -10,7 +10,7 @@ import { readFile, readFileSync } from 'fs';
 import fetch from 'node-fetch';
 import { writeFile } from 'fs/promises';
 
-type QuickstartConfig = {
+export interface QuickstartConfig {
   id: string;
   name: string;
   description: string;
@@ -22,7 +22,7 @@ type QuickstartConfig = {
   documentation: Array<string>;
   keywords: Array<string>;
   installPlans: Array<string>;
-};
+}
 
 interface YamlFile {
   path: string;
@@ -43,15 +43,6 @@ const slugify = (str: string): string =>
     .replace(/[^a-z0-9-]/g, '');
 
 /**
- * Logging function for logging information
- * @param info Tuple array containing [similars, diffs]
- */
-const printInfo = (results: Array<string>): void => {
-  console.log('Number of failed quickstart URLs:', results.length);
-  console.log('Failed quickstart URLs:', results);
-};
-
-/**
  * Helper function to compare two slugs
  * @param first slug to compare
  * @param second slug to compare
@@ -61,16 +52,35 @@ const isSlugSame = (first: string, second: string): boolean => first === second;
 
 /**
  *
+ * @param rawConfig
+ * @param title
+ * @returns
+ */
+const fixConfig = (rawConfig: string, title: string): string => {
+  return rawConfig.replace(/^name:.*$/m, `name: ${title}`);
+};
+
+/**
+ * Logging function for logging information
+ * @param info Tuple array containing [similars, diffs]
+ */
+const printInfo = (results: Array<string>): void => {
+  console.log('Number of failed quickstart URLs:', results.length);
+  console.log('Failed quickstart URLs:', results);
+};
+
+/**
+ *
  * @param diffs Array of tuples containing the relative path in quickstart repo
  * and contains content inside `config.yaml` where `name` and `title` differ.
  * @returns Promise of failed quickstart paths.
  */
-const checkUrlResponse = (
+export const checkUrlResponse = (
   diffs: Array<[string, QuickstartConfig]>
 ): Promise<string[]> => {
   const SITE_URL: string = 'https://newrelic.com/instant-observability';
 
-  const fetchResults = diffs.map(async (tuple) => {
+  const fetchResults: Promise<string>[] = diffs.map(async (tuple) => {
     const [quickstartPath, contents] = tuple;
     const resp = await fetch(`${SITE_URL}/${contents.name}/${contents.id}`);
     if (!resp.ok || resp.status === 404) {
@@ -78,6 +88,38 @@ const checkUrlResponse = (
     }
   });
   return Promise.all(fetchResults);
+};
+
+export const fixQuickstarts = (results: Array<string>): Promise<Boolean[]> => {
+  const fixedQuickstarts = results.map(async (quickstartPath) => {
+    // read config yaml file
+    const yaml: YamlFile = readYamlFile(
+      path.join(process.cwd(), `../${quickstartPath}`)
+    ) as YamlFile;
+
+    // grab the contents of the config
+    const config: QuickstartConfig = yaml.contents[0];
+
+    try {
+      const filePath = path.resolve('..', quickstartPath);
+
+      // get the raw config from readFileSync
+      const rawConfig = readFileSync(filePath, { encoding: 'utf8' });
+
+      // replace name with title
+      const fixedConfig = fixConfig(rawConfig, config.title);
+
+      // write to file
+      const writePromise = writeFile(filePath, fixedConfig);
+      await writePromise;
+
+      return true;
+    } catch (error) {
+      console.log('ERROR', error);
+      return false;
+    }
+  });
+  return Promise.all(fixedQuickstarts);
 };
 
 /**
@@ -103,9 +145,9 @@ export const iterateQuickstarts = (
       path.join(process.cwd(), `../${filename}`)
     ) as YamlFile;
 
-    const { name, title } = yaml.contents[0];
-    const slugName = slugify(name);
-    const slugTitle = slugify(title);
+    const { name, title }: QuickstartConfig = yaml.contents[0];
+    const slugName: string = slugify(name);
+    const slugTitle: string = slugify(title);
 
     !isSlugSame(slugName, slugTitle)
       ? diffs.push([filename, yaml.contents[0]])
@@ -113,57 +155,37 @@ export const iterateQuickstarts = (
   });
 };
 
-const fixConfig = (rawConfig: string, title: string): string => {
-  return rawConfig.replace(/^name:.*$/m, `name: ${title}`);
-};
-
-const fixQuickstarts = (results: Array<string>): Promise<Boolean[]> => {
-  const fixedQuickstarts = results.map(async (quickstartPath) => {
-    const yaml: YamlFile = readYamlFile(
-      path.join(process.cwd(), `../${quickstartPath}`)
-    ) as YamlFile;
-    const config: QuickstartConfig = yaml.contents[0];
-    config.name = config.title;
-    try {
-      const filePath = path.resolve('..', quickstartPath);
-      const rawConfig = readFileSync(filePath, { encoding: 'utf8' });
-      const fixedConfig = fixConfig(rawConfig, config.title);
-      const writePromise = writeFile(filePath, fixedConfig);
-      await writePromise;
-
-      return true;
-    } catch (error) {
-      console.log('ERROR', error);
-      return false;
-    }
-  });
-  return Promise.all(fixedQuickstarts);
-};
-
 /**
- * 'Main' function of `check-quickstart-slug`. Function handles the logic
- * and workflow for retreiving failed quickstart URLs using the `name` field
- * in `config.yaml`.
+ * Function handles the logic for retreiving failed
+ * quickstart URLs using the `name` field in `config.yaml`.
  */
-export const getFailedQuickstartURLs = async (): Promise<void> => {
-  // Optional commandline argument to log out information
-  const TESTING = Boolean(process.argv[2]);
-  const diffs: Array<[string, QuickstartConfig]> = [];
-  const similars: Array<[string, QuickstartConfig]> = [];
-
+export const getFailedQuickstartURLs = async (
+  diffs: Array<[string, QuickstartConfig]>,
+  similars: Array<[string, QuickstartConfig]>
+): Promise<string[]> => {
   const filePaths = findMainQuickstartConfigFiles();
   iterateQuickstarts(filePaths, diffs, similars);
 
   const responses = await checkUrlResponse(diffs);
   const results = responses.filter(Boolean);
 
+  return Promise.resolve(results);
+};
+
+const main = async (): Promise<void> => {
+  // Optional commandline argument to log out information
+  const TESTING = Boolean(process.argv[2]);
+  const diffs: Array<[string, QuickstartConfig]> = [];
+  const similars: Array<[string, QuickstartConfig]> = [];
+  const failedQuickstarts = await getFailedQuickstartURLs(diffs, similars);
+
   if (TESTING) {
-    printInfo(results);
+    printInfo(failedQuickstarts);
   }
 
-  if (results.length > 0) {
-    fixQuickstarts(results);
+  if (failedQuickstarts.length > 0) {
+    fixQuickstarts(failedQuickstarts);
   }
 };
 
-if (require.main === module) getFailedQuickstartURLs();
+if (require.main === module) main();
