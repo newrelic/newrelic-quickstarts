@@ -5,9 +5,9 @@ import {
   readYamlFile,
   removeRepoPathPrefix,
 } from './helpers';
-import { readFile, readFileSync } from 'fs';
 
 import fetch from 'node-fetch';
+import { readFileSync } from 'fs';
 import { writeFile } from 'fs/promises';
 
 export interface QuickstartConfig {
@@ -51,9 +51,9 @@ const slugify = (str: string): string =>
 const isSlugSame = (first: string, second: string): boolean => first === second;
 
 /**
- *
- * @param rawConfig
- * @param title
+ * Function replaces first regex match and replaces name with title
+ * @param rawConfig - raw buffer from fs.readFileSync
+ * @param title - title of quickstart from config
  * @returns
  */
 const fixConfig = (rawConfig: string, title: string): string => {
@@ -90,8 +90,10 @@ export const checkUrlResponse = (
   return Promise.all(fetchResults);
 };
 
-export const fixQuickstarts = (results: Array<string>): Promise<Boolean[]> => {
-  const fixedQuickstarts = results.map(async (quickstartPath) => {
+export const fixQuickstarts = (
+  failedQuickstarts: Array<string>
+): Promise<Boolean[]> => {
+  const fixedQuickstarts = failedQuickstarts.map(async (quickstartPath) => {
     // read config yaml file
     const yaml: YamlFile = readYamlFile(
       path.join(process.cwd(), `../${quickstartPath}`)
@@ -115,7 +117,10 @@ export const fixQuickstarts = (results: Array<string>): Promise<Boolean[]> => {
 
       return true;
     } catch (error) {
-      console.log('ERROR', error);
+      console.log(
+        `Quickstart "${config.title}" has not been updated:\n`,
+        error
+      );
       return false;
     }
   });
@@ -158,6 +163,11 @@ export const iterateQuickstarts = (
 /**
  * Function handles the logic for retreiving failed
  * quickstart URLs using the `name` field in `config.yaml`.
+ * @param diffs Array of tuples containing the relative path in quickstart repo
+ * and contains content inside `config.yaml` where `name` and `title` differ.
+ * @param similars Array of tuples containing the relative path in quickstart repo
+ * and contains content inside `config.yaml` where `name` and `title` are the same.
+ * @returns
  */
 export const getFailedQuickstartURLs = async (
   diffs: Array<[string, QuickstartConfig]>,
