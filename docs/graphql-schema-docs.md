@@ -1281,6 +1281,15 @@ A list of keywords for filtering and searching
 </td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>slug</strong></td>
+<td valign="top">String</td>
+<td>
+
+The URL friendly name for the quickstart
+
+</td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>sourceUrl</strong></td>
 <td valign="top">String</td>
 <td>

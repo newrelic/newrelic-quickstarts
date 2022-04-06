@@ -66,13 +66,13 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 - The `images` folder should contain images you want to display within a markdown widget on your Dashboard. An example of this would be the [Python quickstart](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png) which includes image widgets defined using markdown. For more information on this see our docs on [creating widgets containing markdown text](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#markdown)
 
-- When adding alerts to your quickstart, [using NerdGraph](https://developer.newrelic.com/contribute-to-quickstarts/query-alerts-for-quickstart/) can assist you with adding existing alert configurtions to your yaml files.
+- When adding alerts to your quickstart, [using NerdGraph](https://developer.newrelic.com/contribute-to-quickstarts/query-alerts-for-quickstart/) can assist you with adding existing alert configurations to your yaml files.
 
 - This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
 5. In your quickstart's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
 
-6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
+6. Commit your changes:
 
    ```sh
    git add -A
