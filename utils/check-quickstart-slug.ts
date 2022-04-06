@@ -57,7 +57,7 @@ const isSlugSame = (first: string, second: string): boolean => first === second;
  * @returns
  */
 const fixConfig = (rawConfig: string, title: string): string => {
-  return rawConfig.replace(/^name:.*$/m, `name: ${title}`);
+  return rawConfig.replace(/^name:.*$/m, `name: ${slugify(title)}`);
 };
 
 /**
