@@ -137,6 +137,7 @@ const buildMutationVariables = (quickstartConfig) => {
     authors,
     description,
     title,
+    slug,
     documentation,
     logo,
     keywords,
@@ -164,6 +165,7 @@ const buildMutationVariables = (quickstartConfig) => {
       categoryTerms: getCategoryTermsFromKeywords(keywords),
       description: description && description.trim(),
       displayName: title && title.trim(),
+      slug: slug && slug.trim(),
       documentation:
         documentation && adaptQuickstartDocumentationInput(documentation),
       icon:
