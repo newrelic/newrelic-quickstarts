@@ -154,6 +154,59 @@ jobs:
               "context": "Validation / Ensure logos exist"
             }'
 
+  validate-quickstart:
+    name: Validate Quickstart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+        - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Validate pr quickstart files
+        id: validation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NR_API_URL: ${{ secrets.NR_API_URL }}
+          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
+          NEW_RELIC_NO_CONFIG_FILE: true
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
+          NEW_RELIC_HOST: staging-collector.newrelic.com
+          NODE_ENV: production
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
+          DRY_RUN=true
+          cd utils && yarn create-validate-pr-quickstarts $URL $DRY_RUN
+      - name: Add commit status
+        if: always()
+        run: |
+          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
+          curl \
+            -X POST \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
+            -d '
+            {
+              "state": "${{ job.status }}",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "context": "Validation / Validate Quickstart Schema"
+            }'
+
   validate-install-plan-ids:
     name: Validate install plan ids
     runs-on: ubuntu-latest
