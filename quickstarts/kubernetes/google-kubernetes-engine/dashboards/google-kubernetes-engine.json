@@ -7,62 +7,40 @@
 			"description": null,
 			"widgets": [
 				{
-					"visualization": {
-						"id": "viz.billboard"
-					},
+					"title": "# Of k8s Objects",
 					"layout": {
 						"column": 1,
 						"row": 1,
-						"height": 3,
-						"width": 6
+						"width": 12,
+						"height": 3
 					},
-					"title": "# Of k8s Objects",
-					"rawConfiguration": {
-						"dataFormatters": [],
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT uniqueCount(K8sNodeSample.entityId) AS 'Nodes', uniqueCount(K8sNamespaceSample.clusterName) AS 'Clusters', uniqueCount(K8sNamespaceSample.entityId) AS 'Namespaces', uniqueCount(K8sDeploymentSample.entityId) AS 'Deployments', uniqueCount(K8sPodSample.entityId) AS 'Pods', uniqueCount(K8sContainerSample.containerID) AS 'Containers' FROM K8sNodeSample, K8sNamespaceSample, K8sDeploymentSample, K8sPodSample, K8sContainerSample SINCE today COMPARE WITH 1 week ago WHERE clusterName LIKE '%'"
-							}
-						],
-						"thresholds": []
-					},
-					"linkedEntityGuids": null
-				},
-				{
+					"linkedEntityGuids": null,
 					"visualization": {
 						"id": "viz.billboard"
 					},
-					"layout": {
-						"column": 7,
-						"row": 1,
-						"height": 3,
-						"width": 6
-					},
-					"title": "Resources Used",
 					"rawConfiguration": {
 						"dataFormatters": [],
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT average(cpuUsedCores) * uniqueCount(entityName) AS 'CPU cores', average(memoryWorkingSetBytes) * uniqueCount(entityName) / 1000000000 AS 'Mem GB', average(allocatableCpuCores) * uniqueCount(entityName) AS 'Allocatable CPU cores', average(allocatableMemoryBytes) * uniqueCount(entityName) / 1000000000 AS 'Allocatable Mem GB' FROM K8sNodeSample SINCE 1 hour ago WHERE clusterName LIKE '%'"
+								"query": "SELECT uniqueCount(gcp.kubernetes.clusterName) AS 'Clusters', uniqueCount(gcp.kubernetes.nodeName) AS 'Nodes', uniqueCount(gcp.kubernetes.nodeName) AS 'Namespaces', uniqueCount(gcp.kubernetes.podName) AS 'Pods', uniqueCount(gcp.kubernetes.containerName) AS 'Containers' FROM Metric SINCE today COMPARE WITH 1 week ago WHERE clusterName LIKE '%'"
 							}
 						],
 						"thresholds": []
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.bar"
-					},
+					"title": "Pods By Namespace",
 					"layout": {
 						"column": 1,
 						"row": 4,
-						"height": 3,
-						"width": 3
+						"width": 3,
+						"height": 3
 					},
-					"title": "Total Services By Namespace",
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -70,77 +48,77 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "FROM K8sServiceSample SELECT uniqueCount(serviceName) WHERE clusterName LIKE '%' FACET namespaceName SINCE 1 hour ago"
+								"query": "FROM Metric SELECT uniqueCount(gcp.kubernetes.podName) as 'pod' FACET gcp.kubernetes.namespace WHERE clusterName LIKE '%' SINCE 1 hour ago"
 							}
 						]
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.bar"
-					},
+					"title": "Pods Per Container",
 					"layout": {
 						"column": 4,
 						"row": 4,
-						"height": 3,
-						"width": 3
+						"width": 3,
+						"height": 3
 					},
-					"title": "Pods By Namespace",
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sPodSample SELECT uniqueCount(entityId) as 'pod' FACET namespace WHERE clusterName LIKE '%' SINCE 1 hour ago"
-							}
-						]
-					},
-					"linkedEntityGuids": null
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 7,
-						"row": 4,
-						"height": 3,
-						"width": 3
-					},
-					"title": "Missing Pods By Deployment",
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT latest(podsDesired) - latest(podsReady) as 'Missing Pods' FROM K8sReplicasetSample facet clusterName, deploymentName timeseries limit 25 WHERE clusterName LIKE '%' SINCE 1 hour ago"
-							}
-						],
-						"yAxisLeft": {
-							"zero": true
-						}
-					},
-					"linkedEntityGuids": null
-				},
-				{
+					"linkedEntityGuids": null,
 					"visualization": {
 						"id": "viz.bar"
 					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "FROM Metric SELECT uniqueCount(gcp.kubernetes.podName) as 'pod' FACET gcp.kubernetes.containerName WHERE clusterName LIKE '%' SINCE 1 hour ago"
+							}
+						]
+					}
+				},
+				{
+					"title": "Missing Pods By Deployment",
+					"layout": {
+						"column": 7,
+						"row": 4,
+						"width": 3,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT latest(podsDesired) - latest(podsReady) as 'Missing Pods' FROM Metric facet clusterName, deploymentName timeseries limit 25 WHERE clusterName LIKE '%' SINCE 1 hour ago"
+							}
+						],
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Pod Count Per Volume",
 					"layout": {
 						"column": 10,
 						"row": 4,
-						"height": 3,
-						"width": 3
+						"width": 3,
+						"height": 3
 					},
-					"title": "Pod Count By Node",
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -148,23 +126,23 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT uniqueCount(podName) FROM K8sPodSample where status='Running' FACET nodeName WHERE clusterName LIKE '%' SINCE 1 hour ago"
+								"query": "SELECT uniqueCount(gcp.kubernetes.podName) FROM Metric WHERE clusterName LIKE '%' FACET gcp.kubernetes.volumeName SINCE 1 hour ago"
 							}
 						]
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.line"
-					},
+					"title": "CPU Used Per Node (%)",
 					"layout": {
 						"column": 1,
 						"row": 7,
-						"height": 3,
-						"width": 4
+						"width": 4,
+						"height": 3
 					},
-					"title": "CPU Used Per Node (%)",
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -175,26 +153,26 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT average(cpuPercent) AS 'Average', max(cpuPercent) AS 'Max' FROM SystemSample WHERE clusterName LIKE '%' FACET hostname TIMESERIES SINCE 1 hour ago"
+								"query": "SELECT average(`gcp.kubernetes.node.cpu.allocatable_utilization`) * 100 AS 'CPU % Used' FROM Metric WHERE clusterName LIKE '%' FACET gcp.kubernetes.nodeName TIMESERIES SINCE 1 hour ago"
 							}
 						],
 						"yAxisLeft": {
 							"zero": true
 						}
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.line"
-					},
+					"title": "Memory Used Per Node (%)",
 					"layout": {
 						"column": 5,
 						"row": 7,
-						"height": 3,
-						"width": 4
+						"width": 4,
+						"height": 3
 					},
-					"title": "Memory Used Per Node (%)",
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -205,26 +183,26 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT max(memoryUsedPercent) FROM SystemSample WHERE clusterName LIKE '%' FACET hostname TIMESERIES SINCE 1 hour ago"
+								"query": "SELECT max(gcp.kubernetes.node.memory.allocatable_utilization) * 100 FROM Metric WHERE clusterName LIKE '%' FACET gcp.kubernetes.nodeName TIMESERIES  SINCE 1 hour ago"
 							}
 						],
 						"yAxisLeft": {
 							"zero": true
 						}
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.line"
-					},
+					"title": "Disk Used Per Node (%)",
 					"layout": {
 						"column": 9,
 						"row": 7,
-						"height": 3,
-						"width": 4
+						"width": 4,
+						"height": 3
 					},
-					"title": "Disk Used Per Node (%)",
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -241,20 +219,20 @@
 						"yAxisLeft": {
 							"zero": true
 						}
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
+					"title": "Container CPU Usage (%)",
+					"layout": {
+						"column": 1,
+						"row": 10,
+						"width": 6,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
 					"visualization": {
 						"id": "viz.area"
 					},
-					"layout": {
-						"column": 1,
-						"row": 10,
-						"height": 3,
-						"width": 6
-					},
-					"title": "Container CPU Usage (%)",
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -265,53 +243,23 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "FROM K8sContainerSample SELECT latest(cpuUsedCores) * 100 as '% CPU' FACET containerName SINCE 1 day ago WHERE clusterName LIKE '%' TIMESERIES "
+								"query": "FROM Metric SELECT latest(gcp.kubernetes.container.cpu.request_utilization) as '% CPU' FACET containerName SINCE 1 hour ago WHERE clusterName LIKE '%' TIMESERIES "
 							}
 						]
-					},
-					"linkedEntityGuids": null
+					}
 				},
 				{
-					"visualization": {
-						"id": "viz.line"
-					},
+					"title": "Average Node CPU Cores Used",
 					"layout": {
 						"column": 7,
 						"row": 10,
-						"height": 3,
-						"width": 6
+						"width": 6,
+						"height": 3
 					},
-					"title": "Container Memory Usage (%)",
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "FROM K8sContainerSample SELECT latest(memoryWorkingSetUtilization) as '% Memory' FACET containerName SINCE 1 day ago TIMESERIES limit 10 WHERE clusterName LIKE '%'"
-							}
-						],
-						"yAxisLeft": {
-							"zero": true
-						}
-					},
-					"linkedEntityGuids": null
-				},
-				{
+					"linkedEntityGuids": null,
 					"visualization": {
 						"id": "viz.line"
 					},
-					"layout": {
-						"column": 1,
-						"row": 13,
-						"height": 3,
-						"width": 6
-					},
-					"title": "Container MBytes Of Memory Used",
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
@@ -322,44 +270,13 @@
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT average(memoryWorkingSetBytes / 1000000) AS 'MB of Mem' FROM K8sContainerSample FACET containerName TIMESERIES LIMIT 10 SINCE 1 day ago WHERE clusterName LIKE '%'"
+								"query": "SELECT average(gcp.kubernetes.node.cpu.allocatable_cores) AS 'CPU Cores Used' FROM Metric FACET gcp.kubernetes.nodeName TIMESERIES LIMIT 10 SINCE 1 hour ago WHERE clusterName LIKE '%'"
 							}
 						],
 						"yAxisLeft": {
 							"zero": true
 						}
-					},
-					"linkedEntityGuids": null
-				},
-				{
-					"visualization": {
-						"id": "viz.line"
-					},
-					"layout": {
-						"column": 7,
-						"row": 13,
-						"height": 3,
-						"width": 6
-					},
-					"title": "Average Container CPU Cores Used",
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT average(cpuUsedCores) AS 'CPU Cores Used' FROM K8sContainerSample FACET containerName TIMESERIES LIMIT 10 SINCE 1 day ago WHERE clusterName LIKE '%'"
-							}
-						],
-						"yAxisLeft": {
-							"zero": true
-						}
-					},
-					"linkedEntityGuids": null
+					}
 				}
 			]
 		}
