@@ -13,7 +13,7 @@ const {
 } = require('./nr-graphql-helpers');
 const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
 
-const INSTALL_PLAN_MUTATION = `# gql
+const INSTALL_PLAN_MUTATION = `# gql 
 mutation QuickstartRepoInstallPlanMutation (
   $description: String!
   $dryRun: Boolean
