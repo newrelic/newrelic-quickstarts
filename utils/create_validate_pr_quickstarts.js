@@ -19,28 +19,31 @@ const {
   chunk,
 } = require('./nr-graphql-helpers');
 const { track, CUSTOM_EVENT } = require('./newrelic/customEvent');
+const gql = String.raw;
 
 const GITHUB_REPO_BASE_URL =
   'https://github.com/newrelic/newrelic-quickstarts/tree/main';
 const GITHUB_RAW_BASE_URL =
   'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
-const QUICKSTART_MUTATION = `# gql
-mutation QuickstartRepoQuickstartMutation (
-  $dryRun: Boolean
-  $id: ID!
-  $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
-) {
+const QUICKSTART_MUTATION = gql`
+  # gql
+  mutation QuickstartRepoQuickstartMutation(
+    $dryRun: Boolean
+    $id: ID!
+    $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
+  ) {
     nr1CatalogSubmitQuickstart(
       dryRun: $dryRun
       id: $id
       quickstartMetadata: $quickstartMetadata
     ) {
-        quickstart {
-          id
-        }
+      quickstart {
+        id
       }
+    }
   }
 `;
+
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
  * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.
@@ -239,7 +242,7 @@ const adaptQuickstartAlertsInput = (alertConfigPaths) =>
 const getQuickstartDashboardConfigs = (quickstartConfigPath) => {
   const splitConfigPath = quickstartConfigPath.split('/');
   splitConfigPath.pop();
-  const globPattern = `${splitConfigPath.join('/')}/dashboards/*.+(json)`;
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/*/*.+(json)`;
 
   return glob.sync(globPattern);
 };
@@ -253,9 +256,8 @@ const adaptQuickstartDashboardInput = (dashboardConfigPaths) =>
   dashboardConfigPaths.map((dashboardConfigPath) => {
     const parsedConfig = readQuickstartFile(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
-      dashboardConfigPath
-    );
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -455,4 +457,6 @@ module.exports = {
   buildUniqueQuickstartSet,
   getGraphqlRequests,
   countErrors,
+  getQuickstartDashboardConfigs,
+  getQuickstartDashboardScreenshotPaths,
 };
