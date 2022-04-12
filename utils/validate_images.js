@@ -39,7 +39,7 @@ const validateImageCounts = (quickstartDirs) => {
 
     // Max images is per dashboard so we need to account for this by getting the number of dashboards
     const dashboardCount = glob.sync(
-      path.resolve(quickstartDirName, 'dashboards/*/*.json')
+      path.resolve(quickstartDirName, 'dashboards/**/*.json')
     ).length;
 
     const screenshotPaths = imagePaths.filter(
