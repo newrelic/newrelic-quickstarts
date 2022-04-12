@@ -1,0 +1,260 @@
+{
+  "name" : "Redis",
+  "description" : "",
+  "pages" : [ {
+    "name" : "Redis",
+    "description" : "",
+    "widgets" : [ {
+      "visualization" : {
+        "id" : "viz.billboard"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 1,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Reporting Nodes",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT filter(uniqueCount(entity.name), WHERE `cluster.role` = 'master') as 'Masters', filter(uniqueCount(entity.name), WHERE `cluster.role` = 'slave') as 'Slaves' FROM Metric WHERE `metricName` = 'redis.clusterRole' until 1 minute ago"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 5,
+        "row" : 1,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Commands per second",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.commandsProcessedPerSecond`) * uniqueCount(entity.name) as 'Commands' FROM Metric WHERE `metricName` = 'redis.instance.net.commandsProcessedPerSecond' TIMESERIES until 1 minutes ago"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.markdown"
+      },
+      "layout" : {
+        "column" : 9,
+        "row" : 1,
+        "height" : 6,
+        "width" : 4
+      },
+      "rawConfiguration" : {
+        "text" : "# Redis\n\nRedis is an open source, in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and spatial indexes.\n\nThe Redis integration provides different parameters to control the metrics that are captured.\n\n\n"
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 4,
+        "height" : 3,
+        "width" : 8
+      },
+      "title" : "Commands per second, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.commandsProcessedPerSecond`) as 'Commands' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 7,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Connected Clients",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.connectedClients`) * uniqueCount(entity.name) as 'Connected clients' FROM Metric WHERE `metricName` = 'redis.instance.net.connectedClients' TIMESERIES until 1 minutes ago"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 5,
+        "row" : 7,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Connected Clients, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.connectedClients`) as 'Connected clients' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 10,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Blocked Clients",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.blockedClients`) * uniqueCount(entity.name) AS 'Blocked Clients' FROM Metric WHERE `metricName` = 'redis.instance.net.blockedClients' TIMESERIES until 1 minutes ago"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 5,
+        "row" : 10,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Redis Used Memory (bytes), by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.system.usedMemoryBytes`) as 'Used memory' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 9,
+        "row" : 10,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Changes Since Last Save, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.rdbChangesSinceLastSave`) as 'Rdb changes' FROM Metric TIMESERIES FACET(entity.name)"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 13,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Keyspace Hit Ratio, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.keyspaceHitsPerSecond`) / (average(`redis.instance.keyspaceMissesPerSecond`) + average(`redis.instance.keyspaceHitsPerSecond`)) as 'Hit Ratio' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 5,
+        "row" : 13,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Evicted Keys per second, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.evictedKeysPerSecond`) as 'Evicted keys' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 9,
+        "row" : 13,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Expired Keys per second, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.expiredKeysPerSecond`) as 'Expired keys' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 1,
+        "row" : 16,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Network I/O per second (bytes)",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.inputBytesPerSecond`) * uniqueCount(entity.name) as 'Input', average(`redis.instance.net.outputBytesPerSecond`) * uniqueCount(entity.name) as 'Output' FROM Metric WHERE `metricName` IN ('redis.instance.net.inputBytesPerSecond', 'redis.instance.net.outputBytesPerSecond') TIMESERIES until 1 minutes ago"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 5,
+        "row" : 16,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Output Bytes per second, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.outputBytesPerSecond`) as 'Output' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    }, {
+      "visualization" : {
+        "id" : "viz.line"
+      },
+      "layout" : {
+        "column" : 9,
+        "row" : 16,
+        "height" : 3,
+        "width" : 4
+      },
+      "title" : "Input Bytes per second, by node",
+      "rawConfiguration" : {
+        "nrqlQueries" : [ {
+          "accountId" : 0,
+          "query" : "SELECT average(`redis.instance.net.inputBytesPerSecond`) as 'Input' FROM Metric TIMESERIES FACET entity.name"
+        } ]
+      }
+    } ]
+  } ]
+}

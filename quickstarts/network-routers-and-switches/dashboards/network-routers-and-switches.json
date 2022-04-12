@@ -1,0 +1,218 @@
+{
+    "name": "Network - Routers and Switches",
+    "description": "",
+    "pages": [
+      {
+        "name": "Network Observability - Routers and Switches",
+        "description": "",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Device Inventory",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Uptime (Weeks)",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "Uptime (Days)",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT floor(latest(kentik.snmp.Uptime)/100/60/60/24) AS 'Uptime (Days)' FACET device_name, src_addr AS 'device_ip' WHERE provider IN ('kentik-router','kentik-switch') LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Interface Inventory",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(ifOperStatus) OR latest(if_OperStatus) AS 'Interface Status' FACET device_name, if_interface_name OR if_Description AS 'interface_name', if_Alias AS 'description' WHERE provider IN ('kentik-router','kentik-switch') LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 6,
+              "width": 4
+            },
+            "title": "Top 100 - Total Bandwidth (Mbs) In + Out",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Mbps",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate((max(kentik.snmp.ifHCInOctets) + max(kentik.snmp.ifHCOutOctets))*8/1000/1000, 1 second) AS 'Mbs' FACET device_name, if_interface_name OR if_Description AS 'interface_name', if_Alias AS 'description' WHERE provider IN ('kentik-router','kentik-switch') LIMIT 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Top 100 - Traffic IN (Mbs)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(max(kentik.snmp.ifHCInOctets)*8/1000/1000, 1 second) AS 'Mbs' FACET device_name, if_interface_name AS 'interface_name' TIMESERIES 5 MINUTES WHERE provider IN ('kentik-router','kentik-switch') LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Top 100 - Traffic IN (%)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.snmp.IfInUtilization) AS 'rcv_%' FACET device_name, if_interface_name AS 'interface_name' TIMESERIES 5 MINUTES WHERE provider IN ('kentik-router','kentik-switch') LIMIT 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Top 100 - Traffic OUT (Mbs)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(max(kentik.snmp.ifHCOutOctets)*8/1000/1000, 1 second) AS 'Mbs' FACET device_name, if_interface_name AS 'interface_name' TIMESERIES 5 MINUTES WHERE provider IN ('kentik-router','kentik-switch') LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Top 100 - Traffic OUT (%)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.snmp.IfOutUtilization) AS 'xmt_%' FACET device_name, if_interface_name AS 'interface_name' TIMESERIES 5 MINUTES WHERE provider IN ('kentik-router','kentik-switch') LIMIT 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+}
