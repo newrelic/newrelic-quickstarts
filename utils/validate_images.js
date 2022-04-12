@@ -34,8 +34,8 @@ const validateImageCounts = (quickstartDirs) => {
       );
       const quickstartConfig = readQuickstartFile(quickstart).contents[0];
       const quickstartName = quickstartConfig.name;
-      const logoPath = quickstartConfig.logo
-        ? path.resolve(quickstartDirName, quickstartConfig.logo)
+      const iconPath = quickstartConfig.icon
+        ? path.resolve(quickstartDirName, quickstartConfig.icon)
         : null;
 
       // Max images is per dashboard so we need to account for this by getting the number of dashboards
@@ -44,11 +44,11 @@ const validateImageCounts = (quickstartDirs) => {
       ).length;
 
       const screenshotPaths = imagePaths.filter(
-        (p) => p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
+        (p) => p !== iconPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
       );
 
       const dashboardImagePaths = imagePaths.filter(
-        (p) => p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
+        (p) => p !== iconPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
       );
 
       // Each dashboard is allowed MAX_NUM_IMG dashboards
