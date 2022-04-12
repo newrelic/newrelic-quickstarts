@@ -23,9 +23,8 @@ interface DashboardConfigs {
 /** Returns any quickstart dashboards with matching names and their filepaths */
 const findMatchingDashboardNames = (): DashboardNamesAndPaths[] => {
   const dashboardConfigs = glob.sync(
-    path.resolve(process.cwd(), '../quickstarts/**/dashboards/*.+(json)')
+    path.resolve(process.cwd(), '../quickstarts/**/dashboards/*/*.+(json)')
   );
-
   // TODO: remove 'as' when we update readQuickstartFile to typescript
   const parsedDashboardConfigs = dashboardConfigs.map(
     readQuickstartFile
