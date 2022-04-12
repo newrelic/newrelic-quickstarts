@@ -19,7 +19,7 @@
       - [Authors](#authors)
       - [Install plans](#install-plans)
         - [Creating a new installPlan](#creating-a-new-installplan)
-      - [Name & title fields](#name--title-fields)
+      - [Slug & title fields](#slug--title-fields)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
       - [Support Levels](#support-levels)
@@ -184,11 +184,16 @@ You can define multiple author names, but it's recommended to use one of the fol
 - The configuration file name should be `install.yml`.
 - keep the install plan `description` succinct as it's informational only.
 
-#### Name & title fields
+#### Slug & title fields
 
-`https://newrelic.com/instant-observability/{name}/{id}`
+`https://newrelic.com/instant-observability/{slug}/{id}`
 
- The quickstart `name` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes.
+ The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
+
+ Example:
+ ```yml
+ slug: this-is-kebab-case-and-lower-cased
+ ```
 
  > We will soon handle redirects more effectively for the I/O site to account for name changes.
 
