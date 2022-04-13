@@ -142,7 +142,7 @@ const buildMutationVariables = (quickstartConfig) => {
     title,
     slug,
     documentation,
-    logo,
+    icon,
     keywords,
     summary,
     installPlans,
@@ -172,10 +172,10 @@ const buildMutationVariables = (quickstartConfig) => {
       documentation:
         documentation && adaptQuickstartDocumentationInput(documentation),
       icon:
-        logo &&
+        icon &&
         `${GITHUB_RAW_BASE_URL}/${getQuickstartRelativePath(
           quickstartConfig.path
-        )}/${logo}`,
+        )}/${icon}`,
       keywords: keywords,
       sourceUrl: `${GITHUB_REPO_BASE_URL}/${getQuickstartRelativePath(
         quickstartConfig.path
@@ -223,10 +223,10 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath) => {
 const adaptQuickstartAlertsInput = (alertConfigPaths) =>
   alertConfigPaths.map((alertConfigPath) => {
     const parsedConfig = readQuickstartFile(alertConfigPath);
-    const { details, name, type } = parsedConfig.contents[0];
+    const { description, name, type } = parsedConfig.contents[0];
 
     return {
-      description: details && details.trim(),
+      description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
       sourceUrl: getAssetSourceUrl(alertConfigPath),
