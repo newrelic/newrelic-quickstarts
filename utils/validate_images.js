@@ -53,7 +53,7 @@ const validateImageCounts = (quickstartDirs) => {
     );
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
-    if (screenshotPaths.length > MAX_NUM_IMG * dashboardCount) {
+    if (dashboardCount > 0 && screenshotPaths.length > MAX_NUM_IMG * dashboardCount) {
       screenshotDirectories.push({
         folder: quickstartDirName,
         dashboardCount,
@@ -62,7 +62,7 @@ const validateImageCounts = (quickstartDirs) => {
       });
     }
 
-    if (dashboardImagePaths.length > MAX_NUM_IMG * dashboardCount) {
+    if (dashboardCount > 0 && dashboardImagePaths.length > MAX_NUM_IMG * dashboardCount) {
       imagesDirectories.push({
         folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
         dashboardCount,
