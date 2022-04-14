@@ -1,4 +1,4 @@
-interface NerdGraphError {
+export interface NerdGraphError {
   extensions: {
     argumentPath: string[];
   };
@@ -33,3 +33,5 @@ export interface NerdGraphRequest<T = {}> {
   queryString: string;
   variables?: T;
 }
+
+export interface Quickstart

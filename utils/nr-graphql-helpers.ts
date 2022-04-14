@@ -1,14 +1,15 @@
-import fetch from 'node-fetch';
+import type {
+  NerdGraphError,
+  NerdGraphRequest,
+  NerdGraphResponse,
+} from './types/nerdgraph';
+
 import { Policy } from 'cockatiel';
+import fetch from 'node-fetch';
 import instantObservabilityCategories from './instant-observability-categories.json';
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
-
-interface QueryBody {
-  queryString: string;
-  variables: object;
-}
 
 /**
  * Build body param for NR GraphQL request
@@ -18,7 +19,7 @@ interface QueryBody {
 export const buildRequestBody = ({
   queryString,
   variables,
-}: QueryBody): string =>
+}: NerdGraphRequest): string =>
   JSON.stringify({
     ...(queryString && { query: queryString }),
     ...(variables && { variables }),
@@ -30,10 +31,10 @@ export const buildRequestBody = ({
  * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
 export const fetchNRGraphqlResults = async (
-  queryBody: QueryBody
-): Promise<object> => {
+  queryBody: NerdGraphRequest
+): Promise<NerdGraphResponse<PLACEHOLDER>> => {
   let results;
-  let graphqlErrors = [];
+  let graphqlErrors: NerdGraphError = [];
 
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
