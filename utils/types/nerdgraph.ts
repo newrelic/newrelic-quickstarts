@@ -34,12 +34,6 @@ export interface NerdGraphRequest<T = {}> {
   variables?: T;
 }
 
-type categories = {
-  displayName: string;
-  slug: string;
-  terms: string[];
-};
-
 export interface NR1CatalogQuickstart {
   quickstart: {
     id: string;
