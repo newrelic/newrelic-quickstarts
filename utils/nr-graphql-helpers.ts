@@ -15,7 +15,10 @@ interface QueryBody {
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
-const buildRequestBody = ({ queryString, variables }: QueryBody): string =>
+export const buildRequestBody = ({
+  queryString,
+  variables,
+}: QueryBody): string =>
   JSON.stringify({
     ...(queryString && { query: queryString }),
     ...(variables && { variables }),
@@ -26,7 +29,9 @@ const buildRequestBody = ({ queryString, variables }: QueryBody): string =>
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
-const fetchNRGraphqlResults = async (queryBody: QueryBody): Promise<object> => {
+export const fetchNRGraphqlResults = async (
+  queryBody: QueryBody
+): Promise<object> => {
   let results;
   let graphqlErrors = [];
 
@@ -77,7 +82,11 @@ const fetchNRGraphqlResults = async (queryBody: QueryBody): Promise<object> => {
  * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
  * @returns {void}
  */
-const translateMutationErrors = (errors, filePath, installPlanErrors = []) => {
+export const translateMutationErrors = (
+  errors: object[],
+  filePath: string,
+  installPlanErrors: object[] = []
+): void => {
   console.error(
     `\nERROR: The following errors occurred while validating: ${filePath}`
   );
@@ -120,7 +129,9 @@ const translateMutationErrors = (errors, filePath, installPlanErrors = []) => {
  * // return
  * ['azure', 'infrastructure']
  */
-const getCategoryTermsFromKeywords = (configKeywords = []) => {
+export const getCategoryTermsFromKeywords = (
+  configKeywords: string[] | undefined = []
+): string[] | undefined => {
   const allCategoryKeywords = instantObservabilityCategories.flatMap(
     (category) => category.associatedKeywords
   );
@@ -141,8 +152,8 @@ const getCategoryTermsFromKeywords = (configKeywords = []) => {
  * @param {Number} chunkSize - the size of the parts
  * @returns {Array} the array broken out into smaller array chunks
  */
-const chunk = (array, chunkSize) => {
-  let chunkedArray = [];
+export const chunk = <T>(array: T[], chunkSize: number): T[][] => {
+  let chunkedArray: T[][] = [];
   let j = array.length;
 
   if (chunkSize < 1) {
@@ -154,11 +165,4 @@ const chunk = (array, chunkSize) => {
   }
 
   return chunkedArray;
-};
-
-module.exports = {
-  fetchNRGraphqlResults,
-  translateMutationErrors,
-  getCategoryTermsFromKeywords,
-  chunk,
 };
