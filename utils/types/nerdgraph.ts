@@ -2,6 +2,7 @@ export interface NerdGraphError {
   extensions: {
     argumentPath: string[];
   };
+  message: string;
 }
 
 /**
@@ -14,9 +15,8 @@ export interface NerdGraphError {
  * };
  */
 export interface NerdGraphResponse<T> {
-  data: T & {
-    errors?: NerdGraphError[];
-  };
+  data: T;
+  errors?: NerdGraphError[] | Error[];
 }
 
 /**
@@ -34,4 +34,14 @@ export interface NerdGraphRequest<T = {}> {
   variables?: T;
 }
 
-export interface Quickstart
+type categories = {
+  displayName: string;
+  slug: string;
+  terms: string[];
+};
+
+export interface NR1CatalogQuickstart {
+  quickstart: {
+    id: string;
+  };
+}

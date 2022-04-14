@@ -37,7 +37,7 @@ interface QuickstartMetaData {
   dashboards?: QuickstartDashboardInput;
 }
 
-export interface QuickstartMutationVaraible {
+export interface QuickstartMutationVariable {
   id: string;
   dryRun: boolean;
   quickstartMetadata: QuickstartMetaData;

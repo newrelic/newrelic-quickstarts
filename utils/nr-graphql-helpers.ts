@@ -1,10 +1,12 @@
 import type {
+  NR1CatalogQuickstart,
   NerdGraphError,
   NerdGraphRequest,
   NerdGraphResponse,
 } from './types/nerdgraph';
 
 import { Policy } from 'cockatiel';
+import type { QuickstartMutationVariable } from './types/QuickstartMutationVariable';
 import fetch from 'node-fetch';
 import instantObservabilityCategories from './instant-observability-categories.json';
 
@@ -25,21 +27,26 @@ export const buildRequestBody = ({
     ...(variables && { variables }),
   });
 
+// install plans
+// quickstarts
+
 /**
  * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
 export const fetchNRGraphqlResults = async (
-  queryBody: NerdGraphRequest
-): Promise<NerdGraphResponse<PLACEHOLDER>> => {
-  let results;
-  let graphqlErrors: NerdGraphError = [];
+  queryBody: NerdGraphRequest<QuickstartMutationVariable>
+): Promise<NerdGraphResponse<NR1CatalogQuickstart>> => {
+  let results: NR1CatalogQuickstart;
+  let graphqlErrors: Error[] = [];
 
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
   // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
-  const retry = Policy.handleWhenResult((response) => response.status >= 400)
+  const retry = Policy.handleWhenResult(
+    (response: Response) => response.status >= 400
+  )
     .retry()
     .attempts(3)
     .exponential();
@@ -84,9 +91,9 @@ export const fetchNRGraphqlResults = async (
  * @returns {void}
  */
 export const translateMutationErrors = (
-  errors: object[],
+  errors: NerdGraphError[],
   filePath: string,
-  installPlanErrors: object[] = []
+  installPlanErrors: NerdGraphError[] = []
 ): void => {
   console.error(
     `\nERROR: The following errors occurred while validating: ${filePath}`
