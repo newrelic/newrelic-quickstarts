@@ -122,4 +122,12 @@ describe('Action: validate images', () => {
     expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
+
+  test('validateImagaeCounts, given 0 dashboads, does not throw an error', () => {
+    const globMock = ['../mock_files/mock-quickstart-6'];
+    validateImageCounts(globMock);
+    expect(core.setFailed).not.toHaveBeenCalled()
+    expect(global.console.warn).not.toHaveBeenCalled();
+  })
+
 });
