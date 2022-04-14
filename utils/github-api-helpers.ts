@@ -1,7 +1,5 @@
-'use strict';
-
-const fetch = require('node-fetch');
-const parseLinkHeader = require('parse-link-header');
+import fetch from 'node-fetch';
+import parseLinkHeader from 'parse-link-header';
 
 const QUICKSTART_CONFIG_REGEXP = new RegExp(
   'quickstarts/.+/config.+(yml|yaml)'
@@ -14,7 +12,7 @@ const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
  * @param {String} linkHeader the `Link` header value
  * @returns {String|Null} the next page of results
  */
-const getNextLink = (linkHeader) => {
+export const getNextLink = (linkHeader: string): string | null => {
   const parsedLinkHeader = parseLinkHeader(linkHeader);
   if (parsedLinkHeader && parsedLinkHeader.next) {
     return parsedLinkHeader.next.url || null;
@@ -28,8 +26,11 @@ const getNextLink = (linkHeader) => {
  * @param {String} token a token for the API
  * @returns {Promise<Object[]>} all pages of results
  */
-const fetchPaginatedGHResults = async (url, token) => {
-  let files = [];
+export const fetchPaginatedGHResults = async (
+  url: string,
+  token: string
+): Promise<any[]> => {
+  let files: any[] = [];
   let nextPageLink = url;
   try {
     while (nextPageLink) {
@@ -57,7 +58,7 @@ const fetchPaginatedGHResults = async (url, token) => {
  * @param {Array} files the results from Github API
  * @returns {Array} config files from Github API without test files
  */
-const filterQuickstartConfigFiles = (files) =>
+export const filterQuickstartConfigFiles = (files: any[]): any[] =>
   files.filter(({ filename }) => QUICKSTART_CONFIG_REGEXP.test(filename));
 
 /**
@@ -65,7 +66,7 @@ const filterQuickstartConfigFiles = (files) =>
  * @param {Array} files the results from Github API
  * @returns {Array} files from Github API excluding test files
  */
-const filterOutTestFiles = (files) => {
+export const filterOutTestFiles = (files: any[]): any[] => {
   return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
@@ -74,14 +75,6 @@ const filterOutTestFiles = (files) => {
  * @param {Array} files the results from Github API
  * @returns {Array} install plan config files from Github API
  */
-const filterInstallPlans = (files) => {
+export const filterInstallPlans = (files: any[]): any[] => {
   return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
-};
-
-module.exports = {
-  fetchPaginatedGHResults,
-  getNextLink,
-  filterQuickstartConfigFiles,
-  filterOutTestFiles,
-  filterInstallPlans,
 };

@@ -1,17 +1,21 @@
-'use strict';
-const fetch = require('node-fetch');
-const { Policy } = require('cockatiel');
-const instantObservabilityCategories = require('./instant-observability-categories.json');
+import fetch from 'node-fetch';
+import { Policy } from 'cockatiel';
+import instantObservabilityCategories from './instant-observability-categories.json';
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
+
+interface QueryBody {
+  queryString: string;
+  variables: object;
+}
 
 /**
  * Build body param for NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
-const buildRequestBody = ({ queryString, variables }) =>
+const buildRequestBody = ({ queryString, variables }: QueryBody): string =>
   JSON.stringify({
     ...(queryString && { query: queryString }),
     ...(variables && { variables }),
@@ -20,9 +24,9 @@ const buildRequestBody = ({ queryString, variables }) =>
 /**
  * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
- * @returns {Object} An object with the results or errors of a GraphQL request
+ * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
-const fetchNRGraphqlResults = async (queryBody) => {
+const fetchNRGraphqlResults = async (queryBody: QueryBody): Promise<object> => {
   let results;
   let graphqlErrors = [];
 
