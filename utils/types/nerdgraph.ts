@@ -16,7 +16,18 @@ export interface NerdGraphError {
  */
 export interface NerdGraphResponse<T> {
   data: T;
-  errors?: NerdGraphError[] | Error[];
+  errors?: NerdGraphError[];
+}
+
+/**
+ * Combines the nerdgraph response with any local errors
+ * TODO: This is just here to deal with the fact that we are combining
+ * different error types together in the response from fetchNRGraphqlResults.
+ * We would like to move away from this practice and use the correct type defined above, NerdgraphResponse.
+ */
+export interface NerdGraphResponseWithLocalErrors<T> {
+  data: T;
+  errors?: (NerdGraphError | Error)[];
 }
 
 /**
@@ -34,7 +45,7 @@ export interface NerdGraphRequest<T = {}> {
   variables?: T;
 }
 
-export interface NR1CatalogQuickstart {
+export interface QuickstartMutationResponse {
   quickstart: {
     id: string;
   };

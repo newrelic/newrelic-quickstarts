@@ -1,14 +1,17 @@
 import type {
-  NR1CatalogQuickstart,
+  QuickstartMutationResponse,
   NerdGraphError,
   NerdGraphRequest,
   NerdGraphResponse,
+  InstallPlanMutationResponse,
+  NerdGraphResponseWithLocalErrors,
 } from './types/nerdgraph';
 
 import { Policy } from 'cockatiel';
 import type { QuickstartMutationVariable } from './types/QuickstartMutationVariable';
 import fetch from 'node-fetch';
 import instantObservabilityCategories from './instant-observability-categories.json';
+import { InstallPlanMutationVariable } from './types/InstallPlanMutationVariables';
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;
@@ -27,19 +30,19 @@ export const buildRequestBody = ({
     ...(variables && { variables }),
   });
 
-// install plans
-// quickstarts
+// TODO: It would be nice to do this without these weird unions. Let's separate the handling of Javascript errors and nerdgraph errors.
+type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 /**
  * Send NR GraphQL request
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
-export const fetchNRGraphqlResults = async (
-  queryBody: NerdGraphRequest<QuickstartMutationVariable>
-): Promise<NerdGraphResponse<NR1CatalogQuickstart>> => {
-  let results: NR1CatalogQuickstart;
-  let graphqlErrors: Error[] = [];
+export const fetchNRGraphqlResults = async <Variables, ResponseData>(
+  queryBody: NerdGraphRequest<Variables>
+): Promise<NerdGraphResponseWithLocalErrors<ResponseData>> => {
+  let results;
+  let graphqlErrors: ErrorOrNerdGraphError[] = [];
 
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
@@ -91,7 +94,7 @@ export const fetchNRGraphqlResults = async (
  * @returns {void}
  */
 export const translateMutationErrors = (
-  errors: NerdGraphError[],
+  errors: ErrorOrNerdGraphError[],
   filePath: string,
   installPlanErrors: NerdGraphError[] = []
 ): void => {
@@ -99,7 +102,7 @@ export const translateMutationErrors = (
     `\nERROR: The following errors occurred while validating: ${filePath}`
   );
   errors.forEach((error) => {
-    if (error.extensions && error.extensions.argumentPath) {
+    if ('extensions' in error && error.extensions.argumentPath) {
       const errorPrefix = error.extensions.argumentPath.join('/');
 
       console.error(`- ${errorPrefix}: ${error.message}`);

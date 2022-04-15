@@ -4,9 +4,9 @@ import yaml from 'js-yaml';
 import glob from 'glob';
 import isImage from 'is-image';
 
-interface FilePathAndContents {
+interface FilePathAndContents<T> {
   path: string;
-  contents: object;
+  contents: T[];
 }
 
 /**
@@ -14,9 +14,9 @@ interface FilePathAndContents {
  * @param {String} filePath - The path to the YAML file
  * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
-export const readYamlFile = (filePath: string): FilePathAndContents => {
+export const readYamlFile = <T>(filePath: string): FilePathAndContents<T> => {
   const file = fs.readFileSync(filePath);
-  const contents = yaml.loadAll(file.toString('utf-8'));
+  const contents = yaml.loadAll(file.toString('utf-8')) as T[];
   return { path: filePath, contents };
 };
 
@@ -25,7 +25,7 @@ export const readYamlFile = (filePath: string): FilePathAndContents => {
  * @param {String} filePath - The path to the JSON file
  * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
-export const readJsonFile = (filePath: string): FilePathAndContents => {
+export const readJsonFile = <T>(filePath: string): FilePathAndContents<T> => {
   const file = fs.readFileSync(filePath);
   const contents = JSON.parse(file.toString('utf-8'));
   return { path: filePath, contents: [contents] }; // Return array here to be consistent with the yaml reading
@@ -36,7 +36,9 @@ export const readJsonFile = (filePath: string): FilePathAndContents => {
  * @param {String} filePath - The path to the JSON or YAML file
  * @returns {Object} An object containing the path and contents of the file
  */
-export const readQuickstartFile = (filePath: string): FilePathAndContents =>
+export const readQuickstartFile = <T>(
+  filePath: string
+): FilePathAndContents<T> =>
   path.extname(filePath) === '.json'
     ? readJsonFile(filePath)
     : readYamlFile(filePath);
