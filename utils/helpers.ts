@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import glob from 'glob';
 import isImage from 'is-image';
 
-interface FilePathAndContents<T> {
+export interface FilePathAndContents<T> {
   path: string;
   contents: T[];
 }
