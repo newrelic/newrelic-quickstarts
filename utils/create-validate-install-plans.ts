@@ -1,4 +1,19 @@
-import path from 'path';
+import {
+  InstallPlanDestination,
+  InstallPlanDirectiveInput,
+  InstallPlanMutationVariable,
+  InstallPlanOperatingSystem,
+  InstallPlanTargetInput,
+  InstallPlanTargetType,
+} from './types/InstallPlanMutationVariables';
+import {
+  InstallPlanYML,
+  InstallPlanYMLInstall,
+  InstallPlanYMLTarget,
+} from './types/InstallPlanYML';
+import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
+
+import * as path from 'path';
 import { readYamlFile, passedProcessArguments } from './helpers';
 import {
   fetchPaginatedGHResults,
@@ -10,20 +25,6 @@ import {
   chunk,
 } from './nr-graphql-helpers';
 import { track, CUSTOM_EVENT } from './newrelic/customEvent';
-import {
-  InstallPlanDestination,
-  InstallPlanDirectiveInput,
-  InstallPlanMutationVariable,
-  InstallPlanOperatingSystem,
-  InstallPlanTargetInput,
-  InstallPlanTargetType,
-} from './types/InstallPlanMutationVariables';
-import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
-import {
-  InstallPlanYML,
-  InstallPlanYMLInstall,
-  InstallPlanYMLTarget,
-} from './types/InstallPlanYML';
 
 const gql = String.raw;
 export const INSTALL_PLAN_MUTATION = gql`

@@ -1,17 +1,12 @@
 import type {
-  QuickstartMutationResponse,
   NerdGraphError,
   NerdGraphRequest,
-  NerdGraphResponse,
-  InstallPlanMutationResponse,
   NerdGraphResponseWithLocalErrors,
 } from './types/nerdgraph';
 
 import { Policy } from 'cockatiel';
-import type { QuickstartMutationVariable } from './types/QuickstartMutationVariable';
 import fetch from 'node-fetch';
-import instantObservabilityCategories from './instant-observability-categories.json';
-import { InstallPlanMutationVariable } from './types/InstallPlanMutationVariables';
+import instantObservabilityCategories from './instant-observability-categories';
 
 const NR_API_URL = process.env.NR_API_URL;
 const NR_API_TOKEN = process.env.NR_API_TOKEN;

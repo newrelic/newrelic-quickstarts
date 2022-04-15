@@ -1,7 +1,24 @@
-import glob from 'glob';
+import {
+  QuickstartConfig,
+  QuickstartMutationVariable,
+  QuickstartAlertInput,
+  QuickstartDashboardInput,
+  AlertYml,
+  DashboardScreenshot,
+  QuickstartDocumentationYml,
+  QuickstartDocumentation,
+} from './types/QuickstartMutationVariable';
+import {
+  NerdGraphError,
+  NerdGraphResponseWithLocalErrors,
+  QuickstartMutationResponse,
+} from './types/nerdgraph';
+
+import * as glob from 'glob';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
+  GithubAPIPullRequestFile,
 } from './github-api-helpers';
 import {
   findMainQuickstartConfigFiles,
@@ -17,19 +34,6 @@ import {
   chunk,
 } from './nr-graphql-helpers';
 import { track, CUSTOM_EVENT } from './newrelic/customEvent';
-
-import {
-  QuickstartConfig,
-  QuickstartMetaData,
-  QuickstartMutationVariable,
-  QuickstartAlertInput,
-  QuickstartDashboardInput,
-  AlertYml,
-  DashboardScreenshot,
-  QuickstartDocumentationYml,
-  QuickstartDocumentation,
-} from './types/QuickstartMutationVariable';
-import { QuickInfo, Set } from 'typescript';
 
 const gql = String.raw;
 
@@ -102,7 +106,9 @@ const getQuickstartNode = (filePath: string, targetChild: string): string => {
  * @param {String} filePath - Full file path of a file in a quickstart.
  * @return {String|undefined} Called function with arguments to determine the quickstart of a given file path.
  */
-const getQuickstartFromFilename = (filePath: string): string | undefined => {
+export const getQuickstartFromFilename = (
+  filePath: string
+): string | undefined => {
   if (!filePath.includes('quickstarts/')) {
     return undefined;
   }
@@ -129,12 +135,12 @@ const getQuickstartFromFilename = (filePath: string): string | undefined => {
  * @param {Set<string>} quickstartDirectories - Set of unique quickstart directories.
  * @return {Array} Collection of config file paths.
  */
-const getQuickstartConfigPaths = (
+export const getQuickstartConfigPaths = (
   quickstartDirectories: Set<string>
 ): string[] => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return Array.from(quickstartDirectories).reduce<string[]>(
+  return Array.from(quickstartDirectories).reduce(
     (acc, quickstartDirectory) => {
       const match = allQuickstartConfigPaths.find((path) =>
         path.includes(`/${quickstartDirectory}/`)
@@ -153,7 +159,7 @@ const getQuickstartConfigPaths = (
  * @param {Object} quickstartConfig - An object containing the path and contents of a quickstart config file.
  * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
  */
-const buildMutationVariables = (
+export const buildMutationVariables = (
   quickstartConfig: FilePathAndContents<QuickstartConfig>
 ): QuickstartMutationVariable => {
   const {
@@ -261,7 +267,7 @@ const adaptQuickstartAlertsInput = (
  * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
  * @returns {String[]} A set of file-path strings for the config files within the `dashboards` directory of a quickstart.
  */
-const getQuickstartDashboardConfigs = (
+export const getQuickstartDashboardConfigs = (
   quickstartConfigPath: string
 ): string[] => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -285,9 +291,8 @@ const adaptQuickstartDashboardInput = (
       name: string;
     }>(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
-      dashboardConfigPath
-    );
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -330,7 +335,7 @@ const getAssetSourceUrl = (path: string): string => {
  * @param {String} dashboardConfigPath - The file path of the config file within a quickstart's `dashboards` directory.
  * @return {String[]} A set of file-path strings for any screenshots within the same `dashboards` directory.
  */
-const getQuickstartDashboardScreenshotPaths = (
+export const getQuickstartDashboardScreenshotPaths = (
   dashboardConfigPath: String
 ): string[] => {
   const splitConfigPath = dashboardConfigPath.split('/');
@@ -359,14 +364,14 @@ const adaptQuickstartDocumentationInput = (
 
 /**
  * Reducer function that builds a set of unique quickstarts that were updated in a given PR.
- * @param {Set} acc - A set of unique quickstarts being built by the reducer function.
+ * @param {Set<string>} acc - A set of unique quickstarts being built by the reducer function.
  * @param {Object} curr - A result from the GitHub API.
  * @return {Set} A set of strings representing the unique quickstarts updated in a PR.
  */
-const buildUniqueQuickstartSet = (
+export const buildUniqueQuickstartSet = (
   acc: Set<string>,
   { filename }: { filename: string }
-) => {
+): Set<string> => {
   return getQuickstartFromFilename(filename)
     ? acc.add(getQuickstartFromFilename(filename))
     : acc;
@@ -377,7 +382,9 @@ const buildUniqueQuickstartSet = (
  * @param {Array} files - A list of all files changed in the PR.
  * @return {Array} Returns objects containing the file path of a quickstart's root config file and the variables used in the submitQuickstart mutation.
  */
-const getGraphqlRequests = (files: { filename: string }[]) => {
+export const getGraphqlRequests = (
+  files: { filename: string }[]
+): { filePath: string; variables: QuickstartMutationVariable }[] => {
   const uniqueQuickstarts = files.reduce(
     buildUniqueQuickstartSet,
     new Set<string>()
@@ -390,21 +397,31 @@ const getGraphqlRequests = (files: { filename: string }[]) => {
   }));
 };
 
+type GraphQLResponse =
+  NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
+    filePath: string;
+  };
+
 /**
  * Builds and sends GraphQL mutations to validate the quickstarts in a PR and prints out any errors
  * @param {Array} files - A list of all files changed in the PR.
  * @return {Promise.<Boolean>} A value indicating if the GitHub Action should fail
  */
-const createValidateUpdateQuickstarts = async (files) => {
+const createValidateUpdateQuickstarts = async (
+  files: GithubAPIPullRequestFile[]
+): Promise<boolean> => {
   const graphqlRequests = getGraphqlRequests(filterOutTestFiles(files));
   const chunkedRequests = chunk(graphqlRequests, 5); // Run requests in groups of 5
 
-  let graphqlResponses = [];
+  let graphqlResponses: GraphQLResponse[] = [];
   // using a For Of loop so that it respects the `await`
   for (const reqChunk of chunkedRequests) {
     const chunkRes = await Promise.all(
       reqChunk.map(async ({ variables, filePath }) => {
-        const { data, errors } = await fetchNRGraphqlResults({
+        const { data, errors } = await fetchNRGraphqlResults<
+          QuickstartMutationVariable,
+          QuickstartMutationResponse
+        >({
           queryString: QUICKSTART_MUTATION,
           variables,
         });
@@ -423,21 +440,21 @@ const createValidateUpdateQuickstarts = async (files) => {
  * @param {string[]} graphqlResponses[].filePath
  * @returns {number}
  */
-const countErrors = (graphqlResponses) => {
+export const countErrors = (graphqlResponses: GraphQLResponse[]): number => {
   let errorCount = 0;
 
   graphqlResponses.forEach(({ errors, filePath }) => {
     // filter out errors where install plan id does not exist
-
-    const installPlanErrorExists = (error) =>
-      !(
-        !error?.extensions?.argumentPath?.includes('installPlanStepIds') ||
-        !error?.message?.includes(
-          'contains an install plan step that does not exist'
-        )
+    const installPlanErrorExists = (error: Error | NerdGraphError) =>
+      'extensions' in error &&
+      error?.extensions?.argumentPath?.includes('installPlanStepIds') &&
+      error?.message?.includes(
+        'contains an install plan step that does not exist'
       );
 
-    const installPlanErrors = errors.filter(installPlanErrorExists);
+    const installPlanErrors = errors.filter(
+      installPlanErrorExists
+    ) as NerdGraphError[];
     const remainingErrors = errors.filter(
       (error) => !installPlanErrorExists(error)
     );
@@ -456,7 +473,7 @@ const countErrors = (graphqlResponses) => {
  * @param {boolean} hasFailed if the validation or submission has failed
  * @param {boolean} isDryRun - true for validation, false for submission
  */
-const recordCustomNREvent = async (hasFailed, isDryRun) => {
+const recordCustomNREvent = async (hasFailed: boolean, isDryRun: boolean) => {
   const status = hasFailed ? 'failed' : 'success';
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
@@ -489,14 +506,3 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
-
-module.exports = {
-  getQuickstartFromFilename,
-  getQuickstartConfigPaths,
-  buildMutationVariables,
-  buildUniqueQuickstartSet,
-  getGraphqlRequests,
-  countErrors,
-  getQuickstartDashboardConfigs,
-  getQuickstartDashboardScreenshotPaths,
-};

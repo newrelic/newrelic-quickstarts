@@ -20,6 +20,19 @@ export const getNextLink = (linkHeader: string): string | null => {
   return null;
 };
 
+export interface GithubAPIPullRequestFile {
+  sha: string;
+  filename: string;
+  status: string; //TODO: add actual statuses
+  additions: number;
+  deletions: number;
+  changes: number;
+  blob_url: string;
+  raw_url: string;
+  contents_url: string;
+  path: string;
+}
+
 /**
  * Fetches paginated results from the Github API
  * @param {String} url the API to query
@@ -29,8 +42,8 @@ export const getNextLink = (linkHeader: string): string | null => {
 export const fetchPaginatedGHResults = async (
   url: string,
   token: string
-): Promise<any[]> => {
-  let files: any[] = [];
+): Promise<GithubAPIPullRequestFile[]> => {
+  let files: GithubAPIPullRequestFile[] = [];
   let nextPageLink = url;
   try {
     while (nextPageLink) {
@@ -58,7 +71,9 @@ export const fetchPaginatedGHResults = async (
  * @param {Array} files the results from Github API
  * @returns {Array} config files from Github API without test files
  */
-export const filterQuickstartConfigFiles = (files: any[]): any[] =>
+export const filterQuickstartConfigFiles = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] =>
   files.filter(({ filename }) => QUICKSTART_CONFIG_REGEXP.test(filename));
 
 /**
@@ -66,7 +81,9 @@ export const filterQuickstartConfigFiles = (files: any[]): any[] =>
  * @param {Array} files the results from Github API
  * @returns {Array} files from Github API excluding test files
  */
-export const filterOutTestFiles = (files: any[]): any[] => {
+export const filterOutTestFiles = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] => {
   return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
@@ -75,6 +92,8 @@ export const filterOutTestFiles = (files: any[]): any[] => {
  * @param {Array} files the results from Github API
  * @returns {Array} install plan config files from Github API
  */
-export const filterInstallPlans = (files: any[]): any[] => {
+export const filterInstallPlans = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] => {
   return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
 };

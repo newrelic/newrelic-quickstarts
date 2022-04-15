@@ -51,8 +51,8 @@ export type InstallPlanDestination =
   | 'HOST'
   | 'KUBERNETES'
   | 'UNKNOWN';
-type InstallPlanOperatingSystem = 'DARWIN' | 'LINUX' | 'WINDOWS';
-type InstallPlanTargetType =
+export type InstallPlanOperatingSystem = 'DARWIN' | 'LINUX' | 'WINDOWS';
+export type InstallPlanTargetType =
   | 'AGENT'
   | 'INTEGRATION'
   | 'ON_HOST_INTEGRATION'

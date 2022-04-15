@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
-import glob from 'glob';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
+import * as glob from 'glob';
 import isImage from 'is-image';
 
 export interface FilePathAndContents<T> {
