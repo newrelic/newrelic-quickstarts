@@ -5,7 +5,7 @@ import type {
 } from './types/nerdgraph';
 
 import { Policy } from 'cockatiel';
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import instantObservabilityCategories from './instant-observability-categories';
 
 const NR_API_URL = process.env.NR_API_URL || '';
