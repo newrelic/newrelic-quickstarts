@@ -3,8 +3,10 @@ export interface QuickstartAlertInput {
   displayName: string;
   rawConfiguration: string;
   sourceUrl?: string;
-  type: string;
+  type: AlertType;
 }
+
+export type AlertType = 'BASELINE' | 'STATIC';
 
 export interface QuickstartDocumentation {
   displayName: string;
