@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import parseLinkHeader from 'parse-link-header';
+import * as parseLinkHeader from 'parse-link-header';
 
 const QUICKSTART_CONFIG_REGEXP = new RegExp(
   'quickstarts/.+/config.+(yml|yaml)'
