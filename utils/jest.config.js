@@ -4,4 +4,5 @@ module.exports = {
   },
   testRegex: '(/__tests__/.*\\.(test|spec))\\.(ts|js)$',
   moduleFileExtensions: ['js', 'ts', 'json'],
+  transformIgnorePatterns: ['.json'],
 };

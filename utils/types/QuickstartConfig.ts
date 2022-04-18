@@ -4,10 +4,12 @@
  * Names and fields may overlap with types used in interactions with NerdGraph.
  */
 
+import { AlertType } from './QuickstartMutationVariable';
+
 export interface QuickstartConfigAlert {
   name: string;
   description: string;
-  type: string;
+  type: AlertType;
 }
 
 export interface QuickstartConfigDocumentation {
@@ -27,5 +29,10 @@ export interface QuickstartConfig {
   summary: string;
   installPlans?: string[];
   id: string;
-  level: string;
+  level: QuickstartConfigSupportLevel;
 }
+
+export type QuickstartConfigSupportLevel =
+  | 'New Relic'
+  | 'Community'
+  | 'Verified';

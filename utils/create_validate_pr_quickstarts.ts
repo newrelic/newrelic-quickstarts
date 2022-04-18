@@ -4,6 +4,8 @@ import {
   QuickstartDashboardInput,
   DashboardScreenshot,
   QuickstartDocumentation,
+  QuickstartSupportLevel,
+  AlertType,
 } from './types/QuickstartMutationVariable';
 import {
   QuickstartConfigAlert,
@@ -36,10 +38,6 @@ import {
 } from './nr-graphql-helpers';
 import { track, CUSTOM_EVENT } from './newrelic/customEvent';
 
-interface Map {
-  [key: string]: string | undefined;
-}
-
 export interface QuickstartMutationResponse {
   quickstart: {
     id: string;
@@ -71,7 +69,11 @@ const QUICKSTART_MUTATION = gql`
   }
 `;
 
-const SUPPORT_LEVEL_ENUMS: Map = {
+interface SupportLevelMap {
+  [key: string]: QuickstartSupportLevel;
+}
+
+const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   'New Relic': 'NEW_RELIC',
   Community: 'COMMUNITY',
   Verified: 'VERIFIED',
@@ -90,7 +92,10 @@ const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
  * @param {String} targetChild - Node in file path that should be preceded by a base quickstart directory.
  * @return {String} Node in file path of the quickstart.
  */
-const getQuickstartNode = (filePath: string, targetChild: string): string => {
+const getQuickstartNode = (
+  filePath: string,
+  targetChild: string | undefined
+): string => {
   const splitFilePath = filePath.split('/');
 
   const baseQuickstartDirectoryIndex =
@@ -147,7 +152,7 @@ export const getQuickstartConfigPaths = (
 ): string[] => {
   const allQuickstartConfigPaths = findMainQuickstartConfigFiles();
 
-  return Array.from(quickstartDirectories).reduce(
+  return Array.from(quickstartDirectories).reduce<string[]>(
     (acc, quickstartDirectory) => {
       const match = allQuickstartConfigPaths.find((path) =>
         path.includes(`/${quickstartDirectory}/`)
@@ -257,9 +262,8 @@ const adaptQuickstartAlertsInput = (
   alertConfigPaths: string[]
 ): QuickstartAlertInput[] =>
   alertConfigPaths.map((alertConfigPath) => {
-    const parsedConfig = readQuickstartFile<QuickstartConfigAlert>(
-      alertConfigPath
-    );
+    const parsedConfig =
+      readQuickstartFile<QuickstartConfigAlert>(alertConfigPath);
     const { description, name, type } = parsedConfig.contents[0];
 
     return {
@@ -267,7 +271,7 @@ const adaptQuickstartAlertsInput = (
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(parsedConfig.contents[0]),
       sourceUrl: getAssetSourceUrl(alertConfigPath),
-      type: type && type.trim(),
+      type: type && (type.trim() as AlertType),
     };
   });
 
@@ -300,9 +304,8 @@ const adaptQuickstartDashboardInput = (
       name: string;
     }>(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
-      dashboardConfigPath
-    );
+    const screenshotPaths =
+      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -382,9 +385,8 @@ export const buildUniqueQuickstartSet = (
   acc: Set<string>,
   { filename }: { filename: string }
 ): Set<string> => {
-  return getQuickstartFromFilename(filename)
-    ? acc.add(getQuickstartFromFilename(filename))
-    : acc;
+  const quickstartFileName = getQuickstartFromFilename(filename);
+  return quickstartFileName ? acc.add(quickstartFileName) : acc;
 };
 
 /**
@@ -407,11 +409,10 @@ export const getGraphqlRequests = (
   }));
 };
 
-type GraphQLResponse = NerdGraphResponseWithLocalErrors<
-  QuickstartMutationResponse
-> & {
-  filePath: string;
-};
+type GraphQLResponse =
+  NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
+    filePath: string;
+  };
 
 /**
  * Builds and sends GraphQL mutations to validate the quickstarts in a PR and prints out any errors
@@ -463,16 +464,14 @@ export const countErrors = (graphqlResponses: GraphQLResponse[]): number => {
         'contains an install plan step that does not exist'
       );
 
-    const installPlanErrors = errors.filter(
-      installPlanErrorExists
-    ) as NerdGraphError[];
-    const remainingErrors = errors.filter(
-      (error) => !installPlanErrorExists(error)
-    );
+    const installPlanErrors =
+      (errors?.filter(installPlanErrorExists) as NerdGraphError[]) ?? [];
+    const remainingErrors =
+      errors?.filter((error) => !installPlanErrorExists(error)) ?? [];
 
     errorCount += remainingErrors.length;
 
-    if (errors.length > 0) {
+    if (errors && errors.length > 0) {
       translateMutationErrors(remainingErrors, filePath, installPlanErrors);
     }
   });
@@ -496,10 +495,13 @@ const recordCustomNREvent = async (hasFailed: boolean, isDryRun: boolean) => {
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
-  const files = await fetchPaginatedGHResults(
-    GITHUB_API_URL,
-    process.env.GITHUB_TOKEN
-  );
+  const githubToken = process.env.GITHUB_TOKEN;
+  if (!githubToken) {
+    console.error('GITHUB_TOKEN is not defined.');
+    process.exit(1);
+  }
+
+  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
 
   const hasFailed = await createValidateUpdateQuickstarts(files);
   await recordCustomNREvent(hasFailed, isDryRun === 'true');

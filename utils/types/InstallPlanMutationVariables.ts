@@ -36,13 +36,13 @@ interface LinkDirective {
 interface NerdletDirective {
   nerdlet: {
     nerdletId: string;
-    nerdletState: string;
+    nerdletState?: string;
   };
 }
 
 interface DefaultDirective {
   mode: string;
-  destination: undefined;
+  destination?: undefined;
 }
 
 export type InstallPlanDestination =

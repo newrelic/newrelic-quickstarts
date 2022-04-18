@@ -42,10 +42,16 @@ export interface QuickstartMetaData {
   keywords?: string[];
   sourceUrl?: string;
   summary: string;
-  supportLevel?: string;
+  supportLevel?: QuickstartSupportLevel;
   installPlanStepIds?: string[];
   dashboards?: QuickstartDashboardInput[];
 }
+
+export type QuickstartSupportLevel =
+  | 'COMMUNITY'
+  | 'ENTERPRISE'
+  | 'NEW_RELIC'
+  | 'VERIFIED';
 
 export interface QuickstartMutationVariable {
   id: string;

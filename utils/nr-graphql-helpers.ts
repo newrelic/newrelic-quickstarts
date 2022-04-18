@@ -8,8 +8,8 @@ import { Policy } from 'cockatiel';
 import fetch from 'node-fetch';
 import instantObservabilityCategories from './instant-observability-categories';
 
-const NR_API_URL = process.env.NR_API_URL;
-const NR_API_TOKEN = process.env.NR_API_TOKEN;
+const NR_API_URL = process.env.NR_API_URL || '';
+const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
 
 /**
  * Build body param for NR GraphQL request
@@ -42,8 +42,9 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
   // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
-  const retry = Policy.handleWhenResult(
-    (response: Response) => response.status >= 400
+  const retry = Policy.handleResultType(
+    Response,
+    (response) => response.status >= 400
   )
     .retry()
     .attempts(3)
@@ -75,7 +76,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
       }
     }
   } catch (error) {
-    graphqlErrors.push(error);
+    graphqlErrors.push(error as Error);
   }
 
   return { data: results, errors: graphqlErrors };
@@ -142,7 +143,7 @@ export const getCategoryTermsFromKeywords = (
     (category) => category.associatedKeywords
   );
 
-  const categoryKeywords = configKeywords.reduce((acc, keyword) => {
+  const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
     if (allCategoryKeywords.includes(keyword)) {
       acc.push(keyword);
     }

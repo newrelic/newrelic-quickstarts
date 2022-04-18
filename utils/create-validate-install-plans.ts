@@ -7,10 +7,10 @@ import {
   InstallPlanTargetType,
 } from './types/InstallPlanMutationVariables';
 import {
-  InstallPlanYML,
-  InstallPlanYMLInstall,
-  InstallPlanYMLTarget,
-} from './types/InstallPlanYML';
+  InstallPlanConfig,
+  InstallPlanInstall,
+  InstallPlanTarget,
+} from './types/InstallPlanConfig';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 import * as path from 'path';
@@ -70,14 +70,14 @@ interface InstallPlanMutationResponse {
  * @returns {Object} target transformed for NR request
  */
 const buildInstallPlanTargetVariable = (
-  target: InstallPlanYMLTarget
+  target: InstallPlanTarget
 ): InstallPlanTargetInput => {
   const upperCaseTarget: InstallPlanTargetInput = {
     type: target.type.toUpperCase() as InstallPlanTargetType,
     destination: target.destination.toUpperCase() as InstallPlanDestination,
   };
 
-  if ('os' in target) {
+  if ('os' in target && Array.isArray(target.os)) {
     upperCaseTarget.os = target.os.map((str) =>
       str.toUpperCase()
     ) as InstallPlanOperatingSystem[];
@@ -94,7 +94,7 @@ const buildInstallPlanTargetVariable = (
 const buildInstallPlanDirectiveVariable = ({
   mode,
   destination,
-}: InstallPlanYMLInstall): InstallPlanDirectiveInput => {
+}: InstallPlanInstall): InstallPlanDirectiveInput => {
   switch (mode) {
     case 'targetedInstall':
       return {
@@ -110,6 +110,7 @@ const buildInstallPlanDirectiveVariable = ({
         },
       };
     default:
+      // Defaults to submitting an invalid directive, so that validation can catch it
       return { mode, destination: undefined };
   }
 };
@@ -121,7 +122,7 @@ const buildInstallPlanDirectiveVariable = ({
  */
 const buildMutationVariables = (installPlanConfig: {
   path: string;
-  contents: InstallPlanYML[];
+  contents: InstallPlanConfig[];
 }): InstallPlanMutationVariable => {
   const { id, name, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
@@ -153,7 +154,7 @@ const transformInstallPlansToRequestVariables = ({
   variables: InstallPlanMutationVariable;
   filePath: string;
 } => {
-  const installPlanFile = readYamlFile<InstallPlanYML>(
+  const installPlanFile = readYamlFile<InstallPlanConfig>(
     path.join(process.cwd(), `../${filename}`)
   );
 
@@ -228,10 +229,14 @@ const recordCustomNREvent = async (hasFailed: boolean, isDryRun: boolean) => {
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
 
-  const files = await fetchPaginatedGHResults(
-    GITHUB_API_URL,
-    process.env.GITHUB_TOKEN
-  );
+  const githubToken = process.env.GITHUB_TOKEN;
+  if (!githubToken) {
+    console.error('GITHUB_TOKEN is not defined.');
+    process.exit(1);
+  }
+
+  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+
   const installPlanFiles = filterInstallPlans(files);
   const hasFailed = await createValidateUpdateInstallPlan(installPlanFiles);
   await recordCustomNREvent(hasFailed, isDryRun === 'true');

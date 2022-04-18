@@ -76,8 +76,13 @@ export const checkArgs = (length: number) => {
  * @param {String} filePath the path to change
  * @returns {String} The path with the prefix
  */
-export const removeRepoPathPrefix = (filePath: string): string =>
-  filePath.split(`newrelic-quickstarts/`).pop();
+export const removeRepoPathPrefix = (filePath: string): string => {
+  const shortPath = filePath.split(`newrelic-quickstarts/`).pop();
+  if (typeof shortPath === 'string') {
+    return shortPath;
+  }
+  return filePath;
+};
 
 /**
  * Checks if a path is a direectory
@@ -147,15 +152,19 @@ export const findMainInstallConfigFiles = (): string[] =>
  */
 export const passedProcessArguments = (): string[] => process.argv.slice(2);
 
+interface NameAndPath {
+  name: string;
+  path: string;
+}
 /**
  * Returns any quickstarts with matching names
  * @param {Object[]} namesAndPaths an array of objects containing the path and name of a quickstart
  * @returns {Object[]} an array of matching values
  */
 export const getMatchingNames = (
-  namesAndPaths: { name: string; path: string }[]
-): object[] => {
-  return namesAndPaths.reduce((acc, { name, path }) => {
+  namesAndPaths: NameAndPath[]
+): NameAndPath[] => {
+  return namesAndPaths.reduce<NameAndPath[]>((acc, { name, path }) => {
     const duplicates = namesAndPaths.filter(
       (quickstart) => quickstart.name === name && quickstart.path !== path
     );

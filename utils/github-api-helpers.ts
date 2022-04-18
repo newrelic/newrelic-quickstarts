@@ -9,10 +9,10 @@ const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
  * Pulls the next page off of a `Link` header
- * @param {String} linkHeader the `Link` header value
+ * @param {String|Null} linkHeader the `Link` header value
  * @returns {String|Null} the next page of results
  */
-export const getNextLink = (linkHeader: string): string | null => {
+export const getNextLink = (linkHeader: string | null): string | null => {
   const parsedLinkHeader = parseLinkHeader(linkHeader);
   if (parsedLinkHeader && parsedLinkHeader.next) {
     return parsedLinkHeader.next.url || null;
@@ -23,7 +23,14 @@ export const getNextLink = (linkHeader: string): string | null => {
 export interface GithubAPIPullRequestFile {
   sha: string;
   filename: string;
-  status: string; //TODO: add actual statuses
+  status:
+    | 'added'
+    | 'removed'
+    | 'modified'
+    | 'renamed'
+    | 'copied'
+    | 'changed'
+    | 'unchanged';
   additions: number;
   deletions: number;
   changes: number;
@@ -44,7 +51,7 @@ export const fetchPaginatedGHResults = async (
   token: string
 ): Promise<GithubAPIPullRequestFile[]> => {
   let files: GithubAPIPullRequestFile[] = [];
-  let nextPageLink = url;
+  let nextPageLink: string | null = url;
   try {
     while (nextPageLink) {
       const resp = await fetch(nextPageLink, {

@@ -66,9 +66,19 @@ const apiRequest = async (
 export const track = async (
   eventType: CUSTOM_EVENT,
   metadata: Object = {}
-): Promise<Boolean> =>
-  apiRequest(NEW_RELIC_LICENSE_KEY, NEW_RELIC_ACCOUNT_ID, {
+): Promise<Boolean> => {
+  if (!NEW_RELIC_LICENSE_KEY) {
+    console.error('NEW_RELIC_LICENSE_KEY not set.');
+    return false;
+  }
+  if (!NEW_RELIC_ACCOUNT_ID) {
+    console.error('NEW_RELIC_ACCOUNT_ID not set.');
+    return false;
+  }
+
+  return apiRequest(NEW_RELIC_LICENSE_KEY, NEW_RELIC_ACCOUNT_ID, {
     eventType,
     account: NEW_RELIC_ACCOUNT_ID,
     ...metadata,
   });
+};
