@@ -13,7 +13,6 @@ import {
 import {
   NerdGraphError,
   NerdGraphResponseWithLocalErrors,
-  QuickstartMutationResponse,
 } from './types/nerdgraph';
 
 import * as glob from 'glob';
@@ -36,6 +35,16 @@ import {
   chunk,
 } from './nr-graphql-helpers';
 import { track, CUSTOM_EVENT } from './newrelic/customEvent';
+
+interface Map {
+  [key: string]: string | undefined;
+}
+
+export interface QuickstartMutationResponse {
+  quickstart: {
+    id: string;
+  };
+}
 
 const gql = String.raw;
 
@@ -61,10 +70,6 @@ const QUICKSTART_MUTATION = gql`
     }
   }
 `;
-
-interface Map {
-  [key: string]: string | undefined;
-}
 
 const SUPPORT_LEVEL_ENUMS: Map = {
   'New Relic': 'NEW_RELIC',

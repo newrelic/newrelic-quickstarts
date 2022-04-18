@@ -44,9 +44,3 @@ export interface NerdGraphRequest<T = {}> {
   queryString: string;
   variables?: T;
 }
-
-export interface QuickstartMutationResponse {
-  quickstart: {
-    id: string;
-  };
-}
