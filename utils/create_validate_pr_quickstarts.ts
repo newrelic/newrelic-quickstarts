@@ -1,13 +1,15 @@
 import {
-  QuickstartConfig,
   QuickstartMutationVariable,
   QuickstartAlertInput,
   QuickstartDashboardInput,
-  AlertYml,
   DashboardScreenshot,
-  QuickstartDocumentationYml,
   QuickstartDocumentation,
 } from './types/QuickstartMutationVariable';
+import {
+  QuickstartConfigAlert,
+  QuickstartConfigDocumentation,
+  QuickstartConfig,
+} from './types/QuickstartConfig';
 import {
   NerdGraphError,
   NerdGraphResponseWithLocalErrors,
@@ -250,7 +252,9 @@ const adaptQuickstartAlertsInput = (
   alertConfigPaths: string[]
 ): QuickstartAlertInput[] =>
   alertConfigPaths.map((alertConfigPath) => {
-    const parsedConfig = readQuickstartFile<AlertYml>(alertConfigPath);
+    const parsedConfig = readQuickstartFile<QuickstartConfigAlert>(
+      alertConfigPath
+    );
     const { description, name, type } = parsedConfig.contents[0];
 
     return {
@@ -291,8 +295,9 @@ const adaptQuickstartDashboardInput = (
       name: string;
     }>(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
-    const screenshotPaths =
-      getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
+    const screenshotPaths = getQuickstartDashboardScreenshotPaths(
+      dashboardConfigPath
+    );
     return {
       description: description && description.trim(),
       displayName: name && name.trim(),
@@ -347,11 +352,11 @@ export const getQuickstartDashboardScreenshotPaths = (
 
 /**
  * Builds input arguments for the `documentation` field.
- * @param {QuickstartDocumentationYml[]} documentation - The documentation sections of a parsed quickstart config.yml file.
+ * @param {QuickstartConfigDocumentation[]} documentation - The documentation sections of a parsed quickstart config.yml file.
  * @return {QuickstartDocumentation[]}  An set of objects that represent a quickstart's documentation in the context of a GraphQL mutation.
  */
 const adaptQuickstartDocumentationInput = (
-  documentation: QuickstartDocumentationYml[]
+  documentation: QuickstartConfigDocumentation[]
 ): QuickstartDocumentation[] =>
   documentation.map((doc) => {
     const { name, url, description } = doc;
@@ -397,10 +402,11 @@ export const getGraphqlRequests = (
   }));
 };
 
-type GraphQLResponse =
-  NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
-    filePath: string;
-  };
+type GraphQLResponse = NerdGraphResponseWithLocalErrors<
+  QuickstartMutationResponse
+> & {
+  filePath: string;
+};
 
 /**
  * Builds and sends GraphQL mutations to validate the quickstarts in a PR and prints out any errors

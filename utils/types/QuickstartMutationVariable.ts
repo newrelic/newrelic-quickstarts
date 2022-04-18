@@ -50,32 +50,3 @@ export interface QuickstartMutationVariable {
   dryRun: boolean;
   quickstartMetadata: QuickstartMetaData;
 }
-
-// --------------------- YML / CONFIG Types
-
-// or AlertConfig, etc
-export interface AlertYml {
-  name: string;
-  description: string;
-  type: string;
-}
-
-export interface QuickstartDocumentationYml {
-  name: string;
-  description: string;
-  url: string;
-}
-
-export interface QuickstartConfig {
-  authors: string[];
-  description: string;
-  title: string;
-  slug?: string;
-  documentation: QuickstartDocumentationYml[];
-  icon: string;
-  keywords?: string[];
-  summary: string;
-  installPlans?: string[];
-  id: string;
-  level: string;
-}
