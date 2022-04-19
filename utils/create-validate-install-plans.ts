@@ -15,7 +15,11 @@ import {
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 import * as path from 'path';
-import { readYamlFile, passedProcessArguments } from './helpers';
+import {
+  readYamlFile,
+  FilePathAndContents,
+  passedProcessArguments,
+} from './helpers';
 import {
   fetchPaginatedGHResults,
   filterInstallPlans,
@@ -121,10 +125,9 @@ const buildInstallPlanDirectiveVariable = ({
  * @param {Object} installPlanConfig - An object containing the path and contents of a quickstart config file.
  * @return {Object} An object that represents a quickstart in the context of a GraphQL mutation.
  */
-const buildMutationVariables = (installPlanConfig: {
-  path: string;
-  contents: InstallPlanConfig[];
-}): InstallPlanMutationVariable => {
+const buildMutationVariables = (
+  installPlanConfig: FilePathAndContents<InstallPlanConfig>
+): InstallPlanMutationVariable => {
   const { id, name, title, description, target, install, fallback } =
     installPlanConfig.contents[0] || {};
 
