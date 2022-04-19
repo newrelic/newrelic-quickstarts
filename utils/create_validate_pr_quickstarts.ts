@@ -297,12 +297,12 @@ export const getQuickstartDashboardConfigs = (
  */
 const adaptQuickstartDashboardInput = (
   dashboardConfigPaths: string[]
-): QuickstartDashboardInput[] =>
-  dashboardConfigPaths.map((dashboardConfigPath) => {
-    const parsedConfig = readQuickstartFile<{
-      description: string;
-      name: string;
-    }>(dashboardConfigPath);
+): QuickstartDashboardInput[] => {
+  type QuickstartBaseMetadata = { description: string; name: string };
+
+  return dashboardConfigPaths.map((dashboardConfigPath) => {
+    const parsedConfig =
+      readQuickstartFile<QuickstartBaseMetadata>(dashboardConfigPath);
     const { description, name } = parsedConfig.contents[0];
     const screenshotPaths =
       getQuickstartDashboardScreenshotPaths(dashboardConfigPath);
@@ -314,6 +314,7 @@ const adaptQuickstartDashboardInput = (
       screenshots: screenshotPaths && screenshotPaths.map(getScreenshotUrl),
     };
   });
+};
 
 /**
  * Creates the GitHub url of each screenshot within the main directory of a quickstart.
