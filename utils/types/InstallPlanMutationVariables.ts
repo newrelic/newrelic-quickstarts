@@ -1,3 +1,9 @@
+import {
+  InstallPlanConfigTargetOS,
+  InstallPlanConfigTargetType,
+  InstallPlanConfigTargetDestination,
+} from './InstallPlanConfig';
+
 export interface InstallPlanMutationVariable {
   dryRun: boolean;
   description: string;
@@ -46,14 +52,8 @@ interface DefaultDirective {
 }
 
 export type InstallPlanDestination =
-  | 'APPLICATION'
-  | 'CLOUD'
-  | 'HOST'
-  | 'KUBERNETES'
-  | 'UNKNOWN';
-export type InstallPlanOperatingSystem = 'DARWIN' | 'LINUX' | 'WINDOWS';
-export type InstallPlanTargetType =
-  | 'AGENT'
-  | 'INTEGRATION'
-  | 'ON_HOST_INTEGRATION'
-  | 'UNKNOWN';
+  Uppercase<InstallPlanConfigTargetDestination>;
+
+export type InstallPlanOperatingSystem = Uppercase<InstallPlanConfigTargetOS>;
+
+export type InstallPlanTargetType = Uppercase<InstallPlanConfigTargetType>;

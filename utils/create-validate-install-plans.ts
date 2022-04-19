@@ -10,6 +10,7 @@ import {
   InstallPlanConfig,
   InstallPlanInstall,
   InstallPlanTarget,
+  InstallPlanTargetOS,
 } from './types/InstallPlanConfig';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
@@ -72,15 +73,15 @@ interface InstallPlanMutationResponse {
 const buildInstallPlanTargetVariable = (
   target: InstallPlanTarget
 ): InstallPlanTargetInput => {
-  const upperCaseTarget: InstallPlanTargetInput = {
-    type: target.type.toUpperCase() as InstallPlanTargetType,
-    destination: target.destination.toUpperCase() as InstallPlanDestination,
-  };
+  const upperCaseTarget = {
+    type: target.type.toUpperCase(),
+    destination: target.destination.toUpperCase(),
+  } as InstallPlanTargetInput;
 
   if ('os' in target && Array.isArray(target.os)) {
-    upperCaseTarget.os = target.os.map((str) =>
+    upperCaseTarget.os = target.os.map((str: InstallPlanTargetOS) =>
       str.toUpperCase()
-    ) as InstallPlanOperatingSystem[];
+    );
   }
 
   return upperCaseTarget;

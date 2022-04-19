@@ -15,9 +15,9 @@ export interface InstallPlanConfig {
 }
 
 export interface InstallPlanTarget {
-  destination: InstallPlanTargetDestination;
-  os?: InstallPlanTargetOS[];
-  type: InstallPlanTargetType;
+  destination: InstallPlanConfigTargetDestination;
+  os?: InstallPlanConfigTargetOS[];
+  type: InstallPlanConfigTargetType;
 }
 
 export type InstallPlanInstall =
@@ -31,15 +31,15 @@ export type InstallPlanInstall =
     }
   | { mode: 'targetedInstall'; destination: { recipeName: string } };
 
-type InstallPlanTargetType =
+export type InstallPlanConfigTargetType =
   | 'integration'
   | 'agent'
   | 'on_host_integration'
   | 'unknown';
 
-type InstallPlanTargetOS = 'darwin' | 'linux' | 'windows';
+export type InstallPlanConfigTargetOS = 'darwin' | 'linux' | 'windows';
 
-type InstallPlanTargetDestination =
+export type InstallPlanConfigTargetDestination =
   | 'application'
   | 'cloud'
   | 'host'
