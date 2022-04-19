@@ -10,7 +10,7 @@ import {
   InstallPlanConfig,
   InstallPlanInstall,
   InstallPlanTarget,
-  InstallPlanTargetOS,
+  InstallPlanConfigTargetOS,
 } from './types/InstallPlanConfig';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
@@ -83,8 +83,8 @@ const buildInstallPlanTargetVariable = (
   } as InstallPlanTargetInput;
 
   if ('os' in target && Array.isArray(target.os)) {
-    upperCaseTarget.os = target.os.map((str: InstallPlanTargetOS) =>
-      str.toUpperCase()
+    upperCaseTarget.os = target.os.map(
+      (str) => str.toUpperCase() as Uppercase<InstallPlanConfigTargetOS>
     );
   }
 
@@ -176,10 +176,11 @@ const transformInstallPlansToRequestVariables = ({
 export const createValidateUpdateInstallPlan = async (
   installPlanFiles: { filename: string }[]
 ): Promise<boolean> => {
-  type GraphQLResponse =
-    NerdGraphResponseWithLocalErrors<InstallPlanMutationResponse> & {
-      filePath: string;
-    };
+  type GraphQLResponse = NerdGraphResponseWithLocalErrors<
+    InstallPlanMutationResponse
+  > & {
+    filePath: string;
+  };
 
   const installPlanRequests = installPlanFiles.map(
     transformInstallPlansToRequestVariables
