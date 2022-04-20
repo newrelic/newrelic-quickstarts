@@ -122,4 +122,5 @@ describe('Action: validate images', () => {
     expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
+
 });

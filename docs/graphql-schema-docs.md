@@ -4,6 +4,7 @@
   <summary><strong>Table of Contents</strong></summary>
 
   * [Objects](#objects)
+    * [Nr1CatalogInstallDashboardTemplateResult](#nr1cataloginstalldashboardtemplateresult)
     * [Nr1CatalogInstallPlan](#nr1cataloginstallplan)
     * [Nr1CatalogInstallPlanStep](#nr1cataloginstallplanstep)
     * [Nr1CatalogInstallPlanTarget](#nr1cataloginstallplantarget)
@@ -45,6 +46,41 @@
 </details>
 
 ## Objects
+
+### Nr1CatalogInstallDashboardTemplateResult
+
+Information about the mutation result when installing a dashboard template
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>createdDashboard</strong></td>
+<td valign="top">Nr1CatalogDashboardOutline!</td>
+<td>
+
+An outline of the created dashboard
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>dashboardTemplate</strong></td>
+<td valign="top">Nr1CatalogDashboardTemplate!</td>
+<td>
+
+The template that was used for the installation
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Nr1CatalogInstallPlan
 
