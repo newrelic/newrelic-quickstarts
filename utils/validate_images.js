@@ -25,51 +25,52 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 const validateImageCounts = (quickstartDirs) => {
   const screenshotDirectories = [];
   const imagesDirectories = [];
-  quickstartDirs
-    .forEach((quickstart) => {
-      const quickstartDirName = path.dirname(quickstart);
-      // get all images for a quickstart
-      const imagePaths = glob.sync(
-        path.resolve(quickstartDirName, '**/*.+(png|jpeg|jpg|svg)')
-      );
-      const quickstartConfig = readQuickstartFile(quickstart).contents[0];
-      const quickstartName = quickstartConfig.name;
-      const logoPath = quickstartConfig.logo
-        ? path.resolve(quickstartDirName, quickstartConfig.logo)
-        : null;
+  quickstartDirs.forEach((quickstart) => {
+    const quickstartDirName = path.dirname(quickstart);
+    // get all images for a quickstart
+    const imagePaths = glob.sync(
+      path.resolve(quickstartDirName, 'dashboards/**/*.+(png|jpeg|jpg|svg)')
+    );
+    const quickstartConfig = readQuickstartFile(quickstart).contents[0];
+    const quickstartName = quickstartConfig.name;
+    const logoPath = quickstartConfig.logo
+      ? path.resolve(quickstartDirName, quickstartConfig.logo)
+      : null;
 
-      // Max images is per dashboard so we need to account for this by getting the number of dashboards
-      const dashboardCount = glob.sync(
-        path.resolve(quickstartDirName, 'dashboards/*.json')
-      ).length;
+    // Max images is per dashboard so we need to account for this by getting the number of dashboards
+    const dashboardCount = glob.sync(
+      path.resolve(quickstartDirName, 'dashboards/**/*.json')
+    ).length;
 
-      const screenshotPaths = imagePaths.filter(
-        (p) => p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
-      );
+    const screenshotPaths = imagePaths.filter(
+      (p) =>
+        p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
+    );
 
-      const dashboardImagePaths = imagePaths.filter(
-        (p) => p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
-      );
+    const dashboardImagePaths = imagePaths.filter(
+      (p) =>
+        p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
+    );
 
-      // Each dashboard is allowed MAX_NUM_IMG dashboards
-      if (screenshotPaths.length > (MAX_NUM_IMG * dashboardCount)) {
-        screenshotDirectories.push({
-          folder: quickstartDirName,
-          dashboardCount,
-          imageCount: screenshotPaths.length,
-          maxImages: MAX_NUM_IMG * dashboardCount,
-        });
-      }
+    // Each dashboard is allowed MAX_NUM_IMG dashboards
+    if (screenshotPaths.length > MAX_NUM_IMG * dashboardCount) {
+      screenshotDirectories.push({
+        folder: quickstartDirName,
+        dashboardCount,
+        imageCount: screenshotPaths.length,
+        maxImages: MAX_NUM_IMG * dashboardCount,
+      });
+    }
 
-      if (dashboardImagePaths.length > (MAX_NUM_IMG * dashboardCount)) {
-        imagesDirectories.push({
-          folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
-          dashboardCount,
-          imageCount: dashboardImagePaths.length,
-          maxImages: MAX_NUM_IMG * dashboardCount,
-        });
-      }
-    });
+    if (dashboardImagePaths.length > MAX_NUM_IMG * dashboardCount) {
+      imagesDirectories.push({
+        folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
+        dashboardCount,
+        imageCount: dashboardImagePaths.length,
+        maxImages: MAX_NUM_IMG * dashboardCount,
+      });
+    }
+  });
 
   if (screenshotDirectories.length) {
     core.setFailed('Each component should contain no more than 12 screenshots');
@@ -78,7 +79,9 @@ const validateImageCounts = (quickstartDirs) => {
   }
 
   if (imagesDirectories.length) {
-    core.setFailed('The `images` directory should contain no more than 12 images per component');
+    core.setFailed(
+      'The `images` directory should contain no more than 12 images per component'
+    );
     console.warn(`\nPlease check the following directories:`);
     imagesDirectories.forEach((dir) => console.warn(dir));
   }
@@ -134,7 +137,7 @@ const main = () => {
 };
 
 /**
- * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_quickstarts.js', or if it was imported.
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node validate_images.js', or if it was imported.
  * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */

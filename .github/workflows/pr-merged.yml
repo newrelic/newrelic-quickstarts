@@ -65,7 +65,7 @@ jobs:
         run: |
           git config --local user.email "${{ env.THIRD_PARTY_GIT_AUTHOR_EMAIL }}"
           git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
-          
+
           # main could have been modified since we checked out, so pull before committing
           git pull --ff-only origin main
 
@@ -92,12 +92,11 @@ jobs:
                 strict: true,
                 contexts: [
                     'Validation / Image count and extension compliance',
-                    'Validation / Quickstart schema compliance',
-                    'Validation / Conventional commit compliance',
-                    'Validation / Ensure logos exist',
+                    'Validation / Ensure icons exist',
                     'Validation / Install plan ids exist',
                     'Validation / Install plan schema compliance',
-                    'Validation / Quickstart id & name are unique'
+                    'Validation / Quickstart id are unique',
+                    'Validation / Validate Quickstart Schema'
                 ]
               },
               restrictions: {
@@ -117,10 +116,11 @@ jobs:
             })
             console.log("Result:", result)
 
-  submit-install-plans:
-    name: Submit install plans
-    needs: [generate-uuid]
+  get-pr-number:
+    name: Get PR number
     runs-on: ubuntu-latest
+    outputs:
+      pr-number: ${{ steps.get_pr_number.outputs.pr-number }}
     steps:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -134,97 +134,35 @@ jobs:
           export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
           echo "::set-output name=pr-number::$PR_NUMBER"
 
-      - name: Checkout repo
-        uses: actions/checkout@v2
-        # Ensure we have the most recent commit to `main`
-        with:
-          ref: "main"
-          fetch-depth: 0
+  staging:
+    needs: [generate-uuid, get-pr-number]
+    uses: ./.github/workflows/reusable.quickstart_submission.yml
+    with:
+      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+      dry-run: false
+    secrets:
+      nr-api-url: ${{ secrets.NR_API_URL_STAGING }}
+      nr-api-token: ${{ secrets.NR_API_TOKEN_STAGING }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
+  production:
+    needs: [staging, get-pr-number]
+    uses: ./.github/workflows/reusable.quickstart_submission.yml
+    with:
+      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+      dry-run: false
+    secrets:
+      nr-api-url: ${{ secrets.NR_API_URL }}
+      nr-api-token: ${{ secrets.NR_API_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: cd utils && yarn install
-
-      - name: Update install plans - staging
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL_STAGING }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_STAGING }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
-
-      - name: Update install plans - production
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
-
-      - name: Update install plans - EU
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL_EU }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_EU }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-install-plans $URL ${DRY_RUN}
-      
-  submit-quickstarts:
-    name: Submit quickstarts
-    needs: [generate-uuid, submit-install-plans]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: submit_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
-
-      - name: Get PR number
-        id: get_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
-          
-      - name: Checkout repo
-        uses: actions/checkout@v2
-        # Ensure we have the most recent commit to `main`
-        with:
-          ref: "main"
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install
-
-      - name: Update quickstarts - staging
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL_STAGING }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_STAGING }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
-
-      - name: Update quickstarts - production
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN}}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
-
-      - name: Update quickstarts - EU
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL_EU }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN_EU }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
-          cd utils && yarn create-validate-pr-quickstarts $URL ${DRY_RUN}
+  eu-production:
+    needs: [staging, get-pr-number]
+    uses: ./.github/workflows/reusable.quickstart_submission.yml
+    with:
+      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+      dry-run: false
+    secrets:
+      nr-api-url: ${{ secrets.NR_API_URL_EU }}
+      nr-api-token: ${{ secrets.NR_API_TOKEN_EU }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}

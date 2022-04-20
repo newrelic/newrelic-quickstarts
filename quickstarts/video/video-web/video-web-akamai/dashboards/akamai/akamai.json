@@ -1,0 +1,2257 @@
+{
+  "name": "Video Quality - Akamai Media Player",
+  "description": "",
+
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Attempts",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Attempts",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Plays",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Plays",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 4,
+            "width": 2
+          },
+          "title": "Median Video Start Time",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 7 days ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Connection Buffering Ratio",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Start Failure %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Playback Failure %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Total Playtime",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "minutes",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(playtimeSinceLastEvent/60000) as 'minutes' FROM PageAction, MobileVideo, RokuVideo WHERE contentPlayhead is not null since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Exits Before Video Start",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_REQUEST') - filter(count(*), WHERE actionName = 'CONTENT_START') as 'Exits' since 7 days ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Total Connection Buffering Time",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT sum(timeSinceBufferBegin/1000) as 'Seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Start Failures",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) as 'VSFs' WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000 since 7 days ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 11,
+            "row": 3,
+            "height": 2,
+            "width": 2
+          },
+          "title": "Video Playback Failures",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'VPFs' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Video Start Time Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50), percentile(timeSinceRequested/1000, 75), percentile(timeSinceRequested/1000, 95) WHERE actionName = 'CONTENT_START' since 7 days ago TIMESERIES WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "height": 4,
+            "width": 6
+          },
+          "title": "Connection Buffering Ratio Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' TIMESERIES since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Start Failure % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Video Playback Failure % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Playtime",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(playtimeSinceLastEvent/60000) as 'minutes' FROM PageAction, MobileVideo, RokuVideo WHERE contentPlayhead is not null TIMESERIES since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        }
+      ]
+    },
+    {
+      "name": "Video Start Time",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Median  Video Start Time",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 7 days ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Plays",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Plays",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Video Start Time",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50), percentile(timeSinceRequested/1000, 75), percentile(timeSinceRequested/1000, 95) WHERE actionName = 'CONTENT_START' since 7 days ago TIMESERIES WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VST Under 5 seconds ",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentage(count(viewId), where timeSinceRequested < 5000) WHERE actionName = 'CONTENT_START'  since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Time Percentile",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(percentile(timeSinceRequested/1000, 50, 90, 95, 99), where actionName = 'CONTENT_START' and timeSinceRequested < 90000 and (timeSinceBackground is NULL OR timeSinceBackground <1000)) as 'seconds' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 8
+          },
+          "title": "Start Time Percentile Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(percentile(timeSinceRequested/1000, 50, 90, 95, 99), where actionName = 'CONTENT_START' and timeSinceRequested < 90000 and (timeSinceBackground is NULL OR timeSinceBackground <1000)) as 'seconds' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by city",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_START' facet city, regionCode, countryCode  since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Video Start Tme by city",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 1 week ago facet city, regionCode, countryCode  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 3,
+            "width": 8
+          },
+          "title": "VST under 5 seconds Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(viewId), where timeSinceRequested < 5000 and actionName = 'CONTENT_START' ) / filter(count(viewId), WHERE actionName = 'CONTENT_START' and timeSinceRequested is not NULL) *100 as'%' since 1 week ago TIMESERIES WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Plays by Asset Name",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_START' facet contentTitle since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Video Start Time by assetName",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 1 week ago facet contentTitle  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM MobileVideo, PageAction where actionName = 'CONTENT_START' facet asnOrganization since 1 week ago limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Video Start Time by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 1 week ago facet asnOrganization  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 3,
+            "width": 6
+          },
+          "title": "viewSession with the longest Video Start Time",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 1 week ago facet viewSession limit 200  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "height": 3,
+            "width": 6
+          },
+          "title": "viewId with the longest Video Start Time",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000, 50) as 'seconds' WHERE actionName = 'CONTENT_START' since 1 week ago facet viewId  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Start Times over 5 seconds",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT  actionName, timeSinceRequested, viewId, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_START' and timeSinceRequested >5000  since 1 week ago limit max WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        }
+      ]
+    },
+    {
+      "name": "CIRR",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Total Plays",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Plays",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "% of Plays with CIRR > 500",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniquecount(viewId), where bufferType = 'connection' and actionName = 'CONTENT_BUFFER_END' and timeSinceBufferBegin > 500 ) / (filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000))*100 as '%' since 1 week ago  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "% Plays with CIRR > 500 ms",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND timeSinceBufferBegin > 500 AND timeSinceBufferBegin < 90000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackgroundEvent is false)) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' since 1 week ago TIMESERIES auto WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' facet contentTitle since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' since 1 week ago facet contentTitle WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Connection Rebuffer Ratio",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / filter(sum(playtimeSinceLastEvent/60000), WHERE contentPlayhead is not null) as '%'\n WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "height": 3,
+            "width": 6
+          },
+          "title": "CIRR Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' TIMESERIES SINCE 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' facet asnOrganization  since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by isp",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' since 1 week ago facet asnOrganization  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR Events",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT  count(*) as 'Buffer Events'  WHERE actionName = 'CONTENT_BUFFER_START' AND bufferType = 'connection' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 6
+          },
+          "title": "CIRR Events Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT  count(*) as 'Buffer Events'  WHERE actionName = 'CONTENT_BUFFER_START' AND bufferType = 'connection' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by city",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM PageAction, MobileVideo, RokuVideo where totalPlaytime > 1000 facet city, regionCode, countryCode  since 1 week ago limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "CIRR by city",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' since 1 week ago facet city,regionCode, countryCode WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Median Buffer Length",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT median(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Median Buffer Length Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT median(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "viewId with high CIRR",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' since 1 week ago facet viewId  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Total Buffer Seconds",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT sum(timeSinceBufferBegin/1000) as 'Seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Total Buffer Seconds Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT sum(timeSinceBufferBegin/1000) as 'Seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "height": 3,
+            "width": 4
+          },
+          "title": "viewSessions with high CIRR",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 and bufferType = 'connection') / sum(playtimeSinceLastEvent/1000) as '%' since 1 week ago facet viewSession  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 8,
+            "width": 12
+          },
+          "title": "CIRR Buffer Events",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT actionName, bufferType, timeSinceBufferBegin, timeSinceSeekEnd, timeSinceStarted, timeSinceResumed, assetId, assetName, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' since 1 week ago limit MAX WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        }
+      ]
+    },
+    {
+      "name": "Start Failures",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failures",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) as 'VSFs' WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000 since 7 days ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Start Failure Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as'Start Failures' since 1 week ago timeseries WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Attempts",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VSF %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "VSF % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Top Start Failure Message",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) where totalPlaytime < 1000 facet message since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Failure Messages",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) where totalPlaytime < 1000 facet message since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' since 1 week ago facet contentTitle WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo  SELECT uniqueCount(viewId) as 'VSFs' WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000 since 1 week ago facet contentTitle WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago facet contentTitle  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' facet city, regionCode, countryCode since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) as 'Start Failures' WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000 since 1 week ago facet city, regionCode, countryCode WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' facet city, regionCode, countryCode since 1 week ago  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Attempts by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Attempts' FROM PageAction, MobileVideo, RokuVideo where actionName = 'CONTENT_REQUEST' since 1 week ago facet asnOrganization  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) as 'Start Failures' WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000  since 1 week ago facet asnOrganization WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Start Failure % by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago facet asnOrganization  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Failure by viewSession",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 facet viewSession since 1 week ago limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Start Failure Errors",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT actionName, message, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 since 1 week ago limit max WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        }
+      ]
+    },
+    {
+      "name": "Playback Failures",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failures",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Playback Failure Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago timeseries WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays",
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Plays",
+                "precision": null,
+                "type": "decimal"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_START') - filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead <1000) as 'Plays' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Plays Trend",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Active Plays' FROM MobileVideo, PageAction, RokuVideo where totalPlaytime > 1000  since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "VPF %",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "thresholds": []
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "VPF % Trend",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Top Playback Errors",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) where totalPlaytime > 1000 WHERE actionName = 'CONTENT_ERROR' facet message since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Error Messages",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT uniqueCount(viewId) where totalPlaytime > 1000 WHERE actionName = 'CONTENT_ERROR' facet message since 1 week ago TIMESERIES  WHERE trackerName = 'akamai-media-player'"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction, MobileVideo, RokuVideo where totalPlaytime > 1000 since 1 week ago facet contentTitle limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago facet contentTitle WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by Title",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST')) *100 as '%' since 1 week ago facet contentTitle WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction, MobileVideo, RokuVideo where totalPlaytime > 1000 since 1 week ago facet city, regionCode, countryCode limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago facet city, regionCode, countryCode WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 11,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by City",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet city, regionCode, countryCode since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Plays by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(viewId) as 'Plays' FROM PageAction, MobileVideo, RokuVideo where totalPlaytime > 1000 since 1 week ago facet asnOrganization limit 200 WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago facet asnOrganization WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Playback Failure % by ISP",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(uniqueCount(viewId), where totalPlaytime > 1000)) *100 as '%' facet asnOrganization since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Playback Failure by viewId",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 FACET viewId since 1 week ago WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Playback Failure by viewSession",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileVideo, PageAction, RokuVideo SELECT uniqueCount(viewId) as 'Playback Failures' where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000 since 1 week ago facet viewSession  WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "height": 8,
+            "width": 12
+          },
+          "title": "Errors",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM PageAction, MobileVideo, RokuVideo SELECT actionName, message, appName, appVersion, city, regionCode, asnOrganization, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 since 1 week ago limit max WHERE trackerName = 'akamai-media-player'"
+              }
+            ]
+          }
+
+        }
+      ]
+    }
+  ]
+}
