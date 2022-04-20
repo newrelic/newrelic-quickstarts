@@ -1,7 +1,5 @@
-'use strict';
-
-const fetch = require('node-fetch');
-const parseLinkHeader = require('parse-link-header');
+import fetch from 'node-fetch';
+import * as parseLinkHeader from 'parse-link-header';
 
 const QUICKSTART_CONFIG_REGEXP = new RegExp(
   'quickstarts/.+/config.+(yml|yaml)'
@@ -11,10 +9,10 @@ const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 
 /**
  * Pulls the next page off of a `Link` header
- * @param {String} linkHeader the `Link` header value
+ * @param {String|Null} linkHeader the `Link` header value
  * @returns {String|Null} the next page of results
  */
-const getNextLink = (linkHeader) => {
+export const getNextLink = (linkHeader: string | null): string | null => {
   const parsedLinkHeader = parseLinkHeader(linkHeader);
   if (parsedLinkHeader && parsedLinkHeader.next) {
     return parsedLinkHeader.next.url || null;
@@ -22,15 +20,38 @@ const getNextLink = (linkHeader) => {
   return null;
 };
 
+export interface GithubAPIPullRequestFile {
+  sha: string;
+  filename: string;
+  status:
+    | 'added'
+    | 'removed'
+    | 'modified'
+    | 'renamed'
+    | 'copied'
+    | 'changed'
+    | 'unchanged';
+  additions: number;
+  deletions: number;
+  changes: number;
+  blob_url: string;
+  raw_url: string;
+  contents_url: string;
+  path: string;
+}
+
 /**
  * Fetches paginated results from the Github API
  * @param {String} url the API to query
  * @param {String} token a token for the API
  * @returns {Promise<Object[]>} all pages of results
  */
-const fetchPaginatedGHResults = async (url, token) => {
-  let files = [];
-  let nextPageLink = url;
+export const fetchPaginatedGHResults = async (
+  url: string,
+  token: string
+): Promise<GithubAPIPullRequestFile[]> => {
+  let files: GithubAPIPullRequestFile[] = [];
+  let nextPageLink: string | null = url;
   try {
     while (nextPageLink) {
       const resp = await fetch(nextPageLink, {
@@ -57,7 +78,9 @@ const fetchPaginatedGHResults = async (url, token) => {
  * @param {Array} files the results from Github API
  * @returns {Array} config files from Github API without test files
  */
-const filterQuickstartConfigFiles = (files) =>
+export const filterQuickstartConfigFiles = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] =>
   files.filter(({ filename }) => QUICKSTART_CONFIG_REGEXP.test(filename));
 
 /**
@@ -65,7 +88,9 @@ const filterQuickstartConfigFiles = (files) =>
  * @param {Array} files the results from Github API
  * @returns {Array} files from Github API excluding test files
  */
-const filterOutTestFiles = (files) => {
+export const filterOutTestFiles = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] => {
   return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
 };
 
@@ -74,14 +99,8 @@ const filterOutTestFiles = (files) => {
  * @param {Array} files the results from Github API
  * @returns {Array} install plan config files from Github API
  */
-const filterInstallPlans = (files) => {
+export const filterInstallPlans = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] => {
   return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
-};
-
-module.exports = {
-  fetchPaginatedGHResults,
-  getNextLink,
-  filterQuickstartConfigFiles,
-  filterOutTestFiles,
-  filterInstallPlans,
 };

@@ -29,7 +29,7 @@ const validateImageCounts = (quickstartDirs) => {
     const quickstartDirName = path.dirname(quickstart);
     // get all images for a quickstart
     const imagePaths = glob.sync(
-      path.resolve(quickstartDirName, '**/*.+(png|jpeg|jpg|svg)')
+      path.resolve(quickstartDirName, 'dashboards/**/*.+(png|jpeg|jpg|svg)')
     );
     const quickstartConfig = readQuickstartFile(quickstart).contents[0];
     const quickstartName = quickstartConfig.name;
