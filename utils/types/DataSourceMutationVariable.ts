@@ -31,7 +31,7 @@ interface DataSourceLinkDirectiveInput {
 interface DataSourceNerdletDirectiveInput {
   nerdlet: {
     nerdletId: string;
-    nerdletState?: Record<string, string>;
+    nerdletState?: string;
     requiresAccount: boolean;
   };
 }
