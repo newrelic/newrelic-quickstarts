@@ -29,7 +29,7 @@
       - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
       - [Images directory & preview images](#images-directory--preview-images)
-      - [Logos > Icons](#logos--icons)
+      - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
