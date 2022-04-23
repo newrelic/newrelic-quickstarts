@@ -4,6 +4,8 @@ const {
   readDataSourceFile,
   readDataSourceFiles,
   parseInstallDirective,
+  getIconUrl,
+  parseDataSource,
 } = require('../create-validate-data-sources');
 
 const githubHelpers = require('../github-api-helpers');
@@ -55,7 +57,7 @@ describe('create-validate-data-sources', () => {
     });
   });
 
-  describe('transformInstallDirective', () => {
+  describe('parseInstall', () => {
     test('outputs same object, when input does not match a directive', () => {
       const installDirective = {
         cool: {
@@ -132,5 +134,202 @@ describe('create-validate-data-sources', () => {
         expect(directiveInput.nerdlet.nerdletState).toBeUndefined();
       });
     });
+  });
+
+  describe('getIconUrl', () => {
+    test('returns correct icon url', () => {
+      const iconName = 'logo.png';
+      const configPath =
+        '/newrelic-quickstarts/path/to/data-sources/fake-data-source/config.yml';
+
+      const actualIconUrl = getIconUrl(iconName, configPath);
+
+      expect(actualIconUrl).toBe(
+        `https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/${iconName}`
+      );
+    });
+  });
+
+  describe('parseDataSource', () => {
+    test.each([
+      {
+        testCaseName: 'returns correct data source with trimmed values',
+        expectedResult: {
+          id: 'fake_id',
+          dryRun: true,
+          dataSourceMetadata: {
+            displayName: 'fake_display_name',
+            icon:
+              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            install: {
+              primary: {
+                link: {
+                  url: 'fake_url_1',
+                },
+              },
+              fallback: {
+                link: {
+                  url: 'fake_url_2',
+                },
+              },
+            },
+            categoryTerms: ['fake_category_term_1'],
+            keywords: ['fake_keyword_1'],
+            description: 'fake_description',
+          },
+        },
+        testInput: {
+          dataSourceWithFilePath: {
+            filePath:
+              '/newrelic-quickstarts/path/to/data-sources/fake-data-source/config.yml',
+            contents: {
+              id: 'fake_id  ',
+              displayName: 'fake_display_name  ',
+              description: 'fake_description  ',
+              install: {
+                primary: {
+                  link: {
+                    url: 'fake_url_1  ',
+                  },
+                },
+                fallback: {
+                  link: {
+                    url: 'fake_url_2  ',
+                  },
+                },
+              },
+              keywords: ['fake_keyword_1  '],
+              categoryTerms: ['fake_category_term_1  '],
+              icon: 'fake_logo.png',
+            },
+          },
+          dryRun: true,
+        },
+      },
+      {
+        testCaseName:
+          'returns correct data source with no keywords & categoryTerms',
+        expectedResult: {
+          id: 'fake_id',
+          dryRun: true,
+          dataSourceMetadata: {
+            displayName: 'fake_display_name',
+            icon:
+              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            install: {
+              primary: {
+                link: {
+                  url: 'fake_url_1',
+                },
+              },
+              fallback: {
+                link: {
+                  url: 'fake_url_2',
+                },
+              },
+            },
+            categoryTerms: undefined,
+            keywords: undefined,
+            description: 'fake_description',
+          },
+        },
+        testInput: {
+          dataSourceWithFilePath: {
+            filePath:
+              '/newrelic-quickstarts/path/to/data-sources/fake-data-source/config.yml',
+            contents: {
+              id: 'fake_id',
+              displayName: 'fake_display_name',
+              description: 'fake_description',
+              install: {
+                primary: {
+                  link: {
+                    url: 'fake_url_1',
+                  },
+                },
+                fallback: {
+                  link: {
+                    url: 'fake_url_2',
+                  },
+                },
+              },
+              icon: 'fake_logo.png',
+            },
+          },
+          dryRun: true,
+        },
+      },
+      {
+        testCaseName: 'returns correct data source with nerdlet install',
+        expectedResult: {
+          id: 'fake_id',
+          dryRun: true,
+          dataSourceMetadata: {
+            displayName: 'fake_display_name',
+            icon:
+              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            install: {
+              primary: {
+                nerdlet: {
+                  nerdletId: 'fake_id',
+                  nerdletState: JSON.stringify({
+                    quickstart_id: 'fake_quickstart_id',
+                  }),
+                  requiresAccount: true,
+                },
+              },
+              fallback: {
+                link: {
+                  url: 'fake_url_2',
+                },
+              },
+            },
+            categoryTerms: [],
+            keywords: [],
+            description: 'fake_description',
+          },
+        },
+        testInput: {
+          dataSourceWithFilePath: {
+            filePath:
+              '/newrelic-quickstarts/path/to/data-sources/fake-data-source/config.yml',
+            contents: {
+              id: 'fake_id',
+              displayName: 'fake_display_name',
+              description: 'fake_description',
+              install: {
+                primary: {
+                  nerdlet: {
+                    nerdletId: 'fake_id  ',
+                    nerdletState: {
+                      quickstart_id: 'fake_quickstart_id',
+                    },
+                    requiresAccount: true,
+                  },
+                },
+                fallback: {
+                  link: {
+                    url: 'fake_url_2',
+                  },
+                },
+              },
+              keywords: [],
+              categoryTerms: [],
+              icon: 'fake_logo.png',
+            },
+          },
+          dryRun: true,
+        },
+      },
+    ])(
+      '$testCaseName',
+      ({ expectedResult, testInput: { dryRun, dataSourceWithFilePath } }) => {
+        const actualDataSource = parseDataSource(
+          dataSourceWithFilePath,
+          dryRun
+        );
+        expect(actualDataSource).toEqual(expectedResult);
+      }
+    );
   });
 });

@@ -3,7 +3,11 @@ import {
   fetchPaginatedGHResults,
   filterDataSources,
 } from './github-api-helpers';
-import { chunk, fetchNRGraphqlResults, translateMutationErrors } from './nr-graphql-helpers';
+import {
+  chunk,
+  fetchNRGraphqlResults,
+  translateMutationErrors,
+} from './nr-graphql-helpers';
 import {
   passedProcessArguments,
   readYamlFile,
@@ -20,7 +24,6 @@ import {
   DataSourceMutationVariable,
 } from './types/DataSourceMutationVariable';
 import { GITHUB_RAW_BASE_URL } from './constants';
-import { createValidateUpdateInstallPlan } from './create-validate-install-plans';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 import { CUSTOM_EVENT, track } from './newrelic/customEvent';
 
@@ -173,7 +176,7 @@ export const parseDataSource = (
  * @return {Promise.<Boolean>} - Boolean value indicating whether all files were validated
  */
 const createValidateUpdateDataSources = async (
-  dataSourceFiles: { variables: DataSourceMutationVariable, filePath: string }[]
+  dataSourceFiles: { variables: DataSourceMutationVariable; filePath: string }[]
 ): Promise<boolean> => {
   type GraphQLResponse = NerdGraphResponseWithLocalErrors<
     DataSourceMutationResponse
@@ -248,16 +251,18 @@ const main = async () => {
     return {
       variables: parseDataSource(config, isDryRun === 'true'),
       filePath: config.filePath,
-    }
-  })
+    };
+  });
 
-  const hasFailed = await createValidateUpdateDataSources(mutationVariablesAndFilePaths);
+  const hasFailed = await createValidateUpdateDataSources(
+    mutationVariablesAndFilePaths
+  );
   await recordCustomNREvent(hasFailed, isDryRun === 'true');
 
   if (hasFailed) {
     process.exit(1);
   }
-}
+};
 
 if (require.main === module) {
   main();
