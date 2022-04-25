@@ -7,7 +7,7 @@ const QUICKSTART_CONFIG_REGEXP = new RegExp(
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
-  'data-source/.+/config.+(yml|yaml)'
+  'data-sources/.+/config.+(yml|yaml)'
 );
 
 /**
@@ -27,13 +27,13 @@ export interface GithubAPIPullRequestFile {
   sha: string;
   filename: string;
   status:
-    | 'added'
-    | 'removed'
-    | 'modified'
-    | 'renamed'
-    | 'copied'
-    | 'changed'
-    | 'unchanged';
+  | 'added'
+  | 'removed'
+  | 'modified'
+  | 'renamed'
+  | 'copied'
+  | 'changed'
+  | 'unchanged';
   additions: number;
   deletions: number;
   changes: number;
