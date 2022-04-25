@@ -37,6 +37,7 @@ import {
   chunk,
 } from './nr-graphql-helpers';
 import { track, CUSTOM_EVENT } from './newrelic/customEvent';
+import { GITHUB_REPO_BASE_URL, GITHUB_RAW_BASE_URL } from './constants';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -46,10 +47,6 @@ export interface QuickstartMutationResponse {
 
 const gql = String.raw;
 
-const GITHUB_REPO_BASE_URL =
-  'https://github.com/newrelic/newrelic-quickstarts/tree/main';
-const GITHUB_RAW_BASE_URL =
-  'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main';
 const QUICKSTART_MUTATION = gql`
   # gql
   mutation QuickstartRepoQuickstartMutation(
