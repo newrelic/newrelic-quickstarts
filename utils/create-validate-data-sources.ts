@@ -175,7 +175,7 @@ export const parseDataSource = (
  * @param {Array} dataSourceFiles - Array containing data sources file names.
  * @return {Promise.<Boolean>} - Boolean value indicating whether all files were validated
  */
-const createValidateUpdateDataSources = async (
+export const createValidateUpdateDataSources = async (
   dataSourceFiles: { variables: DataSourceMutationVariable; filePath: string }[]
 ): Promise<boolean> => {
   type GraphQLResponse = NerdGraphResponseWithLocalErrors<
@@ -221,7 +221,7 @@ const createValidateUpdateDataSources = async (
  * @param {boolean} hasFailed if the validation or submission has failed
  * @param {boolean} isDryRun - true for validation, false for submission
  */
-const recordCustomNREvent = async (hasFailed: boolean, isDryRun: boolean) => {
+export const recordCustomNREvent = async (hasFailed: boolean, isDryRun: boolean) => {
   const status = hasFailed ? 'failed' : 'success';
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_DATA_SOURCES

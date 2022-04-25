@@ -6,11 +6,14 @@ const {
   parseInstallDirective,
   getIconUrl,
   parseDataSource,
+  createValidateUpdateDataSources,
+  recordCustomNREvent,
 } = require('../create-validate-data-sources');
 
 const githubHelpers = require('../github-api-helpers');
 const nrGraphqlHelpers = require('../nr-graphql-helpers');
 const helpers = require('../helpers');
+const newrelicEvent = require('../newrelic/customEvent');
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -23,11 +26,17 @@ jest.mock('../github-api-helpers', () => ({
 jest.mock('../nr-graphql-helpers', () => ({
   ...jest.requireActual('../nr-graphql-helpers'),
   fetchNRGraphqlResults: jest.fn(),
+  translateMutationErrors: jest.fn(),
 }));
 
 jest.mock('../helpers', () => ({
   ...jest.requireActual('../helpers'),
   passedProcessArguments: jest.fn(),
+}));
+
+jest.mock('../newrelic/customEvent', () => ({
+  ...jest.requireActual('../newrelic/customEvent'),
+  track: jest.fn(),
 }));
 
 const mockDataSource = 'utils/mock_files/mock-data-source-1/config.yml';
@@ -329,6 +338,133 @@ describe('create-validate-data-sources', () => {
           dryRun
         );
         expect(actualDataSource).toEqual(expectedResult);
+      }
+    );
+  });
+
+  describe('createValidateUpdateDataSources', () => {
+    test('sends a request for each data source', async () => {
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue({
+        data: 'fake_data',
+        errors: [{ fake_field: 'fake_error_1' }],
+      });
+
+      const dataSourceFiles = [
+        { variables: 'fake_variable_1', filePath: 'fake_filepath_1' },
+        { variables: 'fake_variable_2', filePath: 'fake_filepath_2' },
+        { variables: 'fake_variable_3', filePath: 'fake_filepath_3' },
+        { variables: 'fake_variable_4', filePath: 'fake_filepath_4' },
+        { variables: 'fake_variable_5', filePath: 'fake_filepath_5' },
+        { variables: 'fake_variable_6', filePath: 'fake_filepath_6' },
+      ];
+
+      await createValidateUpdateDataSources(dataSourceFiles);
+
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenCalledTimes(
+        dataSourceFiles.length
+      );
+    });
+
+    test('reports success when all requests succeed', async () => {
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockReturnValue({
+        data: 'fake_data',
+        errors: [],
+      });
+
+      const dataSourceFiles = [
+        { variables: 'fake_variable_1', filePath: 'fake_filepath_1' },
+        { variables: 'fake_variable_2', filePath: 'fake_filepath_2' },
+        { variables: 'fake_variable_3', filePath: 'fake_filepath_3' },
+      ];
+
+      const hasFailed = await createValidateUpdateDataSources(dataSourceFiles);
+
+      expect(hasFailed).toBe(false);
+    });
+
+    test('reports failure when at least one request fails', async () => {
+      nrGraphqlHelpers.fetchNRGraphqlResults
+        .mockReturnValueOnce({
+          data: 'fake_data',
+          errors: [],
+        })
+        .mockReturnValueOnce({
+          data: 'fake_data',
+          errors: [],
+        })
+        .mockReturnValue({
+          data: 'fake_data',
+          errors: [{ fake_field: 'fake_error_1' }],
+        });
+
+      const dataSourceFiles = [
+        { variables: 'fake_variable_1', filePath: 'fake_filepath_1' },
+        { variables: 'fake_variable_2', filePath: 'fake_filepath_2' },
+        { variables: 'fake_variable_3', filePath: 'fake_filepath_3' },
+      ];
+
+      const hasFailed = await createValidateUpdateDataSources(dataSourceFiles);
+
+      expect(nrGraphqlHelpers.translateMutationErrors).toHaveBeenCalledTimes(1);
+      expect(hasFailed).toBe(true);
+    });
+  });
+
+  describe('recordCustomNREvent', () => {
+    test.each([
+      {
+        testCaseName: 'sends UPDATE_DATA_SOURCE FAILURE event',
+        expectedResult: {
+          event: newrelicEvent.CUSTOM_EVENT.UPDATE_DATA_SOURCES,
+          status: 'failed',
+        },
+        testInput: {
+          hasFailed: true,
+          isDryRun: false,
+        },
+      },
+      {
+        testCaseName: 'sends UPDATE_DATA_SOURCE SUCCESS event',
+        expectedResult: {
+          event: newrelicEvent.CUSTOM_EVENT.UPDATE_DATA_SOURCES,
+          status: 'success',
+        },
+        testInput: {
+          hasFailed: false,
+          isDryRun: false,
+        },
+      },
+      {
+        testCaseName: 'sends VALIDATE_DATA_SOURCE failure event',
+        expectedResult: {
+          event: newrelicEvent.CUSTOM_EVENT.VALIDATE_DATA_SOURCES,
+          status: 'failed',
+        },
+        testInput: {
+          hasFailed: true,
+          isDryRun: true,
+        },
+      },
+      {
+        testCaseName: 'sends VALIDATE_DATA_SOURCE SUCCESS event',
+        expectedResult: {
+          event: newrelicEvent.CUSTOM_EVENT.VALIDATE_DATA_SOURCES,
+          status: 'success',
+        },
+        testInput: {
+          hasFailed: false,
+          isDryRun: true,
+        },
+      },
+    ])(
+      '$testCaseName',
+      async ({
+        expectedResult: { event, status },
+        testInput: { hasFailed, isDryRun },
+      }) => {
+        await recordCustomNREvent(hasFailed, isDryRun);
+
+        expect(newrelicEvent.track).toHaveBeenCalledWith(event, { status });
       }
     );
   });
