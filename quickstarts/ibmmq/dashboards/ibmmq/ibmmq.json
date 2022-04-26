@@ -1,220 +1,703 @@
 {
-  "name": "IBM MQ PROD",
+  "name": "IBM MQ - Dashboard",
   "description": "",
   "pages": [
     {
-      "name": "IBM MQ PROD",
-      "description": "",
+      "name": "Queue Managers",
+      "description": null,
       "widgets": [
         {
-          "visualization": {
-            "id": "viz.bar"
-          },
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "height": 9,
-            "width": 4
+            "width": 2,
+            "height": 3
           },
-          "title": "Q Managers",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
           "rawConfiguration": {
+            "text": " ![IBM-MQ logo](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/ibmmq/logo.png?raw=true)\n\n\n\n To scope page to single cluster, filter by `qmgr=<queueManageName>`\n \n Dashboard gives an overview of your Queue Managers and their queues\n\n [IBM-MQ integration documents](https://docs.newrelic.com)\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT count(*) from MQQueueSample FACET qManagerName LIMIT 1000"
+                "query": "SELECT latest(ibmmq_qmgr_connection_count) as Connections FROM Metric COMPARE WITH 1 hour ago"
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "thresholds": []
+          }
         },
         {
-          "visualization": {
-            "id": "viz.table"
-          },
+          "title": "Connections",
           "layout": {
             "column": 5,
             "row": 1,
-            "height": 3,
-            "width": 8
+            "width": 4,
+            "height": 3
           },
-          "title": "Channel Statistics",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
           "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT count(channelStatus) FROM MQChannelSample FACET channelStatus, qManagerHost, qManagerName,channelName,channelType"
+                "query": "SELECT latest(ibmmq_qmgr_connection_count) as Connections FROM Metric facet qmgr TIMESERIES AUTO "
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
         },
         {
-          "visualization": {
-            "id": "viz.table"
+          "title": "Errors",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 6
           },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "select average(ibmmq_qmgr_failed_browse_count) + average(ibmmq_qmgr_failed_mqcb_count) + average(ibmmq_qmgr_failed_mqclose_count) + average(ibmmq_qmgr_failed_mqconn_mqconnx_count) + average(ibmmq_qmgr_failed_mqget_count) + average(ibmmq_qmgr_failed_mqinq_count) + average(ibmmq_qmgr_failed_mqopen_count) + average(ibmmq_qmgr_failed_mqput1_count) + average(ibmmq_qmgr_failed_mqput_count) + average(ibmmq_qmgr_failed_mqset_count) + average(ibmmq_qmgr_failed_mqsubrq_count) + average(ibmmq_qmgr_failed_create_alter_resume_subscription_count) + average(ibmmq_qmgr_failed_topic_mqput_mqput1_count) AS 'Errors' FROM Metric timeseries auto facet qmgr"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(qmgr) as 'Queue Managers' where entity.type = 'IBMMQ_MANAGER' limit max"
+              }
+            ],
+            "thresholds": []
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_qmgr_published_to_subscribers_message_count) + average(ibmmq_qmgr_interval_mqput_mqput1_total_count)  + average(ibmmq_qmgr_interval_destructive_get_total_count)  AS 'Messages' compare with 1 hour ago"
+              }
+            ],
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Messages",
           "layout": {
             "column": 5,
             "row": 4,
-            "height": 3,
-            "width": 8
+            "width": 4,
+            "height": 3
           },
-          "title": "Queue Depth",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (latest(qDepth) AS 'Current Depth')  FROM MQQueueSample FACET qManagerName, qName LIMIT 1000"
+                "query": "FROM  Metric SELECT average(ibmmq_qmgr_published_to_subscribers_message_count) + average(ibmmq_qmgr_interval_mqput_mqput1_total_count) + average(ibmmq_qmgr_interval_destructive_get_total_count) AS 'Messages' TIMESERIES AUTO FACET qmgr"
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
         },
         {
-          "visualization": {
-            "id": "viz.table"
-          },
+          "title": "",
           "layout": {
-            "column": 5,
+            "column": 1,
             "row": 7,
-            "height": 3,
-            "width": 8
+            "width": 2,
+            "height": 3
           },
-          "title": "Queue Depth Percent",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(qDepthPercent) FROM MQQueueSample FACET qManagerName, qName  LIMIT 1000"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
+          "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "height": 3,
-            "width": 4
-          },
-          "title": "Agents",
           "rawConfiguration": {
+            "dataFormatters": [],
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT count(agentName) FROM MQObjectStatusSample FACET agentName SINCE 30 MINUTES AGO TIMESERIES"
+                "query": "FROM Metric SELECT uniqueCount(queue)"
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "thresholds": []
+          }
         },
         {
+          "title": "Queues info",
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "width": 10,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "MTAzNTIwMzN8VklafERBU0hCT0FSRHwyNTI1NDY"
+          ],
           "visualization": {
             "id": "viz.table"
           },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Put",
+                "precision": null,
+                "type": "humanized"
+              },
+              {
+                "name": "Get",
+                "precision": null,
+                "type": "humanized"
+              },
+              {
+                "name": "Depth",
+                "precision": null,
+                "type": "humanized"
+              },
+              {
+                "name": "Depth %",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Depth', latest(ibmmq_queue_depth)*100/latest(ibmmq_queue_attribute_max_depth) AS 'Depth %', latest(ibmmq_queue_mqput_mqput1_count) AS 'Put',   latest(ibmmq_queue_mqget_count) AS 'Get', latest (ibmmq_queue_expired_messages) AS 'Expired' WHERE entity.type='IBMMQ_QUEUE' FACET qmgr, queue limit max"
+              }
+            ]
+          }
+        },
+        {
+          "title": "FileSystem Usage",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM  Metric SELECT average(ibmmq_qmgr_queue_manager_file_system_in_use_bytes) + average(ibmmq_qmgr_log_file_system_in_use_bytes) as 'File system usage' TIMESERIES AUTO facet qmgr"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Queues",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Queue Depth",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Queue Depth' FACET queue LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Queue Depth %",
           "layout": {
             "column": 5,
-            "row": 10,
-            "height": 3,
-            "width": 8
+            "row": 1,
+            "width": 4,
+            "height": 4
           },
-          "title": "Count of Message events per Channel",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "from MQChannelSample select count(*) facet channelName"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth)*100/latest(ibmmq_queue_attribute_max_depth) facet queue LIMIT MAX"
               }
             ]
-          },
-          "linkedEntityGuids": null
+          }
         },
         {
-          "visualization": {
-            "id": "viz.line"
-          },
-          "layout": {
-            "column": 1,
-            "row": 13,
-            "height": 3,
-            "width": 12
-          },
-          "title": "Open Input Use Count",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(openInputCount) FROM MQQueueSample FACET (qManagerName),qName TIMESERIES"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.table"
-          },
-          "layout": {
-            "column": 1,
-            "row": 16,
-            "height": 3,
-            "width": 8
-          },
-          "title": "Latest Queue Depth",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT (latest(qDepth) AS 'Current Depth')  FROM MQQueueSample FACET qName LIMIT 1000"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.table"
-          },
+          "title": "Queue Depth",
           "layout": {
             "column": 9,
-            "row": 16,
-            "height": 3,
-            "width": 4
+            "row": 1,
+            "width": 4,
+            "height": 4
           },
-          "title": "Message Age",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(oldestMsgAge) FROM MQQueueSample FACET qManagerName,qName"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
+          "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.line"
           },
-          "layout": {
-            "column": 1,
-            "row": 19,
-            "height": 3,
-            "width": 12
-          },
-          "title": "QDepth by Queue name",
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT max(qDepth) FROM MQQueueSample FACET qName TIMESERIES"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Queue Depth' FACET queue TIMESERIES AUTO  LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Queue Depth",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " SELECT sum(depth) from (SELECT latest(ibmmq_queue_depth) AS depth FROM Metric FACET queue ) compare with 1 hour ago"
+              }
+            ],
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Get Messages",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqget_count) FACET queue  LIMIT MAX"
               }
             ]
+          }
+        },
+        {
+          "title": "Get Messages Count",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
           },
-          "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqget_count) FACET queue TIMESERIES AUTO  LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Time Since Last GET",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(ibmmq_queue_time_since_get) limit 1000 facet queue TIMESERIES AUTO "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "PUT Messages ",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqput_mqput1_count) FACET queue"
+              }
+            ]
+          }
+        },
+        {
+          "title": "PUT Messages Count",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqput_mqput1_count) FACET queue TIMESERIES AUTO "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Time Since Last PUT",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(ibmmq_queue_time_since_put) facet queue TIMESERIES AUTO  LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Oldest Message Age",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT max(ibmmq_queue_oldest_message_age) facet queue  LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Queue Time Short (microseconds)",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_qtime_short) FACET queue TIMESERIES AUTO  LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Queue Time Long (microseconds)",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_qtime_long) FACET queue TIMESERIES AUTO  LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Expired Messages",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_expired_messages) FACET queue  LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Expired Messages",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(ibmmq_queue_expired_messages) FACET queue TIMESERIES AUTO   LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
         }
       ]
     }
