@@ -6,6 +6,9 @@ const QUICKSTART_CONFIG_REGEXP = new RegExp(
 );
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
+const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
+  'data-sources/.+/config.+(yml|yaml)'
+);
 
 /**
  * Pulls the next page off of a `Link` header
@@ -24,13 +27,13 @@ export interface GithubAPIPullRequestFile {
   sha: string;
   filename: string;
   status:
-    | 'added'
-    | 'removed'
-    | 'modified'
-    | 'renamed'
-    | 'copied'
-    | 'changed'
-    | 'unchanged';
+  | 'added'
+  | 'removed'
+  | 'modified'
+  | 'renamed'
+  | 'copied'
+  | 'changed'
+  | 'unchanged';
   additions: number;
   deletions: number;
   changes: number;
@@ -103,4 +106,17 @@ export const filterInstallPlans = (
   files: GithubAPIPullRequestFile[]
 ): GithubAPIPullRequestFile[] => {
   return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
+};
+
+/**
+ * Filters results from the Github API down to data source config files
+ * @param files the results from Github API
+ * @returns data source config files from Github API
+ */
+export const filterDataSources = (
+  files: GithubAPIPullRequestFile[]
+): GithubAPIPullRequestFile[] => {
+  return files.filter(({ filename }) =>
+    DATA_SOURCE_CONFIG_REGEXP.test(filename)
+  );
 };
