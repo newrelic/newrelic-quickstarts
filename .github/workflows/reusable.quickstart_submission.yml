@@ -1,0 +1,111 @@
+# Reusable workflow for creating, updating, or validating quickstarts and install plans for a single environment.
+name: Quickstart submission
+
+on:
+  workflow_call:
+    inputs:
+      pr-number:
+        required: true
+        type: string
+      dry-run:
+        required: true
+        type: boolean
+        default: true
+    secrets:
+      nr-api-url:
+        required: true
+      nr-api-token:
+        required: true
+      github-token:
+        required: true
+      nr-license-key:
+        required: true
+
+jobs:
+  submit-install-plans:
+    name: Submit install plans
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        # Ensure we have the most recent commit to `main`
+        with:
+          ref: "main"
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Update install plans
+        env:
+          NR_API_URL: ${{ secrets.nr-api-url }}
+          NR_API_TOKEN: ${{ secrets.nr-api-token }}
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
+          cd utils && yarn create-validate-install-plans $URL ${{ inputs.dry-run }}
+
+  submit-data-sources:
+    name: Submit data sources
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        # Ensure we have the most recent commit to `main`
+        with:
+          ref: "main"
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Update data sources
+        env:
+          NR_API_URL: ${{ secrets.nr-api-url }}
+          NR_API_TOKEN: ${{ secrets.nr-api-token }}
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
+          cd utils && yarn create-validate-data-sources $URL ${{ inputs.dry-run }}
+
+  submit-quickstarts:
+    needs: [submit-install-plans]
+    name: Submit quickstarts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        # Ensure we have the most recent commit to `main`
+        with:
+          ref: "main"
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install
+
+      - name: Update quickstarts
+        env:
+          NR_API_URL: ${{ secrets.nr-api-url }}
+          NR_API_TOKEN: ${{ secrets.nr-api-token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
+          cd utils && yarn create-validate-pr-quickstarts $URL ${{ inputs.dry-run }}

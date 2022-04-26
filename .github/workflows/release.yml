@@ -84,10 +84,12 @@ jobs:
                 strict: true,
                 contexts: [
                     'Validation / Image count and extension compliance',
-                    'Validation / Ensure logos exist',
+                    'Validation / Ensure icons exist',
                     'Validation / Install plan ids exist',
                     'Validation / Install plan schema compliance',
-                    'Validation / Quickstart id are unique'
+                    'Validation / Data source schema compliance',
+                    'Validation / Quickstart id are unique',
+                    'Validation / Validate Quickstart Schema'
                 ]
               },
               restrictions: {
@@ -124,6 +126,7 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
+        working-directory: ./utils
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - uses: actions/cache@v2
@@ -135,14 +138,17 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install Dependencies
+        working-directory: ./utils
         run: yarn install --frozen-lockfile
 
       - name: Install OSS CLI
+        working-directory: ./utils
         run: |
           yarn global add @newrelic/newrelic-oss-cli
 
       - name: Generate Third Party Notices
         id: generate-notices
+        working-directory: ./utils
         run: |
           if [ ! -f "third_party_manifest.json" ]; then
             echo "::error::third_party_manifest.json is missing. Must generate using the newrelic-oss-cli."
