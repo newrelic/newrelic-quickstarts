@@ -1,0 +1,230 @@
+{
+  "name": "Kubernetes Log Ingest Analysis",
+  "description": null,
+  "pages": [
+    {
+      "name": "Kubernetes Log Ingest Analysis",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total Logs Ingested",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " SELECT count(*), bytecountestimate()/1000000000 as 'GB' FROM Log WHERE cluster_name LIKE '%' SINCE 1 day ago"
+              }
+            ],
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Total Logs Ingested By Cluster",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Log WHERE cluster_name LIKE '%' FACET cluster_name SINCE 1 day ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Total Logs Ingested By Pod",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Log WHERE cluster_name LIKE '%' FACET pod_name SINCE 1 day ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Average Log Batch Index",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(newrelic.logs.batchIndex) AS 'Average New Relic Log Batch Index' FROM Log WHERE cluster_name LIKE '%' SINCE 1 day ago"
+              }
+            ],
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Total Logs Ingested By Namespace",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Log FACET namespace_name WHERE cluster_name LIKE '%' SINCE 1 day ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Log Ingest Timeseries",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*), bytecountestimate()/1000000000 as 'GB' FROM Log WHERE cluster_name LIKE '%' SINCE 1 day ago TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Log Data Ingest (labels.environment)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT bytecountestimate()/1000000000 as 'GB' facet labels.environment SINCE 1 day ago limit max "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Log data ingest (container_image)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT bytecountestimate()/1000000000 as 'GB' facet container_image SINCE 1 day ago limit max"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Log data ingest (labels.app.kubernetes.io/component)",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT bytecountestimate()/1000000000 as 'GB' facet `labels.app.kubernetes.io/component` limit max"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
