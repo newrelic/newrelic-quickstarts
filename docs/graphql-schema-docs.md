@@ -4,6 +4,7 @@
   <summary><strong>Table of Contents</strong></summary>
 
   * [Objects](#objects)
+    * [Nr1CatalogInstallAlertPolicyTemplateResult](#nr1cataloginstallalertpolicytemplateresult)
     * [Nr1CatalogInstallDashboardTemplateResult](#nr1cataloginstalldashboardtemplateresult)
     * [Nr1CatalogInstallPlan](#nr1cataloginstallplan)
     * [Nr1CatalogInstallPlanStep](#nr1cataloginstallplanstep)
@@ -46,6 +47,41 @@
 </details>
 
 ## Objects
+
+### Nr1CatalogInstallAlertPolicyTemplateResult
+
+Information about the mutation result when installing an alert policy template
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>alertPolicyTemplate</strong></td>
+<td valign="top">Nr1CatalogAlertPolicyTemplate!</td>
+<td>
+
+The template that was used for the installation
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>createdAlertPolicy</strong></td>
+<td valign="top">Nr1CatalogAlertPolicyOutline!</td>
+<td>
+
+An outline of the created alert policy
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Nr1CatalogInstallDashboardTemplateResult
 
