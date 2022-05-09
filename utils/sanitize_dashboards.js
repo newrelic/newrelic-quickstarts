@@ -11,15 +11,30 @@ if (pathsToSanitize.length < 1)
 const sanitizeDashboard = (fileContent) => {
   return fileContent
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
-    .replace(/\"linkedEntityGuids\"\s*:\s*\[.*\]/g, '"linkedEntityGuids": null') // Set linkedEntityGuids to null
+    .replace(/\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g, '"linkedEntityGuids": null') // Set linkedEntityGuids to null
     .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
-    .replace(/[\}\)\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
+    .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
+};
+
+const checkDirForDashboardJson = (directory) => {
+    const files = fs.readdirSync(directory, {withFileTypes: true});
+    return {
+      directories: files.filter((file) => file.isDirectory()).map(file => path.resolve(directory, file.name)),
+      jsonFiles: files.filter((file) => file.name.includes('json')).map(file => path.resolve(directory, file.name))
+    };
 };
 
 pathsToSanitize.forEach((i) => {
   const directory = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
-  const files = fs.readdirSync(directory, { withFileTypes: true });
-  const jsonFiles = files.filter((file) => file.name.includes('.json'));
+  const files = checkDirForDashboardJson(directory);
+  let jsonFiles = files.jsonFiles;
+
+  for (let nestedDir of files.directories) {
+    let nestedFiles = checkDirForDashboardJson(nestedDir);
+    if(nestedFiles.jsonFiles.length > 0) {
+      jsonFiles = jsonFiles.concat(nestedFiles.jsonFiles);
+    }
+  }
 
   if (jsonFiles.length < 1) {
     console.log(
@@ -28,12 +43,11 @@ pathsToSanitize.forEach((i) => {
     return;
   }
 
-  for (let file of jsonFiles) {
-    const filePath = path.resolve(directory, file.name);
+  for (let filePath of jsonFiles) {
     const quickStart = fs.readFileSync(filePath, { encoding: 'utf8' });
     const cleanFile = sanitizeDashboard(quickStart);
 
-    if (cleanFile !== file) {
+    if (cleanFile !== quickStart) {
       fs.writeFile(filePath, cleanFile, { encoding: 'utf8' }, function (err) {
         if (err) {
           console.error(`Error updating ${filePath}`);

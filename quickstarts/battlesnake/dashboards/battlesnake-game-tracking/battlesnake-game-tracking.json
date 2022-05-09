@@ -1,0 +1,217 @@
+{
+  "name": "Battlesnake Game Tracking",
+  "description": "Monitor your Battlensakes performance and see how it stacks up against your competition!",
+  "pages": [
+    {
+      "name": "Battlesnake Performance",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 6,
+            "width": 3
+          },
+          "title": "Games played",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Transaction\n  SELECT \n   FILTER(count(*), WHERE (name = 'WebTransaction/Expressjs/POST//end')) AS 'games',\n   FILTER(count(*), WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS TRUE)) AS 'wins',\n   FILTER(count(*), WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS NOT TRUE)) AS 'losses',\n   FILTER(count(*), WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameWinnerName IS NULL)) AS 'draws'"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Win/losses",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'games' FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') FACET cases(where snakeGameIsWin IS TRUE AS 'wins', where snakeGameIsWin IS NOT TRUE as 'losses', where snakeGameWinnerName IS NULL as 'draws') "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "height": 6,
+            "width": 6
+          },
+          "title": "Recent games (max 100)",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT snakeGameWinnerName, snakeRules, snakeTurn, snakeGameReplayLink FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') limit 100"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Win/losses",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'games' FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') FACET snakeRules"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 12
+          },
+          "title": "Wins/losses over time",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'wins' FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS TRUE) TIMESERIES"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'losses' FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS NOT TRUE) TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Wins by game type",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS TRUE) FACET snakeRules TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "height": 3,
+            "width": 6
+          },
+          "title": "Losses by game type",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Transaction WHERE (name = 'WebTransaction/Expressjs/POST//end') AND (snakeGameIsWin IS NOT TRUE) FACET snakeRules TIMESERIES"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Instructions",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "Instructions\n===\n\n1. Instrument your Battlensake server with a [New Relic APM agent](https://docs.newrelic.com/docs/apm/new-relic-apm/getting-started/introduction-apm/).\n2. Add a custom script from [this repository](https://github.com/zstix/nr-battlesnake-attributes) to your snake application logic."
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}

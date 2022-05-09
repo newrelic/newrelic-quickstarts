@@ -1,0 +1,373 @@
+{
+    "name": "Netlify Traffic and Function Logs",
+    "description": "Netlify traffic and function log drain dashboard",
+    "pages": [
+      {
+        "name": "Traffic",
+        "description": "Netlify traffic log drain data overview",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 6
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Netlify Traffic Logs Dashboard\n![netlify logo](https://www.netlify.com/v3/img/components/full-logo-dark.png)"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Request Change",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) as 'Requests' WHERE log_type = 'traffic' COMPARE WITH 1 week ago SINCE 1 week ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Successful Requests %",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT percentage(count(*) , WHERE status_code >= 200 AND status_code <= 299) as 'Successful Requests' WHERE log_type = 'traffic' SINCE 1 week ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Warnings & Errors %",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT percentage(count(*) , WHERE status_code != 200) as 'Warnings and Errors' WHERE log_type = 'traffic' SINCE 1 week ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Requests by Status",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Log WHERE log_type = 'traffic' TIMESERIES FACET status_code SINCE 1 week ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 7,
+              "row": 5,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Average Request Duration (ms)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT percentile(duration,95) as `Duration in ms 95%` FROM Log WHERE log_type = 'traffic' TIMESERIES FACET url SINCE 1 week ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "height": 5,
+              "width": 12
+            },
+            "title": "Traffic Logs",
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "timestamp",
+                  "type": "date"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT service,status_code,client_ip,url from Log where log_type='traffic' SINCE 1 week ago LIMIT 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      },
+      {
+        "name": "Functions",
+        "description": "Netlify function log drain data overview",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 6
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Netlify Functions Logs Dashboard\n![netlify logo](https://www.netlify.com/v3/img/components/full-logo-dark.png)"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 3,
+              "width": 3
+            },
+            "title": "Function Invocations",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) as 'Function Invocations' WHERE message LIKE '%REPORT%' AND log_type = 'functions' SINCE 1 week ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "height": 3,
+              "width": 3
+            },
+            "title": "Warning & Error Logs",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) as 'Warning and Error Logs' WHERE level in ('WARN','ERROR') AND log_type = 'functions' SINCE 1 week ago"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Invocationss by Function",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Log WHERE message LIKE '%REPORT%' AND log_type = 'functions' TIMESERIES FACET function_name SINCE 1 week ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Function Logs by Status",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Log WHERE log_type = 'functions' AND level in ('WARN','ERROR') TIMESERIES FACET level SINCE 1 week ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Average Function Duration (in ms)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(numeric(duration)) FROM Log WHERE log_type = 'functions' and duration IS NOT NULL TIMESERIES FACET function_name SINCE 1 week ago"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "height": 6,
+              "width": 12
+            },
+            "title": "Function Logs",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT service,function_name,level,message from Log where log_type='functions' SINCE 1 week ago LIMIT 100"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }

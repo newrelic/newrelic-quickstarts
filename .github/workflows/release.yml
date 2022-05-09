@@ -10,102 +10,15 @@ env:
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
 jobs:
-  generate-uuid:
-    name: Generate UUID
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: 'main'
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 12
-
-      - name: Install dependencies
-        run: cd utils && yarn install
-
-      - name: Generate UUIDs for quickstarts
-        id: generate-uuids
-        run: cd utils && yarn generate-uuids
-
-      - name: Commit changes
-        id: commit-changes
-        run: |
-          git config --local user.email "${{ env.THIRD_PARTY_GIT_AUTHOR_EMAIL }}"
-          git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
-          git add ./quickstarts/*
-          git diff-index --quiet HEAD ./quickstarts/* || git commit -m 'chore: generate UUID(s) [skip ci]'
-          echo "::set-output name=commit::true"
-      - name: Temporarily disable branch protections
-        id: disable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: null,
-              restrictions: null,
-              enforce_admins: null,
-              required_pull_request_reviews: null
-            })
-            console.log("Result:", result)
-      - name: Push Commit
-        if: steps.commit-changes.outputs.commit == 'true'
-        run: git push origin HEAD
-
-      - name: Re-enable branch protections
-        id: enable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: {
-                strict: true,
-                contexts: []
-              },
-              restrictions: {
-                "users":[],
-                "teams":[],
-                "apps":[]
-              },
-              enforce_admins: null,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                required_approving_review_count: 1,
-                dismissal_restrictions: {
-                  users: [],
-                  teams: []
-                }
-              }
-            })
-            console.log("Result:", result)
-            
   generate-schema-docs:
     name: Generate GraphQL schema documentation
-    needs: [generate-uuid]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: 'main'
+          ref: "main"
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -118,6 +31,9 @@ jobs:
 
       - name: Generate schema docs for GraphQl
         id: generate-schema
+        env:
+          NR_API_URL: ${{ secrets.NR_API_URL }}
+          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
         run: cd utils && yarn generate-schema-docs
 
       - name: Commit changes
@@ -166,7 +82,15 @@ jobs:
               branch: 'main',
               required_status_checks: {
                 strict: true,
-                contexts: []
+                contexts: [
+                    'Validation / Image count and extension compliance',
+                    'Validation / Ensure icons exist',
+                    'Validation / Install plan ids exist',
+                    'Validation / Install plan schema compliance',
+                    'Validation / Data source schema compliance',
+                    'Validation / Quickstart id are unique',
+                    'Validation / Validate Quickstart Schema'
+                ]
               },
               restrictions: {
                 "users":[],
@@ -185,85 +109,67 @@ jobs:
             })
             console.log("Result:", result)
 
-  job-generate-release:
-    name: Create Release
-    needs: [generate-uuid, generate-schema-docs]
+  generate-third-party-notices:
     runs-on: ubuntu-latest
     steps:
+      # Checkout fetch-depth: 2 because there's a check to see if package.json
+      # was updated, and need at least 2 commits for the check to function properly
       - name: Checkout repo
         uses: actions/checkout@v2
-        # Ensure we have the most recent commit to `main`
         with:
-          ref: 'main'
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
 
-      - name: Add plugins for semantic release
-        run: npm install @semantic-release/git @semantic-release/changelog
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        working-directory: ./utils
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Temporarily disable branch protections
-        id: disable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
+      - uses: actions/cache@v2
+        id: yarn-cache
         with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: null,
-              restrictions: null,
-              enforce_admins: null,
-              required_pull_request_reviews: null
-            })
-            console.log("Result:", result)
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-      - name: Run semantic-release
-        env:
-          # Use nr-opensource-bot for authoring commits done by
-          # semantic-release (rather than using @semantic-release-bot)
-          GIT_AUTHOR_NAME: "nr-opensource-bot"
-          GIT_AUTHOR_EMAIL: "opensource+bot@newrelic.com"
-          GIT_COMMITTER_NAME: "nr-opensource-bot"
-          GIT_COMMITTER_EMAIL: "opensource+bot@newrelic.com"
-          GITHUB_TOKEN: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-        run: npx semantic-release@^18.0.0
+      - name: Install Dependencies
+        working-directory: ./utils
+        run: yarn install --frozen-lockfile
 
-      - name: Re-enable branch protections
-        id: enable-branch-protection
-        if: always()
-        uses: actions/github-script@v1
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
-          script: |
-            const result = await github.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: {
-                strict: true,
-                contexts: []
-              },
-              restrictions: {
-                "users":[],
-                "teams":[],
-                "apps":[]
-              },
-              enforce_admins: null,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                required_approving_review_count: 1,
-                dismissal_restrictions: {
-                  users: [],
-                  teams: []
-                }
-              }
-            })
-            console.log("Result:", result)
+      - name: Install OSS CLI
+        working-directory: ./utils
+        run: |
+          yarn global add @newrelic/newrelic-oss-cli
+
+      - name: Generate Third Party Notices
+        id: generate-notices
+        working-directory: ./utils
+        run: |
+          if [ ! -f "third_party_manifest.json" ]; then
+            echo "::error::third_party_manifest.json is missing. Must generate using the newrelic-oss-cli."
+            exit 1
+          fi
+
+          # latest commit
+          LATEST_COMMIT=$(git rev-parse HEAD)
+
+          # latest commit where package.json was changed
+          LAST_CHANGED_COMMIT=$(git log -1 --format=format:%H --full-diff package.json)
+
+          if [ $LAST_CHANGED_COMMIT = $LATEST_COMMIT ]; then
+            git config user.email "${{ env.BOT_EMAIL }}"
+            git config user.name "${{ env.BOT_NAME }}"
+            oss third-party manifest
+            oss third-party notices
+            git add third_party_manifest.json
+            git add THIRD_PARTY_NOTICES.md
+            git commit -m 'chore: update third-party manifest and notices [skip-cd]'
+            echo "::set-output name=commit::true"
+          else
+            echo "No change in package.json, not regenerating third-party notices"
+          fi

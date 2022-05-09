@@ -4,6 +4,8 @@
   <summary><strong>Table of Contents</strong></summary>
 
   * [Objects](#objects)
+    * [Nr1CatalogInstallAlertPolicyTemplateResult](#nr1cataloginstallalertpolicytemplateresult)
+    * [Nr1CatalogInstallDashboardTemplateResult](#nr1cataloginstalldashboardtemplateresult)
     * [Nr1CatalogInstallPlan](#nr1cataloginstallplan)
     * [Nr1CatalogInstallPlanStep](#nr1cataloginstallplanstep)
     * [Nr1CatalogInstallPlanTarget](#nr1cataloginstallplantarget)
@@ -21,6 +23,7 @@
     * [Nr1CatalogQuickstartMetadata](#nr1catalogquickstartmetadata)
     * [Nr1CatalogQuickstartsListing](#nr1catalogquickstartslisting)
   * [Inputs](#inputs)
+    * [Nr1CatalogInstallDirectiveInput](#nr1cataloginstalldirectiveinput)
     * [Nr1CatalogInstallPlanDirectiveInput](#nr1cataloginstallplandirectiveinput)
     * [Nr1CatalogInstallPlanStepInput](#nr1cataloginstallplanstepinput)
     * [Nr1CatalogInstallPlanTargetInput](#nr1cataloginstallplantargetinput)
@@ -44,6 +47,76 @@
 </details>
 
 ## Objects
+
+### Nr1CatalogInstallAlertPolicyTemplateResult
+
+Information about the mutation result when installing an alert policy template
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>alertPolicyTemplate</strong></td>
+<td valign="top">Nr1CatalogAlertPolicyTemplate!</td>
+<td>
+
+The template that was used for the installation
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>createdAlertPolicy</strong></td>
+<td valign="top">Nr1CatalogAlertPolicyOutline!</td>
+<td>
+
+An outline of the created alert policy
+
+</td>
+</tr>
+</tbody>
+</table>
+
+### Nr1CatalogInstallDashboardTemplateResult
+
+Information about the mutation result when installing a dashboard template
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>createdDashboard</strong></td>
+<td valign="top">Nr1CatalogDashboardOutline!</td>
+<td>
+
+An outline of the created dashboard
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>dashboardTemplate</strong></td>
+<td valign="top">Nr1CatalogDashboardTemplate!</td>
+<td>
+
+The template that was used for the installation
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Nr1CatalogInstallPlan
 
@@ -829,6 +902,40 @@ The total number of quickstart results
 
 ## Inputs
 
+### Nr1CatalogInstallDirectiveInput
+
+Set of attributes which represent how an install takes place
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>link</strong></td>
+<td valign="top">Nr1CatalogLinkInstallDirectiveInput</td>
+<td>
+
+Link information for this directive. Cannot be used with a nerdlet directive.
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>nerdlet</strong></td>
+<td valign="top">Nr1CatalogNerdletInstallDirectiveInput</td>
+<td>
+
+Nerdlet information for this directive. Cannot be used with a link directive.
+
+</td>
+</tr>
+</tbody>
+</table>
+
 ### Nr1CatalogInstallPlanDirectiveInput
 
 Set of attributes which represent how an install takes place
@@ -1281,6 +1388,15 @@ A list of keywords for filtering and searching
 </td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>slug</strong></td>
+<td valign="top">String</td>
+<td>
+
+The URL friendly name for the quickstart
+
+</td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>sourceUrl</strong></td>
 <td valign="top">String</td>
 <td>
@@ -1295,6 +1411,15 @@ Specifies the URL where the source definition for the quickstart can be found
 <td>
 
 A short summary detailing the functionality of the quickstart
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>supportLevel</strong></td>
+<td valign="top">Nr1CatalogSupportLevel</td>
+<td>
+
+Level of support for the quickstart
 
 </td>
 </tr>

@@ -127,6 +127,7 @@ const expectedMockQuickstart2MutationInput = {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2',
     summary: 'A short form description for this quickstart',
+    supportLevel: 'COMMUNITY',
     installPlanStepIds: ['infra-agent-targeted'],
     alertConditions: [
       {
@@ -134,18 +135,20 @@ const expectedMockQuickstart2MutationInput = {
           "This alert triggers when the reported health of an Elasticsearch cluster is 'red'.",
         displayName: 'Cluster Health',
         rawConfiguration:
-          '{"name":"Cluster Health","details":"This alert triggers when the reported health of an Elasticsearch cluster is \'red\'.\\n","type":"STATIC","nrql":{"query":"FROM ElasticsearchClusterSample SELECT uniqueCount(displayName) WHERE cluster.status = \'red\' FACET displayName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":0,"thresholdDuration":300,"thresholdOccurrences":"AT_LEAST_ONCE"}],"violationTimeLimitSeconds":86400}',
+          '{"name":"Cluster Health","description":"This alert triggers when the reported health of an Elasticsearch cluster is \'red\'.\\n","type":"STATIC","nrql":{"query":"FROM ElasticsearchClusterSample SELECT uniqueCount(displayName) WHERE cluster.status = \'red\' FACET displayName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":0,"thresholdDuration":300,"thresholdOccurrences":"AT_LEAST_ONCE"}],"violationTimeLimitSeconds":86400}',
         type: 'STATIC',
-        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/Cluster Health.yml',
+        sourceUrl:
+          'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/Cluster Health.yml',
       },
       {
         description:
           'This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.',
         displayName: 'Errors',
         rawConfiguration:
-          '{"name":"Errors","details":"This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.\\n","type":"STATIC","nrql":{"query":"from Transaction select percentage(count(*), where error is not false) as \'Errors\' where transactionType = \'Web\' facet appName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":10,"thresholdDuration":300,"thresholdOccurrences":"ALL"}],"expiration":{"closeViolationsOnExpiration":true,"openViolationOnExpiration":false,"expirationDuration":86400},"violationTimeLimitSeconds":86400}',
+          '{"name":"Errors","description":"This alert fires when 10 percent of the transactions against an application end with an error, over a period of 5 minutes.\\n","type":"STATIC","nrql":{"query":"from Transaction select percentage(count(*), where error is not false) as \'Errors\' where transactionType = \'Web\' facet appName"},"valueFunction":"SINGLE_VALUE","terms":[{"priority":"CRITICAL","operator":"ABOVE","threshold":10,"thresholdDuration":300,"thresholdOccurrences":"ALL"}],"expiration":{"closeViolationsOnExpiration":true,"openViolationOnExpiration":false,"expirationDuration":86400},"violationTimeLimitSeconds":86400}',
         type: 'STATIC',
-        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/errors.yml',
+        sourceUrl:
+          'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/alerts/errors.yml',
       },
     ],
     dashboards: [
@@ -153,16 +156,17 @@ const expectedMockQuickstart2MutationInput = {
         description: '.NET',
         displayName: '.NET',
         rawConfiguration: mockDashboardRawConfiguration,
-        sourceUrl: 'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet.json',
+        sourceUrl:
+          'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet.json',
         screenshots: [
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet02.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet02.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet03.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet03.png',
           },
         ],
       },
@@ -213,12 +217,12 @@ describe('quickstart submission and validation', () => {
     expect(quickstartFromDashboard).toEqual('python/pysqlite');
   });
 
-  test('getQuickstartFromFilename returns the quickstart a logo belongs to', () => {
-    const quickstartFromLogo = getQuickstartFromFilename(
+  test('getQuickstartFromFilename returns the quickstart an icon belongs to', () => {
+    const quickstartFromIcon = getQuickstartFromFilename(
       'quickstarts/python/pysqlite/logo.svg'
     );
 
-    expect(quickstartFromLogo).toEqual('python/pysqlite');
+    expect(quickstartFromIcon).toEqual('python/pysqlite');
   });
 
   test('getQuickstartFromFilename does not return non-quickstarts files', () => {

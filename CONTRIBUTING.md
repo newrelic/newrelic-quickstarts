@@ -1,6 +1,7 @@
 # Contributing
 
 <!-- toc -->
+
 - [Contributing](#contributing)
   - [Welcome 👋](#welcome-)
   - [Quickstart yaml to UI mapping](#quickstart-yaml-to-ui-mapping)
@@ -9,7 +10,6 @@
     - [Dashboards](#dashboards)
     - [Data sources](#data-sources)
     - [Install plan](#install-plan)
-  - [Quickstart install flow](#quickstart-install-flow)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -20,24 +20,23 @@
       - [Authors](#authors)
       - [Install plans](#install-plans)
         - [Creating a new installPlan](#creating-a-new-installplan)
+      - [Slug & title fields](#slug--title-fields)
       - [Summary & descriptions](#summary--descriptions)
       - [Documentation](#documentation)
-      - [Levels](#levels)
+      - [Support Levels](#support-levels)
       - [Dashboard JSON](#dashboard-json)
+      - [Dashboard Permissions](#dashboard-permissions)
+      - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
-      - [Images directory](#images-directory)
-      - [Logos](#logos)
+      - [Images directory & preview images](#images-directory--preview-images)
+      - [Icons](#icons)
     - [Keywords](#keywords)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
-  - [Using conventional commits](#using-conventional-commits)
-    - [Use `chore`](#use-chore)
-    - [Use `fix`](#use-fix)
-    - [Use `feat`](#use-feat)
   - [Contributor license agreement](#contributor-license-agreement)
   - [Slack](#slack)
   - [Partnerships](#partnerships)
-<!-- tocstop -->
+  <!-- tocstop -->
 
 ## Welcome 👋
 
@@ -59,8 +58,6 @@ New Relic I/O Catalog. At this time there isn't any easy way to preview a quicks
 This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
 [here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
 
-> please note,  the internal catalog follows a very similar UI pattern.
-
 ### Main config
 
 ![main config](./images/main.png)
@@ -80,12 +77,6 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 ### Install plan
 
 ![install plan](./images/install-plan.png)
-
-## Quickstart install flow
-
-The diagram below explains the installation flow each type of quickstart follows.
-
-![alt text](./images/quickstart-install-flow.png)
 
 ## Quickstarts style guide
 
@@ -117,22 +108,23 @@ When writing about a quickstart the following language rules should be followed:
 ### Quickstarts description template
 
 ```md
-  ## Why monitor <QUICKSTART_TECHNOLOGY>
+## Why monitor <QUICKSTART_TECHNOLOGY>
 
-  Explain the role and purpose of monitoring your technology. What are some specific difficulties about the technology? What are useful metrics to monitor?
+Explain the role and purpose of monitoring your technology. What are some specific difficulties about the technology? What are useful metrics to monitor?
 
-  ### <QUICKSTART_TECHNOLOGY> quickstart highlights
+### <QUICKSTART_TECHNOLOGY> quickstart highlights
 
-  Describe the specific features of your quickstart. Mentions things such as dashboard visuals, alerts, and the type of instrumentation. We recommend the following format:
+Describe the specific features of your quickstart. Mentions things such as dashboard visuals, alerts, and the type of instrumentation. We recommend the following format:
 
-  Quick intro sentence:
-  - First highlight
-  - Second highlight
-  - Third highlight
+Quick intro sentence:
 
-  ### New Relic + <QUICKSTART_TECHNOLOGY> (Optional)
+- First highlight
+- Second highlight
+- Third highlight
 
-  Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilies such as errors inbox, transaction traces, etc.
+### New Relic + <QUICKSTART_TECHNOLOGY> (Optional)
+
+Describe how New Relic's capabilities can assist in monitoring your technology outside of what is included in the quickstart. Mention capabilities such as errors inbox, transaction traces, etc.
 ```
 
 ## Quickstarts contributor guidelines
@@ -147,9 +139,6 @@ We encourage all contributors to actively engage in the creation and maintenance
 - `Step 4`: Submit a PR!
 - `Step 5`: Resolve feedback from code reviews.
 - `Step 6`: After approval, merge your PR.
-
-When creating a new quickstart or reviewing a PR please keep the following in mind, and refer to the
-[quickstart validation workflow](https://github.com/newrelic/newrelic-quickstarts/blob/main/.github/workflows/validate_quickstarts.yml) for current validations.
 
 ### Quickstart PR review workflow
 
@@ -173,9 +162,9 @@ Quickstart authors represent the creator of the quickstart.
 
 You can define multiple author names, but it's recommended to use one of the follow formats.
 
- 1. company name
- 2. company name + author name
- 3. author name
+1.  company name
+2.  company name + author name
+3.  author name
 
 #### Install plans
 
@@ -183,7 +172,7 @@ You can define multiple author names, but it's recommended to use one of the fol
 > You can view all the available `installPlans` in the [Install](https://github.com/newrelic/newrelic-quickstarts/tree/main/install) directory.
 
 - The Ordering of `installPlans` is important as it sets the order of installation in the guided install flow for a user.
-- Every quick start that should be "installable"  will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md#target_destination) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/install_config.md) configuration if you want use the guided install flow.
+- Every quick start that should be "installable" will require a [destination URL](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1cataloginstallplan) within the [install](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1cataloginstallplan) configuration if you want use the guided install flow.
 
 ##### Creating a new installPlan
 
@@ -196,9 +185,24 @@ You can define multiple author names, but it's recommended to use one of the fol
 - The configuration file name should be `install.yml`.
 - keep the install plan `description` succinct as it's informational only.
 
+#### Slug & title fields
+
+`https://newrelic.com/instant-observability/{slug}/{id}`
+
+ The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
+
+ Example:
+ ```yml
+ slug: this-is-kebab-case-and-lower-cased
+ ```
+
+> We will soon handle redirects more effectively for the I/O site to account for name changes.
+
+The quickstart `title` field defines the title of the quickstart in the UI and can be changed.
+
 #### Summary & descriptions
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#description) for more details on `description` and `summary`.
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadata) for more details on `description` and `summary`.
 
 - Use the proper YAML formatting `|` for URL `description` and `summary`.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
@@ -216,7 +220,7 @@ summary: |
 
 #### Documentation
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#documentation) for more details on `documentation`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdocumentation) for more details on `documentation`
 
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
@@ -234,68 +238,101 @@ documentation:
       https://docs.newrelic.com/docs/url/
 ```
 
-#### Levels
+#### Support Levels
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#level) for more details on `levels`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstart) for more details on `support levels`
 
 - All quickstarts will be set to `Community` level by default unless specified differently by the `Author`.
 - Levels can only be modified by New Relic employees.
 - If you have questions on how to increase the level of support please file an [issue](../../issues)
-- The shield icon is only applied to those quickstarts with `Support Level` New Relic OR `Support Level` Verified.
+- The shield icon is only applied to those quickstarts with support level `New Relic` OR support Level `Verified`.
+- In most cases a quickstart that is referencing an [experimental open source project](https://github.com/newrelic-experimental) should be set to the `Community` level.
+- If you are referencing an experimental project and want to set the quickstart to `Verified` please be aware of the support requirements below.
 
+**New Relic**
+
+- Verified for quality by New Relic
+- Created by New Relics employees
+- Supported by New Relic
+
+**Verified**
+
+- Verified for quality by New Relic
+- Created by New Relics employees or partners
+- Supported by individual authors or partners
+
+**Community**
+
+- Contributed & supported by the community
+- Created by community members
+- Supported by individual authors and community members
 
 #### Dashboard JSON
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md) for more details on `dashboards`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdashboard) for more details on `dashboards`
 
-- When copying dashboard JSON from the New Relic One platform a `permissions` field is included in the code. You do not need this in a quickstart's dashboard JSON.
-- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard` locally. This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) will check and remove code that may cause an issue when submitting a PR.
-- If you wish to import a quickstart's dashboard into New Relic outside of the quickstart install flow, you will need to include this `permissions` field.
+- Each dashboard for a quickstart will need to live in it's own directory underneath `/dashboards` ex: `/quickstart_name/dashboards/dashboard_name/dashboard_name.json`
+- If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` or `yarn sanitize-dashboard catchpoint` where the argument is quickstart name you wish to sanitize.
+- This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) needs to be run from the `Utils` directory.
+- This script will check and remove code that may cause an issue when submitting a PR.
+- As a best practice you should run this script when creating a new dashboard.
+
+#### Dashboard Permissions
+
+- When copying dashboard JSON from the New Relic One platform a `permissions` field is always included in the code. You do not need this in a quickstart's dashboard JSON.
+- However if you wish to import a quickstart's dashboard into New Relic outside of the quickstart installation flow, you will need to include this `permissions` field.
 - Refer to this [documentation](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/dashboards-charts-import-export-data/) on importing / exporting dashboards from the New Relic One platform.
 
 ```json
 {
   "name": "Dashboard Name",
   "description": null,
-  "permissions": "PUBLIC_READ_WRITE",
+  "permissions": "PUBLIC_READ_WRITE"
 }
 ```
 
+#### Dashboard name uniqueness
+
+- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness`.
+- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+- this script needs to run from the `Utils` directory.
+- As a best practice you should run this script when creating a new dashboard.
+
 #### Dashboard screenshots
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/dashboard_config.md#pages_items_anyOf_i0_additionalProperties) for more details on `dashboards`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatadashboardinput) for more details on `dashboards screnshots`
 
 - Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
-- File name should be `quickstart_name01`, `quickstart_name02`, etc
-- Dashboards images should be stored in the quickstart's dashboard directory. ex: `/quickstart_name01/dashboards`.
+- File name should be `dashboard_name01`, `dashboard_name02`, etc
+- Dashboards images should be stored in that dashboard's directory with it's JSON file. ex: `/quickstart_name/dashboards/dashboard_name/dashboard_name01.png`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12` dashboard or images per quickstart
 - For best results use aspect ratio: 3:2
 - For best results use 800 px (width)
 - For best results use 1600 px (height)
 
-#### Images directory
+#### Images directory & preview images
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/README.md#getting-started) for more details on `dashboards`
+> See the[docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdashboardmetadata) for more details on `image previews`
 
 - These images are `optional` and should contain images you want to display within a markdown widget on your Dashboard.
 - File name should be `quickstart_name01`, `quickstart_name02`, etc
 - These images should be stored in the quickstart's images directory. ex: `/quickstart_name01/images`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
-- There should be no more than `6`  dashboard images per dashboard
+- There should be no more than `12` dashboard or images per quickstart.
 - See our Python quickstart for examples:
   - What this looks like in the [dashboard.json](https://github.com/newrelic/newrelic-quickstarts/blob/da20c880429988452dc18afd3554998e0658d0e4/quickstarts/python/python/dashboards/python.json#L37)
   - What the dashboard [looks like in New Relic](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png)
 
-#### Logos
+#### Icons
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#logo) for more details on `logos`
-> If you don't have a logo for your quickstart, you can use a [generic new relic logo](./images/newrelic-generic-logo.svg).
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadata) for more details on `icons`
+> If you don't have a icon for your quickstart, you can use a [generic new relic icon](./images/newrelic-generic-logo.svg).
 
-- Logo files should go in the root quickstart directory, `/quickstarts_name01`
-- Logos are `required` and are used in both the Public Catalog and in New Relic One.
+- Icon files should go in the root quickstart directory, `/quickstarts_name01`
+- Icon are `required` and are used in both the Public Catalog and in New Relic One.
 - `.png` or `.jpeg` or `.svg` format
 - Max 1
 - Aspect ratio: 1:1
@@ -303,22 +340,23 @@ documentation:
 
 ### Keywords
 
-> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/main_config.md#keywords) for more details on `keywords`
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatainput) for more details on `keywords`
 
-When adding keywords to a quickstart the following format should be used.  Keywords are used in UI navigation, filters and labels within
+When adding keywords to a quickstart the following format should be used. Keywords are used in UI navigation, filters and labels within
 the New Relic One I/O Catalog and the External I/O Catalog.
 
-``` yml
+```yml
 keywords:
   - a keyword
   - another keyword
   - yet another keyword
 ```
 
-Keywords are strictly defined and you should provide a standard set of keywords in your quickstart from the list below. If you submit a keyword
+Keywords are strictly defined and you should provide a standard set of keywords in your quickstarts. If you submit a keyword
 that is not defined in this list below, it will be reviewed for use after you submit a PR.
 
 > the `featured` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
+> the `newrelic partner` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
 
 - apm
 - automation
@@ -336,6 +374,8 @@ that is not defined in this list below, it will be reviewed for use after you su
 - mobile
 - .net
 - networking
+- newrelic
+- newrelic partner
 - node.js
 - os
 - operating system
@@ -357,42 +397,10 @@ Before submitting an Issue, please search for similar ones in the
 
 ## Pull requests
 
-1. Ensure that all new commits follow the [Conventional Commit](#using-conventional-commits) syntax.
-2. Provide a short description of the changes and screenshots of any visual changes.
-3. Ensure that all status checks are passing.
-4. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
-5. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
-
-## Using conventional commits
-
-Please help the maintainers by leveraging the following [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
-standards in your pull request title and commit messages.
-
-### Use `chore`
-
-- for minor changes / additions / corrections to content.
-- for minor changes / additions / corrections to images.
-- for minor non-functional changes / additions to github actions, github templates, package or config updates, etc
-
-```bash
-git commit -m "chore: adjusting config and content"
-```
-
-### Use `fix`
-
-- for minor functional corrections to code.
-
-```bash
-git commit -m "fix: typo and prop error in the code of conduct"
-```
-
-### Use `feat`
-
-- for major functional changes or additions to code.
-
-```bash
-git commit -m "feat(media): creating a video landing page"
-```
+1. Provide a short description of the changes and screenshots of any visual changes.
+2. Ensure that all status checks are passing.
+3. You may merge the Pull Request in once you have the sign-off of one other developer, or if you do not have permission to do that, you may request the reviewer to merge it for you.
+4. Once your PR is merged, changes should be reflected both in the Public Catalog and in New Relic One I/O within `4 hours`
 
 ## Contributor license agreement
 
@@ -407,4 +415,4 @@ We host an internal help [Slack channel](https://newrelic.slack.com/archives/C02
 
 ## Partnerships
 
-> to be updated
+Many of our quickstarts are built by our I/O Ecosystem partners. If you have interest in partnering with New Relic on a developing a quickstart create an [issue](../../issues) in the repository and we will follow up on the request.

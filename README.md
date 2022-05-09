@@ -25,12 +25,9 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 With [New Relic One dashboards](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/introduction-dashboards/) you can customize and understand the data you collect. Explore your data and correlate connected sources with tailored, user-friendly charts, and quickly learn the state of your system and applications for faster, more efficient troubleshooting.
 
-> You can't copy/paste a dashboard's json directly from the repository to create a dashboard within New Relic. Use the `sanitize-dashboard` script to remove any unneeded keys within the .json file, as well as setting the `accountId` to 0.
-
 1. Ensure you're using Node.js version 16, [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md) is a great tool to help you get the right Node.js versions.
 2. run `yarn install`, if you do not have [yarn](https://www.npmjs.com/package/yarn), this link will help!
-3. `cd` into the 'utils' directory.
-4. EX: `yarn sanitize-dashboard node-js/express` where the argument is the path to the dashboard directory. The script will handle the rest.
+3. Refer to our [contributor guide](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboard-json) on working with dashboard JSON.
 
 ### 📟 Alerts
 
@@ -69,13 +66,13 @@ Contribute your own quickstart to the New Relic One catalog by following the ste
 
 - The `images` folder should contain images you want to display within a markdown widget on your Dashboard. An example of this would be the [Python quickstart](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/python/python/dashboards/python.png) which includes image widgets defined using markdown. For more information on this see our docs on [creating widgets containing markdown text](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/manage-your-dashboard/#markdown)
 
-- When adding alerts to your quickstart, [using NerdGraph](https://developer.newrelic.com/contribute-to-quickstarts/query-alerts-for-quickstart/) can assist you with adding existing alert configurtions to your yaml files.
+- When adding alerts to your quickstart, [using NerdGraph](https://developer.newrelic.com/contribute-to-quickstarts/query-alerts-for-quickstart/) can assist you with adding existing alert configurations to your yaml files.
 
 - This process is similar for all other entity directories. Also, if you don't want to create entities for a given type, delete the corresponding directory.
 
 5. In your quickstart's root directory, you'll find a `config.yml` file where you can configure your quickstart. Refer to our [Contributing Guide](./CONTRIBUTING.md) for more details on quickstart configurations.
 
-6. Commit your changes using the [Conventional Commit syntax](./CONTRIBUTING.md#using-conventional-commits):
+6. Commit your changes:
 
    ```sh
    git add -A
