@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 // Modules
 import * as path from 'path';
 import * as glob from 'glob';
+import * as cors from 'cors';
 
 // App
 const app = express();
@@ -49,6 +50,9 @@ const main = async () => {
 
   await validatePath(QUICKSTART_DIRECTORY);
 
+  app.use(cors({
+    origin: '*'
+  }));
   app.use(`/quickstarts/${QUICKSTART_DIRECTORY}`, express.static(path.join(PARENT_DIRECTORY, `/quickstarts/${QUICKSTART_DIRECTORY}`)));
 
   app.get('/', (req: Request, res: Response) => {
@@ -56,7 +60,7 @@ const main = async () => {
                       
     response = removePathPrefixes(response);                  
 
-    res.send(response);
+    res.json(response);
   });
 
   app.listen(port, () => {
