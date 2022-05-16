@@ -51,7 +51,7 @@ const main = async () => {
   await validatePath(QUICKSTART_DIRECTORY);
 
   app.use(cors({
-    origin: 'http://localhost:8000'
+    origin: '*'
   }));
   app.use(`/quickstarts/${QUICKSTART_DIRECTORY}`, express.static(path.join(PARENT_DIRECTORY, `/quickstarts/${QUICKSTART_DIRECTORY}`)));
 
