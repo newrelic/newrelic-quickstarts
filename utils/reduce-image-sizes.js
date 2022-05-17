@@ -30,7 +30,7 @@ const getNewImageSize = async (filepath, max) => {
   const { width, height } = await sharp(filepath).metadata();
 
   // If it's a square, set both to the max
-  if (width === height) {
+  if (width === height && width > max) {
     return { width: max, height: max };
   }
 
