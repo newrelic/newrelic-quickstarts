@@ -1,0 +1,25 @@
+name: Generate preview links
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create preview links
+        id: links
+        run: |
+          yarn create-preview-links ${{ github.event.pull_request.url }} ${{ github.event.pull_request.number }}
+
+      - name: Comment and label
+        run: |
+          gh pr comment ${{github.event.pull_request.number}} --body "${{ steps.links.outputs.comment }}"
