@@ -3,7 +3,7 @@ import { isPathValid } from '../preview';
 import * as path from 'path';
 
 describe('Test preview server helper functions', () => {
-    test('Test isPathValid returns true for valid paths', async () => {
+    test('Test isPathValid returns true for valid paths', () => {
         const parentDirectory = path.resolve(__dirname, '../mock_files');
         const quickstartPaths = [
             'mock-quickstart-1',
