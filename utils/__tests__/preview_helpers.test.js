@@ -1,68 +1,38 @@
-import { validatePath, removePathPrefixes } from '../preview/previewHelpers';
+import { isPathValid } from '../preview';
 
 import * as path from 'path';
 
 describe('Test preview server helper functions', () => {
-    test('Test validatePath does not throw for valid paths', () => {
-        const parentDirectory = path.resolve(__dirname, '../..');
+    test('Test isPathValid returns true for valid paths', async () => {
+        const parentDirectory = path.resolve(__dirname, '../mock_files');
         const quickstartPaths = [
-            'battlesnake', 
-            'aws/amazon-athena', 
-            'elasticsearch', 
-            'quantum-metric',
-            'macos',
-            'php/cakephp',
+            'mock-quickstart-1',
+            'mock-quickstart-2',
+            'mock-quickstart-3',
+            'mock-quickstart-4',
+            'mock-quickstart-5',
+            'mock-quickstart-6',
+            'mock-quickstart-7/nested-quickstart'
         ];
-
-        quickstartPaths.forEach(quickstartPath => {
-            expect(
-                validatePath(parentDirectory, quickstartPath)
-            ).resolves.not.toThrowError();
-        });
+       
+        for (let qs of quickstartPaths) {
+          const isValid = await isPathValid(parentDirectory, qs);
+          expect(isValid).toBe(true);
+        }
     });
 
-    test('Test validatePath throws for invalid paths', () => {
+    test('Test isPathValid calls console.error', () => {
         // Arrange
         const mockConsoleError = jest.spyOn(console, 'error')
                                      .mockImplementation(() => {});
-        const mockExit = jest.spyOn(process, 'exit')
-                             .mockImplementation(() => {});
-        const parentDirectory = path.resolve(__dirname, '../..');
+        const parentDirectory = path.resolve(__dirname, '../mock_files');
         const quickstartPath = 'not/valid';
 
         // Act
-        validatePath(parentDirectory, quickstartPath);
+        isPathValid(parentDirectory, quickstartPath);
 
-        
         // Assert
         expect(mockConsoleError).toHaveBeenCalled();
-        expect(mockExit).toHaveBeenCalledWith(1);
-        mockExit.mockRestore();
         mockConsoleError.mockRestore();
     })
-
-    test('Test removePathPrefixes correctly removes /quickstarts from path', () => {
-        // Arrange
-        const inputPaths = [
-            'some/path/quickstarts/ads-web-gpt', 
-            'some/other/really/long/path/quickstarts/battlesnake', 
-            '/quickstarts/audit/account-data-ingestion-analysis', 
-            'Users/mickeyryan/repos/new-relic-quickstarts/quickstarts/aws/amazon-athena', 
-            '../quickstarts/elasticsearch'
-        ];
-
-        const expectedOutput = [
-            'quickstarts/ads-web-gpt', 
-            'quickstarts/battlesnake', 
-            'quickstarts/audit/account-data-ingestion-analysis', 
-            'quickstarts/aws/amazon-athena', 
-            'quickstarts/elasticsearch'
-        ];
-
-        // Act
-        const outputPaths = removePathPrefixes(inputPaths);
-
-        // Assert
-        expect(outputPaths).toEqual(expectedOutput);
-    });
 });
