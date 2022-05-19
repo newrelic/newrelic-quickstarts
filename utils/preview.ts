@@ -51,7 +51,7 @@ const main = async () => {
     PREVIEW_LINK += `&port=${port}`;
   }
 
-  const isValid = await isPathValid(PARENT_DIRECTORY, QUICKSTART_DIRECTORY);
+  const isValid = isPathValid(PARENT_DIRECTORY, QUICKSTART_DIRECTORY);
 
   if (!isValid) {
     process.exit(1);
@@ -65,9 +65,7 @@ const main = async () => {
   app.get('/', (req: Request, res: Response) => {
     let response = glob.sync(path.join(PARENT_DIRECTORY, `/${QUICKSTART_DIRECTORY}/**/*.*`))
                       
-    response = response.map(removeRepoPathPrefix);              
-
-    res.json(response);
+    res.json(response.map(removeRepoPathPrefix));
   });
 
   app.listen(port, () => {

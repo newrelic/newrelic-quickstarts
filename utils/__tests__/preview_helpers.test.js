@@ -29,9 +29,10 @@ describe('Test preview server helper functions', () => {
         const quickstartPath = 'not/valid';
 
         // Act
-        isPathValid(parentDirectory, quickstartPath);
+        const isValid = isPathValid(parentDirectory, quickstartPath);
 
         // Assert
+        expect(isValid).toBe(false);
         expect(mockConsoleError).toHaveBeenCalled();
         mockConsoleError.mockRestore();
     })
