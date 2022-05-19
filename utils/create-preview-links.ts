@@ -61,14 +61,14 @@ export const createComment = (
 /**
  * Executes this script to create a pull request comment with preview links for each quickstart in the pull request
  * Requires the `GITHUB_TOKEN` environment variable to be set to a Github access token
- * @param prURL - The Github API URL to the pull request
- * @param prNumber - The Github pull request number
- * @param token - A Github access token
+ * @param [prURL] - The Github API URL to the pull request
+ * @param [prNumber] - The Github pull request number
+ * @param [token] - A Github access token
  */
 export const generatePreviewComment = async (
-  prURL: string | undefined,
-  prNumber: string | undefined,
-  token: string | undefined
+  prURL?: string,
+  prNumber?: string,
+  token?: string
 ): Promise<boolean> => {
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);

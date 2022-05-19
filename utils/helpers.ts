@@ -188,18 +188,17 @@ export const cleanQuickstartName = (str: string): string =>
 /**
  * Gets the unique base quickstart directory from a given file path.
  * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'python/aiohttp'.
- * @param {String} filePath - Full file path of a file in a quickstart.
- * @param {String} targetChild - Node in file path that should be preceded by a base quickstart directory.
- * @return {String} Node in file path of the quickstart.
+ * @param filePath - Full file path of a file in a quickstart.
+ * @param [targetChild] - Node in file path that should be preceded by a base quickstart directory.
+ * @return Node in file path of the quickstart.
  */
 const getQuickstartNode = (
   filePath: string,
-  targetChild: string | undefined
+  targetChild: string = ''
 ): string => {
   const splitFilePath = filePath.split('/');
 
-  const baseQuickstartDirectoryIndex =
-    splitFilePath.findIndex((path) => path === targetChild) - 1;
+  const baseQuickstartDirectoryIndex = splitFilePath.indexOf(targetChild) - 1;
 
   let uniqueQuickstartDirectory = splitFilePath[baseQuickstartDirectoryIndex];
   let indexCounter = baseQuickstartDirectoryIndex;
@@ -215,8 +214,8 @@ const getQuickstartNode = (
 
 /**
  * Identifies where in a given file path to look for a quickstart directory.
- * @param {String} filePath - Full file path of a file in a quickstart.
- * @return {String|undefined} Called function with arguments to determine the quickstart of a given file path.
+ * @param filePath - Full file path of a file in a quickstart.
+ * @return Called function with arguments to determine the quickstart of a given file path.
  */
 export const getQuickstartFromFilename = (
   filePath: string
@@ -244,9 +243,9 @@ export const getQuickstartFromFilename = (
 
 /**
  * Reducer function that builds a set of unique quickstarts that were updated in a given PR.
- * @param {Set<string>} acc - A set of unique quickstarts being built by the reducer function.
- * @param {Object} curr - A result from the GitHub API.
- * @return {Set} A set of strings representing the unique quickstarts updated in a PR.
+ * @param acc - A set of unique quickstarts being built by the reducer function.
+ * @param curr - A result from the GitHub API.
+ * @return A set of strings representing the unique quickstarts updated in a PR.
  */
 export const buildUniqueQuickstartSet = (
   acc: Set<string>,
