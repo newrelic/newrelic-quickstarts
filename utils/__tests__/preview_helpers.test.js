@@ -15,7 +15,7 @@ describe('Test preview server helper functions', () => {
             'mock-quickstart-7/nested-quickstart'
         ];
        
-        for (let qs of quickstartPaths) {
+        for (const qs of quickstartPaths) {
           const isValid = await isPathValid(parentDirectory, qs);
           expect(isValid).toBe(true);
         }
