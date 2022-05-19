@@ -16,7 +16,7 @@ describe('Test preview server helper functions', () => {
         ];
        
         for (const qs of quickstartPaths) {
-          const isValid = await isPathValid(parentDirectory, qs);
+          const isValid = isPathValid(parentDirectory, qs);
           expect(isValid).toBe(true);
         }
     });
