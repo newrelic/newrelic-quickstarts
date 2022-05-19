@@ -20,8 +20,8 @@ const PARENT_DIRECTORY: string = path.resolve(__dirname, '../quickstarts');
 
 /**
  * Async function to validate given path is to a single quickstart
- * @param {string} parentDirectory - Quickstart home directory 
- * @param {string} quickstartDirectory - Quickstart directory
+ * @param parentDirectory - Quickstart home directory 
+ * @param quickstartDirectory - Quickstart directory
 */
 export const isPathValid = async (parentDirectory: string, quickstartDirectory: string) => {
   const configFile = glob.sync(path.join(parentDirectory, `/${quickstartDirectory}/config.+(yml|yaml)`));
