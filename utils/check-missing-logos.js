@@ -9,17 +9,15 @@ const {
  * @returns {String[]} - The directories of the quickstarts that do not have an icon image
  */
 const validateIconExists = (quickstartDirs) => {
-  return quickstartDirs
-    .filter((quickstart) => {
-      const config = readQuickstartFile(quickstart).contents[0];
-      return !config.icon;
-    });
+  return quickstartDirs.filter((quickstart) => {
+    const config = readQuickstartFile(quickstart).contents[0];
+    return !config.icon;
+  });
 };
-
 
 const main = () => {
   const quickstartDirs = findMainQuickstartConfigFiles();
-  const noIcons = validateIconExists(quickstartDirs)
+  const noIcons = validateIconExists(quickstartDirs);
   if (noIcons.length > 0) {
     console.log('<!> Found Quickstarts that do not contain icons');
     console.log(noIcons);
