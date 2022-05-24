@@ -4,13 +4,16 @@ const path = require('path');
 const { expect } = require('@jest/globals');
 
 const {
-  getQuickstartFromFilename,
   getQuickstartConfigPaths,
   buildMutationVariables,
-  buildUniqueQuickstartSet,
   getGraphqlRequests,
   countErrors,
 } = require('../create_validate_pr_quickstarts');
+
+const {
+  mockGitHubResponseFilenames,
+  addFilenameObject,
+} = require('./test-utilities');
 
 const helpers = require('../helpers');
 
@@ -30,61 +33,6 @@ const buildFullQuickstartFilePaths = (relativePaths) => {
     return path.resolve(process.cwd(), `..${relativePath}`);
   });
 };
-
-const mockFilenamesDuplicatedDirectory = [
-  'quickstarts/foo/duplicate-directory-name/config.yml',
-  'quickstarts/foo/duplicate-directory-name/alerts/baseline-alert.yml',
-  'quickstarts/bar/duplicate-directory-name/config.yml',
-  'quickstarts/bar/duplicate-directory-name/alerts/baseline-alert.yml',
-];
-
-const mockFilenamesTestQS1 = [
-  'quickstarts/test-quickstart-folder/alerts/baseline-alert.yml',
-  'quickstarts/test-quickstart-folder/alerts/static-alert.yml',
-  'quickstarts/test-quickstart-folder/config.yml',
-  'quickstarts/test-quickstart-folder/dashboards/my-dashboard.json',
-  'quickstarts/test-quickstart-folder/dashboards/my-dashboard.png',
-  'quickstarts/test-quickstart-folder/icon.jpeg',
-  'quickstarts/test-quickstart-folder/images/icon.jpeg',
-];
-const mockFilenamesTestQS2 = [
-  'quickstarts/test-quickstart-folder-2/logo.png',
-  'quickstarts/test-quickstart-folder-2/alerts/baseline-alert.yml',
-  'quickstarts/test-quickstart-folder-2/alerts/static-alert.yml',
-  'quickstarts/test-quickstart-folder-2/config.yml',
-  'quickstarts/test-quickstart-folder-2/dashboards/my-dashboard.json',
-  'quickstarts/test-quickstart-folder-2/dashboards/my-dashboard.png',
-  'quickstarts/test-quickstart-folder-2/icon.jpeg',
-  'quickstarts/test-quickstart-folder-2/images/icon.jpeg',
-  'quickstarts/test-quickstart-folder-2/logo.png',
-];
-
-const mockGitHubResponseFilenames = [
-  ...mockFilenamesDuplicatedDirectory,
-  ...mockFilenamesTestQS1,
-  ...mockFilenamesTestQS2,
-  'quickstarts/python/aiohttp/alerts/ApdexScore.yml',
-  'quickstarts/python/pysqlite/dashboards/python.json',
-  'quickstarts/python/pysqlite/logo.svg',
-  '.github/workflows/validate_packs.yml',
-  'utils/__tests__/validate_install_plans.test.js',
-  'utils/github-api-helpers.js',
-  'utils/helpers.js',
-  'utils/package.json',
-  'utils/validate-install-plan.js',
-  'utils/yarn.lock',
-];
-
-const addFilenameObject = (filename) => ({ filename });
-
-const expectedUniqueQuickstartDirectories = new Set([
-  'foo/duplicate-directory-name',
-  'bar/duplicate-directory-name',
-  'python/aiohttp',
-  'test-quickstart-folder',
-  'test-quickstart-folder-2',
-  'python/pysqlite',
-]);
 
 const quickstartNames = new Set([
   'aws-ec2',
@@ -199,54 +147,6 @@ const expectedMockQuickstart4MutationInput = {
 describe('quickstart submission and validation', () => {
   afterEach(() => {
     jest.resetAllMocks();
-  });
-
-  test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
-    const quickstartFromAlert = getQuickstartFromFilename(
-      'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
-    );
-
-    expect(quickstartFromAlert).toEqual('python/aiohttp');
-  });
-
-  test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
-    const quickstartFromDashboard = getQuickstartFromFilename(
-      'quickstarts/python/pysqlite/dashboards/python.json'
-    );
-
-    expect(quickstartFromDashboard).toEqual('python/pysqlite');
-  });
-
-  test('getQuickstartFromFilename returns the quickstart an icon belongs to', () => {
-    const quickstartFromIcon = getQuickstartFromFilename(
-      'quickstarts/python/pysqlite/logo.svg'
-    );
-
-    expect(quickstartFromIcon).toEqual('python/pysqlite');
-  });
-
-  test('getQuickstartFromFilename does not return non-quickstarts files', () => {
-    const mockQuickstart = getQuickstartFromFilename(
-      '.github/workflows/validate_packs.yml'
-    );
-
-    expect(mockQuickstart).toBeUndefined();
-  });
-
-  test('getQuickstartFromFilename does not return mock quickstarts', () => {
-    const mockQuickstart = getQuickstartFromFilename(
-      'utils/mock_files/mock-quickstart-1/config.yml'
-    );
-
-    expect(mockQuickstart).toBeUndefined();
-  });
-
-  test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
-    const uniqueQuickstarts = mockGitHubResponseFilenames
-      .map(addFilenameObject)
-      .reduce(buildUniqueQuickstartSet, new Set());
-
-    expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
   });
 
   test('getQuickstartConfigPaths returns list of unique quickstart config filepaths', () => {
