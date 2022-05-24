@@ -31,6 +31,9 @@
       - [Images directory & preview images](#images-directory--preview-images)
       - [Icons](#icons)
     - [Keywords](#keywords)
+  - [Quickstart Preview](#quickstart-preview)
+    - [Local Quickstart Preview](#local-quickstart-preview)
+    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
   - [Contributor license agreement](#contributor-license-agreement)
@@ -388,6 +391,25 @@ that is not defined in this list below, it will be reviewed for use after you su
 - testing
 - tracing
 - windows
+
+## Quickstart Preview
+Quickstart Previews are available for contributors to review their new or improved quickstarts directly from the Public I/O site! We provide two ways to view a preview:
+
+### Local Quickstart Preview
+
+- To view a local quickstart preview, you can run the command `yarn preview node-js/express` or `yarn preview catchpoint` using the path to the quickstart as the last command line argument.
+- This script needs to be run under the `utils` directory.
+- The script will run a local server for the Public I/O site to fetch files from the specified quickstart.
+- The command line will provide a link that can be navigated to view the quickstart.
+  - In order for local quickstart preview to be enabled on the Public I/O site, there needs to be a `config.yml` file present in the quickstart directory. However, there does not need to have any content inside the file.
+  - _Only one quickstart may be served for local quickstart preview_
+
+|Note: While working on a quickstart, the changes may not be updated in the local preview right away. If you do not see immediate changes, refresh the page to pull in recent updates.
+
+### Pull Request Quickstart Preview
+- Once a PR is open for a new or improved quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
+- If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+
 
 ## Feature requests
 
