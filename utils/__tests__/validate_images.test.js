@@ -11,7 +11,13 @@ const glob = require('glob');
 const path = require('path');
 
 jest.mock('@actions/core');
-jest.mock('fs');
+jest.mock('fs', () => ({
+  promises: {
+    access: jest.fn(),
+  },
+  statSync: jest.fn(),
+}));
+
 jest.mock('glob');
 jest.mock('path');
 jest.spyOn(global.console, 'warn').mockImplementation(() => {});
