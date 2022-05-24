@@ -45,7 +45,7 @@ const main = async () => {
   /*
         Set to localhost for dev purposes TODO: Set to instant observability later
   */
-  let PREVIEW_LINK = 'https://localhost:8000/preview?local=true';
+  let PREVIEW_LINK = 'https://newrelic.com/instant-observability/preview?local=true';
 
   if (port !== '3000') {
     PREVIEW_LINK += `&port=${port}`;
