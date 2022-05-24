@@ -168,8 +168,7 @@ describe('create-validate-data-sources', () => {
           dryRun: true,
           dataSourceMetadata: {
             displayName: 'fake_display_name',
-            icon:
-              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
             install: {
               primary: {
                 link: {
@@ -223,8 +222,7 @@ describe('create-validate-data-sources', () => {
           dryRun: true,
           dataSourceMetadata: {
             displayName: 'fake_display_name',
-            icon:
-              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
             install: {
               primary: {
                 link: {
@@ -275,8 +273,7 @@ describe('create-validate-data-sources', () => {
           dryRun: true,
           dataSourceMetadata: {
             displayName: 'fake_display_name',
-            icon:
-              'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
+            icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/path/to/data-sources/fake-data-source/fake_logo.png',
             install: {
               primary: {
                 nerdlet: {
