@@ -251,7 +251,10 @@ export const findQuickstartComponentConfiguration = (
 ): string[] => {
   const ext = componentType === 'dashboards' ? 'json' : '+(yml|yaml)';
   return glob.sync(
-    path.resolve(process.cwd(), `../quickstarts/**/${componentType}/*.${ext}`)
+    path.resolve(
+      process.cwd(),
+      `../quickstarts/**/${componentType}/**/*.${ext}`
+    )
   );
 };
 
