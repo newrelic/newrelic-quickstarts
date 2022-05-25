@@ -1,16 +1,17 @@
-const {
-  readQuickstartFile,
-  findMainQuickstartConfigFiles,
-} = require('./helpers');
+import { readQuickstartFile, findMainQuickstartConfigFiles } from './helpers';
+import type { FilePathAndContents } from './helpers';
+import { QuickstartConfig } from './types/QuickstartConfig';
 
 /**
  * Validate that a quickstart has an icon image
- * @param {String[]} quickstartDirs - The directories of the quickstarts
- * @returns {String[]} - The directories of the quickstarts that do not have an icon image
+ * @param quickstartDirs - The directories of the quickstarts
+ * @returns - The directories of the quickstarts that do not have an icon image
  */
-const validateIconExists = (quickstartDirs) => {
+const validateIconExists = (quickstartDirs: string[]): string[] => {
   return quickstartDirs.filter((quickstart) => {
-    const config = readQuickstartFile(quickstart).contents[0];
+    const parsedConfig: FilePathAndContents<QuickstartConfig> =
+      readQuickstartFile<QuickstartConfig>(quickstart);
+    const config: QuickstartConfig = parsedConfig.contents[0];
     return !config.icon;
   });
 };
