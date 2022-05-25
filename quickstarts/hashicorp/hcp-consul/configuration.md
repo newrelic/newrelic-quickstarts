@@ -40,7 +40,7 @@ adding
       "telemetry": {
         "disable_hostname": false,
         "disable_compat_1.9": true,
-        "dogstatsd_addr": "newrelic-statsd.default.svc.cluster.local:80",
+        "dogstatsd_addr": "gostatsd.default.svc.cluster.local:8125",
         "dogstatsd_tags": ["consul.source.datacenter:<YOUR_CONSUL_DATACENTER_NAME_HERE>"]
       }   
     }   
