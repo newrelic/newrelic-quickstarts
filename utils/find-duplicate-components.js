@@ -5,11 +5,19 @@ const {
   globFiles,
 } = require('./helpers');
 const path = require('path');
+const fs = require('fs');
 
 const prop = (k) => (x) => x[k];
 const first = (arr) => arr[0];
 const unique = (arr) => [...new Set(arr)];
 const stringify = (x) => JSON.stringify(x);
+const slugify = (str) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/, '-')
+    .replace(/[^a-z0-9-]/g, '');
 const inspect = (x) => {
   console.log(x);
   return x;
@@ -70,7 +78,9 @@ const main = () => {
   }
 
   const allDups = new Set(Object.values(duplicates).flatMap((d) => d));
-  console.log(allDups);
+  allDups.add('Bunny');
+  allDups.add('Authlogic');
+  // console.log(allDups);
 
   // loop through each dashboard
   //   skip if it is one of the duplicates
@@ -91,8 +101,26 @@ const main = () => {
     // dashboards/apache/apache.json
     // dashboards/apache
     const pathToDir = path.dirname(dash.path);
+
+    // add to config.yml
+    const newDirName = pathToDir.split('/').pop();
+
     const filesInDir = globFiles(pathToDir);
-    console.log(filesInDir);
+
+    const dashboardTopLevel = path.resolve(__dirname, '../dashboards');
+
+    filesInDir.forEach((filePath) => {
+      const fileName = path.basename(filePath);
+      // fs.renameSync(
+      //   filePath,
+      //   path.resolve(dashboardTopLevel, newDirName, fileName)
+      // );
+      const newPath = path.resolve(dashboardTopLevel, newDirName, fileName);
+
+//      console.log(filePath, '\n', newPath, '\n');
+    });
+
+    // console.log(filesInDir);
   }
 };
 
