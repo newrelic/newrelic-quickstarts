@@ -30,13 +30,13 @@ resource "consul_config_entry" "proxy_defaults" {
 
   config_json = jsonencode({
     Config = { 
-      envoy_statsd_url = "udp://127.0.0.1:8125"
+      envoy_dogstatsd_url = "udp://127.0.0.1:8125"
     }   
   })  
 }
-
-
 ```
+##### Notes
+1. We use the `envoy_dogstatsd_url` so we can get the `consul.source.datacenter:` tag on each metric. This allows the New Relic ONE dashboards to facet by Consul Datacenter.
 
 ### Create the Consul cluster
 Create the Consul cluster following the steps for the appropriate environment in the [End-to-End Overview](https://learn.hashicorp.com/tutorials/cloud/consul-end-to-end-overview)
