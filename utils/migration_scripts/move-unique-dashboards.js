@@ -4,7 +4,7 @@ const {
   readJsonFile,
   globFiles,
   getQuickstartFromFilename,
-} = require('./helpers');
+} = require('../helpers');
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
@@ -82,7 +82,6 @@ const main = () => {
   const allDups = new Set(Object.values(duplicates).flatMap((d) => d));
   allDups.add('Bunny');
   allDups.add('Authlogic');
-  // console.log(allDups);
 
   // loop through each dashboard
   //   skip if it is one of the duplicates
@@ -114,7 +113,7 @@ const main = () => {
 
     const filesInDir = globFiles(pathToDir);
 
-    const dashboardTopLevel = path.resolve(__dirname, '../dashboards');
+    const dashboardTopLevel = path.resolve(__dirname, '../../dashboards');
     const newDashPath = path.resolve(dashboardTopLevel, newDirName);
     console.log(`creating new path: ${newDashPath}`);
     fs.mkdirSync(newDashPath);
