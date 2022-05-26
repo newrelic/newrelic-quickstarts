@@ -3,9 +3,11 @@ const {
   readYamlFile,
   readJsonFile,
   globFiles,
+  getQuickstartFromFilename,
 } = require('./helpers');
 const path = require('path');
 const fs = require('fs');
+const glob = require('glob');
 
 const prop = (k) => (x) => x[k];
 const first = (arr) => arr[0];
@@ -91,9 +93,13 @@ const main = () => {
   //     delete the old file
   //   delete old dashboard directory
   //   if quickstart's dashboard directory is empty, delete it
+  //
+  //   Update the quickstart's config to refernce the new dashboard location
 
   for (const dash of dashboards) {
     const dashContent = dash.contents[0];
+
+    // Skip any non-unique dashboards, we will move them manually
     if (allDups.has(dashContent.name.trim())) {
       continue;
     }
@@ -111,16 +117,21 @@ const main = () => {
 
     filesInDir.forEach((filePath) => {
       const fileName = path.basename(filePath);
-      // fs.renameSync(
-      //   filePath,
-      //   path.resolve(dashboardTopLevel, newDirName, fileName)
-      // );
       const newPath = path.resolve(dashboardTopLevel, newDirName, fileName);
+      fs.renameSync(filePath, newPath);
 
-//      console.log(filePath, '\n', newPath, '\n');
+      //console.log(filePath, '\n', newPath, '\n');
     });
 
-    // console.log(filesInDir);
+    // add reference back to the quickstart config
+    const associatedQuickstart = getQuickstartFromFilename(dash.path);
+
+    const globPath = path.join('/', associatedQuickstart, `config.+(yml|yaml)`);
+
+    const configFilePath = glob.sync(globPath)[0];
+
+    const dashboardField = `\ndashboards\n  - ${newDirName}`;
+    fs.appendFileSync(configFilePath, dashboardField);
   }
 };
 
