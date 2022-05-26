@@ -107,6 +107,7 @@ const main = () => {
     // dashboards/apache/apache.json
     // dashboards/apache
     const pathToDir = path.dirname(dash.path);
+    console.log(`moving ${dash.path}`);
 
     // add to config.yml
     const newDirName = pathToDir.split('/').pop();
@@ -115,11 +116,13 @@ const main = () => {
 
     const dashboardTopLevel = path.resolve(__dirname, '../dashboards');
     const newDashPath = path.resolve(dashboardTopLevel, newDirName);
+    console.log(`creating new path: ${newDashPath}`);
     fs.mkdirSync(newDashPath);
 
     filesInDir.forEach((filePath) => {
       const fileName = path.basename(filePath);
       const newPath = path.resolve(newDashPath, fileName);
+      console.log(`renaming ${filePath} to ${newPath}`);
       fs.renameSync(filePath, newPath);
 
       //console.log(filePath, '\n', newPath, '\n');
@@ -133,6 +136,7 @@ const main = () => {
     const configFilePath = glob.sync(globPath)[0];
 
     const dashboardField = `\ndashboards:\n  - ${newDirName}`;
+    console.log(`adding reference to quickstart ${configFilePath}`);
     fs.appendFileSync(configFilePath, dashboardField);
   }
 };
