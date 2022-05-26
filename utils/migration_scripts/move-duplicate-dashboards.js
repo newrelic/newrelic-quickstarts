@@ -96,6 +96,7 @@ const main = () => {
       // Check to see if it's already been moved
       const topLevelPath = path.join(dashboardTopLevel, dashDirName);
       if (!fs.existsSync(topLevelPath)) {
+        fs.mkdirSync(topLevelPath);
         // move the files
         dashFiles.forEach((f) => {
           const fileName = path.basename(f);
