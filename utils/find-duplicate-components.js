@@ -114,10 +114,12 @@ const main = () => {
     const filesInDir = globFiles(pathToDir);
 
     const dashboardTopLevel = path.resolve(__dirname, '../dashboards');
+    const newDashPath = path.resolve(dashboardTopLevel, newDirName);
+    fs.mkdirSync(newDashPath);
 
     filesInDir.forEach((filePath) => {
       const fileName = path.basename(filePath);
-      const newPath = path.resolve(dashboardTopLevel, newDirName, fileName);
+      const newPath = path.resolve(newDashPath, fileName);
       fs.renameSync(filePath, newPath);
 
       //console.log(filePath, '\n', newPath, '\n');
