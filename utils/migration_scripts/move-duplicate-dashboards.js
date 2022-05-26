@@ -89,17 +89,17 @@ const main = () => {
   const dashboardTopLevel = path.resolve(__dirname, '../../dashboards');
   for (const setOfDuplicates of allDups) {
     for (const { name, filePath } of setOfDuplicates) {
-      const dashDirPath = filePath.dirname(filePath);
+      const dashDirPath = path.dirname(filePath);
       const dashDirName = dashDirPath.split('/').pop();
       const dashFiles = globFiles(dashDirPath);
 
       // Check to see if it's already been moved
-      const topLevelPath = filePath.join(dashboardTopLevel, dashDirName);
+      const topLevelPath = path.join(dashboardTopLevel, dashDirName);
       if (!fs.existsSync(topLevelPath)) {
         // move the files
         dashFiles.forEach((f) => {
-          const fileName = filePath.basename(f);
-          const newFilePath = filePath.join(topLevelPath, fileName);
+          const fileName = path.basename(f);
+          const newFilePath = path.join(topLevelPath, fileName);
           fs.copyFileSync(f, newFilePath);
         });
       }
@@ -112,7 +112,7 @@ const main = () => {
       // write reference back to config
       const associatedQuickstart = getQuickstartFromFilename(filePath);
 
-      const globPath = filePath.join(
+      const globPath = path.join(
         '/',
         associatedQuickstart,
         `config.+(yml|yaml)`
