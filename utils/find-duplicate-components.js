@@ -130,7 +130,7 @@ const main = () => {
 
     const configFilePath = glob.sync(globPath)[0];
 
-    const dashboardField = `\ndashboards\n  - ${newDirName}`;
+    const dashboardField = `\ndashboards:\n  - ${newDirName}`;
     fs.appendFileSync(configFilePath, dashboardField);
   }
 };
