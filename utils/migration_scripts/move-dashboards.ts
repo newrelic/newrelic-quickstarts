@@ -36,6 +36,37 @@ const setupDashboardDir = () => {
   }
 }
 
+const getFullDashboardPath = (currentDashLocation: string) => {
+  const newDashLocation = path.dirname(currentDashLocation).split('/').pop()!;
+  // cleanup file path name
+  const cleanedDashLocation = newDashLocation.replace(/_/g, '-').toLowerCase();
+  // create new dashboard directory
+  let fullDashboardPath = path.resolve(
+    __dirname,
+    '../..',
+    'dashboards',
+    cleanedDashLocation
+  );
+  // if already exists, suffix directory name with quickstart slug
+  if (fs.existsSync(fullDashboardPath)) {
+    const quickstartLocation = getQuickstartFromFilename(currentDashLocation)
+      ?.split('/quickstarts/')
+      .pop()
+      ?.replace(/\//g, '-');
+
+    fullDashboardPath = fullDashboardPath + '-' + quickstartLocation;
+  }
+  return fullDashboardPath;
+}
+
+const copyFiles = (fullDashboardLocation: string, currentDashboardLocation: string) => {
+    fs.mkdirSync(fullDashboardLocation)
+    fs.copyFileSync(
+      currentDashboardLocation,
+      path.join(fullDashboardLocation, path.basename(currentDashboardLocation))
+    );
+}
+
 const main = () => {
   setupDashboardDir();
   const paths = getAllDashboardPaths();
@@ -46,28 +77,30 @@ const main = () => {
 
   grouped.forEach(group => {
     // determine new location for dashboard
-    const currentDashLocation = group[0].path;
-    const newDashLocation = path.dirname(currentDashLocation).split('/').pop()!;
-    // cleanup file path name 
-    const cleanedDashLocation = newDashLocation.replace(/_/g, "-").toLowerCase();
-    // create new dashboard directory
-    let fullDashboardPath = path.resolve(__dirname, '../..', 'dashboards', cleanedDashLocation);
-    // if already exists, suffix directory name with quickstart slug
-    if (fs.existsSync(fullDashboardPath)) {
-      const quickstartLocation = getQuickstartFromFilename(currentDashLocation)?.split("/quickstarts/").pop()?.replace(/\//g, "-");
+    const currentDashboardLocation = group[0].path
+    const fullDashboardLocation = getFullDashboardPath(currentDashboardLocation);
+    copyFiles(fullDashboardLocation, currentDashboardLocation);
 
-      fullDashboardPath = fullDashboardPath + "-" + quickstartLocation;
-    }
-    fs.mkdirSync(fullDashboardPath)
-    console.log(fullDashboardPath)
     // get all dashboard files (screenshots)
+    const dashboardScreenshotPaths: string[] = getDashboardScreenshotsPath(currentDashboardLocation);
+    const dashboardScreenshots = dashboardScreenshotPaths.map((screenshot) => {
+      return {
+        oldFilePath: screenshot,
+        newFilePath: path.join(fullDashboardLocation, path.basename(screenshot))
+      }
+    })
     // create new files in this location
+    dashboardScreenshots.forEach(({ oldFilePath, newFilePath }) =>
+      fs.copyFileSync(oldFilePath, newFilePath)
+    );
 
     // loop through group 
     //    update each quickstart config to reference the new location of dashboard
     //    delete old dashboard files
     //    
   })
+
+  // attempt to read all dashboards again and ensure there are no loose ends
 };
 
 main();
