@@ -1,4 +1,3 @@
-'use strict';
 import type { QuickstartConfig } from './types/QuickstartConfig';
 import type { FilePathAndContents } from './helpers';
 
