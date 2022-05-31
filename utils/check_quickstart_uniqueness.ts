@@ -5,9 +5,13 @@ const {
   findMainQuickstartConfigFiles,
 } = require('./helpers');
 
-// Types
-import { IdsAndPaths, FilePathAndContents } from "./types/types";
+import { QuickstartConfig } from "./types/QuickstartConfig";
+import { FilePathAndContents } from "./helpers";
 
+export type IdsAndPaths = {
+  id: string;
+  path: string;
+};
 /**
  * Returns any quickstarts with matching ids
  * @param {Object[]} idsAndPaths an array of objects containing the path and id of a quickstart
@@ -26,11 +30,11 @@ const getMatchingIds = (
   }, []);
 };
 
-const main = () => {
+const main = (): void => {
   const configPaths: string[] = findMainQuickstartConfigFiles();
-  const configs: FilePathAndContents[] = configPaths.map(readQuickstartFile);
+  const configs: FilePathAndContents<QuickstartConfig>[] = configPaths.map(readQuickstartFile);
   
-  const idsAndPaths = configs.map((c: FilePathAndContents) => ({
+  const idsAndPaths = configs.map((c: FilePathAndContents<QuickstartConfig>) => ({
     id: c.contents[0].id,
     path: c.path,
   }));

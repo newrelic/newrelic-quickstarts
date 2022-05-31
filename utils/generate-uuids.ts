@@ -4,14 +4,15 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 import { findMainQuickstartConfigFiles, readYamlFile } from "./helpers";
 
-import { ConfigContents } from "./types/types";
+import { QuickstartConfig } from './types/QuickstartConfig';
+
 /**
  * Checks for and generates UUIDs for quickstarts
  * @param {String[]} paths an array of quickstarts config paths
  **/
 const main = (paths: string[]): void => {
   for (const path of paths) {
-    const config: ConfigContents = readYamlFile(path).contents[0];
+    const config: QuickstartConfig = readYamlFile<QuickstartConfig>(path).contents[0];
 
     if (config && !('id' in config)) {
       const newId: string = uuidv4();

@@ -4,21 +4,19 @@ import {
   fetchPaginatedGHResults,
   filterQuickstartConfigFiles,
   filterOutTestFiles,
+  GithubAPIPullRequestFile
 } from './github-api-helpers';
 
 import {
   findMainInstallConfigFiles,
   readQuickstartFile,
   passedProcessArguments,
-  FilePathAndContents,
+  FilePathAndContents
 } from './helpers';
+import { InstallPlanConfig } from './types/InstallPlanConfig';
+import { QuickstartConfig } from './types/QuickstartConfig';
 
 const GITHUB_API_URL: string = passedProcessArguments()[0];
-
-// Types
-type ConfigFiles = {
-
-};
 
 /**
  * Gets all install plain ids under installs/ dir
@@ -26,7 +24,7 @@ type ConfigFiles = {
  */
 const getAllInstallPlanIds = () => {
   return findMainInstallConfigFiles().reduce((acc: string[], filePath: string) => {
-    const { contents }: any = readQuickstartFile(filePath);
+    const { contents } = readQuickstartFile<InstallPlanConfig>(filePath);
 
     const { id } = contents[0];
     return [...new Set([...acc, id])];
@@ -38,14 +36,15 @@ const getAllInstallPlanIds = () => {
  * @param {Array} configFiles - Array of config files
  * @returns {{filePath: string, installPlans: Array}[]} Array of paths and install plans for file
  */
-const getConfigInstallPlans = (configFiles: any) => {
-  console.log('configFiles: ', configFiles)
-  return configFiles.map(({ filename }:any) => {
-    const filePath : string = path.join(process.cwd(), `../${filename}`);
-    const installPlans =
-      readQuickstartFile(filePath).contents[0]?.installPlans || [];
+const getConfigInstallPlans = (
+  configFiles: GithubAPIPullRequestFile[]
+  ) => {
+  return configFiles.map(({ filename }) => {
+    const filePath: string = path.join(process.cwd(), `../${filename}`);
+    const installPlans: string[] =
+      readQuickstartFile<QuickstartConfig>(filePath).contents[0]?.installPlans || [];
 
-    return { filePath, installPlans };
+    return { path: filePath, contents: installPlans };
   });
 };
 
@@ -55,32 +54,32 @@ const getConfigInstallPlans = (configFiles: any) => {
  * @param {String[]} installPlanIds - Array of install plan ids
  * @returns {{filePath, installPlans}[]} Array of paths and install plans for file
  */
-const getInstallPlansNoMatches = (configInstallPlanFiles:any, installPlanIds:any) => {
+const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<string>[], installPlanIds: string[]) => {
   return configInstallPlanFiles
-    .map(({ installPlans, filePath }:any) => {
-      const nonExistentInstallPlans = installPlans.filter(
-        (plan: any) => !installPlanIds.includes(plan)
+    .map(({ contents, path }: FilePathAndContents<string>) => {
+      const nonExistentInstallPlans = contents.filter(
+        (plan: string) => !installPlanIds.includes(plan)
       );
-      return { filePath, installPlans: nonExistentInstallPlans };
+      return { path, contents: nonExistentInstallPlans };
     })
-    .filter(({ installPlans }:any) => installPlans.length > 0);
+    .filter(({ contents }: FilePathAndContents<string>) => contents.length > 0);
 };
 
 /**
  * Main validation logic ensuring install plans specified in config files actually exist
  * @param {Array} githubFiles - Array of results from Github API
  */
-const validateInstallPlanIds = (githubFiles:any) => {
-  const configFiles = filterQuickstartConfigFiles(githubFiles);
-  const existingConfigFiles = configFiles.filter(
-    (cf:any) => cf.status !== 'removed'
+const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
+  const configFiles: GithubAPIPullRequestFile[] = filterQuickstartConfigFiles(githubFiles);
+  const existingConfigFiles: GithubAPIPullRequestFile[] = configFiles.filter(
+    (cf: GithubAPIPullRequestFile) => cf.status !== 'removed'
   ); // Filter out deleted files
 
-  const configInstallPlansFiles = getConfigInstallPlans(existingConfigFiles);
+  const configInstallPlansFiles: FilePathAndContents<string>[] = getConfigInstallPlans(existingConfigFiles);
 
-  const installPlanIds = getAllInstallPlanIds();
+  const installPlanIds: string[] = getAllInstallPlanIds();
 
-  const installPlanNoMatches = getInstallPlansNoMatches(
+  const installPlanNoMatches: FilePathAndContents<string>[] = getInstallPlansNoMatches(
     configInstallPlansFiles,
     installPlanIds
   );
@@ -90,8 +89,8 @@ const validateInstallPlanIds = (githubFiles:any) => {
       `ERROR: Found install plans with no corresponding install plan id.\n`
     );
     console.error(`An install plan id must match an existing install plan id.`);
-    installPlanNoMatches.forEach((m:any) =>
-      console.error(`- ${m.installPlans.join(', ')} in ${m.filePath}`)
+    installPlanNoMatches.forEach((m: FilePathAndContents<string>) =>
+      console.error(`- ${m.contents.join(', ')} in ${m.path}`)
     );
     console.error(
       `\nPlease change to an existing install plan id or remove the ids.`

@@ -3,17 +3,21 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as glob from 'glob';
 import isImage from 'is-image';
+import { QuickstartConfig } from './types/QuickstartConfig';
 
-import { FilePathAndContents, ConfigContents } from './types/types';
+export interface FilePathAndContents<T> {
+  path: string;
+  contents: T[];
+}
 
 /**
  * Read and parse a YAML file
  * @param {String} filePath - The path to the YAML file
  * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
-export const readYamlFile = (filePath: string): FilePathAndContents => {
+export const readYamlFile = <T>(filePath: string): FilePathAndContents<T> => {
   const file = fs.readFileSync(filePath);
-  const contents = yaml.loadAll(file.toString('utf-8')) as ConfigContents[];
+  const contents = yaml.loadAll(file.toString('utf-8')) as T[];
   return { path: filePath, contents };
 };
 
@@ -22,7 +26,7 @@ export const readYamlFile = (filePath: string): FilePathAndContents => {
  * @param {String} filePath - The path to the JSON file
  * @returns {{path: string, contents: Object}} An object containing the path and contents of the file
  */
-export const readJsonFile = (filePath: string): FilePathAndContents => {
+export const readJsonFile = <T>(filePath: string): FilePathAndContents<T> => {
   const file = fs.readFileSync(filePath);
   const contents = JSON.parse(file.toString('utf-8'));
   return { path: filePath, contents: [contents] }; // Return array here to be consistent with the yaml reading
@@ -33,9 +37,9 @@ export const readJsonFile = (filePath: string): FilePathAndContents => {
  * @param {String} filePath - The path to the JSON or YAML file
  * @returns {Object} An object containing the path and contents of the file
  */
-export const readQuickstartFile = (
+export const readQuickstartFile = <T>(
   filePath: string
-): FilePathAndContents =>
+): FilePathAndContents<T> =>
   path.extname(filePath) === '.json'
     ? readJsonFile(filePath)
     : readYamlFile(filePath);
@@ -52,7 +56,9 @@ export const removeCWDPrefix = (filePath: string): string =>
  * Will exit if the incorrect number of argument is passed in.
  * @param {number} length The desired number of arguments.
  */
-export const checkArgs = (length: number) => {
+export const checkArgs = (
+  length: number
+  ): void => {
   const { argv } = process;
 
   if (argv.length !== length) {
@@ -123,7 +129,7 @@ export const getFileExtension = (filePath: string): string => {
  * @param {string} dir - The directory to parse, set by the BASE_PATH variable
  * @returns {Array} An array of pathnames of a globbed directory
  */
-export const globFiles = (dir: string): String[] => {
+export const globFiles = (dir: string): string[] => {
   return glob.sync(path.resolve(dir, '**/*'));
 };
 
