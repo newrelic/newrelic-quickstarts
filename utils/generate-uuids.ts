@@ -6,10 +6,6 @@ import { findMainQuickstartConfigFiles, readYamlFile } from "./helpers";
 
 import { QuickstartConfig } from './types/QuickstartConfig';
 
-/**
- * Checks for and generates UUIDs for quickstarts
- * @param {String[]} paths an array of quickstarts config paths
- **/
 const main = (paths: string[]): void => {
   for (const path of paths) {
     const config: QuickstartConfig = readYamlFile<QuickstartConfig>(path).contents[0];

@@ -5,11 +5,6 @@ const {
 
 import { QuickstartConfig } from "./types/QuickstartConfig";
 
-/**
- * Validate that a quickstart has an icon image
- * @param {String[]} quickstartDirs - The directories of the quickstarts
- * @returns {String[]} - The directories of the quickstarts that do not have an icon image
- */
 const validateIconExists = (
     quickstartDirs: string[]
   ): string[] => {

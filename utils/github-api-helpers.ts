@@ -51,7 +51,7 @@ export interface GithubAPIPullRequestFile {
  */
 export const fetchPaginatedGHResults = async (
   url: string,
-  token: string | undefined
+  token: string
 ): Promise<GithubAPIPullRequestFile[]> => {
   let files: GithubAPIPullRequestFile[] = [];
   let nextPageLink: string | null = url;

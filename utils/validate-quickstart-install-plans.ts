@@ -20,7 +20,6 @@ const GITHUB_API_URL: string = passedProcessArguments()[0];
 
 /**
  * Gets all install plain ids under installs/ dir
- * @returns {Array} Array of unique install plan ids
  */
 const getAllInstallPlanIds = () => {
   return findMainInstallConfigFiles().reduce((acc: string[], filePath: string) => {
@@ -33,8 +32,6 @@ const getAllInstallPlanIds = () => {
 
 /**
  * Gets all the install plans and paths for an array of config files
- * @param {Array} configFiles - Array of config files
- * @returns {{filePath: string, installPlans: Array}[]} Array of paths and install plans for file
  */
 const getConfigInstallPlans = (
   configFiles: GithubAPIPullRequestFile[]
@@ -48,12 +45,6 @@ const getConfigInstallPlans = (
   });
 };
 
-/**
- * Gets the set of install plans specified in config files but not actually existing
- * @param {{filePath, installPlans}[]} configInstallPlanFiles - Array of objects with path and install plans for file
- * @param {String[]} installPlanIds - Array of install plan ids
- * @returns {{filePath, installPlans}[]} Array of paths and install plans for file
- */
 const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<string>[], installPlanIds: string[]) => {
   return configInstallPlanFiles
     .map(({ contents, path }: FilePathAndContents<string>) => {
@@ -67,7 +58,6 @@ const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<st
 
 /**
  * Main validation logic ensuring install plans specified in config files actually exist
- * @param {Array} githubFiles - Array of results from Github API
  */
 const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
   const configFiles: GithubAPIPullRequestFile[] = filterQuickstartConfigFiles(githubFiles);
@@ -103,9 +93,15 @@ const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
 };
 
 const main = async () => {
+  const githubToken = process.env.GITHUB_TOKEN;
+  
+  if (!githubToken) {
+    console.error('GITHUB_TOKEN is not defined.');
+    process.exit(1);
+  }
   const files = await fetchPaginatedGHResults(
     GITHUB_API_URL,
-    process.env.GITHUB_TOKEN
+    githubToken
   );
   validateInstallPlanIds(filterOutTestFiles(files));
 };
