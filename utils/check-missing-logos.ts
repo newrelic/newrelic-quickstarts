@@ -3,21 +3,25 @@ const {
   findMainQuickstartConfigFiles,
 } = require('./helpers');
 
+import { ConfigContents } from "./types/types";
+
 /**
  * Validate that a quickstart has an icon image
  * @param {String[]} quickstartDirs - The directories of the quickstarts
  * @returns {String[]} - The directories of the quickstarts that do not have an icon image
  */
-const validateIconExists = (quickstartDirs) => {
-  return quickstartDirs.filter((quickstart) => {
-    const config = readQuickstartFile(quickstart).contents[0];
+const validateIconExists = (
+    quickstartDirs: string[]
+  ): string[] => {
+  return quickstartDirs.filter((quickstart: string) => {
+    const config: ConfigContents = readQuickstartFile(quickstart).contents[0];
     return !config.icon;
   });
 };
 
 const main = () => {
-  const quickstartDirs = findMainQuickstartConfigFiles();
-  const noIcons = validateIconExists(quickstartDirs);
+  const quickstartDirs: string[] = findMainQuickstartConfigFiles();
+  const noIcons: string[] = validateIconExists(quickstartDirs);
   if (noIcons.length > 0) {
     console.log('<!> Found Quickstarts that do not contain icons');
     console.log(noIcons);

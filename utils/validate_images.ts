@@ -17,15 +17,23 @@ const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 12;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 
+type DirectoryValidation = {
+  folder: string;
+  dashboardCount: number;
+  imageCount: number;
+  maxImages: number;
+};
+
 /**
  * Validate all folders contain no more than MAX_NUM_IMG images
  * @param {Array} files - The array of globbed file names
  */
 
-const validateImageCounts = (quickstartDirs) => {
-  const screenshotDirectories = [];
-  const imagesDirectories = [];
-  quickstartDirs.forEach((quickstart) => {
+const validateImageCounts = (quickstartDirs: string[]): void => {
+  const screenshotDirectories: DirectoryValidation[] = [];
+  const imagesDirectories: DirectoryValidation[] = [];
+  console.log('quickstartDirs: ', quickstartDirs);
+  quickstartDirs.forEach((quickstart: any) => {
     const quickstartDirName = path.dirname(quickstart);
     // get all images for a quickstart
     const imagePaths = glob.sync(
@@ -43,12 +51,12 @@ const validateImageCounts = (quickstartDirs) => {
     ).length;
 
     const screenshotPaths = imagePaths.filter(
-      (p) =>
+      (p: any) =>
         p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 
     const dashboardImagePaths = imagePaths.filter(
-      (p) =>
+      (p: any) =>
         p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 
@@ -75,7 +83,7 @@ const validateImageCounts = (quickstartDirs) => {
   if (screenshotDirectories.length) {
     core.setFailed('Each component should contain no more than 12 screenshots');
     console.warn(`\nPlease check the following directories:`);
-    screenshotDirectories.forEach((dir) => console.warn(dir));
+    screenshotDirectories.forEach((dir: DirectoryValidation) => console.warn(dir));
   }
 
   if (imagesDirectories.length) {
@@ -83,7 +91,7 @@ const validateImageCounts = (quickstartDirs) => {
       'The `images` directory should contain no more than 12 images per component'
     );
     console.warn(`\nPlease check the following directories:`);
-    imagesDirectories.forEach((dir) => console.warn(dir));
+    imagesDirectories.forEach((dir: DirectoryValidation) => console.warn(dir));
   }
 };
 
@@ -91,7 +99,7 @@ const validateImageCounts = (quickstartDirs) => {
  * Validates that files are below MAX_SIZE
  * @param {Array} globbedFiles - The array of globbed file names
  */
-const validateFileSizes = (globbedFiles) => {
+const validateFileSizes = (globbedFiles: string[]): void => {
   const sizes = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {
@@ -114,7 +122,7 @@ const validateFileSizes = (globbedFiles) => {
  * Validates images are one of the ALLOWED_IMG_EXT
  * @param {Array} globbedFiles - The array of globbed file names
  */
-const validateImageExtensions = (globbedFiles) => {
+const validateImageExtensions = (globbedFiles: string[]): void => {
   const extensions = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {

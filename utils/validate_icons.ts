@@ -12,7 +12,9 @@ const {
  * @param {string[]} mainConfigPaths array of absolute paths for each main config
  * @returns {string[]} error messages for errors encountered
  */
-const validateIcon = (mainConfigPaths) => {
+export const validateIcon = (
+    mainConfigPaths: string[]
+  ): string[] => {
   const errorMessages = [];
 
   for (const configPath of mainConfigPaths) {
@@ -21,7 +23,7 @@ const validateIcon = (mainConfigPaths) => {
     } = readQuickstartFile(configPath);
 
     if ('icon' in config) {
-      const iconPath = path.join(path.dirname(configPath), config.icon);
+      const iconPath: string = path.join(path.dirname(configPath), config.icon);
       if (fs.existsSync(iconPath) === false) {
         errorMessages.push(
           `Icon for ${configPath} is supplied but does not exist at ${iconPath}`
@@ -37,7 +39,9 @@ const validateIcon = (mainConfigPaths) => {
  * Method to handle the processing / next steps after we have found errors.
  * @param {string[]} errorMessages
  */
-const handleErrors = (errorMessages) => {
+export const handleErrors = (
+    errorMessages: string[]
+  ): void => {
   if (errorMessages.length === 0) {
     console.log('No errors found. Icon validation passed.');
   }
@@ -53,8 +57,8 @@ const handleErrors = (errorMessages) => {
 
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
-  var mainConfigPaths = findMainQuickstartConfigFiles();
-  var errorMessages = validateIcon(mainConfigPaths);
+  var mainConfigPaths: string[] = findMainQuickstartConfigFiles();
+  var errorMessages: string[] = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
 };
@@ -67,5 +71,3 @@ const main = () => {
 if (require.main === module) {
   main();
 }
-
-module.exports = { validateIcon, handleErrors };
