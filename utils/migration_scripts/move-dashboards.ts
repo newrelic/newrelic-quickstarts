@@ -9,6 +9,7 @@ import { getQuickstartFromFilename } from '../helpers';
 
 import * as path from 'path';
 import * as fs from 'fs';
+import * as glob from 'glob';
 
 const groupDuplicates = (
   dashboards: DashboardFileAndPath[]
@@ -32,9 +33,9 @@ const groupDuplicates = (
 const setupDashboardDir = () => {
   const dashboardDirPath = path.resolve(__dirname, '../..', 'dashboards');
   if (!fs.existsSync(dashboardDirPath)) {
-    fs.mkdirSync(dashboardDirPath)
+    fs.mkdirSync(dashboardDirPath);
   }
-}
+};
 
 const getNewDashboardLocation = (currentDashLocation: string) => {
   const dashLocation = path.dirname(currentDashLocation).split('/').pop()!;
@@ -57,15 +58,18 @@ const getNewDashboardLocation = (currentDashLocation: string) => {
     newDashboardLocation = `${newDashboardLocation}-${quickstartLocation}`;
   }
   return newDashboardLocation;
-}
+};
 
-const copyFiles = (newDashboardLocation: string, currentDashboardLocation: string) => {
-  fs.mkdirSync(newDashboardLocation)
+const copyFiles = (
+  newDashboardLocation: string,
+  currentDashboardLocation: string
+) => {
+  fs.mkdirSync(newDashboardLocation);
   fs.copyFileSync(
     currentDashboardLocation,
     path.join(newDashboardLocation, path.basename(currentDashboardLocation))
   );
-}
+};
 
 const main = () => {
   setupDashboardDir();
@@ -74,30 +78,51 @@ const main = () => {
   const dashboardsAndPaths = paths.map(readDashboardFile);
   const grouped = groupDuplicates(dashboardsAndPaths);
 
-  grouped.forEach(group => {
+  const quickstartToUpdate: Record<string, string[]> = {};
+
+  grouped.forEach((group) => {
     // determine new location for dashboard
-    const currentDashboardLocation = group[0].path
-    const newDashboardLocation = getNewDashboardLocation(currentDashboardLocation);
+    const currentDashboardLocation = group[0].path;
+    const newDashboardLocation = getNewDashboardLocation(
+      currentDashboardLocation
+    );
     copyFiles(newDashboardLocation, currentDashboardLocation);
 
     // get all dashboard files (screenshots)
-    const dashboardScreenshotPaths: string[] = getDashboardScreenshotsPath(currentDashboardLocation);
+    const dashboardScreenshotPaths: string[] = getDashboardScreenshotsPath(
+      currentDashboardLocation
+    );
     const dashboardScreenshots = dashboardScreenshotPaths.map((screenshot) => {
       return {
         oldFilePath: screenshot,
-        newFilePath: path.join(newDashboardLocation, path.basename(screenshot))
-      }
-    })
+        newFilePath: path.join(newDashboardLocation, path.basename(screenshot)),
+      };
+    });
     // create new files in this location
     dashboardScreenshots.forEach(({ oldFilePath, newFilePath }) =>
       fs.copyFileSync(oldFilePath, newFilePath)
     );
 
-    // loop through group 
-    //    update each quickstart config to reference the new location of dashboard
-    //    delete old dashboard files
-    //    
-  })
+    // loop over all the dashboards in this group and get the quickstart path for each
+    group
+      .map((dashboard) => {
+        return getQuickstartFromFilename(dashboard.path)!;
+      })
+      .forEach((quickstartDir) => {
+        // save a reference to the new dashboard location for each quickstart
+        if (!quickstartToUpdate[quickstartDir]) {
+          quickstartToUpdate[quickstartDir] = [];
+        }
+
+        quickstartToUpdate[quickstartDir].push(newDashboardLocation);
+      });
+  });
+
+  // loop through all the quickstarts
+  // update the quickstart config
+  // delete the dashboard directory
+
+  console.log(quickstartToUpdate);
 
   // attempt to read all dashboards again and ensure there are no loose ends
 };
