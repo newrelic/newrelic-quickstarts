@@ -36,35 +36,35 @@ const setupDashboardDir = () => {
   }
 }
 
-const getFullDashboardPath = (currentDashLocation: string) => {
-  const newDashLocation = path.dirname(currentDashLocation).split('/').pop()!;
+const getNewDashboardLocation = (currentDashLocation: string) => {
+  const dashLocation = path.dirname(currentDashLocation).split('/').pop()!;
   // cleanup file path name
-  const cleanedDashLocation = newDashLocation.replace(/_/g, '-').toLowerCase();
+  const cleanedDashLocation = dashLocation.replace(/_/g, '-').toLowerCase();
   // create new dashboard directory
-  let fullDashboardPath = path.resolve(
+  let newDashboardLocation = path.resolve(
     __dirname,
     '../..',
     'dashboards',
     cleanedDashLocation
   );
   // if already exists, suffix directory name with quickstart slug
-  if (fs.existsSync(fullDashboardPath)) {
+  if (fs.existsSync(newDashboardLocation)) {
     const quickstartLocation = getQuickstartFromFilename(currentDashLocation)
       ?.split('/quickstarts/')
       .pop()
       ?.replace(/\//g, '-');
 
-    fullDashboardPath = fullDashboardPath + '-' + quickstartLocation;
+    newDashboardLocation = `${newDashboardLocation}-${quickstartLocation}`;
   }
-  return fullDashboardPath;
+  return newDashboardLocation;
 }
 
-const copyFiles = (fullDashboardLocation: string, currentDashboardLocation: string) => {
-    fs.mkdirSync(fullDashboardLocation)
-    fs.copyFileSync(
-      currentDashboardLocation,
-      path.join(fullDashboardLocation, path.basename(currentDashboardLocation))
-    );
+const copyFiles = (newDashboardLocation: string, currentDashboardLocation: string) => {
+  fs.mkdirSync(newDashboardLocation)
+  fs.copyFileSync(
+    currentDashboardLocation,
+    path.join(newDashboardLocation, path.basename(currentDashboardLocation))
+  );
 }
 
 const main = () => {
@@ -73,20 +73,19 @@ const main = () => {
 
   const dashboardsAndPaths = paths.map(readDashboardFile);
   const grouped = groupDuplicates(dashboardsAndPaths);
-  // console.log(grouped);
 
   grouped.forEach(group => {
     // determine new location for dashboard
     const currentDashboardLocation = group[0].path
-    const fullDashboardLocation = getFullDashboardPath(currentDashboardLocation);
-    copyFiles(fullDashboardLocation, currentDashboardLocation);
+    const newDashboardLocation = getNewDashboardLocation(currentDashboardLocation);
+    copyFiles(newDashboardLocation, currentDashboardLocation);
 
     // get all dashboard files (screenshots)
     const dashboardScreenshotPaths: string[] = getDashboardScreenshotsPath(currentDashboardLocation);
     const dashboardScreenshots = dashboardScreenshotPaths.map((screenshot) => {
       return {
         oldFilePath: screenshot,
-        newFilePath: path.join(fullDashboardLocation, path.basename(screenshot))
+        newFilePath: path.join(newDashboardLocation, path.basename(screenshot))
       }
     })
     // create new files in this location
