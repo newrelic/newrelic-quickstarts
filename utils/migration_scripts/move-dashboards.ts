@@ -9,6 +9,8 @@ import { getQuickstartFromFilename } from '../helpers';
 
 import * as path from 'path';
 import * as fs from 'fs';
+
+import { RmDirOptions } from 'fs';
 import * as glob from 'glob';
 
 const groupDuplicates = (
@@ -119,12 +121,41 @@ const main = () => {
   });
 
   // loop through all the quickstarts
-  // update the quickstart config
-  // delete the dashboard directory
 
-  console.log(quickstartToUpdate);
+  Object.entries(quickstartToUpdate).forEach(([quickstartDir, newDashboards]) => {
+    const filePaths = glob.sync(path.join('/', quickstartDir, 'config.*'));
+    if (!Array.isArray(filePaths) || filePaths.length === 0) {
+      return;
+    }
 
-  // attempt to read all dashboards again and ensure there are no loose ends
+    const configFilePath = filePaths.pop();
+
+    // get the new dashboard location
+    const newDashboardLocations = newDashboards.map((dashPath) =>
+      path.basename(dashPath)
+    );
+
+    // update the quickstart config
+    const rawConfig = fs.readFileSync(configFilePath!, { encoding: 'utf-8' });
+
+    const updatedRawConfig = rawConfig.concat(
+      '\n',
+      'dashboards:',
+      '\n  - ',
+      newDashboardLocations.join('\n  - ')
+    );
+
+    // update impacted quickstart config file to add dashboard IDs
+    fs.writeFileSync(configFilePath!, updatedRawConfig, 'utf-8'); 
+
+
+    // delete the dashboard directory
+    fs.rmdirSync(path.join('/', quickstartDir, 'dashboards/'), {
+      recursive: true,
+      force: true,
+    } as RmDirOptions);
+  })
+
 };
 
 main();
