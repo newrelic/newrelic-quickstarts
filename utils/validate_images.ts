@@ -32,8 +32,8 @@ type DirectoryValidation = {
 const validateImageCounts = (quickstartDirs: string[]): void => {
   const screenshotDirectories: DirectoryValidation[] = [];
   const imagesDirectories: DirectoryValidation[] = [];
-  console.log('quickstartDirs: ', quickstartDirs);
-  quickstartDirs.forEach((quickstart: any) => {
+
+  quickstartDirs.forEach((quickstart: string) => {
     const quickstartDirName = path.dirname(quickstart);
     // get all images for a quickstart
     const imagePaths = glob.sync(
@@ -51,12 +51,12 @@ const validateImageCounts = (quickstartDirs: string[]): void => {
     ).length;
 
     const screenshotPaths = imagePaths.filter(
-      (p: any) =>
+      (p: string[]) =>
         p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 
     const dashboardImagePaths = imagePaths.filter(
-      (p: any) =>
+      (p: string[]) =>
         p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 

@@ -64,3 +64,5 @@ const main = (): void => {
 if (require.main === module) {
   main();
 }
+
+module.exports = main;
