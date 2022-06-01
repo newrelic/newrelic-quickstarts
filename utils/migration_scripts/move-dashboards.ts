@@ -100,6 +100,12 @@ const copyFiles = (
 
 type DirectoryAndDashTuple = [string, string[]][];
 
+/**
+ * Function handles updating quickstart config files and 
+ * remove associated dashboard directories in quickstart
+ * @param dirAndDashTuples - Array of tuples containing quickstart dir
+ *  and new dashboards to append to config
+ */
 const updateQuickstarts = (dirAndDashTuples: DirectoryAndDashTuple) => {
   dirAndDashTuples.forEach(([quickstartDir, newDashboards])=> {
     const filePaths = glob.sync(path.join('/', quickstartDir, 'config.*'));
