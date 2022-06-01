@@ -11,17 +11,24 @@ if (pathsToSanitize.length < 1)
 const sanitizeDashboard = (fileContent) => {
   return fileContent
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
-    .replace(/\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g, '"linkedEntityGuids": null') // Set linkedEntityGuids to null
+    .replace(
+      /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
+      '"linkedEntityGuids": null'
+    ) // Set linkedEntityGuids to null
     .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
     .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
 };
 
 const checkDirForDashboardJson = (directory) => {
-    const files = fs.readdirSync(directory, {withFileTypes: true});
-    return {
-      directories: files.filter((file) => file.isDirectory()).map(file => path.resolve(directory, file.name)),
-      jsonFiles: files.filter((file) => file.name.includes('json')).map(file => path.resolve(directory, file.name))
-    };
+  const files = fs.readdirSync(directory, { withFileTypes: true });
+  return {
+    directories: files
+      .filter((file) => file.isDirectory())
+      .map((file) => path.resolve(directory, file.name)),
+    jsonFiles: files
+      .filter((file) => file.name.includes('json'))
+      .map((file) => path.resolve(directory, file.name)),
+  };
 };
 
 pathsToSanitize.forEach((i) => {
@@ -31,7 +38,7 @@ pathsToSanitize.forEach((i) => {
 
   for (let nestedDir of files.directories) {
     let nestedFiles = checkDirForDashboardJson(nestedDir);
-    if(nestedFiles.jsonFiles.length > 0) {
+    if (nestedFiles.jsonFiles.length > 0) {
       jsonFiles = jsonFiles.concat(nestedFiles.jsonFiles);
     }
   }
