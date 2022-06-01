@@ -13,6 +13,9 @@ export type IdsAndPaths = {
   path: string;
 };
 
+/**
+ * Returns any quickstarts with matching ids
+ */
 const getMatchingIds = (
     idsAndPaths: IdsAndPaths[]
   ): IdsAndPaths[] => {
