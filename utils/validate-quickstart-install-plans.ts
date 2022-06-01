@@ -1,4 +1,3 @@
-'use strict';
 import * as path from 'path';
 import {
   fetchPaginatedGHResults,
@@ -21,7 +20,7 @@ const GITHUB_API_URL: string = passedProcessArguments()[0];
 /**
  * Gets all install plain ids under installs/ dir
  */
-const getAllInstallPlanIds = () => {
+export const getAllInstallPlanIds = () => {
   return findMainInstallConfigFiles().reduce((acc: string[], filePath: string) => {
     const { contents } = readQuickstartFile<InstallPlanConfig>(filePath);
 
@@ -33,7 +32,7 @@ const getAllInstallPlanIds = () => {
 /**
  * Gets all the install plans and paths for an array of config files
  */
-const getConfigInstallPlans = (
+export const getConfigInstallPlans = (
   configFiles: GithubAPIPullRequestFile[]
   ) => {
   return configFiles.map(({ filename }) => {
@@ -45,7 +44,7 @@ const getConfigInstallPlans = (
   });
 };
 
-const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<string>[], installPlanIds: string[]) => {
+export const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<string>[], installPlanIds: string[]) => {
   return configInstallPlanFiles
     .map(({ contents, path }: FilePathAndContents<string>) => {
       const nonExistentInstallPlans = contents.filter(
@@ -59,7 +58,7 @@ const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<st
 /**
  * Main validation logic ensuring install plans specified in config files actually exist
  */
-const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
+export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
   const configFiles: GithubAPIPullRequestFile[] = filterQuickstartConfigFiles(githubFiles);
   const existingConfigFiles: GithubAPIPullRequestFile[] = configFiles.filter(
     (cf: GithubAPIPullRequestFile) => cf.status !== 'removed'
@@ -109,10 +108,3 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
-
-module.exports = {
-  validateInstallPlanIds,
-  getConfigInstallPlans,
-  getInstallPlansNoMatches,
-  getAllInstallPlanIds,
-};

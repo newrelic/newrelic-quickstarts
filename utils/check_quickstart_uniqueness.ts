@@ -1,4 +1,3 @@
-'use strict';
 import {
   readQuickstartFile,
   removeRepoPathPrefix,
@@ -64,4 +63,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = main;
+export default main;

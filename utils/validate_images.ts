@@ -1,4 +1,3 @@
-'use strict';
 const core = require('@actions/core');
 const isImage = require('is-image');
 const {
@@ -26,10 +25,8 @@ type DirectoryValidation = {
 
 /**
  * Validate all folders contain no more than MAX_NUM_IMG images
- * @param {Array} files - The array of globbed file names
  */
-
-const validateImageCounts = (quickstartDirs: string[]): void => {
+export const validateImageCounts = (quickstartDirs: string[]): void => {
   const screenshotDirectories: DirectoryValidation[] = [];
   const imagesDirectories: DirectoryValidation[] = [];
 
@@ -97,9 +94,8 @@ const validateImageCounts = (quickstartDirs: string[]): void => {
 
 /**
  * Validates that files are below MAX_SIZE
- * @param {Array} globbedFiles - The array of globbed file names
  */
-const validateFileSizes = (globbedFiles: string[]): void => {
+export const validateFileSizes = (globbedFiles: string[]): void => {
   const sizes = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {
@@ -120,9 +116,8 @@ const validateFileSizes = (globbedFiles: string[]): void => {
 
 /**
  * Validates images are one of the ALLOWED_IMG_EXT
- * @param {Array} globbedFiles - The array of globbed file names
  */
-const validateImageExtensions = (globbedFiles: string[]): void => {
+export const validateImageExtensions = (globbedFiles: string[]): void => {
   const extensions = globbedFiles
     .filter((file) => isImage(file))
     .filter((file) => {
@@ -152,9 +147,3 @@ const main = () => {
 if (require.main === module) {
   main();
 }
-
-module.exports = {
-  validateImageCounts,
-  validateImageExtensions,
-  validateFileSizes,
-};
