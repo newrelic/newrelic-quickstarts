@@ -186,6 +186,8 @@ export const cleanQuickstartName = (str: string): string =>
     .replace(/-+/, '-')
     .replace(/[^a-z0-9-]/g, '');
 
+type TargetChild = 'alert-policies' | 'images' | 'dashboards' | 'quickstarts'; 
+
 /**
  * Gets the unique base quickstart directory from a given file path.
  * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'python/aiohttp'.
@@ -193,9 +195,9 @@ export const cleanQuickstartName = (str: string): string =>
  * @param targetChild - Node in file path that should be preceded by a base quickstart directory.
  * @returns - Node in file path of the quickstart.
  */
-const getQuickstartNode = (
+const getQuickstartComponent = (
   filePath: string,
-  targetChild: string = ''
+  targetChild: TargetChild
 ): string => {
   const splitFilePath = filePath.split('/');
 
@@ -225,21 +227,21 @@ export const getQuickstartFromFilename = (
     return undefined;
   }
 
-  if (filePath.includes('/alerts/')) {
-    return getQuickstartNode(filePath, 'alerts');
+  if (filePath.includes('/alert-policies/')) {
+    return getQuickstartComponent(filePath, 'alert-policies');
   }
 
   if (filePath.includes('/dashboards/')) {
-    return getQuickstartNode(filePath, 'dashboards');
+    return getQuickstartComponent(filePath, 'dashboards');
   }
 
   if (filePath.includes('/images/')) {
-    return getQuickstartNode(filePath, 'images');
+    return getQuickstartComponent(filePath, 'images');
   }
 
-  const targetChildNode = filePath.split('/').pop();
+  const targetChildNode = filePath.split('/').pop() as TargetChild;
 
-  return getQuickstartNode(filePath, targetChildNode);
+  return getQuickstartComponent(filePath, targetChildNode);
 };
 
 /**
