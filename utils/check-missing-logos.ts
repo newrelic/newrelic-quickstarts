@@ -1,15 +1,15 @@
-const {
+import {
   readQuickstartFile,
   findMainQuickstartConfigFiles,
-} = require('./helpers');
-
-import { QuickstartConfig } from "./types/QuickstartConfig";
+  FilePathAndContents,
+} from './helpers';
+import { QuickstartConfig } from './types/QuickstartConfig';
 
 const validateIconExists = (
     quickstartDirs: string[]
   ): string[] => {
   return quickstartDirs.filter((quickstart: string) => {
-    const config: QuickstartConfig = readQuickstartFile(quickstart).contents[0];
+    const config: QuickstartConfig = <QuickstartConfig>readQuickstartFile(quickstart).contents[0];
     return !config.icon;
   });
 };
