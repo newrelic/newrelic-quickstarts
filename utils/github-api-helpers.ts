@@ -77,7 +77,7 @@ export const fetchPaginatedGHResults = async (
 };
 
 /**
- * Filters results from the Github API for config yaml and removes test files
+ * Filters results from the Github API for config yaml in `quickstarts/` 
  * @param {Array} files the results from Github API
  * @returns {Array} config files from Github API without test files
  */
