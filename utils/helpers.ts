@@ -250,13 +250,13 @@ export const getQuickstartFromFilename = (
  * @returns - An array of the file paths
  */
 export const findQuickstartComponentConfiguration = (
-  componentType: 'dashboards' | 'alerts'
+  componentType: 'dashboards' | 'alert-policies'
 ): string[] => {
   const ext = componentType === 'dashboards' ? 'json' : '+(yml|yaml)';
   return glob.sync(
     path.resolve(
       process.cwd(),
-      `../quickstarts/**/${componentType}/**/*.${ext}`
+      `../${componentType}/**/*.${ext}`
     )
   );
 };

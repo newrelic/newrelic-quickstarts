@@ -16,8 +16,8 @@ export type DashboardFileAndPath = FilePathAndContents<Dashboard>;
 
 /**
  * Wrapper function retreives all dashboard paths in the top level
- * of `quickstarts/`.
- * @returns - Array of file paths to all dashboards in `quickstarts/`
+ * of `dashboards/`.
+ * @returns - Array of file paths to all dashboards in `dashboards/`
  */
 export const getAllDashboardPaths = (): string[] => {
   return findQuickstartComponentConfiguration('dashboards');
