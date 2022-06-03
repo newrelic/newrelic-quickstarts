@@ -188,8 +188,11 @@ const getQuickstartRelativePath = (configPath: string): string => {
  */
 const getQuickstartAlertsConfigs = (quickstartConfigPath: string): string[] => {
   const splitConfigPath = quickstartConfigPath.split('/');
+
+  // pop config.+(yml|yaml) file from path
   splitConfigPath.pop();
-  const globPattern = `${splitConfigPath.join('/')}/alerts/*.+(yml|yaml)`;
+  const quickstartName = splitConfigPath.pop();
+  const globPattern = `${splitConfigPath.join('/')}/alert-policies/${quickstartName}/*.+(yml|yaml)`;
 
   return glob.sync(globPattern);
 };
