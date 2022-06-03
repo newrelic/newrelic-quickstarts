@@ -30,6 +30,7 @@ import {
   passedProcessArguments,
   buildUniqueQuickstartSet,
   FilePathAndContents,
+  readYamlFile
 } from './helpers';
 import {
   fetchNRGraphqlResults,
@@ -182,9 +183,9 @@ const getQuickstartRelativePath = (configPath: string): string => {
 };
 
 /**
- * Gets the file paths of all config files within the `alerts` directory of a quickstart.
+ * Gets the file paths of all config files within the `alerts` top level directory from a quickstart.
  * @param {String} quickstartConfigPath - The file path to the root config file of a quickstart.
- * @return {String[]} A set of file-path strings for the config files within the `alerts` directory of a quickstart.
+ * @return {String[]} A set of file-path strings for the config files within the `alerts` top level directory.
  */
 const getQuickstartAlertsConfigs = (quickstartConfigPath: string): string[] => {
   const splitConfigPath = quickstartConfigPath.split('/');
@@ -227,9 +228,13 @@ const adaptQuickstartAlertsInput = (
 export const getQuickstartDashboardConfigs = (
   quickstartConfigPath: string
 ): string[] => {
+  
   const splitConfigPath = quickstartConfigPath.split('/');
   splitConfigPath.pop();
-  const globPattern = `${splitConfigPath.join('/')}/dashboards/*/*.+(json)`;
+  const quickstartName = splitConfigPath.pop();
+
+  // const { contents } = readYamlFile<QuickstartConfig>(quickstartConfigFile!)
+  const globPattern = `${splitConfigPath.join('/')}/dashboards/${quickstartName}/*/*.+(json)`;
 
   return glob.sync(globPattern);
 };
