@@ -1,14 +1,21 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 // Removes the first two arguments passed by `node`, these aren't needed for this function to run - CM
 const pathsToSanitize = process.argv.slice(2);
+
+type DirectoriesAndJsonFiles = {
+  directories: string[]; 
+  jsonFiles: string[];
+};
 
 if (pathsToSanitize.length < 1)
   console.log(
     "You must pass a file path as an argument for the sanitize function to run \nExample: 'yarn sanitize-dashboard node-js/express'"
   );
 
-const sanitizeDashboard = (fileContent) => {
+const sanitizeDashboard = (
+  fileContent: string
+  ): string => {
   return fileContent
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
     .replace(
@@ -19,8 +26,11 @@ const sanitizeDashboard = (fileContent) => {
     .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
 };
 
-const checkDirForDashboardJson = (directory) => {
+const checkDirForDashboardJson = (
+  directory: string
+  ): DirectoriesAndJsonFiles => {
   const files = fs.readdirSync(directory, { withFileTypes: true });
+  
   return {
     directories: files
       .filter((file) => file.isDirectory())
@@ -32,8 +42,8 @@ const checkDirForDashboardJson = (directory) => {
 };
 
 pathsToSanitize.forEach((i) => {
-  const directory = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
-  const files = checkDirForDashboardJson(directory);
+  const directory: string = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
+  const files: DirectoriesAndJsonFiles = checkDirForDashboardJson(directory);
   let jsonFiles = files.jsonFiles;
 
   for (let nestedDir of files.directories) {
@@ -51,8 +61,8 @@ pathsToSanitize.forEach((i) => {
   }
 
   for (let filePath of jsonFiles) {
-    const quickStart = fs.readFileSync(filePath, { encoding: 'utf8' });
-    const cleanFile = sanitizeDashboard(quickStart);
+    const quickStart: string = fs.readFileSync(filePath, { encoding: 'utf8' });
+    const cleanFile: string = sanitizeDashboard(quickStart);
 
     if (cleanFile !== quickStart) {
       fs.writeFile(filePath, cleanFile, { encoding: 'utf8' }, function (err) {
