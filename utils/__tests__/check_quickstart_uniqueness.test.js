@@ -1,6 +1,6 @@
 'use strict';
-const checkQuickstartUniqueness = require('../check_quickstart_uniqueness');
-const helpers = require('../helpers');
+import checkQuickstartUniqueness from '../check_quickstart_uniqueness';
+import * as helpers from '../helpers';
 
 jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
