@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as glob from 'glob';
 import isImage from 'is-image';
+import { QuickstartConfig } from './types/QuickstartConfig';
 
 export interface FilePathAndContents<T> {
   path: string;
@@ -56,7 +57,9 @@ export const removeCWDPrefix = (filePath: string): string =>
  * Will exit if the incorrect number of argument is passed in.
  * @param length - The desired number of arguments.
  */
-export const checkArgs = (length: number) => {
+export const checkArgs = (
+  length: number
+  ): void => {
   const { argv } = process;
 
   if (argv.length !== length) {
@@ -127,7 +130,7 @@ export const getFileExtension = (filePath: string): string => {
  * @param dir - The directory to parse, set by the BASE_PATH variable
  * @returns - An array of pathnames of a globbed directory
  */
-export const globFiles = (dir: string): String[] => {
+export const globFiles = (dir: string): string[] => {
   return glob.sync(path.resolve(dir, '**/*'));
 };
 
