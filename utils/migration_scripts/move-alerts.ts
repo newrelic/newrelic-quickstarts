@@ -59,7 +59,7 @@ const main = () => {
     const quickstartName = path.basename(quickstartDirPath);
     const rawConfig = fs.readFileSync(configFilePath!, { encoding: 'utf-8' });
     const updatedConfig = rawConfig.concat(
-      '\nalert-policies:\n  - ',
+      '\nalertPolicies:\n  - ',
       quickstartName
     );
 
