@@ -1,26 +1,26 @@
-import type { QuickstartConfig } from './types/QuickstartConfig';
-import type { FilePathAndContents } from './helpers';
-
 import {
   readQuickstartFile,
   removeRepoPathPrefix,
   findMainQuickstartConfigFiles,
 } from './helpers';
 
-export interface IdsAndPaths {
-  id: QuickstartConfig['id'];
+import { QuickstartConfig } from "./types/QuickstartConfig";
+import { FilePathAndContents } from "./helpers";
+
+export type IdsAndPaths = {
+  id: string;
   path: string;
-}
+};
 
 /**
  * Returns any quickstarts with matching ids
- * @param idsAndPaths - an array of objects containing the path and id of a quickstart
- * @returns - an array of matching values
  */
-const getMatchingIds = (idsAndPaths: IdsAndPaths[]) => {
-  return idsAndPaths.reduce((acc: IdsAndPaths[], { id, path }) => {
-    const duplicates: IdsAndPaths[] = idsAndPaths.filter(
-      (quickstart) =>
+const getMatchingIds = (
+    idsAndPaths: IdsAndPaths[]
+  ): IdsAndPaths[] => {
+  return idsAndPaths.reduce((acc:IdsAndPaths[], { id, path }:IdsAndPaths) => {
+    const duplicates = idsAndPaths.filter(
+      (quickstart: IdsAndPaths) =>
         quickstart.id && quickstart.id === id && quickstart.path !== path
     );
 
@@ -30,16 +30,12 @@ const getMatchingIds = (idsAndPaths: IdsAndPaths[]) => {
 
 const main = (): void => {
   const configPaths: string[] = findMainQuickstartConfigFiles();
-  const configs: FilePathAndContents<QuickstartConfig>[] = configPaths.map(
-    (path: string) => readQuickstartFile<QuickstartConfig>(path)
-  );
-
-  const idsAndPaths: IdsAndPaths[] = configs.map(
-    (c: FilePathAndContents<QuickstartConfig>) => ({
-      id: c.contents[0].id,
-      path: c.path,
-    })
-  );
+  const configs: FilePathAndContents<QuickstartConfig>[] = configPaths.map((path) => readQuickstartFile<QuickstartConfig>(path));
+  
+  const idsAndPaths = configs.map((c: FilePathAndContents<QuickstartConfig>) => ({
+    id: c.contents[0].id,
+    path: c.path,
+  }));
   const idMatches: IdsAndPaths[] = getMatchingIds(idsAndPaths);
 
   if (idMatches.length == 0) {
@@ -51,7 +47,7 @@ const main = (): void => {
     console.error(
       `An id should not be set by the user, these are auto-generated`
     );
-    idMatches.forEach((m) =>
+    idMatches.forEach((m:IdsAndPaths) =>
       console.error(`${m.id} in ${removeRepoPathPrefix(m.path)}`)
     );
     console.error(
@@ -67,4 +63,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = main;
+export default main;
