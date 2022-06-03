@@ -1,7 +1,8 @@
 import * as fs from 'fs';
+import * as glob from 'glob';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import * as glob from 'glob';
+
 import isImage from 'is-image';
 
 export interface FilePathAndContents<T> {
@@ -186,7 +187,7 @@ export const cleanQuickstartName = (str: string): string =>
     .replace(/-+/, '-')
     .replace(/[^a-z0-9-]/g, '');
 
-type TargetChild = 'alert-policies' | 'images' | 'dashboards' | 'quickstarts'; 
+type TargetChild = 'alert-policies' | 'images' | 'dashboards' | 'quickstarts';
 
 /**
  * Gets the unique base quickstart directory from a given file path.
@@ -256,7 +257,8 @@ export const findQuickstartComponentConfiguration = (
   return glob.sync(
     path.resolve(
       process.cwd(),
-      `../${componentType}/**/*.${ext}`
+      `../quickstarts/**/${componentType}/**/*.${ext}`
+      // `../${componentType}/**/*.${ext}` TODO: swap paths after migration
     )
   );
 };
