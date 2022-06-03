@@ -201,18 +201,18 @@ const getQuickstartComponent = (
 ): string => {
   const splitFilePath = filePath.split('/');
 
-  const baseQuickstartDirectoryIndex = splitFilePath.indexOf(targetChild) - 1;
+  const baseComponentDirectoryIndex = splitFilePath.indexOf(targetChild) - 1;
 
-  let uniqueQuickstartDirectory = splitFilePath[baseQuickstartDirectoryIndex];
-  let indexCounter = baseQuickstartDirectoryIndex;
+  let uniqueComponentDirectory = splitFilePath[baseComponentDirectoryIndex];
+  let indexCounter = baseComponentDirectoryIndex;
 
   while (indexCounter > 1) {
-    uniqueQuickstartDirectory = splitFilePath[indexCounter - 1].concat(
-      `/${uniqueQuickstartDirectory}`
+    uniqueComponentDirectory = splitFilePath[indexCounter - 1].concat(
+      `/${uniqueComponentDirectory}`
     );
     indexCounter--;
   }
-  return uniqueQuickstartDirectory;
+  return uniqueComponentDirectory;
 };
 
 /**
