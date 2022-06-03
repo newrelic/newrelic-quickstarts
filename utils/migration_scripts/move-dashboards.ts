@@ -1,25 +1,24 @@
+import * as fs from 'fs';
+import * as glob from 'glob';
+import * as path from 'path';
+
 import {
+  DashboardFileAndPath,
   getAllDashboardPaths,
   getDashboardScreenshotsPath,
   readDashboardFile,
-  DashboardFileAndPath,
 } from '../lib/dashboards';
 
-import { getQuickstartFromFilename } from '../helpers';
-
-import * as path from 'path';
-import * as fs from 'fs';
-
 import { RmDirOptions } from 'fs';
-import * as glob from 'glob';
+import { getQuickstartFromFilename } from '../helpers';
 
 /**
  * Function handles creating an object that groups duplicate and unique
- * dashboards to their respective key. 
+ * dashboards to their respective key.
  *
  * `key: dashboard pages`
- * @param dashboards - Array of FilePathAndContents  
- * @returns - 2D array of grouped dashboard paths 
+ * @param dashboards - Array of FilePathAndContents
+ * @returns - 2D array of grouped dashboard paths
  */
 const groupDuplicates = (
   dashboards: DashboardFileAndPath[]
@@ -55,7 +54,7 @@ const setupDashboardDir = () => {
  * Function handles creating a new dashboard location that points
  * to the top level of the `dashboards/` directory.
  * @param currentDashLocation - The path of the dashboard
- * @returns - The new dashboard location to the top level of `dashboards/` 
+ * @returns - The new dashboard location to the top level of `dashboards/`
  */
 const getNewDashboardLocation = (currentDashLocation: string) => {
   const dashLocation = path.dirname(currentDashLocation).split('/').pop()!;
@@ -101,7 +100,7 @@ const copyFiles = (
 type DirectoryAndDashTuple = [string, string[]][];
 
 /**
- * Function handles updating quickstart config files and 
+ * Function handles updating quickstart config files and
  * remove associated dashboard directories in quickstart
  * @param dirAndDashTuples - Array of tuples containing quickstart dir
  *  and new dashboards to append to config
@@ -131,7 +130,7 @@ const updateQuickstarts = (dirAndDashTuples: DirectoryAndDashTuple) => {
     );
 
     // update impacted quickstart config file to add dashboard IDs
-    fs.writeFileSync(configFilePath!, updatedRawConfig, 'utf-8'); 
+    fs.writeFileSync(configFilePath!, updatedRawConfig, 'utf-8');
 
 
     // delete the dashboard directory
@@ -196,4 +195,6 @@ const main = () => {
   updateQuickstarts(Object.entries(quickstartToUpdate))
 };
 
-main();
+if (require.main === module) {
+  main();
+}
