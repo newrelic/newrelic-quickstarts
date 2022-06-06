@@ -70,10 +70,10 @@ const expectedMockQuickstart2MutationInput = {
         description: 'Description about this doc reference',
       },
     ],
-    icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/logo.png',
+    icon: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstarts/mock-quickstart-2/logo.png',
     keywords: ['list', 'of', 'searchable', 'keywords'],
     sourceUrl:
-      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2',
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstarts/mock-quickstart-2',
     summary: 'A short form description for this quickstart',
     supportLevel: 'COMMUNITY',
     installPlanStepIds: ['infra-agent-targeted'],
@@ -105,16 +105,16 @@ const expectedMockQuickstart2MutationInput = {
         displayName: '.NET',
         rawConfiguration: mockDashboardRawConfiguration,
         sourceUrl:
-          'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet.json',
+          'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/dashboards/dotnet/dotnet.json',
         screenshots: [
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/dashboards/dotnet/dotnet.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet02.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/dashboards/dotnet/dotnet02.png',
           },
           {
-            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/mock-quickstart-2/dashboards/dotnet/dotnet03.png',
+            url: 'https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/utils/mock_files/dashboards/dotnet/dotnet03.png',
           },
         ],
       },
@@ -127,7 +127,7 @@ const expectedMockQuickstart4MutationInput = {
   dryRun: true,
   quickstartMetadata: {
     sourceUrl:
-      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstarts/mock-quickstart-4',
     alertConditions: undefined,
     authors: undefined,
     categoryTerms: undefined,
@@ -139,7 +139,7 @@ const expectedMockQuickstart4MutationInput = {
     installPlanStepIds: undefined,
     keywords: undefined,
     sourceUrl:
-      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
+      'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstarts/mock-quickstart-4',
     summary: undefined,
   },
 };
@@ -161,7 +161,7 @@ describe('quickstart submission and validation', () => {
 
     const mutationInput = buildMutationVariables(
       helpers.readQuickstartFile(
-        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+        `${process.cwd()}/mock_files/mock-quickstarts/mock-quickstart-2/config.yml`
       )
     );
 
@@ -174,7 +174,7 @@ describe('quickstart submission and validation', () => {
 
     const mutationInput = buildMutationVariables(
       helpers.readQuickstartFile(
-        `${process.cwd()}/mock_files/mock-quickstart-2/config.yml`
+        `${process.cwd()}/mock_files/mock-quickstarts/mock-quickstart-2/config.yml`
       )
     );
 
@@ -190,7 +190,7 @@ describe('quickstart submission and validation', () => {
 
     const mutationInput = buildMutationVariables(
       helpers.readQuickstartFile(
-        `${process.cwd()}/mock_files/mock-quickstart-4/config.yml`
+        `${process.cwd()}/mock_files/mock-quickstarts/mock-quickstart-4/config.yml`
       )
     );
 
