@@ -119,6 +119,10 @@ const expectedMockQuickstart2MutationInput = {
         ],
       },
     ],
+    dataSourceIds: [
+      'Test 1',
+      'Test 2',
+    ],
   },
 };
 
@@ -141,6 +145,7 @@ const expectedMockQuickstart4MutationInput = {
     sourceUrl:
       'https://github.com/newrelic/newrelic-quickstarts/tree/main/utils/mock_files/mock-quickstart-4',
     summary: undefined,
+    dataSourceIds: undefined,
   },
 };
 
