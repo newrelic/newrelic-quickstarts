@@ -6,13 +6,13 @@ describe('Test preview server helper functions', () => {
   test('Test isPathValid returns true for valid paths', () => {
     const parentDirectory = path.resolve(__dirname, '../mock_files');
     const quickstartPaths = [
-      'mock-quickstart-1',
-      'mock-quickstart-2',
-      'mock-quickstart-3',
-      'mock-quickstart-4',
-      'mock-quickstart-5',
-      'mock-quickstart-6',
-      'mock-quickstart-7/nested-quickstart',
+      'mock-quickstarts/mock-quickstart-1',
+      'mock-quickstarts/mock-quickstart-2',
+      'mock-quickstarts/mock-quickstart-3',
+      'mock-quickstarts/mock-quickstart-4',
+      'mock-quickstarts/mock-quickstart-5',
+      'mock-quickstarts/mock-quickstart-6',
+      'mock-quickstarts/mock-quickstart-7/nested-quickstart',
     ];
 
     for (const qs of quickstartPaths) {

@@ -14,10 +14,10 @@ jest.mock('../github-api-helpers', () => ({
   filterQuickstartConfigFiles: jest.fn(),
 }));
 
-const validQuickstartFilename = 'mock-quickstart-2/config.yml';
-const invalidQuickstartFilename1 = 'mock-quickstart-1/config.yml';
-const invalidQuickstartFilename2 = 'mock-quickstart-3/config.yml';
-const validQuickstartWithoutInstallPlan = 'mock-quickstart-5/config.yml';
+const validQuickstartFilename = 'mock-quickstarts/mock-quickstart-2/config.yml';
+const invalidQuickstartFilename1 = 'mock-quickstarts/mock-quickstart-1/config.yml';
+const invalidQuickstartFilename2 = 'mock-quickstarts/mock-quickstart-3/config.yml';
+const validQuickstartWithoutInstallPlan = 'mock-quickstarts/mock-quickstart-5/config.yml';
 
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({

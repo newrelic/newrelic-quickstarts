@@ -27,10 +27,10 @@ jest.mock('../helpers', () => ({
   passedProcessArguments: jest.fn(),
 }));
 
-const validInstallFilename = 'mock-install-1/install.yml';
-const invalidInstallFilename1 = 'mock-install-2/install.yml';
-const invalidInstallFilename2 = 'mock-install-3/install.yml';
-const invalidInstallFilename3 = 'mock-install-4/install.yml';
+const validInstallFilename = 'mock-install-plans/mock-install-1/install.yml';
+const invalidInstallFilename1 = 'mock-install-plans/mock-install-2/install.yml';
+const invalidInstallFilename2 = 'mock-install-plans/mock-install-3/install.yml';
+const invalidInstallFilename3 = 'mock-install-plans/mock-install-4/install.yml';
 
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({
