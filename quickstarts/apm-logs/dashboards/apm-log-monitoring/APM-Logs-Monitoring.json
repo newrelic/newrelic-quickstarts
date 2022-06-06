@@ -44,7 +44,7 @@
             "column": 1,
             "row": 2,
             "width": 6,
-            "height": 6
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -86,6 +86,39 @@
                 "query": "SELECT count(*) AS 'Log_Count' FROM Log WHERE hostname IS NOT NULL FACET hostname, message, newrelic.source LIMIT MAX SINCE 5 minutes ago"
               }
             ]
+          }
+        },
+        {
+          "title": "APM Logs Dropped per App (Last 1 Day)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Seen') - filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Sent') AS 'Logs_Dropped' FROM Metric WHERE appName LIKE '%' AND metricTimesliceName IN ('Supportability/Logging/Forwarding/Seen','Supportability/Logging/Forwarding/Sent') FACET appName LIMIT 25 TIMESERIES SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
           }
         },
         {
