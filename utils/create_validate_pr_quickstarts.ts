@@ -192,7 +192,12 @@ const getQuickstartAlertsConfigs = (quickstartConfigPath: string): string[] => {
 
   // pop config.+(yml|yaml) file from path
   splitConfigPath.pop();
+
+  // grab the quickstart name for alert-policies
   const quickstartName = splitConfigPath.pop();
+
+  // pop off top-level component dir
+  splitConfigPath.pop();
   const globPattern = `${splitConfigPath.join('/')}/alert-policies/${quickstartName}/*.+(yml|yaml)`;
 
   return glob.sync(globPattern);
@@ -230,13 +235,25 @@ export const getQuickstartDashboardConfigs = (
 ): string[] => {
   
   const splitConfigPath = quickstartConfigPath.split('/');
+
+  // pop off config.yml from path
   splitConfigPath.pop();
-  const quickstartName = splitConfigPath.pop();
 
-  // const { contents } = readYamlFile<QuickstartConfig>(quickstartConfigFile!)
-  const globPattern = `${splitConfigPath.join('/')}/dashboards/${quickstartName}/*/*.+(json)`;
+  // pop off quickstart dir name
+  splitConfigPath.pop();
 
-  return glob.sync(globPattern);
+  // pop off top-level component dir
+  splitConfigPath.pop();
+
+
+  const { contents } = readYamlFile<QuickstartConfig>(quickstartConfigPath)
+  const dashboardNames = contents[0]?.dashboards || []
+  const globPatterns = dashboardNames.map((dashboard) => {
+    return glob.sync(
+      `${splitConfigPath.join('/')}/dashboards/${dashboard}/*.+(json)`
+    );
+  });
+  return globPatterns.flat() || []
 };
 
 /**
