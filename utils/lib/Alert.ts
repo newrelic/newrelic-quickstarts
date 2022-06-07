@@ -1,34 +1,56 @@
-import Component from './Component'
-import { readQuickstartFile } from '../helpers';
-import type { QuickstartAlertInput } from '../types/QuickstartMutationVariable'
+import * as path from 'path';
+import * as glob from 'glob';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
-class Alert extends Component<QuickstartAlertInput> {
+import Component from './Component'
+import { removeRepoPathPrefix, getAssetSourceUrl } from './helpers';
+import type { AlertType, QuickstartAlertInput } from '../types/QuickstartMutationVariable';
+import type { QuickstartConfigAlert } from '../types/QuickstartConfig'
+
+class Alert extends Component<QuickstartConfigAlert, QuickstartAlertInput> {
   /**
    * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    this.configPath = `alert-policies/${this.name}`;
-    return this.configPath;
+    const filePaths = glob.sync(
+      path.join(this.basePath, 'alert-policies', this.localPath, '*.{yml|yaml}')
+    );
+
+    if (!Array.isArray(filePaths) || filePaths.length !== 1) {
+      this.isValid = false;
+      return '';
+    }
+
+    return removeRepoPathPrefix(filePaths[0]);
   }
 
   /**
-   * Read and parse a JSON file
-   * @param filePath - The path to the JSON file
-   * @returns - An object containing the path and contents of the file
+   * Read and parse a YAML file
+   * @returns - The contents of the file  
    */
   getConfigContent() {
-    this.config = readQuickstartFile<QuickstartAlertInput>(this.configPath);
-    return this.config;
+    if (!this.isValid) {
+      return this.config;
+    }
+    const file = fs.readFileSync(this.fullPath);
+    return yaml.load(file.toString('utf-8')) as QuickstartConfigAlert;
   }
 
-  /**
-   * TODO: implement validation
-   */
-  validate() {
-    this.isValid = true;
-    return true;
+  getMutationVariables() {
+    const { description, name, type } = this.config;
+
+    return {
+      description: description && description.trim(),
+      displayName: name && name.trim(),
+      rawConfiguration: JSON.stringify(this.config),
+      sourceUrl: getAssetSourceUrl(this.configPath),
+      type: type && type.trim() as AlertType,
+    };
+
   }
+
 }
 
 export default Alert;
