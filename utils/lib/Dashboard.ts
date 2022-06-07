@@ -1,37 +1,36 @@
-import Component from './Component'
-import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable'
+import Component from './Component';
+import { readQuickstartFile } from '../helpers';
 import * as fs from 'fs'
 import * as path from 'path';
+import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable'
 
 class Dashboard extends Component<QuickstartDashboardInput> {
-
   /**
    * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    return `dashboards/${this.name}`
+    this.configPath = `dashboards/${this.name}`;
+    return this.configPath
   }
-  
+
   /**
-   * TODO: same code as 'readJsonFile' in 'helpers' - add JSDoc
+   * Read and parse a JSON file
+   * @param filePath - The path to the JSON file
+   * @returns - An object containing the path and contents of the file
    */
   getConfigContent() {
-    const buffer: Buffer = fs.readFileSync(
-      path.resolve(__dirname, '..', '..', this.configPath)
-    );
-    const contents: QuickstartDashboardInput = JSON.parse(buffer.toString('utf-8'));
-    return contents 
+    this.config = readQuickstartFile<QuickstartDashboardInput>(this.configPath)
+    return this.config
   }
 
   /**
    * TODO: implement validation
    */
   validate() {
-    this.isValid = true
-    return true
+    this.isValid = true;
+    return true;
   }
-
 }
 
 export default Dashboard;
