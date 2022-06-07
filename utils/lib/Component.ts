@@ -1,20 +1,25 @@
-import { FilePathAndContents } from '../helpers'
-abstract class Component<ConfigType> {
-  public name: string;
-  public configPath: string;
-  public config: FilePathAndContents<ConfigType>;
-  public isValid = true;
+import * as path from 'path';
 
-  constructor(name: string) {
-    this.name = name
+abstract class Component<ConfigType, MutationVariablesType> {
+  public localPath: string; // Local path to the component. Ex: python/flask
+  public configPath: string; // Absolute path to the config file within the repository
+  public config: ConfigType;
+  public isValid = true;
+  public basePath = path.join(__dirname, '../..');
+
+  constructor(localPath: string) {
+    this.localPath = localPath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
-    // this.isValid = this.validate();
   }
 
   abstract getConfigFilePath(): string;
-  abstract getConfigContent(): FilePathAndContents<ConfigType>;
-  abstract validate(): boolean;
+  abstract getConfigContent(): ConfigType;
+  abstract getMutationVariables(): MutationVariablesType;
+
+  get fullPath() {
+    return path.join(this.basePath, this.configPath);
+  }
 }
 
 export default Component;
