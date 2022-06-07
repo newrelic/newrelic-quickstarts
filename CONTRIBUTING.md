@@ -188,7 +188,7 @@ You can define multiple author names, but it's recommended to use one of the fol
 
 `https://newrelic.com/instant-observability/{slug}/{id}`
 
- The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
+The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
 
  Example:
 
@@ -338,6 +338,18 @@ documentation:
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
 
+### Data Source ID's
+
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatainput) for more details on `Data Source ID's`
+
+Data source ID's are optional. When adding data source ID's the following format should be used. The ID needs to match the ID from the config file within the appropriate [data-sources](./data-sources) directory.
+
+```yml
+dataSourceIds:
+  - argocd
+  - postman
+```
+
 ### Keywords
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatainput) for more details on `keywords`
@@ -390,6 +402,7 @@ that is not defined in this list below, it will be reviewed for use after you su
 - windows
 
 ## Quickstart Preview
+
 Quickstart Previews are available for contributors to review their new or improved quickstarts directly from the Public I/O site! We provide two ways to view a preview:
 
 ### Local Quickstart Preview
@@ -401,8 +414,7 @@ Quickstart Previews are available for contributors to review their new or improv
   - In order for local quickstart preview to be enabled on the Public I/O site, there needs to be a `config.yml` file present in the quickstart directory. However, there does not need to have any content inside the file.
   - _Only one quickstart may be served for local quickstart preview_
 
-
->Note: While working on a quickstart, changes may not be updated in the local preview automatically. If you do not see immediate changes, refresh the page to pull in recent updates.
+> Note: While working on a quickstart, changes may not be updated in the local preview automatically. If you do not see immediate changes, refresh the page to pull in recent updates.
 
 #### Step-by-step guide to view Local Quickstart Preview
 
@@ -414,13 +426,12 @@ yarn install
 yarn preview aws/amazon-msk
 ```
 
->Note: `aws/amazon-msk` is just an example. It can be replaced with the path to any quickstart.
-
+> Note: `aws/amazon-msk` is just an example. It can be replaced with the path to any quickstart.
 
 ### Pull Request Quickstart Preview
+
 - Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
 - If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
-
 
 ## Feature requests
 
