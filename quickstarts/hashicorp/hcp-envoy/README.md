@@ -41,7 +41,19 @@ resource "consul_config_entry" "proxy_defaults" {
 ### Create the Consul cluster
 Create the Consul cluster following the steps for the appropriate environment in the [End-to-End Overview](https://learn.hashicorp.com/tutorials/cloud/consul-end-to-end-overview)
 
-### [Install New Relic Statsd monitoring integration](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/statsd-monitoring-integration-version-2)
+### [gostatsd](https://github.com/atlassian/gostatsd) installation
+Copy [deploy-gostatsd.yaml](deploy-gostatsd.yaml) and [rbac-gostatsd.yaml](rbac-gostatsd.yaml) to your local Kubernetes client.
+
+#### Edit deploy-gostatsd.yaml
+1. Replace `YOUR_NEW_RELIC_ACCOUNT_ID` with your New Relic Account ID
+2. Replace `YOUR_NEW_RELIC_LICENSE_KEY` with your New Relic License Key
+3. Adjust URLs for EU or FedRAMP accounts if necessary (see comments in file)
+
+#### Deploy gostatsd
+```shell
+kubectl apply -f deploy-gostatsd.yaml 
+kubectl apply -f rbac-gostatsd.yaml 
+```
 
 ### Browse Envoy metrics in New Relic ONE
 
