@@ -1,8 +1,8 @@
+import Alert from './Alert'
 import Component from './Component'
 import Dashboard from './Dashboard'
 import DataSource from './DataSource'
-import Alert from './Alert'
-import { readQuickstartFile } from '../helpers' 
+import { readQuickstartFile } from '../helpers'; 
 import type { QuickstartConfig } from '../types/QuickstartConfig'
 
 abstract class Quickstart extends Component<QuickstartConfig> {
@@ -18,22 +18,22 @@ abstract class Quickstart extends Component<QuickstartConfig> {
   }
 
   getDashboards(): Dashboard[] {
-    this.dashboards = this.config.contents[0]?.dashboards?.map(
+    this.dashboards = this.config?.contents[0]?.dashboards?.map(
       (dashboardName) => new Dashboard(dashboardName)
     ) ?? [];
     return this.dashboards;
   }
 
   getAlerts(): Alert[] {
-    this.alerts = this.config.contents[0]?.alertPolicies?.map(
+    this.alerts = this.config?.contents[0]?.alertPolicies?.map(
       (alertPolicy) => new Alert(alertPolicy)
     ) ?? [];
     return this.alerts
   }
 
   getDataSources(): DataSource[] {
-    this.dataSources = this.config.contents[0]?.dataSources?.map(
-      (dataSource) => new DataSource(dataSource)
+    this.dataSources = this.config?.contents[0]?.dataSourceIds?.map(
+      (dataSourceId) => new DataSource(dataSourceId)
     ) ?? [];
     return this.dataSources
   }
@@ -43,7 +43,7 @@ abstract class Quickstart extends Component<QuickstartConfig> {
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    this.configPath =`dashboards/${this.name}`;
+    this.configPath =`quickstarts/${this.name}`;
     return this.configPath
   }
 
