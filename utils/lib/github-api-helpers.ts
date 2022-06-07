@@ -1,8 +1,12 @@
 import fetch from 'node-fetch';
 import * as parseLinkHeader from 'parse-link-header';
-import { QUICKSTART_CONFIG_REGEXP, DATA_SOURCE_CONFIG_REGEXP } from '../constants';
+import {
+  QUICKSTART_CONFIG_REGEXP,
+  DATA_SOURCE_CONFIG_REGEXP,
+} from '../constants';
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
+const TEMPLATE_REGEXP = new RegExp('_template/.+');
 
 /**
  * Pulls the next page off of a `Link` header
@@ -21,13 +25,13 @@ export interface GithubAPIPullRequestFile {
   sha: string;
   filename: string;
   status:
-  | 'added'
-  | 'removed'
-  | 'modified'
-  | 'renamed'
-  | 'copied'
-  | 'changed'
-  | 'unchanged';
+    | 'added'
+    | 'removed'
+    | 'modified'
+    | 'renamed'
+    | 'copied'
+    | 'changed'
+    | 'unchanged';
   additions: number;
   deletions: number;
   changes: number;
@@ -71,7 +75,7 @@ export const fetchPaginatedGHResults = async (
 };
 
 /**
- * Filters results from the Github API for config yaml in `quickstarts/` 
+ * Filters results from the Github API for config yaml in `quickstarts/`
  * @param {Array} files the results from Github API
  * @returns {Array} config files from Github API without test files
  */
@@ -88,7 +92,11 @@ export const filterQuickstartConfigFiles = (
 export const filterOutTestFiles = (
   files: GithubAPIPullRequestFile[]
 ): GithubAPIPullRequestFile[] => {
-  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
+  //console.log(files);
+  return files.filter(
+    ({ filename }) =>
+      !MOCK_FILES_REGEXP.test(filename) && !TEMPLATE_REGEXP.test(filename)
+  );
 };
 
 /**
