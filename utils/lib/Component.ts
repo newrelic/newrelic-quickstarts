@@ -1,7 +1,8 @@
+import { FilePathAndContents } from '../helpers'
 abstract class Component<ConfigType> {
   public name: string;
   public configPath: string;
-  public config: ConfigType;
+  public config: FilePathAndContents<ConfigType>;
   public isValid = true;
 
   constructor(name: string) {
@@ -12,7 +13,7 @@ abstract class Component<ConfigType> {
   }
 
   abstract getConfigFilePath(): string;
-  abstract getConfigContent(): ConfigType;
+  abstract getConfigContent(): FilePathAndContents<ConfigType>;
   abstract validate(): boolean;
 }
 
