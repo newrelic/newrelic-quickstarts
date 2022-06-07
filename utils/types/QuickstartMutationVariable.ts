@@ -45,6 +45,7 @@ export interface QuickstartMetaData {
   supportLevel?: QuickstartSupportLevel;
   installPlanStepIds?: string[];
   dashboards?: QuickstartDashboardInput[];
+  dataSourceIds?: string[];
 }
 
 export type QuickstartSupportLevel =
