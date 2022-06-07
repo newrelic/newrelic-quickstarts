@@ -8,7 +8,7 @@ class DataSource extends Component<DataSourceConfig> {
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    this.configPath = `dashboards/${this.name}`;
+    this.configPath = `data-sources/${this.name}`;
     return this.configPath;
   }
 
