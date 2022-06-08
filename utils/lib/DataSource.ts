@@ -42,11 +42,9 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   /**
-   * Get the variables for the **Data Source** mutation.
-   *
-   * @returns Mutation variables
+   * Get the **component-specific** mutation variables.
    */
-  public getDataSourceMutationVariables() {
+  public getComponentMutationVariables() {
     const { displayName, categoryTerms, keywords, description } = this.config;
 
     return {
