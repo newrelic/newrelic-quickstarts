@@ -6,6 +6,7 @@ const QUICKSTART_CONFIG_REGEXP = new RegExp(
 );
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
+const TEMPLATE_REGEXP = new RegExp('_template/.+');
 const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
   'data-sources/.+/config.+(yml|yaml)'
 );
@@ -94,7 +95,8 @@ export const filterQuickstartConfigFiles = (
 export const filterOutTestFiles = (
   files: GithubAPIPullRequestFile[]
 ): GithubAPIPullRequestFile[] => {
-  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename));
+  //console.log(files);
+  return files.filter(({ filename }) => !MOCK_FILES_REGEXP.test(filename) && !TEMPLATE_REGEXP.test(filename));
 };
 
 /**
