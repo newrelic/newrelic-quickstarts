@@ -127,6 +127,7 @@ export const buildMutationVariables = (
     installPlans,
     id,
     level,
+    dataSourceIds,
   } = quickstartConfig.contents[0] || {};
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
   const dashboardConfigPaths = getQuickstartDashboardConfigs(
@@ -162,6 +163,7 @@ export const buildMutationVariables = (
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       installPlanStepIds: installPlans,
+      dataSourceIds,
       dashboards:
         dashboardConfigPaths.length > 0
           ? adaptQuickstartDashboardInput(dashboardConfigPaths)
