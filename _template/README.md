@@ -1,5 +1,7 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
+This is an overview of the directories used to create a Quickstart, the directories within this \_template folder mirror the directories in the top level of the repository. The structure of new contributions should match the structure seen here. You can find examples of expected files and their structure within each folder.
+
 _(2022-06-07)_ **NOTE:** We recently updated the structure of quickstarts. Below is an explanation of the new directory structure.
 
 ## Example directory structure
