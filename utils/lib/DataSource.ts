@@ -1,7 +1,5 @@
 import * as path from 'path';
 import * as glob from 'glob';
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
 
 import Component from './Component';
 import { GITHUB_RAW_BASE_URL } from '../constants';
@@ -30,24 +28,8 @@ class DataSource extends Component<DataSourceConfig, string> {
     return removeRepoPathPrefix(filePaths[0]);
   }
 
-  /**
-   * @returns The YAML configuration for the data source.
-   */
   getConfigContent() {
-    if (!this.isValid) {
-      return this.config;
-    }
-
-    try {
-      const file = fs.readFileSync(this.fullPath);
-
-      return yaml.load(file.toString('utf-8')) as DataSourceConfig;
-    } catch (e) {
-      console.log('Unable to parse quickstart config', this.configPath, e);
-      this.isValid = false;
-
-      return this.config;
-    }
+    return this._getYamlConfigContent();
   }
 
   /**

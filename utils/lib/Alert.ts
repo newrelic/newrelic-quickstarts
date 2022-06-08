@@ -1,12 +1,13 @@
 import * as path from 'path';
 import * as glob from 'glob';
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
 
-import Component from './Component'
+import Component from './Component';
 import { removeRepoPathPrefix, getAssetSourceUrl } from './helpers';
-import type { AlertType, QuickstartAlertInput } from '../types/QuickstartMutationVariable';
-import type { QuickstartConfigAlert } from '../types/QuickstartConfig'
+import type {
+  AlertType,
+  QuickstartAlertInput,
+} from '../types/QuickstartMutationVariable';
+import type { QuickstartConfigAlert } from '../types/QuickstartConfig';
 
 class Alert extends Component<QuickstartConfigAlert, QuickstartAlertInput> {
   /**
@@ -26,16 +27,9 @@ class Alert extends Component<QuickstartConfigAlert, QuickstartAlertInput> {
     return removeRepoPathPrefix(filePaths[0]);
   }
 
-  /**
-   * Read and parse a YAML file
-   * @returns - The contents of the file  
-   */
+  // FIXME: alert *policies* have multiple config YAML files...
   getConfigContent() {
-    if (!this.isValid) {
-      return this.config;
-    }
-    const file = fs.readFileSync(this.fullPath);
-    return yaml.load(file.toString('utf-8')) as QuickstartConfigAlert;
+    return this._getYamlConfigContent();
   }
 
   getMutationVariables() {
@@ -46,12 +40,9 @@ class Alert extends Component<QuickstartConfigAlert, QuickstartAlertInput> {
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(this.config),
       sourceUrl: getAssetSourceUrl(this.configPath),
-      type: type && type.trim() as AlertType,
+      type: type && (type.trim() as AlertType),
     };
-
   }
-
 }
 
 export default Alert;
-
