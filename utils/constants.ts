@@ -5,3 +5,6 @@ export const GITHUB_RAW_BASE_URL =
 
 export const IO_PREVIEW_PAGE_URL =
   'https://newrelic.com/instant-observability/preview';
+
+export const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
+
