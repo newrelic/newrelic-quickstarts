@@ -3,6 +3,7 @@ import * as glob from 'glob';
 
 import Component from './Component';
 import { removeRepoPathPrefix } from './helpers';
+import { fetchNRGraphqlResults } from '../nr-graphql-helpers';
 
 import type {
   InstallPlanConfig,
@@ -14,6 +15,45 @@ import type {
   InstallPlanMutationVariable,
   InstallPlanTargetInput,
 } from '../types/InstallPlanMutationVariables';
+
+interface InstallPlanMutationResponse {
+  installPlanStep: {
+    id: string;
+  };
+}
+
+const gql = String.raw;
+
+export const INSTALL_PLAN_MUTATION = gql`
+  # gql
+  mutation QuickstartRepoInstallPlanMutation(
+    $description: String!
+    $dryRun: Boolean
+    $displayName: String!
+    $fallback: Nr1CatalogInstallPlanDirectiveInput
+    $heading: String!
+    $id: ID!
+    $primary: Nr1CatalogInstallPlanDirectiveInput!
+    $target: Nr1CatalogInstallPlanTargetInput!
+  ) {
+    nr1CatalogSubmitInstallPlanStep(
+      dryRun: $dryRun
+      installPlanStep: {
+        description: $description
+        displayName: $displayName
+        fallback: $fallback
+        heading: $heading
+        id: $id
+        primary: $primary
+        target: $target
+      }
+    ) {
+      installPlanStep {
+        id
+      }
+    }
+  }
+`;
 
 class InstallPlan extends Component<InstallPlanConfig, string> {
   /**
@@ -46,12 +86,27 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
   }
 
   /**
+   * Submits a mutation to NerdGraph for a single install plan.
+   */
+  public async submitMutation(dryRun = true) {
+    const { data, errors } = await fetchNRGraphqlResults<
+      InstallPlanMutationVariable,
+      InstallPlanMutationResponse
+    >({
+      queryString: INSTALL_PLAN_MUTATION,
+      variables: this._getComponentMutationVariables(dryRun),
+    });
+
+    return { name: this.config.name, data, errors };
+  }
+
+  /**
    * Get the **component-specific** mutation variables.
    *
    * @todo: add this to the abstract class (or create an interface)
    */
-  public getComponentMutationVariables(
-    dryRun = true
+  private _getComponentMutationVariables(
+    dryRun: boolean
   ): InstallPlanMutationVariable {
     const { id, description, name, title, install, fallback } = this.config;
 

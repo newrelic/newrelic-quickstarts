@@ -58,9 +58,7 @@ export const removeCWDPrefix = (filePath: string): string =>
  * Will exit if the incorrect number of argument is passed in.
  * @param length - The desired number of arguments.
  */
-export const checkArgs = (
-  length: number
-  ): void => {
+export const checkArgs = (length: number): void => {
   const { argv } = process;
 
   if (argv.length !== length) {
@@ -279,3 +277,18 @@ export const buildUniqueQuickstartSet = (
   const quickstartFileName = getQuickstartFromFilename(filename);
   return quickstartFileName ? acc.add(quickstartFileName) : acc;
 };
+
+/**
+ * Helper function to return a specific property of an object given a key.
+ * Intended to be used in with array methods.
+ *
+ * @todo Move to helper file.
+ *
+ * @example
+ * const people = [{ name: 'Luke', color: 'blue' }, { name: 'Vader', color: 'red' }];
+ * const names = people.map(prop('name'));
+ */
+export const prop =
+  <T, K extends keyof T>(key: K) =>
+  (obj: T) =>
+    obj[key];
