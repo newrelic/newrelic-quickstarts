@@ -26,9 +26,6 @@ const main = async () => {
     .filter((filePath) => QUICKSTART_CONFIG_REGEXP.test(filePath))
     .map((config) => new Quickstart(config));
 
-  console.log(quickstarts);
-
-
   // Submit all of the mutations in chunks of 5
   const results = await Promise.all(
     chunk(quickstarts, 5).flatMap((chunk) =>
