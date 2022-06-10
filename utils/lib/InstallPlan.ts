@@ -4,6 +4,7 @@ import * as glob from 'glob';
 import Component from './Component';
 import { removeRepoPathPrefix } from './helpers';
 import { fetchNRGraphqlResults } from '../nr-graphql-helpers';
+import { INSTALL_PLAN_MUTATION } from '../constants';
 
 import type {
   InstallPlanConfig,
@@ -21,39 +22,6 @@ interface InstallPlanMutationResponse {
     id: string;
   };
 }
-
-const gql = String.raw;
-
-export const INSTALL_PLAN_MUTATION = gql`
-  # gql
-  mutation QuickstartRepoInstallPlanMutation(
-    $description: String!
-    $dryRun: Boolean
-    $displayName: String!
-    $fallback: Nr1CatalogInstallPlanDirectiveInput
-    $heading: String!
-    $id: ID!
-    $primary: Nr1CatalogInstallPlanDirectiveInput!
-    $target: Nr1CatalogInstallPlanTargetInput!
-  ) {
-    nr1CatalogSubmitInstallPlanStep(
-      dryRun: $dryRun
-      installPlanStep: {
-        description: $description
-        displayName: $displayName
-        fallback: $fallback
-        heading: $heading
-        id: $id
-        primary: $primary
-        target: $target
-      }
-    ) {
-      installPlanStep {
-        id
-      }
-    }
-  }
-`;
 
 class InstallPlan extends Component<InstallPlanConfig, string> {
   /**
