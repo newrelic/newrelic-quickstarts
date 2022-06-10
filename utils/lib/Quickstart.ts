@@ -6,15 +6,21 @@ import * as glob from 'glob';
 import Alert from './Alert';
 import Dashboard from './Dashboard';
 import DataSource from './DataSource';
-import { MOCK_UUID, GITHUB_RAW_BASE_URL } from '../constants';
+import { MOCK_UUID, GITHUB_RAW_BASE_URL, QUICKSTART_MUTATION } from '../constants';
 import { removeRepoPathPrefix, getAssetSourceUrl } from './helpers';
-import { getCategoryTermsFromKeywords } from '../nr-graphql-helpers';
+import { fetchNRGraphqlResults, getCategoryTermsFromKeywords } from '../nr-graphql-helpers';
 import type {
   QuickstartMutationVariable,
   QuickstartMetaData,
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
+
+interface QuickstartMutationResponse {
+  quickstart: {
+    id: string;
+  }
+}
 
 interface SupportLevelMap {
   [key: string]: QuickstartSupportLevel;
@@ -28,13 +34,14 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
 
 
 type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
-type Components = InstanceType<ComponentType>[];
+type Components = InstanceType<ComponentType>;
 
 interface ConfigToMutationMap {
   configKey: string;
   mutationKey: string;
   ctor: ComponentType;
 }
+
 
 const ConfigToMutation: ConfigToMutationMap[] = [
   { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
@@ -47,16 +54,12 @@ const ConfigToMutation: ConfigToMutationMap[] = [
 ];
 
 class Quickstart {
-  public components: Components;
+  public components: Components[];
   public localPath: string; // Local path to the component. Ex: python/flask
   public configPath: string; // Absolute path to the config file within the repository
   public config: QuickstartConfig;
   public isValid = true;
   public basePath = path.join(__dirname, '../..');
-
-  get fullPath() {
-    return path.join(this.basePath, this.configPath);
-  }
 
   constructor(localPath: string) {
     this.localPath = localPath;
@@ -65,7 +68,37 @@ class Quickstart {
     this.components = this.getComponents();
   }
 
-  getComponents(): Components {
+  /**
+   * Returns the file path from the top level of component
+   * @returns - filepath from top level directory.
+   */
+  getConfigFilePath() {
+    return path.join(this.basePath, this.localPath)
+  }
+
+  /**
+   * Read and parse a JSON file
+   * @returns - An object containing the path and contents of the file
+   */
+  getConfigContent() {
+    if (!this.isValid) {
+      return this.config;
+    }
+    try {
+      const file: Buffer = fs.readFileSync(this.configPath);
+
+      return yaml.load(file.toString('utf-8')) as QuickstartConfig;
+    } catch (e) {
+      console.error('Unable to parse quickstart config', this.configPath, e);
+      this.isValid = false;
+
+      return this.config;
+    }
+
+
+  }
+
+  getComponents(): Components[] {
     return ConfigToMutation.flatMap((componentType) => {
       const componentConfig = this.config?.[
         componentType.configKey as keyof QuickstartConfig
@@ -79,7 +112,7 @@ class Quickstart {
     });
   }
 
-  getMutationVariables(dryRun: boolean = true): QuickstartMutationVariable {
+  getMutationVariables(dryRun: boolean): QuickstartMutationVariable {
     const {
       authors,
       description,
@@ -123,6 +156,20 @@ class Quickstart {
       dryRun,
       quickstartMetadata
     }
+  }
+
+  public async submitMutation(dryRun = true) {
+    const { data, errors } = await fetchNRGraphqlResults<
+      QuickstartMutationVariable,
+      QuickstartMutationResponse
+    >({
+      queryString: QUICKSTART_MUTATION,
+      variables: this.getMutationVariables(dryRun),
+    });
+
+    // filePath may need to be changed for this rework
+    return { data, errors, name: this.localPath } 
+
   }
 
   private _constructIconUrl(icon: string) {
@@ -170,48 +217,8 @@ class Quickstart {
       this.isValid = false;
     }
 
-    // TODO: validate the quickstart itself (leaving this here, might not need for TODO
   }
 
-  /**
-   * Returns the file path from the top level of component
-   * @returns - filepath from top level directory.
-   */
-  getConfigFilePath() {
-    const filePaths = glob.sync(
-      path.join(this.basePath, 'quickstarts', this.localPath, '*.json')
-    );
-    if (!Array.isArray(filePaths) || filePaths.length !== 1) {
-      this.isValid = false;
-      return ``;
-    }
-
-    return removeRepoPathPrefix(filePaths[0]);
-
-
-  }
-
-  /**
-   * Read and parse a JSON file
-   * @returns - An object containing the path and contents of the file
-   */
-  getConfigContent() {
-    if (!this.isValid) {
-      return this.config;
-    }
-    try {
-      const file: Buffer = fs.readFileSync(this.fullPath);
-
-      return yaml.load(file.toString('utf-8')) as QuickstartConfig;
-    } catch (e) {
-      console.log('Unable to parse quickstart config', this.configPath, e);
-      this.isValid = false;
-
-      return this.config;
-    }
-
-
-  }
 }
 
 export default Quickstart;
