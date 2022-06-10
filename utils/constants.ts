@@ -6,5 +6,61 @@ export const GITHUB_RAW_BASE_URL =
 export const IO_PREVIEW_PAGE_URL =
   'https://newrelic.com/instant-observability/preview';
 
+/**
+ * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
+ * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.
+ */
 export const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
+
+const gql = String.raw;
+
+export const QUICKSTART_MUTATION = gql`
+  # gql
+  mutation QuickstartRepoQuickstartMutation(
+    $dryRun: Boolean
+    $id: ID!
+    $quickstartMetadata: Nr1CatalogQuickstartMetadataInput!
+  ) {
+    nr1CatalogSubmitQuickstart(
+      dryRun: $dryRun
+      id: $id
+      quickstartMetadata: $quickstartMetadata
+    ) {
+      quickstart {
+        id
+      }
+    }
+  }
+`;
+
+export const INSTALL_PLAN_MUTATION = gql`
+  # gql
+  mutation QuickstartRepoInstallPlanMutation(
+    $description: String!
+    $dryRun: Boolean
+    $displayName: String!
+    $fallback: Nr1CatalogInstallPlanDirectiveInput
+    $heading: String!
+    $id: ID!
+    $primary: Nr1CatalogInstallPlanDirectiveInput!
+    $target: Nr1CatalogInstallPlanTargetInput!
+  ) {
+    nr1CatalogSubmitInstallPlanStep(
+      dryRun: $dryRun
+      installPlanStep: {
+        description: $description
+        displayName: $displayName
+        fallback: $fallback
+        heading: $heading
+        id: $id
+        primary: $primary
+        target: $target
+      }
+    ) {
+      installPlanStep {
+        id
+      }
+    }
+  }
+`;
 
