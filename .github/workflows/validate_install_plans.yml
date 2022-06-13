@@ -47,15 +47,17 @@ jobs:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
           NEW_RELIC_HOST: staging-collector.newrelic.com
           NODE_ENV: production
+          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ steps.get_pr_number.outputs.pr-number }}/files"
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           DRY_RUN=true
           cd utils && yarn create-validate-install-plans $URL $DRY_RUN
 
       - name: Add commit status
         if: always()
+        env:
+          COMMIT_SHA: ${{ github.event.workflow_run.head_commit.id }}
         run: |
-          export COMMIT_SHA=$(echo '${{ toJSON(github.event) }}' | jq '.workflow_run.head_commit.id' | tr -d '"')
           curl \
             -X POST \
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
