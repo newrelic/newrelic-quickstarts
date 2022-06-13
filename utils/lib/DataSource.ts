@@ -2,14 +2,25 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 import Component from './Component';
-import { GITHUB_RAW_BASE_URL } from '../constants';
+import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
 import { removeRepoPathPrefix } from './helpers';
+
+import { fetchNRGraphqlResults } from '../nr-graphql-helpers';
 
 import type {
   DataSourceConfig,
   DataSourceConfigInstallDirective,
 } from '../types/DataSourceConfig';
-import type { DataSourceInstallDirectiveInput } from '../types/DataSourceMutationVariable';
+import type {
+  DataSourceInstallDirectiveInput,
+  DataSourceMutationVariable,
+} from '../types/DataSourceMutationVariable';
+
+interface DataSourceMutationResponse {
+  dataSource: {
+    id: string;
+  }
+}
 
 class DataSource extends Component<DataSourceConfig, string> {
   /**
@@ -37,25 +48,46 @@ class DataSource extends Component<DataSourceConfig, string> {
    *
    * @returns The ID for this data source
    */
-  getMutationVariables() {
+  getMutationVariables(): DataSourceConfig["id"] {
     return this.config.id;
   }
 
   /**
    * Get the **component-specific** mutation variables.
    */
-  public getComponentMutationVariables() {
-    const { displayName, categoryTerms, keywords, description } = this.config;
+  private _getComponentMutationVariables(dryRun: boolean): DataSourceMutationVariable {
+    const { id, displayName, categoryTerms, keywords, description } = this.config;
 
-    return {
-      displayName: displayName.trim(),
+    const dataSourceMetadata = {
+      displayName: displayName && displayName.trim(),
       icon: this._getIconUrl(),
       install: this._parseInstall(),
       categoryTerms: categoryTerms && categoryTerms.map((t) => t.trim()),
       keywords: keywords && keywords.map((k) => k.trim()),
       description: description && description.trim(),
     };
+
+    return {
+      dryRun,
+      id,
+      dataSourceMetadata,
+    };
   }
+
+  public async submitMutation(dryRun = true) {
+    const { data, errors } = await fetchNRGraphqlResults<
+      DataSourceMutationVariable,
+      DataSourceMutationResponse 
+    >({
+      queryString: DATA_SOURCE_MUTATION,
+      variables: this._getComponentMutationVariables(dryRun),
+    });
+
+    // filePath may need to be changed for this rework
+    return { data, errors, name: this.localPath } 
+
+  }
+
 
   /**
    * Helper method to get the image URL for the icon.
