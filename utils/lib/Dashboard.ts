@@ -74,6 +74,16 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       url: `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${screenShotFileName}`,
     };
   }
+
+  static getAll() {
+
+    return glob.sync(path.join(__dirname, '..', '..', 'dashboards', '*', '*.+(json)'))
+      .map((dashboardPath) => path.dirname(dashboardPath.split('dashboards/')[1]))
+      .map((localPath) => new Dashboard(localPath))
+
+
+
+  }
 }
 
 export default Dashboard;
