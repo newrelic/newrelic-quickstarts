@@ -5,7 +5,9 @@ import { translateMutationErrors, chunk } from './nr-graphql-helpers';
 import Quickstart from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 
-const QUICKSTART_CONFIG_REGEXP = new RegExp('quickstarts/.*/config.+(yml|yaml)');
+const QUICKSTART_CONFIG_REGEXP = new RegExp(/quickstarts\/.*\/config.+(yml|yaml)/gm);
+
+console.log(QUICKSTART_CONFIG_REGEXP);
 
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
