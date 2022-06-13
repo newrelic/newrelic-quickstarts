@@ -155,27 +155,6 @@ export const findMainInstallConfigFiles = (): string[] =>
  */
 export const passedProcessArguments = (): string[] => process.argv.slice(2);
 
-interface NameAndPath {
-  name: string;
-  path: string;
-}
-/**
- * Returns any quickstarts with matching names
- * @param namesAndPaths - An array of objects containing the path and name of a quickstart
- * @returns - An array of matching values
- */
-export const getMatchingNames = (
-  namesAndPaths: NameAndPath[]
-): NameAndPath[] => {
-  return namesAndPaths.reduce<NameAndPath[]>((acc, { name, path }) => {
-    const duplicates = namesAndPaths.filter(
-      (quickstart) => quickstart.name === name && quickstart.path !== path
-    );
-
-    return [...new Set([...acc, ...duplicates])];
-  }, []);
-};
-
 /**
  * Removes whitespace and punctuation from a string
  * @returns - The string with `-` replacing whitespace and punctuation removed
@@ -290,5 +269,5 @@ export const buildUniqueQuickstartSet = (
  */
 export const prop =
   <T, K extends keyof T>(key: K) =>
-  (obj: T) =>
-    obj[key];
+    (obj: T) =>
+      obj[key];
