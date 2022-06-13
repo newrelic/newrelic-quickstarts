@@ -64,3 +64,22 @@ export const INSTALL_PLAN_MUTATION = gql`
   }
 `;
 
+export const DATA_SOURCE_MUTATION = gql`
+  mutation QuickstartRepoDataSourceMutation(
+    $dryRun: Boolean
+    $id: ID!
+    $dataSourceMetadata: Nr1CatalogDataSourceMetadataInput!
+  ) {
+    nr1CatalogSubmitDataSource(
+      dryRun: $dryRun
+      id: $id
+      dataSourceMetadata: $dataSourceMetadata
+    ) {
+      dataSource {
+        id
+      }
+    }
+  }
+`;
+
+
