@@ -25,7 +25,7 @@ const main = async () => {
   // Get all install-plan mutation variables
   const plans = files
     .map(prop('filename'))
-    .filter(INSTALL_CONFIG_REGEXP.test)
+    .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
     .map((filename) => new InstallPlan(filename));
 
   // Submit all of the mutations (in chunks of 5)

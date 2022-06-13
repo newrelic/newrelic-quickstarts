@@ -19,7 +19,7 @@ import type {
 interface DataSourceMutationResponse {
   dataSource: {
     id: string;
-  }
+  };
 }
 
 class DataSource extends Component<DataSourceConfig, string> {
@@ -28,7 +28,7 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   getConfigFilePath() {
     const filePaths = glob.sync(
-      path.join(this.basePath, 'data-sources', this.localPath, '*.{yml|yaml}')
+      path.join(this.basePath, 'data-sources', this.localPath, '*.+(yml|yaml)')
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
@@ -48,15 +48,18 @@ class DataSource extends Component<DataSourceConfig, string> {
    *
    * @returns The ID for this data source
    */
-  getMutationVariables(): DataSourceConfig["id"] {
+  getMutationVariables(): DataSourceConfig['id'] {
     return this.config.id;
   }
 
   /**
    * Get the **component-specific** mutation variables.
    */
-  private _getComponentMutationVariables(dryRun: boolean): DataSourceMutationVariable {
-    const { id, displayName, categoryTerms, keywords, description } = this.config;
+  private _getComponentMutationVariables(
+    dryRun: boolean
+  ): DataSourceMutationVariable {
+    const { id, displayName, categoryTerms, keywords, description } =
+      this.config;
 
     const dataSourceMetadata = {
       displayName: displayName && displayName.trim(),
@@ -77,17 +80,15 @@ class DataSource extends Component<DataSourceConfig, string> {
   public async submitMutation(dryRun = true) {
     const { data, errors } = await fetchNRGraphqlResults<
       DataSourceMutationVariable,
-      DataSourceMutationResponse 
+      DataSourceMutationResponse
     >({
       queryString: DATA_SOURCE_MUTATION,
       variables: this._getComponentMutationVariables(dryRun),
     });
 
     // filePath may need to be changed for this rework
-    return { data, errors, name: this.localPath } 
-
+    return { data, errors, name: this.localPath };
   }
-
 
   /**
    * Helper method to get the image URL for the icon.
