@@ -100,9 +100,10 @@ class Quickstart {
 
   getComponents(): Components[] {
     return ConfigToMutation.flatMap((componentType) => {
-      const componentConfig = this.config?.[
+
+      const componentConfig = this.config[
         componentType.configKey as keyof QuickstartConfig
-      ] as any[]; // its gonna be an array of something :smile:
+      ] as string[] // its gonna be an array of something :smile:
 
       return (
         componentConfig?.flatMap(
