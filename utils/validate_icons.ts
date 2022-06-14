@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import Quickstart from './lib/Quickstart';
 
 const {
   readQuickstartFile,
-  findMainQuickstartConfigFiles,
 } = require('./helpers');
 
 /**
@@ -56,7 +56,7 @@ export const handleErrors = (
 
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
-  var mainConfigPaths: string[] = findMainQuickstartConfigFiles();
+  var mainConfigPaths: string[] = Quickstart.getAll().map(quickstart => quickstart.configPath);
   var errorMessages: string[] = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
