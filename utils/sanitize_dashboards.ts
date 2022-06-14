@@ -1,27 +1,44 @@
 import * as fs from 'fs';
-import Dashboard from './lib/Dashboard'; 
+import * as path from 'path';
+import * as glob from 'glob';
+import Dashboard from './lib/Dashboard';
+
+const sanitizeRawContent = (rawConfig: string): string => {
+  return rawConfig
+    .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
+    .replace(
+      /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
+      '"linkedEntityGuids": null'
+    ) // Set linkedEntityGuids to null
+    .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
+    .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
+};
+
 
 const sanitizeDashboards = (pathsToSanitize: string[]) => {
-  pathsToSanitize.forEach((i) => {
-    const dashboard = new Dashboard(i);
+  pathsToSanitize.forEach((dashboardId) => {
+    const globPaths: string[] = glob.sync(
+      path.resolve('..', 'dashboards', dashboardId, '*.json')
+    );
 
-    if (!dashboard.isValid) {
+    if (globPaths.length !== 1) {
       console.log(
         'No dashboard or .json files exist within this directory, skipping sanitization...'
       );
       return;
     }
 
-    const dashboardRawConfig: string = JSON.stringify(dashboard.config)
-    const sanitizedRawConfig: string = dashboard.sanitizeConfig();
+    const filePath: string = globPaths.pop()!;
+    const dashboardRawContent: string = fs.readFileSync(filePath, {encoding: 'utf8' });
+    const sanitizedRawContent: string = sanitizeRawContent(dashboardRawContent);
 
-    if (dashboardRawConfig !== sanitizedRawConfig) {
-      fs.writeFile(dashboard.fullPath, sanitizedRawConfig, { encoding: 'utf8' }, function (err) {
+    if (dashboardRawContent !== sanitizedRawContent) {
+      fs.writeFile(filePath, sanitizedRawContent, { encoding: 'utf8' }, function (err) {
         if (err) {
-          console.error(`Error updating ${dashboard.fullPath}`);
+          console.error(`Error updating ${filePath}`);
           process.exit(1);
         } else {
-          console.log(`=> Sanitized ${dashboard.fullPath}`);
+          console.log(`=> Sanitized ${filePath}`);
         }
       });
     }
