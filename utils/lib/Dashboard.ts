@@ -90,25 +90,6 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   }
 
   /**
-   * Handles sanitizing the raw content of a dashboard config file
-   * @returns - Sanitized raw dashboard config.
-   */
-  sanitizeConfig(): string {
-    return this._sanitizeRawContent(JSON.stringify(this.config!))
-  }
-
-  private _sanitizeRawContent(rawConfig: string): string {
-    return rawConfig
-      .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
-      .replace(
-        /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
-        '"linkedEntityGuids": null'
-      ) // Set linkedEntityGuids to null
-      .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
-      .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
-  }
-
-  /**
    * Static method that returns a list of every dashboard
    * @returns - A list of all dashboards
    */
