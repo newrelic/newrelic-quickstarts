@@ -19,7 +19,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
    */
-  getConfigFilePath() {
+  getConfigFilePath(): string {
     const filePaths = glob.sync(
       path.join(this.basePath, 'dashboards', this.localPath, '*.json')
     );
@@ -36,7 +36,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * Read and parse a JSON file
    * @returns - The contents of the file
    */
-  getConfigContent() {
+  getConfigContent(): DashboardConfig {
     if (!this.isValid) {
       return this.config;
     }
@@ -45,7 +45,11 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return JSON.parse(file.toString('utf-8'));
   }
 
-  getMutationVariables() {
+  /**
+   * Return mutation variables from dashboard config
+   * @returns - mutation variables for dashboard.
+   */
+  getMutationVariables(): QuickstartDashboardInput {
     const { name, description } = this.config;
     const screenshotPaths = this.getScreenshotPaths();
 
@@ -59,14 +63,23 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     };
   }
 
-  getScreenshotPaths() {
+  /**
+   * Grabs the paths for screenshots associated with dashboard
+   * @returns - An array of filepaths to screenshots 
+   */
+  getScreenshotPaths(): string[] {
     const splitConfigPath = path.dirname(this.fullPath);
     const globPattern = `${splitConfigPath}/*.+(jpeg|jpg|png)`;
 
     return glob.sync(globPattern);
   }
 
-  getScreenshotUrl(screenshotPath: string) {
+  /**
+   * Constructs the url to screenshot based off raw github URL
+   * for a dashboard's mutation variable
+   * @returns - Object with URL for the mutation variable
+   */
+  getScreenshotUrl(screenshotPath: string): { url: string } {
     const splitConfigPath = path.dirname(this.configPath);
     const screenShotFileName = path.basename(screenshotPath);
 
@@ -75,14 +88,14 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     };
   }
 
-  static getAll() {
-
+  /**
+   * Static method that returns a list of every dashboard
+   * @returns - A list of all dashboards
+   */
+  static getAll(): Dashboard[] {
     return glob.sync(path.join(__dirname, '..', '..', 'dashboards', '*', '*.+(json)'))
       .map((dashboardPath) => path.dirname(dashboardPath.split('dashboards/')[1]))
       .map((localPath) => new Dashboard(localPath))
-
-
-
   }
 }
 
