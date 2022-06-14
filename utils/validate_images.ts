@@ -1,21 +1,22 @@
 import * as core from '@actions/core';
-
-const {
+import * as glob from 'glob';
+import * as path from 'path';
+import Quickstart from './lib/Quickstart';
+import {
   getFileSize,
   getFileExtension,
   globFiles,
   readQuickstartFile,
-} = require('./helpers');
+} from './helpers';
 
-import * as glob from 'glob';
-import * as path from 'path';
+import type { QuickstartConfig } from './types/QuickstartConfig';
+
 const BASE_PATH = '../quickstarts/';
 const DASHBOARD_IMAGES_PATH = '/images/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 12;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 
-import Quickstart from './lib/Quickstart';
 
 type DirectoryValidation = {
   folder: string;
@@ -37,10 +38,10 @@ export const validateImageCounts = (quickstartDirs: string[]): void => {
     const imagePaths = glob.sync(
       path.join('..', `dashboards/${quickstartDirName}/*.+(png|jpeg|jpg|svg)`)
     );
-    const quickstartConfig = readQuickstartFile(quickstart).contents[0];
-    const quickstartName = quickstartConfig.name;
-    const logoPath = quickstartConfig.logo
-      ? path.resolve(quickstartDirName, quickstartConfig.logo)
+    const quickstartConfig = readQuickstartFile<QuickstartConfig>(quickstart).contents[0] ;
+    const quickstartName = quickstartConfig.title;
+    const logoPath = quickstartConfig.icon
+      ? path.resolve(quickstartDirName, quickstartConfig.)
       : null;
 
     // Max images is per dashboard so we need to account for this by getting the number of dashboards
