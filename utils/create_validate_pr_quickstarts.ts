@@ -1,6 +1,6 @@
 import { fetchPaginatedGHResults } from './github-api-helpers';
 import { prop, passedProcessArguments } from './helpers';
-import { translateMutationErrors, chunk } from './nr-graphql-helpers';
+import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
 import Quickstart from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';

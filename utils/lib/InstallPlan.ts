@@ -3,7 +3,7 @@ import * as glob from 'glob';
 
 import Component from './Component';
 import { removeRepoPathPrefix } from './classHelpers';
-import { fetchNRGraphqlResults } from '../nr-graphql-helpers';
+import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 import { INSTALL_PLAN_MUTATION } from '../constants';
 
 import type {

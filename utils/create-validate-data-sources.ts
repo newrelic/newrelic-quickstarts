@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import { fetchPaginatedGHResults } from './github-api-helpers';
-import { chunk, translateMutationErrors } from './nr-graphql-helpers';
+import { chunk, translateMutationErrors } from './lib/nr-graphql-helpers';
 import { passedProcessArguments, prop } from './helpers';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import DataSource from './lib/DataSource';

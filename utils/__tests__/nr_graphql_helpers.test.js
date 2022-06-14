@@ -2,7 +2,7 @@
 const {
   getCategoryTermsFromKeywords,
   chunk,
-} = require('../nr-graphql-helpers');
+} = require('../lib/nr-graphql-helpers');
 
 describe('getCategoryTermsFromKeywords', () => {
   test('getCategoryTermsFromKeywords returns undefined if no keywords are provided', () => {

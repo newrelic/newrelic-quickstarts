@@ -6,7 +6,7 @@ const {
 } = require('../create-validate-install-plans');
 
 const githubHelpers = require('../github-api-helpers');
-const nrGraphqlHelpers = require('../nr-graphql-helpers');
+const nrGraphqlHelpers = require('../lib/nr-graphql-helpers');
 const helpers = require('../helpers');
 
 jest.mock('@actions/core');
@@ -17,8 +17,8 @@ jest.mock('../github-api-helpers', () => ({
   filterInstallPlans: jest.fn(),
 }));
 
-jest.mock('../nr-graphql-helpers', () => ({
-  ...jest.requireActual('../nr-graphql-helpers'),
+jest.mock('../lib/nr-graphql-helpers', () => ({
+  ...jest.requireActual('../lib/nr-graphql-helpers'),
   fetchNRGraphqlResults: jest.fn(),
 }));
 

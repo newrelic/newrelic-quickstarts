@@ -15,7 +15,7 @@ import { removeRepoPathPrefix, getAssetSourceUrl } from './classHelpers';
 import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,
-} from '../nr-graphql-helpers';
+} from './nr-graphql-helpers';
 import type {
   QuickstartMutationVariable,
   QuickstartMetaData,

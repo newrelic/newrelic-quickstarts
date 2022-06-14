@@ -17,7 +17,7 @@ const {
 
 const helpers = require('../helpers');
 
-jest.mock('../nr-graphql-helpers');
+jest.mock('../lib/nr-graphql-helpers');
 jest.mock('../helpers', () => ({
   ...jest.requireActual('../helpers'),
   passedProcessArguments: jest.fn(),
