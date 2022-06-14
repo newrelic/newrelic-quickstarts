@@ -73,7 +73,7 @@ class Quickstart {
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    return path.join(this.basePath, this.localPath)
+    return path.join(this.basePath, this.localPath);
   }
 
   /**
@@ -94,16 +94,17 @@ class Quickstart {
 
       return this.config;
     }
-
-
   }
 
+  /**
+   * Retrieve all quickstart components referenced in config
+   * @returns - A list of components associated with quickstart.
+   */
   getComponents(): Components[] {
     return ConfigToMutation.flatMap((componentType) => {
-
-      const componentConfig = this.config[
+      const componentConfig = this.config?.[
         componentType.configKey as keyof QuickstartConfig
-      ] as string[] // its gonna be an array of something :smile:
+      ] as string[]; // its gonna be an array of something :smile:
 
       return (
         componentConfig?.flatMap(
@@ -113,6 +114,10 @@ class Quickstart {
     });
   }
 
+  /**
+   * Get mutation variables from quickstart config
+   * @returns - mutation varaibles for quickstart
+   */
   getMutationVariables(dryRun: boolean): QuickstartMutationVariable {
     const {
       authors,
@@ -146,17 +151,15 @@ class Quickstart {
       sourceUrl: getAssetSourceUrl(this.configPath),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
-      installPlanStepIds: installPlans
+      installPlanStepIds: installPlans,
     };
 
-
-
-    const quickstartMetadata = this._addComponents(metadata); 
+    const quickstartMetadata = this._addComponents(metadata);
     return {
       id: id ? id : MOCK_UUID,
       dryRun,
-      quickstartMetadata
-    }
+      quickstartMetadata,
+    };
   }
 
   public async submitMutation(dryRun = true) {
@@ -169,13 +172,12 @@ class Quickstart {
     });
 
     // filePath may need to be changed for this rework
-    return { data, errors, name: this.localPath } 
-
+    return { data, errors, name: this.localPath };
   }
 
   private _constructIconUrl(icon: string) {
-    const splitConfigPath = path.dirname(this.configPath)
-    return `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${icon}`
+    const splitConfigPath = path.dirname(this.configPath);
+    return `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${icon}`;
   }
 
   private _addComponents(metadata: QuickstartMetaData) {
@@ -200,7 +202,6 @@ class Quickstart {
         [type.mutationKey]: variablesForType,
       };
     }, metadata);
-
   }
 
   validate() {
@@ -217,9 +218,20 @@ class Quickstart {
 
       this.isValid = false;
     }
-
   }
 
+  /**
+   * Static method that returns a list of every quickstarts
+   * @returns - A list of all quickstarts
+   */
+  static getAll(): Quickstart[] {
+    return glob
+      .sync(
+        path.join(__dirname, '..', '..', 'quickstarts', '**', 'config.+(yml|yaml)')
+      )
+      .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
+      .map((localPath) => new Quickstart(`quickstarts/${localPath}`));
+  }
 }
 
 export default Quickstart;
