@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml';
 import * as glob from 'glob';
 
 import Component from './Component';
-import { removeRepoPathPrefix, getAssetSourceUrl } from './helpers';
+import { removeRepoPathPrefix, getAssetSourceUrl } from './classHelpers';
 
 import type {
   AlertType,

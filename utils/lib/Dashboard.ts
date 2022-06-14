@@ -6,7 +6,7 @@ import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariab
 
 import Component from './Component';
 import { GITHUB_RAW_BASE_URL } from '../constants';
-import { getAssetSourceUrl, removeRepoPathPrefix } from './helpers';
+import { getAssetSourceUrl, removeRepoPathPrefix } from './classHelpers';
 
 interface DashboardConfig {
   name: string;
@@ -65,7 +65,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
 
   /**
    * Grabs the paths for screenshots associated with dashboard
-   * @returns - An array of filepaths to screenshots 
+   * @returns - An array of filepaths to screenshots
    */
   getScreenshotPaths(): string[] {
     const splitConfigPath = path.dirname(this.fullPath);
@@ -93,9 +93,12 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * @returns - A list of all dashboards
    */
   static getAll(): Dashboard[] {
-    return glob.sync(path.join(__dirname, '..', '..', 'dashboards', '*', '*.+(json)'))
-      .map((dashboardPath) => path.dirname(dashboardPath.split('dashboards/')[1]))
-      .map((localPath) => new Dashboard(localPath))
+    return glob
+      .sync(path.join(__dirname, '..', '..', 'dashboards', '*', '*.+(json)'))
+      .map((dashboardPath) =>
+        path.dirname(dashboardPath.split('dashboards/')[1])
+      )
+      .map((localPath) => new Dashboard(localPath));
   }
 }
 

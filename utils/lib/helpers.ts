@@ -1,23 +1,29 @@
-import { GITHUB_REPO_BASE_URL } from '../constants';
-/**
- * Creates the GitHub url of an asset within the main directory of a quickstart.
- * @param assetFilePath - The file path of an asset.
- * @return Returns an object containing the GitHub url of an asset.
- */
-export const getAssetSourceUrl = (assetFilePath: string): string => {
-  // path = dashboards/apache/screenshot1.png
-  return `${GITHUB_REPO_BASE_URL}/${assetFilePath}`;
-};
+import * as path from 'path';
+
+import Quickstart from './Quickstart';
+
+export const COMPONENT_PREFIX_REGEX =
+  /^(dashboards|alert-policies|install-plans|data-sources)\//;
 
 /**
- * Removes the `newrelic-quickstarts/` path prefix from a string
- * @param filePath - The path to change
- * @returns - The path with the prefix
+ * Gets all quickstarts that use a component
+ * @param localComponentPath - the local path to a component, ex: "apache" for the apache dashboard
+ * @returns quickstarts that use the passed in component
  */
-export const removeRepoPathPrefix = (filePath: string): string => {
-  const shortPath = filePath.split(`newrelic-quickstarts/`).pop();
-  if (typeof shortPath === 'string') {
-    return shortPath;
-  }
-  return filePath;
+export const getRelatedQuickstarts = (
+  localComponentPath: string
+): Quickstart[] =>
+  Quickstart.getAll().filter((q) =>
+    q.components.some((c) => c.localPath === localComponentPath)
+  );
+
+/**
+ * Gets the local path for a component
+ * @param filePath - the path to a component config file within the repository
+ * ex: dashboards/apache/dashboard.json -> apache
+ * @returns the "local path" portion of the filepath
+ */
+export const getComponentLocalPath = (filePath: string): string => {
+  const componentPath = filePath.split(COMPONENT_PREFIX_REGEX).pop() ?? '';
+  return path.dirname(componentPath);
 };

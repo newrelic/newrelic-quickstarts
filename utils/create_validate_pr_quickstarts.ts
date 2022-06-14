@@ -4,10 +4,15 @@ import { translateMutationErrors, chunk } from './nr-graphql-helpers';
 
 import Quickstart from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
+import {
+  getRelatedQuickstarts,
+  getComponentLocalPath,
+  COMPONENT_PREFIX_REGEX,
+} from './lib/helpers';
 
-const QUICKSTART_CONFIG_REGEXP = new RegExp(/quickstarts\/.*\/config.+(yml|yaml)/gm);
-
-console.log(QUICKSTART_CONFIG_REGEXP);
+const QUICKSTART_CONFIG_REGEXP = new RegExp(
+  /quickstarts\/.*\/config.+(yml|yaml)/gm
+);
 
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
@@ -25,8 +30,26 @@ const main = async () => {
   // Get all quickstart mutation variables
   const quickstarts = files
     .map(prop('filename'))
-    .filter((filePath) => QUICKSTART_CONFIG_REGEXP.test(filePath))
-    .map((config) => new Quickstart(config));
+    .filter(
+      (filePath) =>
+        QUICKSTART_CONFIG_REGEXP.test(filePath) ||
+        COMPONENT_PREFIX_REGEX.test(filePath)
+    )
+    .flatMap((filePath) => {
+      if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
+        return new Quickstart(filePath);
+      }
+
+      return getRelatedQuickstarts(getComponentLocalPath(filePath));
+    })
+    // Remove any duplicate quickstarts
+    .reduce<Quickstart[]>((acc, quickstart) => {
+      if (!acc.some((a) => a.configPath === quickstart.configPath)) {
+        return [...acc, quickstart];
+      }
+
+      return acc;
+    }, []);
 
   // Submit all of the mutations in chunks of 5
   const results = await Promise.all(

@@ -6,9 +6,16 @@ import * as glob from 'glob';
 import Alert from './Alert';
 import Dashboard from './Dashboard';
 import DataSource from './DataSource';
-import { MOCK_UUID, GITHUB_RAW_BASE_URL, QUICKSTART_MUTATION } from '../constants';
-import { removeRepoPathPrefix, getAssetSourceUrl } from './helpers';
-import { fetchNRGraphqlResults, getCategoryTermsFromKeywords } from '../nr-graphql-helpers';
+import {
+  MOCK_UUID,
+  GITHUB_RAW_BASE_URL,
+  QUICKSTART_MUTATION,
+} from '../constants';
+import { removeRepoPathPrefix, getAssetSourceUrl } from './classHelpers';
+import {
+  fetchNRGraphqlResults,
+  getCategoryTermsFromKeywords,
+} from '../nr-graphql-helpers';
 import type {
   QuickstartMutationVariable,
   QuickstartMetaData,
@@ -19,7 +26,7 @@ import type { QuickstartConfig } from '../types/QuickstartConfig';
 interface QuickstartMutationResponse {
   quickstart: {
     id: string;
-  }
+  };
 }
 
 interface SupportLevelMap {
@@ -32,7 +39,6 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   Verified: 'VERIFIED',
 };
 
-
 type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
@@ -41,7 +47,6 @@ interface ConfigToMutationMap {
   mutationKey: string;
   ctor: ComponentType;
 }
-
 
 const ConfigToMutation: ConfigToMutationMap[] = [
   { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
@@ -227,7 +232,14 @@ class Quickstart {
   static getAll(): Quickstart[] {
     return glob
       .sync(
-        path.join(__dirname, '..', '..', 'quickstarts', '**', 'config.+(yml|yaml)')
+        path.join(
+          __dirname,
+          '..',
+          '..',
+          'quickstarts',
+          '**',
+          'config.+(yml|yaml)'
+        )
       )
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
       .map((localPath) => new Quickstart(`quickstarts/${localPath}`));

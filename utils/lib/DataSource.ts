@@ -3,7 +3,7 @@ import * as glob from 'glob';
 
 import Component from './Component';
 import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
-import { removeRepoPathPrefix } from './helpers';
+import { removeRepoPathPrefix } from './classHelpers';
 
 import { fetchNRGraphqlResults } from '../nr-graphql-helpers';
 
