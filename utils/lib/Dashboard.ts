@@ -46,7 +46,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   }
 
   /**
-   * Return mutation variables from dashboard config
+   * Get mutation variables from dashboard config
    * @returns - mutation variables for dashboard.
    */
   getMutationVariables(): QuickstartDashboardInput {
