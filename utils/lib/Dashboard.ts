@@ -15,6 +15,7 @@ interface DashboardConfig {
 }
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
+
   /**
    * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
@@ -86,6 +87,25 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return {
       url: `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${screenShotFileName}`,
     };
+  }
+
+  /**
+   * Handles sanitizing the raw content of a dashboard config file
+   * @returns - Sanitized raw dashboard config.
+   */
+  sanitizeConfig(): string {
+    return this._sanitizeRawContent(JSON.stringify(this.config!))
+  }
+
+  private _sanitizeRawContent(rawConfig: string): string {
+    return rawConfig
+      .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
+      .replace(
+        /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
+        '"linkedEntityGuids": null'
+      ) // Set linkedEntityGuids to null
+      .replace(/^.+\"permissions\".+\n?/gm, '') // Remove permissions
+      .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
   }
 
   /**
