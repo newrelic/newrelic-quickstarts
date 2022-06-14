@@ -1,20 +1,21 @@
-const core = require('@actions/core');
-const isImage = require('is-image');
+import * as core from '@actions/core';
+
 const {
   getFileSize,
   getFileExtension,
   globFiles,
   readQuickstartFile,
-  findMainQuickstartConfigFiles,
 } = require('./helpers');
 
-const glob = require('glob');
-const path = require('path');
+import * as glob from 'glob';
+import * as path from 'path';
 const BASE_PATH = '../quickstarts/';
 const DASHBOARD_IMAGES_PATH = '/images/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 12;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
+
+import Quickstart from './lib/Quickstart';
 
 type DirectoryValidation = {
   folder: string;
@@ -34,7 +35,7 @@ export const validateImageCounts = (quickstartDirs: string[]): void => {
     const quickstartDirName = path.dirname(quickstart);
     // get all images for a quickstart
     const imagePaths = glob.sync(
-      path.resolve(quickstartDirName, 'dashboards/**/*.+(png|jpeg|jpg|svg)')
+      path.join('..', `dashboards/${quickstartDirName}/*.+(png|jpeg|jpg|svg)`)
     );
     const quickstartConfig = readQuickstartFile(quickstart).contents[0];
     const quickstartName = quickstartConfig.name;
@@ -44,7 +45,7 @@ export const validateImageCounts = (quickstartDirs: string[]): void => {
 
     // Max images is per dashboard so we need to account for this by getting the number of dashboards
     const dashboardCount = glob.sync(
-      path.resolve(quickstartDirName, 'dashboards/**/*.json')
+      path.join('..', `dashboards/${quickstartDirName}/*.json`)
     ).length;
 
     const screenshotPaths = imagePaths.filter(
@@ -97,7 +98,7 @@ export const validateImageCounts = (quickstartDirs: string[]): void => {
  */
 export const validateFileSizes = (globbedFiles: string[]): void => {
   const sizes = globbedFiles
-    .filter((file) => isImage(file))
+    .filter((file) => ALLOWED_IMG_EXT.includes(file.split('.').pop()!))
     .filter((file) => {
       return getFileSize(file) > MAX_SIZE;
     })
@@ -119,7 +120,7 @@ export const validateFileSizes = (globbedFiles: string[]): void => {
  */
 export const validateImageExtensions = (globbedFiles: string[]): void => {
   const extensions = globbedFiles
-    .filter((file) => isImage(file))
+    .filter((file) => ALLOWED_IMG_EXT.includes(file.split('.').pop()!))
     .filter((file) => {
       return !ALLOWED_IMG_EXT.includes(getFileExtension(file));
     });
@@ -131,7 +132,7 @@ export const validateImageExtensions = (globbedFiles: string[]): void => {
 };
 
 const main = () => {
-  const quickstartDirs = findMainQuickstartConfigFiles();
+  const quickstartDirs = Quickstart.getAll().map(quickstart => quickstart.configPath);
   validateImageCounts(quickstartDirs);
 
   const globbedFiles = globFiles(BASE_PATH);
