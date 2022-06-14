@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as glob from 'glob';
-import Dashboard from './lib/Dashboard';
 
 const sanitizeRawContent = (rawConfig: string): string => {
   return rawConfig
