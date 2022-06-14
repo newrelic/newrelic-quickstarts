@@ -16,8 +16,8 @@ const newrelicEvent = require('../newrelic/customEvent');
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
-jest.mock('../github-api-helpers', () => ({
-  ...jest.requireActual('../github-api-helpers'),
+jest.mock('../lib/github-api-helpers', () => ({
+  ...jest.requireActual('../lib/github-api-helpers'),
   filterInstallPlans: jest.fn(),
 }));
 

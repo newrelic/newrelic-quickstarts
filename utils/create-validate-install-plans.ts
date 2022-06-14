@@ -1,5 +1,5 @@
 import { prop, passedProcessArguments } from './helpers';
-import { fetchPaginatedGHResults } from './github-api-helpers';
+import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
 import InstallPlan from './lib/InstallPlan';

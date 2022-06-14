@@ -4,13 +4,13 @@ const {
   validateInstallPlanIds,
 } = require('../validate-quickstart-install-plans');
 
-const githubHelpers = require('../github-api-helpers');
+const githubHelpers = require('../lib/github-api-helpers');
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
-jest.mock('../github-api-helpers', () => ({
-  ...jest.requireActual('../github-api-helpers'),
+jest.mock('../lib/github-api-helpers', () => ({
+  ...jest.requireActual('../lib/github-api-helpers'),
   filterQuickstartConfigFiles: jest.fn(),
 }));
 

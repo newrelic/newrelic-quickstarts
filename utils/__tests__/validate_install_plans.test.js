@@ -5,15 +5,15 @@ const {
   INSTALL_PLAN_MUTATION,
 } = require('../create-validate-install-plans');
 
-const githubHelpers = require('../github-api-helpers');
+const githubHelpers = require('../lib/github-api-helpers');
 const nrGraphqlHelpers = require('../lib/nr-graphql-helpers');
 const helpers = require('../helpers');
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
-jest.mock('../github-api-helpers', () => ({
-  ...jest.requireActual('../github-api-helpers'),
+jest.mock('../lib/github-api-helpers', () => ({
+  ...jest.requireActual('../lib/github-api-helpers'),
   filterInstallPlans: jest.fn(),
 }));
 

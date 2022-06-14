@@ -1,4 +1,4 @@
-import { fetchPaginatedGHResults } from './github-api-helpers';
+import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { prop, passedProcessArguments } from './helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 

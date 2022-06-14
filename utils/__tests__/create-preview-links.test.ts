@@ -4,7 +4,7 @@ const {
   addFilenameObject,
 } = require('./test-utilities');
 
-const ghHelpers = require('../github-api-helpers');
+const ghHelpers = require('../lib/github-api-helpers');
 
 const {
   generatePreviewComment,
@@ -13,7 +13,7 @@ const {
   getQuickstartsFromPRFiles,
 } = require('../create-preview-links');
 
-jest.mock('../github-api-helpers');
+jest.mock('../lib/github-api-helpers');
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log');
 

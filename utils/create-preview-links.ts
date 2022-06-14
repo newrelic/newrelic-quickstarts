@@ -1,4 +1,4 @@
-import { fetchPaginatedGHResults } from './github-api-helpers';
+import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { buildUniqueQuickstartSet } from './helpers';
 import { IO_PREVIEW_PAGE_URL } from './constants';
 

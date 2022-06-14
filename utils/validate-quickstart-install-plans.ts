@@ -4,7 +4,7 @@ import {
   filterQuickstartConfigFiles,
   filterOutTestFiles,
   GithubAPIPullRequestFile
-} from './github-api-helpers';
+} from './lib/github-api-helpers';
 
 import {
   findMainInstallConfigFiles,
