@@ -49,12 +49,12 @@ export const validateImageCounts = (quickstartDirs: string[]): void => {
     ).length;
 
     const screenshotPaths = imagePaths.filter(
-      (p: string[]) =>
+      (p: string) =>
         p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 
     const dashboardImagePaths = imagePaths.filter(
-      (p: string[]) =>
+      (p: string) =>
         p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
     );
 
