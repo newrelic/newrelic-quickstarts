@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {
   fetchPaginatedGHResults,
   filterQuickstartConfigFiles,
@@ -6,53 +5,66 @@ import {
   GithubAPIPullRequestFile
 } from './lib/github-api-helpers';
 
-import {
-  findMainInstallConfigFiles,
-  readQuickstartFile,
-  passedProcessArguments,
-  FilePathAndContents
-} from './helpers';
+import Quickstart from './lib/Quickstart';
+import InstallPlan from './lib/InstallPlan';
 import { InstallPlanConfig } from './types/InstallPlanConfig';
 import { QuickstartConfig } from './types/QuickstartConfig';
 
-const GITHUB_API_URL: string = passedProcessArguments()[0];
 
+type InstallPlanIds = Array<InstallPlanConfig["id"]>
 /**
- * Gets all install plain ids under installs/ dir
+ * Gets all install plan ids under `installs/` dir
+ * @returns - An array of install plan Ids
  */
 export const getAllInstallPlanIds = () => {
-  return findMainInstallConfigFiles().reduce((acc: string[], filePath: string) => {
-    const { contents } = readQuickstartFile<InstallPlanConfig>(filePath);
+  return InstallPlan.getAll().reduce<InstallPlanIds>(
+    (acc, installPlan) => {
+      console.log(installPlan)
+      const { id } = installPlan.config;
 
-    const { id } = contents[0];
-    return [...new Set([...acc, id])];
-  }, []);
+      return [...new Set([...acc, id])];
+    },
+    []
+  );
 };
 
+interface ConfigInstallPlanFiles {
+  configPath: string;
+  installPlanIds: QuickstartConfig["installPlans"];
+}
 /**
- * Gets all the install plans and paths for an array of config files
+ * Gets all quickstart config paths and install plan Ids from respective quickstart. 
+ * @returns - An array of quickstart paths and installPlanIds
  */
-export const getConfigInstallPlans = (
-  configFiles: GithubAPIPullRequestFile[]
-  ) => {
-  return configFiles.map(({ filename }) => {
-    const filePath: string = path.join(process.cwd(), `../${filename}`);
+export const getInstallPlanIds = (
+  githubFiles: GithubAPIPullRequestFile[]
+  ): ConfigInstallPlanFiles[] => {
+  return githubFiles.map(({ filename }) => {
+    const quickstart = new Quickstart(filename);
     const installPlans: string[] =
-      readQuickstartFile<QuickstartConfig>(filePath).contents[0]?.installPlans || [];
+      quickstart.config?.installPlans ?? [];
 
-    return { path: filePath, contents: installPlans };
+    return { configPath: quickstart.configPath, installPlanIds: installPlans };
   });
 };
 
-export const getInstallPlansNoMatches = (configInstallPlanFiles: FilePathAndContents<string>[], installPlanIds: string[]) => {
+/**
+ * Finds quickstarts that references an install plan id that does not exist.
+ * @returns - An array of quickstarts with install plans that do not exist.
+ */
+export const getInstallPlansNoMatches = (configInstallPlanFiles: ConfigInstallPlanFiles[], allInstallPlanIds: string[]): ConfigInstallPlanFiles[] => {
   return configInstallPlanFiles
-    .map(({ contents, path }: FilePathAndContents<string>) => {
-      const nonExistentInstallPlans = contents.filter(
-        (plan: string) => !installPlanIds.includes(plan)
-      );
-      return { path, contents: nonExistentInstallPlans };
+    .map(({ installPlanIds, configPath }) => {
+      const nonExistentInstallPlans =
+        installPlanIds?.filter(
+          (plan: string) => !allInstallPlanIds.includes(plan)
+        ) ?? [];
+      return {
+        configPath: configPath,
+        installPlanIds: nonExistentInstallPlans,
+      };
     })
-    .filter(({ contents }: FilePathAndContents<string>) => contents.length > 0);
+    .filter(({ installPlanIds }) => installPlanIds.length > 0);
 };
 
 /**
@@ -64,13 +76,13 @@ export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) 
     (cf: GithubAPIPullRequestFile) => cf.status !== 'removed'
   ); // Filter out deleted files
 
-  const configInstallPlansFiles: FilePathAndContents<string>[] = getConfigInstallPlans(existingConfigFiles);
+  const configInstallPlansFiles = getInstallPlanIds(existingConfigFiles);
 
-  const installPlanIds: string[] = getAllInstallPlanIds();
+  const allInstallPlanIds = getAllInstallPlanIds();
 
-  const installPlanNoMatches: FilePathAndContents<string>[] = getInstallPlansNoMatches(
+  const installPlanNoMatches = getInstallPlansNoMatches(
     configInstallPlansFiles,
-    installPlanIds
+    allInstallPlanIds
   );
 
   if (installPlanNoMatches.length > 0) {
@@ -78,8 +90,8 @@ export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) 
       `ERROR: Found install plans with no corresponding install plan id.\n`
     );
     console.error(`An install plan id must match an existing install plan id.`);
-    installPlanNoMatches.forEach((m: FilePathAndContents<string>) =>
-      console.error(`- ${m.contents.join(', ')} in ${m.path}`)
+    installPlanNoMatches.forEach((m) =>
+      console.error(`- ${m.installPlanIds!.join(', ')} in ${m.configPath}`)
     );
     console.error(
       `\nPlease change to an existing install plan id or remove the ids.`
@@ -92,6 +104,7 @@ export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) 
 };
 
 const main = async () => {
+  const GITHUB_API_URL= process.argv.slice(2)[0];
   const githubToken = process.env.GITHUB_TOKEN;
   
   if (!githubToken) {
