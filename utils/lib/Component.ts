@@ -7,9 +7,13 @@ abstract class Component<ConfigType, MutationVariablesType> {
   public configPath: string; // Absolute path to the config file within the repository
   public config: ConfigType;
   public isValid = true;
-  public basePath = path.join(__dirname, '../..');
+  public basePath: string;
 
-  constructor(localPath: string) {
+  constructor(
+    localPath: string,
+    basePath: string = path.join(__dirname, '../..')
+  ) {
+    this.basePath = basePath;
     this.localPath = localPath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();

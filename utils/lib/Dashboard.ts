@@ -6,7 +6,7 @@ import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariab
 
 import Component from './Component';
 import { GITHUB_RAW_BASE_URL } from '../constants';
-import { getAssetSourceUrl, removeRepoPathPrefix } from './classHelpers';
+import { getAssetSourceUrl, removeBasePath } from './classHelpers';
 
 interface DashboardConfig {
   name: string;
@@ -15,7 +15,6 @@ interface DashboardConfig {
 }
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
-
   /**
    * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
@@ -30,7 +29,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       return ``;
     }
 
-    return removeRepoPathPrefix(filePaths[0]);
+    return removeBasePath(filePaths[0], this.basePath);
   }
 
   /**

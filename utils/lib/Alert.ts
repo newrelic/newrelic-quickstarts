@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml';
 import * as glob from 'glob';
 
 import Component from './Component';
-import { removeRepoPathPrefix, getAssetSourceUrl } from './classHelpers';
+import { removeBasePath, getAssetSourceUrl } from './classHelpers';
 
 import type {
   AlertType,
@@ -12,7 +12,7 @@ import type {
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfigAlert } from '../types/QuickstartConfig';
 
-class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput> {
+class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   /**
    * Returns the **directory** for the alert policy
    */
@@ -26,7 +26,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput> {
       return '';
     }
 
-    return removeRepoPathPrefix(filePaths[0]);
+    return removeBasePath(filePaths[0], this.basePath);
   }
 
   getConfigContent() {
@@ -34,7 +34,9 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput> {
       return this.config;
     }
 
-    const filePaths = glob.sync(path.join(this.configPath, '*.{yml|yaml}'));
+    const filePaths = glob.sync(
+      path.join(this.basePath, this.configPath, '*.+(yml|yaml)')
+    );
 
     // if there are no YAML files in this directory, it's invalid
     if (!Array.isArray(filePaths) || !filePaths.length) {
@@ -45,7 +47,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput> {
     // loop through all the YAML files and get their content
     try {
       return filePaths.map((filepath) => {
-        const file = fs.readFileSync(path.join(this.basePath, filepath));
+        const file = fs.readFileSync(filepath);
 
         return yaml.load(file.toString('utf-8')) as QuickstartConfigAlert;
       });
@@ -60,15 +62,21 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput> {
   // TODO: update this to work like adaptQuickstartAlertsInput
   // NOTE: this.config is an **array** of configuration
   getMutationVariables() {
-    const { description, name, type } = this.config[0];
+    if (!this.isValid) {
+      return [];
+    }
 
-    return {
-      description: description && description.trim(),
-      displayName: name && name.trim(),
-      rawConfiguration: JSON.stringify(this.config),
-      sourceUrl: getAssetSourceUrl(this.configPath),
-      type: type && (type.trim() as AlertType),
-    };
+    return this.config.map((condition) => {
+      const { description, name, type } = condition;
+
+      return {
+        description: description && description.trim(),
+        displayName: name && name.trim(),
+        rawConfiguration: JSON.stringify(condition),
+        sourceUrl: getAssetSourceUrl(this.configPath),
+        type: type && (type.trim() as AlertType),
+      };
+    });
   }
 }
 

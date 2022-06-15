@@ -3,9 +3,6 @@ import * as glob from 'glob';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 
-import isImage from 'is-image';
-import { QuickstartConfig } from './types/QuickstartConfig';
-
 export interface FilePathAndContents<T> {
   path: string;
   contents: T[];
@@ -94,17 +91,6 @@ export const removeRepoPathPrefix = (filePath: string): string => {
  */
 export const isDirectory = (dir: string): boolean =>
   fs.statSync(dir).isDirectory();
-
-/**
- * Counts the number of image files in a folder
- * @param folder - The folder to count the image files from
- * @returns - The number of image type files in the folder
- */
-export const getImageCount = (folder: string): number => {
-  return [...glob.sync(path.resolve(folder, '**/*'))].filter((file) =>
-    isImage(file)
-  ).length;
-};
 
 /**
  * Gets the size of a file in Bytes
@@ -269,5 +255,5 @@ export const buildUniqueQuickstartSet = (
  */
 export const prop =
   <T, K extends keyof T>(key: K) =>
-    (obj: T) =>
-      obj[key];
+  (obj: T) =>
+    obj[key];

@@ -11,7 +11,7 @@ import {
   GITHUB_RAW_BASE_URL,
   QUICKSTART_MUTATION,
 } from '../constants';
-import { removeRepoPathPrefix, getAssetSourceUrl } from './classHelpers';
+import { getAssetSourceUrl } from './classHelpers';
 import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,

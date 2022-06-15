@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 import Component from './Component';
-import { removeRepoPathPrefix } from './classHelpers';
+import { removeBasePath } from './classHelpers';
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 import { INSTALL_PLAN_MUTATION } from '../constants';
 
@@ -37,7 +37,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
       return '';
     }
 
-    return removeRepoPathPrefix(filePaths[0]);
+    return removeBasePath(filePaths[0], this.basePath);
   }
 
   getConfigContent() {
