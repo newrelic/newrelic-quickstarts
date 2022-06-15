@@ -2,8 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Quickstart from './lib/Quickstart';
 
-import { readQuickstartFile } from './helpers';
-
 /**
  * Method to validate icons exist if supplied.
  * @param {string[]} quickstarts array of absolute paths for each main config
