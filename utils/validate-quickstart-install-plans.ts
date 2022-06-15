@@ -11,13 +11,12 @@ import { InstallPlanConfig } from './types/InstallPlanConfig';
 import { QuickstartConfig } from './types/QuickstartConfig';
 
 
-type InstallPlanIds = Array<InstallPlanConfig["id"]>
 /**
  * Gets all install plan ids under `installs/` dir
  * @returns - An array of install plan Ids
  */
 export const getAllInstallPlanIds = () => {
-  return InstallPlan.getAll().reduce<InstallPlanIds>(
+  return InstallPlan.getAll().reduce<InstallPlanConfig["id"][]>(
     (acc, installPlan) => {
       console.log(installPlan)
       const { id } = installPlan.config;
