@@ -37,6 +37,7 @@ resource "consul_config_entry" "proxy_defaults" {
 ```
 ##### Notes
 1. We use the `envoy_dogstatsd_url` so we can get the `consul.source.datacenter:` tag on each metric. This allows the New Relic ONE dashboards to facet by Consul Datacenter.
+2. If your Terraform script does not have a `provider "consul"` (newer scripts do not), go ahead and add the entire clause above
 
 ### Create the Consul cluster
 Create the Consul cluster following the steps for the appropriate environment in the [End-to-End Overview](https://learn.hashicorp.com/tutorials/cloud/consul-end-to-end-overview)
