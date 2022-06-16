@@ -56,7 +56,7 @@ class DataSource extends Component<DataSourceConfig, string> {
    * Get the **component-specific** mutation variables.
    */
   private _getComponentMutationVariables(
-    dryRun: boolean
+    dryRun: boolean = true
   ): DataSourceMutationVariable {
     const { id, displayName, categoryTerms, keywords, description } =
       this.config;
