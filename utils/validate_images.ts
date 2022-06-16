@@ -1,97 +1,65 @@
 import * as core from '@actions/core';
 import * as glob from 'glob';
 import * as path from 'path';
-import Quickstart from './lib/Quickstart';
-import {
-  getFileSize,
-  getFileExtension,
-  globFiles,
-  readQuickstartFile,
-} from './helpers';
-
-import type { QuickstartConfig } from './types/QuickstartConfig';
-
-const BASE_PATH = '../quickstarts/';
-const DASHBOARD_IMAGES_PATH = '/images/';
-const MAX_SIZE = 4000000;
-const MAX_NUM_IMG = 12;
-const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
-
+import * as fs from 'fs';
+import Dashboard from './lib/Dashboard';
 
 type DirectoryValidation = {
   folder: string;
-  dashboardCount: number;
   imageCount: number;
   maxImages: number;
 };
 
+const BASE_PATH = '../dashboards/';
+const MAX_SIZE = 4000000;
+const MAX_NUM_IMG = 12;
+const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
+
 /**
- * Validate all folders contain no more than MAX_NUM_IMG images
+ * Gets the size of a file in Bytes
+ * @param filePath - The file to get the size of
+ * @returns - The file size in Bytes
  */
-export const validateImageCounts = (quickstartDirs: string[]): void => {
-  const screenshotDirectories: DirectoryValidation[] = [];
+export const getFileSize = (filePath: string): number => {
+  return fs.statSync(filePath)['size'];
+};
+
+/**
+ * Parses the file extension type from a file path
+ * @param filePath - The file path to parse an extension from
+ * @returns - The extension of the file
+ */
+export const getFileExtension = (filePath: string): string => {
+  return path.extname(filePath);
+};
+
+
+/**
+ * Validate all dashboard folders contain no more than MAX_NUM_IMG images
+ */
+export const validateImageCounts = (dashboards: Dashboard[]): void => {
   const imagesDirectories: DirectoryValidation[] = [];
+  dashboards.forEach((dashboard) => {
+    const dashboardDirName = path.dirname(dashboard.configPath);
 
-  quickstartDirs.forEach((quickstart: string) => {
-    const quickstartDirName = path.dirname(quickstart);
-    // get all images for a quickstart
-    const imagePaths = glob.sync(
-      path.join('..', `dashboards/${quickstartDirName}/*.+(png|jpeg|jpg|svg)`)
-    );
-    const quickstartConfig = readQuickstartFile<QuickstartConfig>(quickstart).contents[0] ;
-    const quickstartName = quickstartConfig.title;
-    const logoPath = quickstartConfig.icon
-      ? path.resolve(quickstartDirName, quickstartConfig.)
-      : null;
-
-    // Max images is per dashboard so we need to account for this by getting the number of dashboards
-    const dashboardCount = glob.sync(
-      path.join('..', `dashboards/${quickstartDirName}/*.json`)
-    ).length;
-
-    const screenshotPaths = imagePaths.filter(
-      (p: string) =>
-        p !== logoPath && !p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
-    );
-
-    const dashboardImagePaths = imagePaths.filter(
-      (p: string) =>
-        p !== logoPath && p.includes(quickstartName + DASHBOARD_IMAGES_PATH)
-    );
+    const dashboardImagePaths = glob.sync(path.join('..', dashboardDirName));
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
-    if (screenshotPaths.length > MAX_NUM_IMG * dashboardCount) {
-      screenshotDirectories.push({
-        folder: quickstartDirName,
-        dashboardCount,
-        imageCount: screenshotPaths.length,
-        maxImages: MAX_NUM_IMG * dashboardCount,
-      });
-    }
-
-    if (dashboardImagePaths.length > MAX_NUM_IMG * dashboardCount) {
+    if (dashboardImagePaths.length > MAX_NUM_IMG) {
       imagesDirectories.push({
-        folder: quickstartDirName + DASHBOARD_IMAGES_PATH,
-        dashboardCount,
+        folder: dashboardDirName,
         imageCount: dashboardImagePaths.length,
-        maxImages: MAX_NUM_IMG * dashboardCount,
+        maxImages: MAX_NUM_IMG,
       });
     }
-  });
-
-  if (screenshotDirectories.length) {
-    core.setFailed('Each component should contain no more than 12 screenshots');
-    console.warn(`\nPlease check the following directories:`);
-    screenshotDirectories.forEach((dir: DirectoryValidation) => console.warn(dir));
-  }
+  });    
 
   if (imagesDirectories.length) {
-    core.setFailed(
-      'The `images` directory should contain no more than 12 images per component'
-    );
+    core.setFailed('Each dashboard component should contain no more than 12 screenshots');
     console.warn(`\nPlease check the following directories:`);
     imagesDirectories.forEach((dir: DirectoryValidation) => console.warn(dir));
   }
+
 };
 
 /**
@@ -133,10 +101,11 @@ export const validateImageExtensions = (globbedFiles: string[]): void => {
 };
 
 const main = () => {
-  const quickstartDirs = Quickstart.getAll().map(quickstart => quickstart.configPath);
-  validateImageCounts(quickstartDirs);
+  const dashboards = Dashboard.getAll();
+  
+  validateImageCounts(dashboards);
 
-  const globbedFiles = globFiles(BASE_PATH);
+  const globbedFiles = glob.sync(path.resolve(BASE_PATH, '**', '*'))
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };
