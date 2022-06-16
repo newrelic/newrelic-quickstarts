@@ -41,8 +41,15 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       return this.config;
     }
 
-    const file = fs.readFileSync(this.fullPath);
-    return JSON.parse(file.toString('utf-8'));
+    try {
+      const file = fs.readFileSync(this.fullPath);
+      return JSON.parse(file.toString('utf-8'));
+    } catch (e) {
+      console.log('Unable to read and parse JSON config', this.configPath, e);
+      this.isValid = false;
+
+      return this.config;
+    }
   }
 
   /**
