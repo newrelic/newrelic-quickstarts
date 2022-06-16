@@ -2,7 +2,7 @@ import DataSource from '../DataSource';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { GITHUB_REPO_BASE_URL } from '../../constants';
+import { GITHUB_RAW_BASE_URL } from '../../constants';
 
 // TODO: maybe there is an easier way to mock a single function on this library
 jest.mock('fs', () => {
@@ -153,6 +153,33 @@ describe('DataSource', () => {
           },
         },
       });
+    });
+  });
+  describe('_parseInstall', () => {
+    test('properly parses install', () => {
+      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const install = source._parseInstall();
+
+      expect(install.primary).toBeDefined();
+      expect(install.fallback).toBeDefined();
+    });
+    test('properly parses install without fallback', () => {
+      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const install = source._parseInstall();
+      delete install.fallback;
+
+      expect(install.primary).toBeDefined();
+      expect(install.fallback).toBeUndefined();
+    });
+  });
+  describe('_getIconUrl', () => {
+    test('returns correct url', () => {
+      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const iconUrl = source._getIconUrl();
+
+      expect(iconUrl).toEqual(
+        `${GITHUB_RAW_BASE_URL}/data-sources/mock-data-source-1/icon.png`
+      );
     });
   });
 });
