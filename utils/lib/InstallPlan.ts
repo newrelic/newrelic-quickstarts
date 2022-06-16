@@ -24,7 +24,6 @@ interface InstallPlanMutationResponse {
 }
 
 class InstallPlan extends Component<InstallPlanConfig, string> {
-
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
@@ -144,10 +143,12 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
   }
 
   static getAll(): InstallPlan[] {
-    return glob.sync(
-      path.join(__dirname, '..', '..', 'install', '**', 'install.+(yml|yaml)'))
+    return glob
+      .sync(
+        path.join(__dirname, '..', '..', 'install', '**', 'install.+(yml|yaml)')
+      )
       .map((installPath) => path.dirname(installPath.split('/install/')[1]))
-      .map((localPath) => new InstallPlan(localPath))
+      .map((localPath) => new InstallPlan(localPath));
   }
 }
 
