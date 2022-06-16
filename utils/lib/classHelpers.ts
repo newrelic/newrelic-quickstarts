@@ -10,12 +10,13 @@ export const getAssetSourceUrl = (assetFilePath: string): string => {
 };
 
 /**
- * Removes the `newrelic-quickstarts/` path prefix from a string
+ * Removes the specified path prefix from a file path
  * @param filePath - The path to change
+ * @param basePath - The portion of the path to remove
  * @returns - The path with the prefix
  */
-export const removeRepoPathPrefix = (filePath: string): string => {
-  const shortPath = filePath.split(`newrelic-quickstarts/`).pop();
+export const removeBasePath = (filePath: string, basePath: string): string => {
+  const shortPath = filePath.split(`${basePath}/`).pop();
   if (typeof shortPath === 'string') {
     return shortPath;
   }
