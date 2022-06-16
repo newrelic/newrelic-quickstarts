@@ -24,12 +24,13 @@ interface InstallPlanMutationResponse {
 }
 
 class InstallPlan extends Component<InstallPlanConfig, string> {
+
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
   getConfigFilePath() {
     const filePaths = glob.sync(
-      path.join(this.basePath, 'install', this.localPath, 'install.{yml|yaml}')
+      path.join(this.basePath, 'install', this.localPath, 'install.+(yml|yaml)')
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
@@ -140,6 +141,13 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
     }
 
     return upperCaseTarget;
+  }
+
+  static getAll(): InstallPlan[] {
+    return glob.sync(
+      path.join(__dirname, '..', '..', 'install', '**', 'install.+(yml|yaml)'))
+      .map((installPath) => path.dirname(installPath.split('/install/')[1]))
+      .map((localPath) => new InstallPlan(localPath))
   }
 }
 
