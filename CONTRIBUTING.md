@@ -6,10 +6,6 @@
   - [Welcome 👋](#welcome-)
   - [Quickstart yaml to UI mapping](#quickstart-yaml-to-ui-mapping)
     - [Main config](#main-config)
-    - [Alerts](#alerts)
-    - [Dashboards](#dashboards)
-    - [Data sources](#data-sources)
-    - [Install plan](#install-plan)
   - [Quickstarts style guide](#quickstarts-style-guide)
     - [Style tips](#style-tips)
     - [Quickstarts usage](#quickstarts-usage)
@@ -57,30 +53,7 @@ your interactions with the project and its participants.
 ## Quickstart yaml to UI mapping
 
 Quickstarts are defined by several yaml files. These files are used to render the quickstart content on New Relic's external I/O Catalog and within the internal
-New Relic I/O Catalog. At this time there isn't any easy way to preview a quickstart as you develop, so we have provided a visual mapping below to explain how each part of the UI is rendered using the quickstart yaml files.
-
-This example is based on the Fastly quickstart which can be [found here](./quickstarts/fastly/config.yml) within the repository and
-[here on the external I/O catalog](https://developer.newrelic.com/instant-observability/fastly-cdn/c5c5dd30-dcdf-46b6-9412-f9a1bba5a600)
-
-### Main config
-
-![main config](./images/main.png)
-
-### Alerts
-
-![alerts](./images/alerts.png)
-
-### Dashboards
-
-![dashboards](./images/dashboards.png)
-
-### Data sources
-
-![alt text](./images/data-sources.png)
-
-### Install plan
-
-![install plan](./images/install-plan.png)
+New Relic I/O Catalog. See the template directory and [documentation](./_template/README.md) for an overview of the directory structure you should use. We have two ways to preview your quickstart. See the [Quickstart Preview](#quickstart-preview) section of this document for instructions to view your preview following a pull request, or on a local server.
 
 ## Quickstarts style guide
 
@@ -98,11 +71,11 @@ Check out our [doc team's voice and tone guidelines](https://docs.newrelic.com/d
 When writing about a quickstart the following language rules should be followed:
 
 1. Capitalize the term quickstart if the word is at the start of a sentence or header.
-    > "Quickstarts are a great way to get started with New Relic!"
+   > "Quickstarts are a great way to get started with New Relic!"
 1. If the term quickstarts is anywhere else in a sentence, use lower case.
-    > "New Relic offers you a wide range of quickstarts to get you started."
+   > "New Relic offers you a wide range of quickstarts to get you started."
 1. Quickstarts is always a single word.
-    > "Always use quickstarts, not quick starts."
+   > "Always use quickstarts, not quick starts."
 
 ### Quickstarts description template
 
@@ -190,11 +163,11 @@ You can define multiple author names, but it's recommended to use one of the fol
 
 The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
 
- Example:
+Example:
 
- ```yml
- slug: this-is-kebab-case-and-lower-cased
- ```
+```yml
+slug: this-is-kebab-case-and-lower-cased
+```
 
 > We will soon handle redirects more effectively for the I/O site to account for name changes.
 
@@ -271,9 +244,9 @@ documentation:
 
 > See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartdashboard) for more details on `dashboards`
 
-- Each dashboard for a quickstart will need to live in it's own directory underneath `/dashboards` ex: `/quickstart_name/dashboards/dashboard_name/dashboard_name.json`
+- Each dashboard for a quickstart will need to live in it's own directory underneath `/dashboards` ex: `/dashboards/<quickstart-name>/<dashboard_name>/dashboard_name.json`
 - If you need to sanitize your dashboards you can run the command `yarn sanitize-dashboard node-js/express` or `yarn sanitize-dashboard catchpoint` where the argument is quickstart name you wish to sanitize.
-- This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) needs to be run from the `Utils` directory.
+- This [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/sanitize_dashboards.js) needs to be run from the `utils` directory.
 - This script will check and remove code that may cause an issue when submitting a PR.
 - As a best practice you should run this script when creating a new dashboard.
 
@@ -295,7 +268,7 @@ documentation:
 
 - A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `yarn run check-dashboard-name-uniqueness`.
 - this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.ts) will check and notify you of duplicate dashboard names in the repository.
-- this script needs to run from the `Utils` directory.
+- this script needs to run from the `utils` directory.
 - As a best practice you should run this script when creating a new dashboard.
 
 #### Dashboard screenshots
@@ -304,7 +277,7 @@ documentation:
 
 - Dashboard images are `optional` but highly recommended to preview the visual functionality of a dashboard.
 - File name should be `dashboard_name01`, `dashboard_name02`, etc
-- Dashboards images should be stored in that dashboard's directory with it's JSON file. ex: `/quickstart_name/dashboards/dashboard_name/dashboard_name01.png`.
+- Dashboards images should be stored in that dashboard's directory with it's JSON file. ex: `/dashboards/<quickstart_name>/<dashboard_name>/dashboard_name01.png`.
 - Must be in `.png`, `.jpg`, `.jpeg` or `.svg` format
 - Each image file must be less than `4MB` in size
 - There should be no more than `12` dashboard or images per quickstart
