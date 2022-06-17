@@ -28,6 +28,7 @@ import {
   readQuickstartFile,
   removeRepoPathPrefix,
   passedProcessArguments,
+  buildUniqueQuickstartSet,
   FilePathAndContents,
 } from './helpers';
 import {
@@ -83,63 +84,6 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
 const MOCK_UUID = '00000000-0000-0000-0000-000000000000';
 
 /**
- * Gets the unique base quickstart directory from a given file path.
- * e.g. filePath: 'quickstarts/python/aiohttp/alerts/ApdexScore.yml' + targetChild: 'alerts' = 'python/aiohttp'.
- * @param {String} filePath - Full file path of a file in a quickstart.
- * @param {String} targetChild - Node in file path that should be preceded by a base quickstart directory.
- * @return {String} Node in file path of the quickstart.
- */
-const getQuickstartNode = (
-  filePath: string,
-  targetChild: string | undefined
-): string => {
-  const splitFilePath = filePath.split('/');
-
-  const baseQuickstartDirectoryIndex =
-    splitFilePath.findIndex((path) => path === targetChild) - 1;
-
-  let uniqueQuickstartDirectory = splitFilePath[baseQuickstartDirectoryIndex];
-  let indexCounter = baseQuickstartDirectoryIndex;
-
-  while (indexCounter > 1) {
-    uniqueQuickstartDirectory = splitFilePath[indexCounter - 1].concat(
-      `/${uniqueQuickstartDirectory}`
-    );
-    indexCounter--;
-  }
-  return uniqueQuickstartDirectory;
-};
-
-/**
- * Identifies where in a given file path to look for a quickstart directory.
- * @param {String} filePath - Full file path of a file in a quickstart.
- * @return {String|undefined} Called function with arguments to determine the quickstart of a given file path.
- */
-export const getQuickstartFromFilename = (
-  filePath: string
-): string | undefined => {
-  if (!filePath.includes('quickstarts/')) {
-    return undefined;
-  }
-
-  if (filePath.includes('/alerts/')) {
-    return getQuickstartNode(filePath, 'alerts');
-  }
-
-  if (filePath.includes('/dashboards/')) {
-    return getQuickstartNode(filePath, 'dashboards');
-  }
-
-  if (filePath.includes('/images/')) {
-    return getQuickstartNode(filePath, 'images');
-  }
-
-  const targetChildNode = filePath.split('/').pop();
-
-  return getQuickstartNode(filePath, targetChildNode);
-};
-
-/**
  * Looks up corresponding quickstart config files for quickstarts known to have changes in a PR.
  * @param {Set<string>} quickstartDirectories - Set of unique quickstart directories.
  * @return {Array} Collection of config file paths.
@@ -183,6 +127,7 @@ export const buildMutationVariables = (
     installPlans,
     id,
     level,
+    dataSourceIds,
   } = quickstartConfig.contents[0] || {};
   const alertConfigPaths = getQuickstartAlertsConfigs(quickstartConfig.path);
   const dashboardConfigPaths = getQuickstartDashboardConfigs(
@@ -218,6 +163,7 @@ export const buildMutationVariables = (
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       installPlanStepIds: installPlans,
+      dataSourceIds,
       dashboards:
         dashboardConfigPaths.length > 0
           ? adaptQuickstartDashboardInput(dashboardConfigPaths)
@@ -372,20 +318,6 @@ const adaptQuickstartDocumentationInput = (
       description,
     };
   });
-
-/**
- * Reducer function that builds a set of unique quickstarts that were updated in a given PR.
- * @param {Set<string>} acc - A set of unique quickstarts being built by the reducer function.
- * @param {Object} curr - A result from the GitHub API.
- * @return {Set} A set of strings representing the unique quickstarts updated in a PR.
- */
-export const buildUniqueQuickstartSet = (
-  acc: Set<string>,
-  { filename }: { filename: string }
-): Set<string> => {
-  const quickstartFileName = getQuickstartFromFilename(filename);
-  return quickstartFileName ? acc.add(quickstartFileName) : acc;
-};
 
 /**
  * Creates GraphQL requests to be used in the SubmitQuickstartMetadata mutation.

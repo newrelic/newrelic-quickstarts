@@ -30,6 +30,7 @@ export interface QuickstartConfig {
   installPlans?: string[];
   id: string;
   level: QuickstartConfigSupportLevel;
+  dataSourceIds?: string[];
 }
 
 export type QuickstartConfigSupportLevel =

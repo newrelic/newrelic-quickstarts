@@ -1,0 +1,248 @@
+{
+  "name": "[NR] APM Logs Monitoring",
+  "description": "Monitoring of APM Logs sent to NR. Will expose any dropped logs and/or duplicate logging.",
+  "pages": [
+    {
+      "name": "[NR] APM Logs Monitoring",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### APM Logs Sampling\nThe sampling below shows the number of logs the apm agent recognized as well the number of logs sent. If the number of logs dropped is > 0, ie logs generated > logs sent, please increase the max_samples_stored setting in your apm agent .yml config file."
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Duplicate Logs\nThis chart shows if you are sending logs from an apm agent (Newrelic.Source=logs.APM) and the infra agent (Newrelic.Source=api.logs) from the same host. "
+          }
+        },
+        {
+          "title": "APM Logs Sampling per App",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Seen') AS 'Logs_Generated', filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Sent') AS 'Logs_Shipped', filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Seen') - filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Sent') AS 'Logs_Dropped' FROM Metric WHERE appName LIKE '%' AND metricTimesliceName IN ('Supportability/Logging/Forwarding/Seen','Supportability/Logging/Forwarding/Sent') FACET appName LIMIT 25 SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Duplicate Log List",
+          "layout": {
+            "column": 7,
+            "row": 2,
+            "width": 6,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'Log_Count' FROM Log WHERE hostname IS NOT NULL FACET hostname, message, newrelic.source LIMIT MAX SINCE 5 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "APM Logs Dropped per App (Last 1 Day)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Seen') - filter(count(newrelic.timeslice.value), WHERE appName LIKE '%' AND metricTimesliceName ='Supportability/Logging/Forwarding/Sent') AS 'Logs_Dropped' FROM Metric WHERE appName LIKE '%' AND metricTimesliceName IN ('Supportability/Logging/Forwarding/Seen','Supportability/Logging/Forwarding/Sent') FACET appName LIMIT 25 TIMESERIES SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "APM Logs Past Day",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) where newrelic.source = 'logs.APM' FACET entity.name TIMESERIES LIMIT 100 SINCE 1 day ago "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "APM Agent vs. Non-APM Agent Logs",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET newrelic.source  WHERE entity.name LIKE '%'  TIMESERIES since 1 days ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "APM Logs by Level",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE newrelic.source='logs.APM' FACET level TIMESERIES SINCE 1 day ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "APM Error Logs by entity.name",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE newrelic.source='logs.APM' AND level NOT LIKE '%warn%' AND level NOT LIKE '%info%' AND level NOT LIKE '%debug%' FACET level, entity.name TIMESERIES since 1 day ago"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 'use strict';
 const helpers = require('../helpers');
+const {
+  mockGitHubResponseFilenames,
+  addFilenameObject,
+} = require('./test-utilities');
 
 describe('Action: validate images', () => {
   afterEach(() => {
@@ -74,5 +78,64 @@ describe('Action: validate images', () => {
       path: '/Users/lbrammer/Work/dev-exp/newrelic-quickstarts/quickstarts/java/cxf/dashboards/java.json',
     });
     expect(output).toHaveLength(4);
+  });
+
+  describe('getQuickstartFromFilename', () => {
+    test('getQuickstartFromFilename returns the quickstart an alert belongs to', () => {
+      const quickstartFromAlert = helpers.getQuickstartFromFilename(
+        'quickstarts/python/aiohttp/alerts/ApdexScore.yml'
+      );
+
+      expect(quickstartFromAlert).toEqual('python/aiohttp');
+    });
+
+    test('getQuickstartFromFilename returns the quickstart a dashboard belongs to', () => {
+      const quickstartFromDashboard = helpers.getQuickstartFromFilename(
+        'quickstarts/python/pysqlite/dashboards/python.json'
+      );
+
+      expect(quickstartFromDashboard).toEqual('python/pysqlite');
+    });
+
+    test('getQuickstartFromFilename returns the quickstart an icon belongs to', () => {
+      const quickstartFromIcon = helpers.getQuickstartFromFilename(
+        'quickstarts/python/pysqlite/logo.svg'
+      );
+
+      expect(quickstartFromIcon).toEqual('python/pysqlite');
+    });
+
+    test('getQuickstartFromFilename does not return non-quickstarts files', () => {
+      const mockQuickstart = helpers.getQuickstartFromFilename(
+        '.github/workflows/validate_packs.yml'
+      );
+
+      expect(mockQuickstart).toBeUndefined();
+    });
+
+    test('getQuickstartFromFilename does not return mock quickstarts', () => {
+      const mockQuickstart = helpers.getQuickstartFromFilename(
+        'utils/mock_files/mock-quickstart-1/config.yml'
+      );
+
+      expect(mockQuickstart).toBeUndefined();
+    });
+
+    test('buildUniqueQuickstartSet returns a list of unique quickstarts', () => {
+      const expectedUniqueQuickstartDirectories = new Set([
+        'foo/duplicate-directory-name',
+        'bar/duplicate-directory-name',
+        'python/aiohttp',
+        'test-quickstart-folder',
+        'test-quickstart-folder-2',
+        'python/pysqlite',
+      ]);
+
+      const uniqueQuickstarts = mockGitHubResponseFilenames
+        .map(addFilenameObject)
+        .reduce(helpers.buildUniqueQuickstartSet, new Set());
+
+      expect(uniqueQuickstarts).toEqual(expectedUniqueQuickstartDirectories);
+    });
   });
 });
