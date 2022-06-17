@@ -1,31 +1,30 @@
-import * as glob from 'glob';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import * as path from 'path';
 
 import InstallPlan from '../InstallPlan';
+const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
+
+const mockInstall3 = yaml.load(
+  fs
+    .readFileSync(
+      path.resolve(
+        __dirname,
+        '../../mock_files/install/mock-install-3/install.yml'
+      )
+    )
+    .toString('utf-8')
+);
 
 describe('InstallPlan', () => {
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
-
   describe('getConfigFilePath', () => {
-    beforeEach(() => {
-      fs.readFileSync = jest.fn(() => ({ toString: jest.fn() }));
-      yaml.load = jest.fn();
-    });
-
     test('should return a valid path to the config file', () => {
-      glob.sync = jest.fn(() => ['install/foobar/install.yml']);
-
-      const plan = new InstallPlan('foobar');
+      const plan = new InstallPlan('mock-install-1', MOCK_FILES_BASEPATH);
 
       expect(plan.isValid).toBeTruthy();
     });
 
     test('should set valid to false if the config file can not be found', () => {
-      glob.sync = jest.fn(() => []);
-
       const plan = new InstallPlan('foobar');
 
       expect(plan.isValid).toBeFalsy();
@@ -34,35 +33,62 @@ describe('InstallPlan', () => {
   });
 
   describe('getConfigContent', () => {
-    test('should not attempt to read a file if invalid', () => {
-      fs.readFileSync = jest.fn();
-      glob.sync = jest.fn(() => []);
-
-      new InstallPlan('foobar');
-
-      expect(fs.readFileSync).not.toHaveBeenCalled();
-    });
-
     test('should return config if valid', () => {
-      glob.sync = jest.fn(() => ['install/foobar/install.yml']);
-      fs.readFileSync = jest.fn(() => ({ toString: jest.fn() }));
-      yaml.load = jest.fn(() => ({ foo: 'bar' }));
-
-      const plan = new InstallPlan('foobar');
+      const plan = new InstallPlan('test-install-install', MOCK_FILES_BASEPATH);
 
       expect(plan.isValid).toBeTruthy();
     });
+  });
 
-    test('should set valid to false if unable to read file', () => {
-      glob.sync = jest.fn(() => ['install/foobar/install.yml']);
-      fs.readFileSync = jest.fn(() => {
-        throw 'Unable to find file';
+  describe('getMutationVariables', () => {
+    test('returns id of install plan', () => {
+      const install = new InstallPlan('mock-install-1', MOCK_FILES_BASEPATH);
+      expect(install.getMutationVariables()).toEqual('mock-install-1');
+    });
+  });
+
+  describe('_getComponentMutationVariables', () => {
+    test('returns correct mutation variables for valid install plan', () => {
+      const install = new InstallPlan(
+        'test-install-install',
+        MOCK_FILES_BASEPATH
+      );
+      const vars = install._getComponentMutationVariables(true);
+      expect(vars).toEqual({
+        id: mockInstall3.id,
+        dryRun: true,
+        description: mockInstall3.description,
+        displayName: mockInstall3.name,
+        target: {
+          destination: mockInstall3.target.destination?.toUpperCase(),
+          os: mockInstall3.target.os?.map((s) => s.toUpperCase()),
+          type: mockInstall3.target.type?.toUpperCase(),
+        },
+        heading: mockInstall3.title,
+        primary: {
+          targeted: {
+            recipeName: mockInstall3.install.destination.recipeName,
+          },
+        },
+        fallback: {
+          link: { url: mockInstall3.fallback.destination.url },
+        },
       });
+    });
 
-      const plan = new InstallPlan('foobar');
-
-      expect(plan.isValid).toBeFalsy();
-      expect(plan.config).toBeUndefined();
+    test('returns variables for invalid install plan', () => {
+      const install = new InstallPlan('mock-fake', MOCK_FILES_BASEPATH);
+      const vars = install._getComponentMutationVariables(true);
+      expect(vars).toEqual({
+        id: undefined,
+        dryRun: true,
+        description: undefined,
+        displayName: undefined,
+        target: undefined,
+        heading: undefined,
+        primary: undefined,
+        fallback: undefined,
+      });
     });
   });
 });

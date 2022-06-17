@@ -1,5 +1,7 @@
 import * as path from 'path';
 import * as glob from 'glob';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 import Component from './Component';
 import { removeBasePath } from './classHelpers';
@@ -28,6 +30,24 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    * @returns Filepath for the configuration file (from top-level directory).
    */
   getConfigFilePath() {
+    // Lines next few lines are a hack to allow us to pass in the install plan id
+    // as the localPath, this code then parses all install plans and sets
+    // the correct path to the requested install plan
+    const id = this.localPath;
+    const allInstallPlans = getAllInstallPlanFiles(this.basePath).map((p) => ({
+      filePath: p,
+      content: yaml.load(
+        fs.readFileSync(p).toString('utf-8')
+      ) as InstallPlanConfig,
+    }));
+    const installPlan = allInstallPlans.find((i) => i.content?.id === id);
+    this.localPath = path.dirname(
+      removeBasePath(
+        installPlan?.filePath ?? '',
+        path.join(this.basePath, 'install')
+      )
+    );
+
     const filePaths = glob.sync(
       path.join(this.basePath, 'install', this.localPath, 'install.+(yml|yaml)')
     );
@@ -76,7 +96,8 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
   private _getComponentMutationVariables(
     dryRun: boolean
   ): InstallPlanMutationVariable {
-    const { id, description, name, title, install, fallback } = this.config;
+    const { id, description, name, title, install, fallback, target } =
+      this.config ?? {};
 
     return {
       dryRun,
@@ -84,9 +105,9 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
       description,
       displayName: name,
       heading: title,
-      primary: this._parseInstallDirective(install),
-      fallback: this._parseInstallDirective(fallback),
-      target: this._buildInstallPlanTargetVariable(),
+      primary: install && this._parseInstallDirective(install),
+      fallback: fallback && this._parseInstallDirective(fallback),
+      target: target && this._buildInstallPlanTargetVariable(),
     };
   }
 
@@ -143,13 +164,15 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
   }
 
   static getAll(): InstallPlan[] {
-    return glob
-      .sync(
-        path.join(__dirname, '..', '..', 'install', '**', 'install.+(yml|yaml)')
-      )
+    return getAllInstallPlanFiles()
       .map((installPath) => path.dirname(installPath.split('/install/')[1]))
       .map((localPath) => new InstallPlan(localPath));
   }
 }
+
+const getAllInstallPlanFiles = (
+  basePath: string = path.join(__dirname, '..', '..')
+): string[] =>
+  glob.sync(path.join(basePath, 'install', '**', 'install.+(yml|yaml)'));
 
 export default InstallPlan;

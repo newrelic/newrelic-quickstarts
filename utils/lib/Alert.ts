@@ -59,8 +59,6 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     }
   }
 
-  // TODO: update this to work like adaptQuickstartAlertsInput
-  // NOTE: this.config is an **array** of configuration
   getMutationVariables() {
     if (!this.isValid) {
       return [];
