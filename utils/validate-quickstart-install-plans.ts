@@ -9,6 +9,7 @@ import Quickstart from './lib/Quickstart';
 import InstallPlan from './lib/InstallPlan';
 import { InstallPlanConfig } from './types/InstallPlanConfig';
 import { QuickstartConfig } from './types/QuickstartConfig';
+import { passedProcessArguments } from './lib/helpers';
 
 
 /**
@@ -103,7 +104,7 @@ export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) 
 };
 
 const main = async () => {
-  const GITHUB_API_URL= process.argv.slice(2)[0];
+  const [ GITHUB_API_URL ] = passedProcessArguments();
   const githubToken = process.env.GITHUB_TOKEN;
   
   if (!githubToken) {
