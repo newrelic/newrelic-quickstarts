@@ -11,7 +11,7 @@ import {
   GITHUB_RAW_BASE_URL,
   QUICKSTART_MUTATION,
 } from '../constants';
-import { getAssetSourceUrl } from './classHelpers';
+import { getAssetSourceUrl, removeBasePath } from './classHelpers';
 import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,
@@ -64,10 +64,14 @@ class Quickstart {
   public configPath: string; // Absolute path to the config file within the repository
   public config: QuickstartConfig;
   public isValid = true;
-  public basePath = path.join(__dirname, '../..');
+  public basePath: string;
 
-  constructor(localPath: string) {
+  constructor(
+    localPath: string,
+    basePath: string = path.join(__dirname, '../..')
+  ) {
     this.localPath = localPath;
+    this.basePath = basePath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
     this.components = this.getComponents();
@@ -113,7 +117,7 @@ class Quickstart {
 
       return (
         componentConfig?.flatMap(
-          (name: string) => new componentType.ctor(name)
+          (name: string) => new componentType.ctor(name, this.basePath)
         ) ?? []
       );
     });
@@ -153,7 +157,9 @@ class Quickstart {
         })),
       icon: icon && this._constructIconUrl(icon),
       keywords: keywords,
-      sourceUrl: getAssetSourceUrl(this.configPath),
+      sourceUrl: getAssetSourceUrl(
+        removeBasePath(this.configPath, this.basePath)
+      ),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       installPlanStepIds: installPlans,
@@ -181,7 +187,10 @@ class Quickstart {
   }
 
   private _constructIconUrl(icon: string) {
-    const splitConfigPath = path.dirname(this.configPath);
+    const splitConfigPath = removeBasePath(
+      path.dirname(this.configPath),
+      this.basePath
+    );
     return `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${icon}`;
   }
 
@@ -229,20 +238,17 @@ class Quickstart {
    * Static method that returns a list of every quickstarts
    * @returns - A list of all quickstarts
    */
-  static getAll(): Quickstart[] {
+  static getAll(basePath?: string): Quickstart[] {
+    const quickstartRoot = basePath ?? path.join(__dirname, '..', '..');
     return glob
       .sync(
-        path.join(
-          __dirname,
-          '..',
-          '..',
-          'quickstarts',
-          '**',
-          'config.+(yml|yaml)'
-        )
+        path.join(quickstartRoot, 'quickstarts', '**', 'config.+(yml|yaml)')
       )
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
-      .map((localPath) => new Quickstart(`quickstarts/${localPath}`));
+      .map(
+        (localPath) =>
+          new Quickstart(`quickstarts/${localPath}`, quickstartRoot)
+      );
   }
 }
 
