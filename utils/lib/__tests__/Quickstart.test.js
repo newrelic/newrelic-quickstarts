@@ -5,36 +5,50 @@ import Quickstart from '../Quickstart';
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
 describe('Quickstart', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
   describe('constructor', () => {
     test('Creates valid quickstart', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-2/config.yml',
         MOCK_FILES_BASEPATH
       );
+
       expect(qs.isValid).toBe(true);
     });
+
     test('Creates invalid quickstart', () => {
       jest.spyOn(global.console, 'error').mockImplementation(() => {});
+
       const qs = new Quickstart('', MOCK_FILES_BASEPATH);
+
       expect(qs.isValid).toBe(false);
     });
   });
+
   describe('getConfigContent', () => {
     test('Handles invalid quickstart', () => {
       jest.spyOn(global.console, 'error').mockImplementation(() => {});
+
       const qs = new Quickstart('', MOCK_FILES_BASEPATH);
+
       expect(qs.getConfigContent()).toBeUndefined();
     });
+
     test('Reads in config file', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-1/config.yml',
         MOCK_FILES_BASEPATH
       );
       const config = qs.getConfigContent();
+
       expect(config).toBeDefined();
       expect(config.slug).toEqual('template-quickstart');
     });
   });
+
   describe('getComponents', () => {
     test('Returns empty array when there are no components', () => {
       const qs = new Quickstart(
@@ -42,6 +56,7 @@ describe('Quickstart', () => {
         MOCK_FILES_BASEPATH
       );
       const components = qs.getComponents();
+
       expect(components).toBeDefined();
       expect(components).toHaveLength(0);
     });
@@ -51,10 +66,12 @@ describe('Quickstart', () => {
         MOCK_FILES_BASEPATH
       );
       const components = qs.getComponents();
+
       expect(components).toBeDefined();
       expect(components).toHaveLength(3);
     });
   });
+
   describe('getMutationVariables', () => {
     test('Returns variables for quickstart', () => {
       const qs = new Quickstart(
@@ -62,6 +79,7 @@ describe('Quickstart', () => {
         MOCK_FILES_BASEPATH
       );
       const variables = qs.getMutationVariables(true);
+
       expect(variables).toEqual({
         id: '00000000-0000-0000-0000-000000000000',
         dryRun: true,
@@ -95,6 +113,7 @@ describe('Quickstart', () => {
         MOCK_FILES_BASEPATH
       );
       const variables = qs.getMutationVariables(true);
+
       expect(variables.id).toEqual('mock-2-id');
       expect(variables.quickstartMetadata.alertConditions).toHaveLength(1);
       expect(variables.quickstartMetadata.dashboards).toHaveLength(1);
@@ -104,20 +123,27 @@ describe('Quickstart', () => {
   });
 
   describe('validate', () => {
+    beforeEach(() => {
+      console.log = jest.fn();
+    });
+
     test('Sets valid when all components are valid', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-2/config.yml',
         MOCK_FILES_BASEPATH
       );
       qs.validate();
+
       expect(qs.isValid).toBe(true);
     });
+
     test('Sets invalid when a component is invalid', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-3/config.yml',
         MOCK_FILES_BASEPATH
       );
       qs.validate();
+
       expect(qs.isValid).toBe(false);
     });
   });
@@ -125,10 +151,13 @@ describe('Quickstart', () => {
   describe('getAll', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
+
       expect(quickstarts).toHaveLength(7);
     });
+
     test('Handles no quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll('fake-dir');
+
       expect(quickstarts).toHaveLength(0);
     });
   });
