@@ -1,9 +1,27 @@
 import * as path from 'path';
-
 import Quickstart from './Quickstart';
 
 export const COMPONENT_PREFIX_REGEX =
   /^(dashboards|alert-policies|install-plans|data-sources)\//;
+
+/**
+ * Removes the first two arguments injected by Node
+ * @returns - An array of arguments explicitly passed in via the command line
+ */
+export const passedProcessArguments = (): string[] => process.argv.slice(2);
+
+/**
+ * Helper function to return a specific property of an object given a key.
+ * Intended to be used in with array methods.
+ *
+ * @example
+ * const people = [{ name: 'Luke', color: 'blue' }, { name: 'Vader', color: 'red' }];
+ * const names = people.map(prop('name'));
+ */
+export const prop =
+  <T, K extends keyof T>(key: K) =>
+  (obj: T) =>
+    obj[key];
 
 /**
  * Gets all quickstarts that use a component
@@ -27,3 +45,4 @@ export const getComponentLocalPath = (filePath: string): string => {
   const componentPath = filePath.split(COMPONENT_PREFIX_REGEX).pop() ?? '';
   return path.dirname(componentPath);
 };
+
