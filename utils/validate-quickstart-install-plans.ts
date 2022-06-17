@@ -19,7 +19,6 @@ import { passedProcessArguments } from './lib/helpers';
 export const getAllInstallPlanIds = () => {
   return InstallPlan.getAll().reduce<InstallPlanConfig["id"][]>(
     (acc, installPlan) => {
-      console.log(installPlan)
       const { id } = installPlan.config;
 
       return [...new Set([...acc, id])];
