@@ -1,6 +1,8 @@
+import Quickstart from './lib/Quickstart';
+import * as path from 'path';
 import { fetchPaginatedGHResults } from './lib/github-api-helpers';
-import { buildUniqueQuickstartSet } from './helpers';
 import { IO_PREVIEW_PAGE_URL } from './constants';
+import { prop } from './lib/helpers';
 
 /**
  * Retrieves the individual quickstarts changed or created in a pull request
@@ -15,12 +17,16 @@ export const getQuickstartsFromPRFiles = async (
   const filesURL = `${prURL}/files`;
 
   const files = await fetchPaginatedGHResults(filesURL, token);
-  const uniqueQuickstarts = files.reduce(
-    buildUniqueQuickstartSet,
-    new Set<string>()
-  );
-
-  return [...uniqueQuickstarts.values()];
+  const quickstartPaths = files
+    .map(prop('filename'))
+    .map((filename) => new Quickstart(filename))
+    .filter((quickstart) => quickstart.isValid)
+    .map((quickstart) =>
+      path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!)
+    )
+    .map((configPath) => configPath.split('quickstarts/').pop()!);
+  
+  return [...new Set(quickstartPaths)];
 };
 
 /**
@@ -86,7 +92,7 @@ export const generatePreviewComment = async (
     console.log(`Fetching PR: ${prURL}`);
     const quickstarts = await getQuickstartsFromPRFiles(prURL, token);
 
-    console.log(`Found ${quickstarts.length} quickstarts`);
+    console.log(`Found ${quickstarts.length} quickstart(s)`);
     const links = quickstarts.map((q) => ({
       path: q,
       link: createPreviewLink(prNumber, q),
