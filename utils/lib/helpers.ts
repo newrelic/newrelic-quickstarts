@@ -46,3 +46,15 @@ export const getComponentLocalPath = (filePath: string): string => {
   return path.dirname(componentPath);
 };
 
+/**
+ * Removes the `newrelic-quickstarts/` path prefix from a string
+ * @param filePath - The path to change
+ * @returns - The path with the prefix
+ */
+export const removeRepoPathPrefix = (filePath: string): string => {
+  const shortPath = filePath.split(`newrelic-quickstarts/`).pop();
+  if (typeof shortPath === 'string') {
+    return shortPath;
+  }
+  return filePath;
+};
