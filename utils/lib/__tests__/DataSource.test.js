@@ -26,6 +26,7 @@ describe('DataSource', () => {
       const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
       expect(source.isValid).toBe(true);
       expect(source.config).toBeDefined();
+      expect(source.config.id).toBe('test-data-source');
     });
 
     test('Creates invalid DataSource when file does not exist', () => {
