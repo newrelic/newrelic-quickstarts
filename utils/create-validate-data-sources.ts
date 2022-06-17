@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { chunk, translateMutationErrors } from './lib/nr-graphql-helpers';
-import { passedProcessArguments, prop } from './helpers';
+import { passedProcessArguments, prop } from './lib/helpers';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import DataSource from './lib/DataSource';
 
@@ -56,3 +56,5 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
+
+export default main;
