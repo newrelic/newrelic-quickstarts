@@ -1,13 +1,13 @@
 'use strict';
 
-const {
+import {
   createValidateUpdateInstallPlan,
   INSTALL_PLAN_MUTATION,
-} = require('../create-validate-install-plans');
+} from '../create-validate-install-plans';
 
-const githubHelpers = require('../lib/github-api-helpers');
-const nrGraphqlHelpers = require('../lib/nr-graphql-helpers');
-const helpers = require('../helpers');
+import * as githubHelpers from '../lib/github-api-helpers';
+import * as nrGraphqlHelpers from '../lib/nr-graphql-helpers';
+import * as helpers from '../lib/helpers';
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -22,7 +22,7 @@ jest.mock('../lib/nr-graphql-helpers', () => ({
   fetchNRGraphqlResults: jest.fn(),
 }));
 
-jest.mock('../helpers', () => ({
+jest.mock('../lib/helpers', () => ({
   ...jest.requireActual('../helpers'),
   passedProcessArguments: jest.fn(),
 }));
