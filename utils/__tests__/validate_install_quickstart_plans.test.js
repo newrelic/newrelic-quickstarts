@@ -48,7 +48,6 @@ describe('Action: validate install plan id', () => {
 
   test(`succeeds when valid quickstart doesn't contain any install plan`, () => {
     const files = mockGithubAPIFiles([validQuickstartWithoutInstallPlan]);
-    console.log(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
     validateInstallPlanIds(files);
