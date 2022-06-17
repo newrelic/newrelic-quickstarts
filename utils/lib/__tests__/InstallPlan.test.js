@@ -2,7 +2,7 @@ import * as glob from 'glob';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-import InstallPlan from '../lib/InstallPlan';
+import InstallPlan from '../InstallPlan';
 
 describe('InstallPlan', () => {
   afterAll(() => {
