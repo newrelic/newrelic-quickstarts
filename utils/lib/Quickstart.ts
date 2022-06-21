@@ -40,7 +40,11 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   Verified: 'VERIFIED',
 };
 
-type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource | typeof InstallPlan;
+type ComponentType =
+  | typeof Alert
+  | typeof Dashboard
+  | typeof DataSource
+  | typeof InstallPlan;
 type Components = InstanceType<ComponentType>;
 
 interface ConfigToMutationMap {
@@ -57,7 +61,6 @@ const ConfigToMutation: ConfigToMutationMap[] = [
     mutationKey: 'dataSourceIds',
     ctor: DataSource,
   },
-  { configKey: 'installPlans', mutationKey: 'install', ctor: InstallPlan }
 ];
 
 class Quickstart {

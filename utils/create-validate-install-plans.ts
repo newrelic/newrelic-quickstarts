@@ -1,4 +1,4 @@
-import { prop, passedProcessArguments } from './helpers';
+import { prop, passedProcessArguments } from './lib/helpers';
 import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
@@ -11,7 +11,7 @@ import * as yaml from 'js-yaml';
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 
 export const getInstallPlanId = (filename: string) => {
-  const filePath = path.resolve(__dirname, '..', filename)
+  const filePath = path.resolve(__dirname, '..', filename);
   if (!fs.existsSync(filePath)) {
     return '';
   }
@@ -19,8 +19,8 @@ export const getInstallPlanId = (filename: string) => {
   const config = yaml.load(
     fs.readFileSync(filePath).toString('utf-8')
   ) as InstallPlanConfig;
-  return config.id 
-}
+  return config.id;
+};
 
 /**
  * Entrypoint.
@@ -41,8 +41,8 @@ const main = async () => {
   // Get all install-plan mutation variables
   const plans = files
     .map(prop('filename'))
-    .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename)) 
-    .map(filename => getInstallPlanId(filename))
+    .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
+    .map((filename) => getInstallPlanId(filename))
     .filter(Boolean)
     .map((installId) => new InstallPlan(installId));
 

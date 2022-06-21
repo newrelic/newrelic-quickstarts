@@ -52,7 +52,7 @@ describe('Quickstart', () => {
   describe('getComponents', () => {
     test('Returns empty array when there are no components', () => {
       const qs = new Quickstart(
-        'quickstarts/mock-quickstart-1/config.yml',
+        'quickstarts/mock-quickstart-5/config.yml',
         MOCK_FILES_BASEPATH
       );
       const components = qs.getComponents();
@@ -60,6 +60,7 @@ describe('Quickstart', () => {
       expect(components).toBeDefined();
       expect(components).toHaveLength(0);
     });
+
     test('Returns all components', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-2/config.yml',
@@ -93,7 +94,7 @@ describe('Quickstart', () => {
           authors: [{ name: 'John Smith' }],
           keywords: ['list', 'of', 'searchable', 'keywords'],
           categoryTerms: undefined,
-          installPlanStepIds: ['fake-install-plan'],
+          installPlanStepIds: ['mock-install-1'],
           icon: `${GITHUB_RAW_BASE_URL}/quickstarts/mock-quickstart-1/logo.png`,
           sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1/config.yml`,
           documentation: [

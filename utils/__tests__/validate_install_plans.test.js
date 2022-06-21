@@ -1,18 +1,12 @@
 'use strict';
 
-  import createValidateUpdateInstallPlan, {
-    getInstallPlanId,
-    INSTALL_PLAN_MUTATION,
-  } from '../create-validate-install-plans';
+import { getInstallPlanId } from '../create-validate-install-plans';
 
-import * as githubHelpers from '../lib/github-api-helpers';
-import * as nrGraphqlHelpers from '../lib/nr-graphql-helpers';
-import * as helpers from '../lib/helpers';
 import * as fs from 'fs';
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
-jest.spyOn(fs, 'readFileSync')
+jest.spyOn(fs, 'readFileSync');
 
 jest.mock('../lib/github-api-helpers', () => ({
   ...jest.requireActual('../lib/github-api-helpers'),
@@ -24,13 +18,10 @@ jest.mock('../lib/nr-graphql-helpers', () => ({
   fetchNRGraphqlResults: jest.fn(),
 }));
 
-jest.mock('../lib/helpers', () => ({
-  ...jest.requireActual('../helpers'),
-  passedProcessArguments: jest.fn(),
-}));
-
-const validInstallFilename = 'utils/mock_files/install/mock-install-1/install.yml';
-const invalidInstallFilename1 = 'utils/mock_files/install/invalid-mock-install-2/install.yml';
+const validInstallFilename =
+  'utils/mock_files/install/mock-install-1/install.yml';
+const invalidInstallFilename1 =
+  'utils/mock_files/install/invalid-mock-install-2/install.yml';
 
 describe('create-validate-install-plans', () => {
   afterEach(() => {
@@ -46,4 +37,3 @@ describe('create-validate-install-plans', () => {
     expect(fs.readFileSync).not.toHaveBeenCalled();
   });
 });
-
