@@ -3,8 +3,24 @@ import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
 import InstallPlan from './lib/InstallPlan';
+import { InstallPlanConfig } from './types/InstallPlanConfig';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
+
+export const getInstallPlanId = (filename: string) => {
+  const filePath = path.resolve(__dirname, '..', filename)
+  if (!fs.existsSync(filePath)) {
+    return '';
+  }
+  console.log(filePath);
+  const config = yaml.load(
+    fs.readFileSync(filePath).toString('utf-8')
+  ) as InstallPlanConfig;
+  return config.id 
+}
 
 /**
  * Entrypoint.
@@ -25,9 +41,10 @@ const main = async () => {
   // Get all install-plan mutation variables
   const plans = files
     .map(prop('filename'))
-    .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
-    // TODO: update creating an installPlan by ID and not filename
-    .map((filename) => new InstallPlan(filename));
+    .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename)) 
+    .map(filename => getInstallPlanId(filename))
+    .filter(Boolean)
+    .map((installId) => new InstallPlan(installId));
 
   // Submit all of the mutations (in chunks of 5)
   const results = await Promise.all(
@@ -60,3 +77,5 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
+
+export default main;
