@@ -22,6 +22,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
+import InstallPlan from './InstallPlan';
 
 interface QuickstartMutationResponse {
   quickstart: {
@@ -39,7 +40,7 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   Verified: 'VERIFIED',
 };
 
-type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
+type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource | typeof InstallPlan;
 type Components = InstanceType<ComponentType>;
 
 interface ConfigToMutationMap {
@@ -56,6 +57,7 @@ const ConfigToMutation: ConfigToMutationMap[] = [
     mutationKey: 'dataSourceIds',
     ctor: DataSource,
   },
+  { configKey: 'installPlans', mutationKey: 'install', ctor: InstallPlan }
 ];
 
 class Quickstart {

@@ -3,7 +3,8 @@
 import {
   validateInstallPlanIds,
 } from '../validate-quickstart-install-plans';
-
+import Quickstart from '../lib/Quickstart';
+import InstallPlan from '../lib/InstallPlan';
 import * as githubHelpers from '../lib/github-api-helpers';
 
 jest.mock('@actions/core');
@@ -13,6 +14,23 @@ jest.mock('../lib/github-api-helpers', () => ({
   ...jest.requireActual('../lib/github-api-helpers'),
   filterQuickstartConfigFiles: jest.fn(),
 }));
+
+jest.mock('../lib/Quickstart', () => {
+  return {default: jest.fn().mockImplementation(() => {
+    return {
+      config: {installPlans: ['test-id']},
+      isValid: true,
+    };
+  })};
+});
+
+jest.mock('../lib/InstallPlan', () => {
+  return { default: jest.fn().mockImplementation(() => {
+    return {
+      isValid: true,
+    };
+  })};
+});
 
 const validQuickstartFilename = 'quickstarts/mock-quickstart-2/config.yml';
 const invalidQuickstartFilename1 = 'quickstarts/mock-quickstart-1/config.yml';
@@ -54,8 +72,15 @@ describe('Action: validate install plan id', () => {
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
-  test('fails with invalid install plan id', () => {
+  test.only('fails with invalid install plan id', () => {
     const files = mockGithubAPIFiles([invalidQuickstartFilename1]);
+    InstallPlan.mockImplementation(() => {
+      return { default: jest.fn().mockImplementation(() => {
+        return {
+          isValid: true,
+        };
+      })}
+    });
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
     validateInstallPlanIds(files);
