@@ -163,11 +163,6 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
     return upperCaseTarget;
   }
 
-  static getAll(): InstallPlan[] {
-    return getAllInstallPlanFiles()
-      .map((installPath) => path.dirname(installPath.split('/install/')[1]))
-      .map((localPath) => new InstallPlan(localPath));
-  }
 }
 
 const getAllInstallPlanFiles = (
