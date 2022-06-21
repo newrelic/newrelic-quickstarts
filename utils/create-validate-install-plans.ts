@@ -26,6 +26,7 @@ const main = async () => {
   const plans = files
     .map(prop('filename'))
     .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
+    // TODO: update creating an installPlan by ID and not filename
     .map((filename) => new InstallPlan(filename));
 
   // Submit all of the mutations (in chunks of 5)
