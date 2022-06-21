@@ -17,22 +17,12 @@ const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
 
 /**
  * Gets the size of a file in Bytes
- * @param filePath - The file to get the size of
+ * @param filePath - The file to get the size of.skip
  * @returns - The file size in Bytes
  */
 export const getFileSize = (filePath: string): number => {
   return fs.statSync(filePath)['size'];
 };
-
-/**
- * Parses the file extension type from a file path
- * @param filePath - The file path to parse an extension from
- * @returns - The extension of the file
- */
-export const getFileExtension = (filePath: string): string => {
-  return path.extname(filePath);
-};
-
 
 /**
  * Validate all dashboard folders contain no more than MAX_NUM_IMG images
@@ -42,7 +32,9 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
   dashboards.forEach((dashboard) => {
     const dashboardDirName = path.dirname(dashboard.configPath);
 
-    const dashboardImagePaths = glob.sync(path.join('..', dashboardDirName));
+    const dashboardImagePaths = glob
+      .sync(path.join('..', dashboardDirName))
+      .filter((filePath) => ALLOWED_IMG_EXT.includes(path.extname(filePath)));
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
     if (dashboardImagePaths.length > MAX_NUM_IMG) {
@@ -67,10 +59,8 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
  */
 export const validateFileSizes = (globbedFiles: string[]): void => {
   const sizes = globbedFiles
-    .filter((file) => ALLOWED_IMG_EXT.includes(file.split('.').pop()!))
-    .filter((file) => {
-      return getFileSize(file) > MAX_SIZE;
-    })
+    .filter((file) => ALLOWED_IMG_EXT.includes(path.extname(file)))
+    .filter((file) => getFileSize(file) > MAX_SIZE)
     .map((file) => {
       return {
         file,
@@ -89,9 +79,8 @@ export const validateFileSizes = (globbedFiles: string[]): void => {
  */
 export const validateImageExtensions = (globbedFiles: string[]): void => {
   const extensions = globbedFiles
-    .filter((file) => ALLOWED_IMG_EXT.includes(file.split('.').pop()!))
     .filter((file) => {
-      return !ALLOWED_IMG_EXT.includes(getFileExtension(file));
+      return !ALLOWED_IMG_EXT.includes(path.extname(file));
     });
   if (extensions.length > 0) {
     core.setFailed(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`);
