@@ -13,21 +13,6 @@ import { prop, passedProcessArguments } from './lib/helpers';
 
 
 /**
- * Gets all install plan ids under `installs/` dir
- * @returns - An array of install plan Ids
- */
-export const getAllInstallPlanIds = () => {
-  return InstallPlan.getAll().reduce<InstallPlanConfig["id"][]>(
-    (acc, installPlan) => {
-      const { id } = installPlan.config;
-
-      return [...new Set([...acc, id])];
-    },
-    []
-  );
-};
-
-/**
  * Main validation logic ensuring install plans specified in config files actually exist
  */
 export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) => {
@@ -48,13 +33,6 @@ export const validateInstallPlanIds = (githubFiles: GithubAPIPullRequestFile[]) 
   // validate against install plan
   // add any invalid install plans to array
 
-  //   const invalidQuickstarts= quickstart
-  //     .validate()
-  //     .getComponents()
-  //     .filter((component) => component instanceof InstallPlan)
-  //     .filter(component => !component.isValid)
-  // })
-  
 
   if (installPlanNoMatches.length > 0) {
     console.error(
