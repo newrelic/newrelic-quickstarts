@@ -8,6 +8,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
 
 jobs:
   add-comment:
@@ -18,19 +19,22 @@ jobs:
 
       - name: Comment and label
         run: |
-          gh pr comment ${{github.event.pull_request.number}} --body "Thank you for your contribution, our team will be reviewing this shortly, please be available for any follow up questions or code review feedback!"
+          gh pr comment "$PR_NUMBER" --body "Thank you for your contribution, our team will be reviewing this shortly, please be available for any follow up questions or code review feedback!"
 
       - id: file_changes
         uses: trilom/file-changes-action@v1.2.3
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Label PR based on Changes
+        env:
+          FILES_ADDED: ${{ steps.file_changes.outputs.files_added }}
+          FILES_MODIFIED: ${{ steps.file_changes.outputs.files_modified }}
         run: |
-          echo '${{ steps.file_changes.outputs.files_added}}'
-          if [[ '${{ steps.file_changes.outputs.files_added}}' =~ "config.yml" ]]; then
+          echo "$FILES_ADDED"
+          if [[ "$FILES_ADDED" =~ "config.yml" ]]; then
               echo "New config.yml added"
-              gh pr edit ${{github.event.pull_request.number}} --add-label "new-quickstart"
-          elif [[ '${{ steps.file_changes.outputs.files_modified}}' =~ quickstarts/.* ]]; then
+              gh pr edit "$PR_NUMBER" --add-label "new-quickstart"
+          elif [[ "$FILES_MODIFIED" =~ quickstarts/.* ]]; then
               echo "Quickstart Updated"
-              gh pr edit ${{github.event.pull_request.number}} --add-label "improved-quickstart"
+              gh pr edit "$PR_NUMBER" --add-label "improved-quickstart"
           fi
