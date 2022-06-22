@@ -116,7 +116,7 @@ describe('Quickstart', () => {
       const variables = qs.getMutationVariables(true);
 
       expect(variables.id).toEqual('mock-2-id');
-      expect(variables.quickstartMetadata.alertConditions).toHaveLength(1);
+      expect(variables.quickstartMetadata.alertConditions).toHaveLength(2);
       expect(variables.quickstartMetadata.dashboards).toHaveLength(1);
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
