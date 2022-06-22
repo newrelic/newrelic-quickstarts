@@ -15,7 +15,6 @@ export const getInstallPlanId = (filename: string) => {
   if (!fs.existsSync(filePath)) {
     return '';
   }
-  console.log(filePath);
   const config = yaml.load(
     fs.readFileSync(filePath).toString('utf-8')
   ) as InstallPlanConfig;
