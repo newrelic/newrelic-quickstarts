@@ -171,6 +171,15 @@ class Quickstart {
     };
 
     const quickstartMetadata = this._addComponents(metadata);
+
+    // TODO: quickstarts define a set of alert conditions, but we are defining them
+    // as an array of alert policies. Until the API is updated to accept policies,
+    // we need to flatten them down to one array of conditions
+    if (quickstartMetadata.alertConditions) {
+      quickstartMetadata.alertConditions =
+        quickstartMetadata.alertConditions.flat();
+    }
+
     return {
       id: id ? id : MOCK_UUID,
       dryRun,
