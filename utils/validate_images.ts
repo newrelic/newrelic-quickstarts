@@ -32,8 +32,8 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
     const dashboardDirName = path.dirname(dashboard.configPath);
 
     const dashboardImagePaths = glob
-      .sync(path.join('..', dashboardDirName, '*', '*.!(json)'))
-      .filter((filePath) => ALLOWED_IMG_EXT.includes(path.extname(filePath)))
+      .sync(path.join(__dirname, '..', dashboardDirName, '*.!(json)'))
+      .filter((filePath) => ALLOWED_IMG_EXT.includes(path.extname(filePath)));
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
     if (dashboardImagePaths.length > MAX_NUM_IMG) {
@@ -43,14 +43,15 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
         maxImages: MAX_NUM_IMG,
       });
     }
-  });    
+  });
 
   if (imagesDirectories.length) {
-    core.setFailed('Each dashboard component should contain no more than 12 screenshots');
+    core.setFailed(
+      'Each dashboard component should contain no more than 12 screenshots'
+    );
     console.warn(`\nPlease check the following directories:`);
     imagesDirectories.forEach((dir: DirectoryValidation) => console.warn(dir));
   }
-
 };
 
 /**
@@ -77,8 +78,9 @@ export const validateFileSizes = (globbedFiles: string[]): void => {
  * Validates images are one of the ALLOWED_IMG_EXT
  */
 export const validateImageExtensions = (globbedFiles: string[]): void => {
-  const extensions = globbedFiles
-    .filter((file) => !ALLOWED_IMG_EXT.includes(path.extname(file)))
+  const extensions = globbedFiles.filter(
+    (file) => !ALLOWED_IMG_EXT.includes(path.extname(file))
+  );
   if (extensions.length > 0) {
     core.setFailed(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`);
     console.warn(`\nPlease check the following images:`);
@@ -88,11 +90,12 @@ export const validateImageExtensions = (globbedFiles: string[]): void => {
 
 const main = () => {
   const dashboards = Dashboard.getAll();
-  
+
   validateImageCounts(dashboards);
 
-  const globbedFiles = glob
-    .sync(path.resolve(__dirname, '..', 'dashboards', '*', '*.!(json)'))
+  const globbedFiles = glob.sync(
+    path.resolve(__dirname, '..', 'dashboards', '*', '*.!(json)')
+  );
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };
