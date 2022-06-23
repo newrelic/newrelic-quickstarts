@@ -9,10 +9,15 @@ import {
 
 import type { GithubAPIPullRequestFile } from '../lib/github-api-helpers';
 
-jest.mock('../lib/github-api-helpers');
+jest.mock('../lib/github-api-helpers', () => {
+  return {
+    ...jest.requireActual('../lib/github-api-helpers'),
+    fetchPaginatedGHResults: jest.fn(),
+  };
+});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log');
-jest.mock('../lib/github-api-helpers')
+
 const mockedGithubHelpers = ghHelpers as jest.Mocked<typeof ghHelpers>;
 
 const expectCommentHeading = `### Click the link(s) below to view a preview of your changes on newrelic.com/instant-observability<br/><br/>`;
@@ -26,8 +31,12 @@ describe('create-preview-links', () => {
   describe('getQuickstartsFromPRFiles', () => {
     test('returns an array of quickstart local paths', async () => {
       mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
-        { filename: 'quickstarts/apache/config.yml' } as GithubAPIPullRequestFile,
-        { filename: 'quickstarts/battlesnake/config.yml' } as GithubAPIPullRequestFile,
+        {
+          filename: 'quickstarts/apache/config.yml',
+        } as GithubAPIPullRequestFile,
+        {
+          filename: 'quickstarts/battlesnake/config.yml',
+        } as GithubAPIPullRequestFile,
       ]);
 
       const quickstarts = await getQuickstartsFromPRFiles(
@@ -115,7 +124,7 @@ describe('create-preview-links', () => {
     test('does not set Github workflow output when there are no quickstart changes', async () => {
       mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
         { filename: 'utils/test-script.js' } as GithubAPIPullRequestFile,
-        { filename: 'data-sources/test/config.yml' } as GithubAPIPullRequestFile,
+        { filename: 'docs/test/config.yml' } as GithubAPIPullRequestFile,
       ]);
 
       const res = await generatePreviewComment(
@@ -131,7 +140,9 @@ describe('create-preview-links', () => {
 
     test('sets Github workflow output when there are quickstart changes', async () => {
       mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
-        { filename: 'quickstarts/apache/config.yml' } as GithubAPIPullRequestFile,
+        {
+          filename: 'quickstarts/apache/config.yml',
+        } as GithubAPIPullRequestFile,
         { filename: 'quickstarts/apache/logo.svg' } as GithubAPIPullRequestFile,
         { filename: 'utils/test-script.js' } as GithubAPIPullRequestFile,
       ]);
