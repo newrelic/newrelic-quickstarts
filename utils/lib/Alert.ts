@@ -4,7 +4,6 @@ import * as yaml from 'js-yaml';
 import * as glob from 'glob';
 
 import Component from './Component';
-import { removeBasePath, getAssetSourceUrl } from './classHelpers';
 
 import type {
   AlertType,
@@ -26,7 +25,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       return '';
     }
 
-    return removeBasePath(filePaths[0], this.basePath);
+    return Component.removeBasePath(filePaths[0], this.basePath);
   }
 
   getConfigContent() {
@@ -71,7 +70,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
         description: description && description.trim(),
         displayName: name && name.trim(),
         rawConfiguration: JSON.stringify(condition),
-        sourceUrl: getAssetSourceUrl(this.configPath),
+        sourceUrl: Component.getAssetSourceUrl(this.configPath),
         type: type && (type.trim() as AlertType),
       };
     });

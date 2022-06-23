@@ -6,12 +6,12 @@ import * as glob from 'glob';
 import Alert from './Alert';
 import Dashboard from './Dashboard';
 import DataSource from './DataSource';
+import Component from './Component';
 import {
   MOCK_UUID,
   GITHUB_RAW_BASE_URL,
   QUICKSTART_MUTATION,
 } from '../constants';
-import { getAssetSourceUrl, removeBasePath } from './classHelpers';
 import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,
@@ -162,8 +162,8 @@ class Quickstart {
         })),
       icon: icon && this._constructIconUrl(icon),
       keywords: keywords,
-      sourceUrl: getAssetSourceUrl(
-        removeBasePath(this.configPath, this.basePath)
+      sourceUrl: Component.getAssetSourceUrl(
+        Component.removeBasePath(this.configPath, this.basePath)
       ),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
@@ -201,7 +201,7 @@ class Quickstart {
   }
 
   private _constructIconUrl(icon: string) {
-    const splitConfigPath = removeBasePath(
+    const splitConfigPath = Component.removeBasePath(
       path.dirname(this.configPath),
       this.basePath
     );

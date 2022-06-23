@@ -6,7 +6,6 @@ import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariab
 
 import Component from './Component';
 import { GITHUB_RAW_BASE_URL } from '../constants';
-import { getAssetSourceUrl, removeBasePath } from './classHelpers';
 
 interface DashboardConfig {
   name: string;
@@ -28,7 +27,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       return ``;
     }
 
-    return removeBasePath(filePaths[0], this.basePath);
+    return Component.removeBasePath(filePaths[0], this.basePath);
   }
 
   /**
@@ -63,7 +62,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(this.config),
-      sourceUrl: getAssetSourceUrl(this.configPath),
+      sourceUrl: Component.getAssetSourceUrl(this.configPath),
       screenshots:
         screenshotPaths && screenshotPaths.map((s) => this.getScreenshotUrl(s)),
     };
@@ -85,7 +84,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * for a dashboard's mutation variable
    * @returns - Object with URL for the mutation variable
    */
-  getScreenshotUrl(screenshotPath: string): { url: string } {
+  getScreenshotUrl(screenshotPath: string): { url: string; } {
     const splitConfigPath = path.dirname(this.configPath);
     const screenShotFileName = path.basename(screenshotPath);
 

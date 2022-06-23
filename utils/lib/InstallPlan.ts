@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import Component from './Component';
-import { removeBasePath } from './classHelpers';
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 import { INSTALL_PLAN_MUTATION } from '../constants';
 
@@ -42,7 +41,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
     }));
     const installPlan = allInstallPlans.find((i) => i.content?.id === id);
     this.localPath = path.dirname(
-      removeBasePath(
+      Component.removeBasePath(
         installPlan?.filePath ?? '',
         path.join(this.basePath, 'install')
       )
@@ -57,7 +56,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
       return '';
     }
 
-    return removeBasePath(filePaths[0], this.basePath);
+    return Component.removeBasePath(filePaths[0], this.basePath);
   }
 
   getConfigContent() {

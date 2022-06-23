@@ -3,7 +3,6 @@ import * as glob from 'glob';
 
 import Component from './Component';
 import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
-import { removeBasePath } from './classHelpers';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
@@ -36,7 +35,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       return '';
     }
 
-    return removeBasePath(filePaths[0], this.basePath);
+    return Component.removeBasePath(filePaths[0], this.basePath);
   }
 
   getConfigContent() {
@@ -96,7 +95,7 @@ class DataSource extends Component<DataSourceConfig, string> {
   private _getIconUrl() {
     const { icon } = this.config;
     const dirName = path.dirname(this.configPath);
-    const relDirName = removeBasePath(dirName, this.basePath);
+    const relDirName = Component.removeBasePath(dirName, this.basePath);
 
     return `${GITHUB_RAW_BASE_URL}/${relDirName}/${icon}`;
   }
