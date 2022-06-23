@@ -36,7 +36,6 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
     const dashboardImagePaths = glob
       .sync(path.join('..', dashboardDirName))
       .filter((filePath) => ALLOWED_IMG_EXT.includes(path.extname(filePath)))
-      .filter((filePath) => IGNORE_FILE_EXT.includes(path.extname(filePath)));
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
     if (dashboardImagePaths.length > MAX_NUM_IMG) {
@@ -81,9 +80,7 @@ export const validateFileSizes = (globbedFiles: string[]): void => {
  */
 export const validateImageExtensions = (globbedFiles: string[]): void => {
   const extensions = globbedFiles
-    .filter((file) => {
-      return !ALLOWED_IMG_EXT.includes(path.extname(file));
-    });
+    .filter((file) => !ALLOWED_IMG_EXT.includes(path.extname(file)))
   if (extensions.length > 0) {
     core.setFailed(`Images should be of format ${[...ALLOWED_IMG_EXT]}:`);
     console.warn(`\nPlease check the following images:`);
@@ -96,7 +93,9 @@ const main = () => {
   
   validateImageCounts(dashboards);
 
-  const globbedFiles = glob.sync(path.resolve(BASE_PATH, '**', '*'))
+  const globbedFiles = glob
+    .sync(path.resolve(BASE_PATH, '*', '*'))
+    .filter((filePath) => !IGNORE_FILE_EXT.includes(path.extname(filePath)));
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };
