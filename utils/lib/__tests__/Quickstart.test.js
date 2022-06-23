@@ -96,7 +96,7 @@ describe('Quickstart', () => {
           categoryTerms: undefined,
           installPlanStepIds: ['mock-install-1'],
           icon: `${GITHUB_RAW_BASE_URL}/quickstarts/mock-quickstart-1/logo.png`,
-          sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1/config.yml`,
+          sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1`,
           documentation: [
             {
               displayName: 'Installation Docs',

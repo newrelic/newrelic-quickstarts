@@ -158,7 +158,7 @@ class Quickstart {
       icon: icon && this._constructIconUrl(icon),
       keywords: keywords,
       sourceUrl: Component.getAssetSourceUrl(
-        Component.removeBasePath(this.configPath, this.basePath)
+        Component.removeBasePath(path.dirname(this.configPath), this.basePath)
       ),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
