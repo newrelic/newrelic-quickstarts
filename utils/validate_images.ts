@@ -10,11 +10,9 @@ type DirectoryValidation = {
   maxImages: number;
 };
 
-const BASE_PATH = '../dashboards/';
 const MAX_SIZE = 4000000;
 const MAX_NUM_IMG = 12;
 const ALLOWED_IMG_EXT = ['.png', '.jpeg', '.jpg', '.svg'];
-const IGNORE_FILE_EXT = ['.json']
 
 /**
  * Gets the size of a file in Bytes
@@ -34,7 +32,7 @@ export const validateImageCounts = (dashboards: Dashboard[]): void => {
     const dashboardDirName = path.dirname(dashboard.configPath);
 
     const dashboardImagePaths = glob
-      .sync(path.join('..', dashboardDirName))
+      .sync(path.join('..', dashboardDirName, '*', '*.!(json)'))
       .filter((filePath) => ALLOWED_IMG_EXT.includes(path.extname(filePath)))
 
     // Each dashboard is allowed MAX_NUM_IMG dashboards
@@ -94,8 +92,7 @@ const main = () => {
   validateImageCounts(dashboards);
 
   const globbedFiles = glob
-    .sync(path.resolve(BASE_PATH, '*', '*'))
-    .filter((filePath) => !IGNORE_FILE_EXT.includes(path.extname(filePath)));
+    .sync(path.resolve(__dirname, '..', 'dashboards', '*', '*.!(json)'))
   validateFileSizes(globbedFiles);
   validateImageExtensions(globbedFiles);
 };
