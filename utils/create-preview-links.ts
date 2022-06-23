@@ -2,7 +2,8 @@ import Quickstart from './lib/Quickstart';
 import * as path from 'path';
 import { fetchPaginatedGHResults } from './lib/github-api-helpers';
 import { IO_PREVIEW_PAGE_URL } from './constants';
-import { prop } from './lib/helpers';
+import { prop, getRelatedQuickstarts, getComponentLocalPath } from './lib/helpers';
+import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
 
 /**
  * Retrieves the individual quickstarts changed or created in a pull request
@@ -19,13 +20,25 @@ export const getQuickstartsFromPRFiles = async (
   const files = await fetchPaginatedGHResults(filesURL, token);
   const quickstartPaths = files
     .map(prop('filename'))
-    .map((filename) => new Quickstart(filename))
+    .filter(
+      (filePath) =>
+        QUICKSTART_CONFIG_REGEXP.test(filePath) ||
+        COMPONENT_PREFIX_REGEXP.test(filePath)
+    )
+    .flatMap((filePath) => {
+      if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
+        return new Quickstart(filePath);
+      }
+
+      return getRelatedQuickstarts(getComponentLocalPath(filePath));
+    })
+    .filter((filename) => QUICKSTART_CONFIG_REGEXP.test(filename))
     .filter((quickstart) => quickstart.isValid)
     .map((quickstart) =>
       path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!)
     )
     .map((configPath) => configPath.split('quickstarts/').pop()!);
-  
+
   return [...new Set(quickstartPaths)];
 };
 
