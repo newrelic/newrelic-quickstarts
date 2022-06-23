@@ -1,6 +1,6 @@
 import {
   removeRepoPathPrefix,
-} from './helpers';
+} from './lib/helpers';
 
 import Dashboard from './lib/Dashboard'
 
