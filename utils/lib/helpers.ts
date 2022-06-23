@@ -32,7 +32,7 @@ export const getRelatedQuickstarts = (
   localComponentPath: string
 ): Quickstart[] =>
   Quickstart.getAll().filter((q) =>
-    q.components.some((c) => c.localPath === localComponentPath)
+    q.components.some((c) => c.identifier === localComponentPath)
   );
 
 /**

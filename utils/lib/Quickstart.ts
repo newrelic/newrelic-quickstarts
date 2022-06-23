@@ -22,7 +22,6 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
-import InstallPlan from './InstallPlan';
 
 interface QuickstartMutationResponse {
   quickstart: {
@@ -40,11 +39,7 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   Verified: 'VERIFIED',
 };
 
-type ComponentType =
-  | typeof Alert
-  | typeof Dashboard
-  | typeof DataSource
-  | typeof InstallPlan;
+type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
 interface ConfigToMutationMap {
@@ -65,17 +60,17 @@ const ConfigToMutation: ConfigToMutationMap[] = [
 
 class Quickstart {
   public components: Components[];
-  public localPath: string; // Local path to the component. Ex: python/flask
+  public identifier: string; // Local path to the component. Ex: python/flask
   public configPath: string; // Absolute path to the config file within the repository
   public config: QuickstartConfig;
   public isValid = true;
   public basePath: string;
 
   constructor(
-    localPath: string,
-    basePath: string = path.join(__dirname, '../..')
+    identifier: string,
+    basePath: string = path.join(__dirname, '..', '..')
   ) {
-    this.localPath = localPath;
+    this.identifier = identifier;
     this.basePath = basePath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
@@ -87,7 +82,7 @@ class Quickstart {
    * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
-    return path.join(this.basePath, this.localPath);
+    return path.join(this.basePath, this.identifier);
   }
 
   /**
@@ -197,7 +192,7 @@ class Quickstart {
     });
 
     // filePath may need to be changed for this rework
-    return { data, errors, name: this.localPath };
+    return { data, errors, name: this.identifier };
   }
 
   private _constructIconUrl(icon: string) {
@@ -240,7 +235,7 @@ class Quickstart {
     if (invalidComponents.length) {
       console.log('The following components are not valid:');
 
-      for (const { localPath } of invalidComponents) {
+      for (const { identifier: localPath } of invalidComponents) {
         console.log(`\t ${localPath}`);
       }
 

@@ -4,18 +4,18 @@ import * as yaml from 'js-yaml';
 
 import { GITHUB_REPO_BASE_URL } from '../constants';
 abstract class Component<ConfigType, MutationVariablesType> {
-  public localPath: string; // Local path to the component. Ex: python/flask
+  public identifier: string; // Local path to the component. Ex: python/flask
   public configPath: string; // Absolute path to the config file within the repository
   public config: ConfigType;
   public isValid = true;
   public basePath: string;
 
   constructor(
-    localPath: string,
-    basePath: string = path.join(__dirname, '../..')
+    idenifier: string,
+    basePath: string = path.join(__dirname, '..', '..')
   ) {
     this.basePath = basePath;
-    this.localPath = localPath;
+    this.identifier = idenifier;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
   }

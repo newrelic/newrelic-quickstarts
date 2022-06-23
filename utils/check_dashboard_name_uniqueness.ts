@@ -1,8 +1,6 @@
-import {
-  removeRepoPathPrefix,
-} from './lib/helpers';
+import { removeRepoPathPrefix } from './lib/helpers';
 
-import Dashboard from './lib/Dashboard'
+import Dashboard from './lib/Dashboard';
 
 /**
  * Returns any dashboards with matching dashboard names
@@ -12,9 +10,11 @@ import Dashboard from './lib/Dashboard'
 const findMatchingDashboardNames = (
   dashboards: Array<Dashboard>
 ): Array<Dashboard> => {
-  return dashboards.reduce<Dashboard[]>((acc, { localPath, config }) => {
+  return dashboards.reduce<Dashboard[]>((acc, { identifier, config }) => {
     const duplicates = dashboards.filter(
-      (dashboard) => dashboard.localPath === localPath && dashboard.config.name !== config.name 
+      (dashboard) =>
+        dashboard.identifier === identifier &&
+        dashboard.config.name !== config.name
     );
 
     return [...new Set([...acc, ...duplicates])];
@@ -29,7 +29,7 @@ const main = () => {
     console.error(`ERROR: Found matching quickstart dashboard names`);
     console.error(`Punctuation and white space are removed before comparison`);
     nameMatches.forEach((m) =>
-      console.error(`${m.localPath} in ${removeRepoPathPrefix(m.configPath)}`)
+      console.error(`${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`)
     );
     console.error(
       `Please update your quickstart dashboard's localPath to be unique\n`

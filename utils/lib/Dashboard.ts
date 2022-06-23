@@ -19,7 +19,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    */
   getConfigFilePath(): string {
     const filePaths = glob.sync(
-      path.join(this.basePath, 'dashboards', this.localPath, '*.json')
+      path.join(this.basePath, 'dashboards', this.identifier, '*.json')
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {

@@ -27,7 +27,7 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   getConfigFilePath() {
     const filePaths = glob.sync(
-      path.join(this.basePath, 'data-sources', this.localPath, '*.+(yml|yaml)')
+      path.join(this.basePath, 'data-sources', this.identifier, '*.+(yml|yaml)')
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
@@ -86,7 +86,7 @@ class DataSource extends Component<DataSourceConfig, string> {
     });
 
     // filePath may need to be changed for this rework
-    return { data, errors, name: this.localPath };
+    return { data, errors, name: this.identifier };
   }
 
   /**
@@ -134,7 +134,7 @@ class DataSource extends Component<DataSourceConfig, string> {
 
       return {
         nerdlet: {
-          nerdletId: nerdletId.trim() ?? '',
+          nerdletId: nerdletId?.trim() ?? '',
           nerdletState: nerdletState && JSON.stringify(nerdletState),
           requiresAccount: requiresAccount,
         },

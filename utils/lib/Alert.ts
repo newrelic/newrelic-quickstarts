@@ -17,7 +17,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
    */
   getConfigFilePath() {
     const filePaths = glob.sync(
-      path.join(this.basePath, 'alert-policies', this.localPath)
+      path.join(this.basePath, 'alert-policies', this.identifier)
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {

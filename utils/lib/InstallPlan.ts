@@ -30,9 +30,9 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    */
   getConfigFilePath() {
     // Lines next few lines are a hack to allow us to pass in the install plan id
-    // as the localPath, this code then parses all install plans and sets
+    // as the identifier instead of its path under the `install/` directory, this code then parses all install plans and sets
     // the correct path to the requested install plan
-    const id = this.localPath;
+    const id = this.identifier;
     const allInstallPlans = getAllInstallPlanFiles(this.basePath).map((p) => ({
       filePath: p,
       content: yaml.load(
@@ -40,7 +40,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
       ) as InstallPlanConfig,
     }));
     const installPlan = allInstallPlans.find((i) => i.content?.id === id);
-    this.localPath = path.dirname(
+    this.identifier = path.dirname(
       Component.removeBasePath(
         installPlan?.filePath ?? '',
         path.join(this.basePath, 'install')
@@ -48,7 +48,12 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
     );
 
     const filePaths = glob.sync(
-      path.join(this.basePath, 'install', this.localPath, 'install.+(yml|yaml)')
+      path.join(
+        this.basePath,
+        'install',
+        this.identifier,
+        'install.+(yml|yaml)'
+      )
     );
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
@@ -102,8 +107,8 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
       dryRun,
       id,
       description,
-      displayName: name,
-      heading: title,
+      displayName: name && name.trim(),
+      heading: title && title.trim(),
       primary: install && this._parseInstallDirective(install),
       fallback: fallback && this._parseInstallDirective(fallback),
       target: target && this._buildInstallPlanTargetVariable(),
@@ -161,7 +166,6 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
 
     return upperCaseTarget;
   }
-
 }
 
 const getAllInstallPlanFiles = (
