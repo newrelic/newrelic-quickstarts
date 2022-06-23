@@ -16,7 +16,6 @@ interface DashboardConfig {
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   /**
-   * Returns the file path from the top level of component
    * @returns - filepath from top level directory.
    */
   getConfigFilePath(): string {
