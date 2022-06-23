@@ -11,12 +11,9 @@ import {
   passedProcessArguments,
   getRelatedQuickstarts,
   getComponentLocalPath,
-  COMPONENT_PREFIX_REGEX,
 } from './lib/helpers';
 
-const QUICKSTART_CONFIG_REGEXP = new RegExp(
-  /quickstarts\/.*\/config.+(yml|yaml)/gm
-);
+import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
 
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
@@ -37,7 +34,7 @@ const main = async () => {
     .filter(
       (filePath) =>
         QUICKSTART_CONFIG_REGEXP.test(filePath) ||
-        COMPONENT_PREFIX_REGEX.test(filePath)
+        COMPONENT_PREFIX_REGEXP.test(filePath)
     )
     .flatMap((filePath) => {
       if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
