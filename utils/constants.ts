@@ -6,6 +6,18 @@ export const GITHUB_RAW_BASE_URL =
 export const IO_PREVIEW_PAGE_URL =
   'https://newrelic.com/instant-observability/preview';
 
+export const QUICKSTART_CONFIG_REGEXP = new RegExp(
+  'quickstarts/.+/config.+(yml|yaml)'
+);
+
+export const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
+  'data-sources/.+/config.+(yml|yaml)'
+);
+
+export const COMPONENT_PREFIX_REGEXP =
+  /^(dashboards|alert-policies|install-plans|data-sources)\//;
+
+
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
  * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.

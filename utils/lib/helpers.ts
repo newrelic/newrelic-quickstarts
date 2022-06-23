@@ -1,8 +1,6 @@
 import * as path from 'path';
 import Quickstart from './Quickstart';
-
-export const COMPONENT_PREFIX_REGEX =
-  /^(dashboards|alert-policies|install-plans|data-sources)\//;
+import { COMPONENT_PREFIX_REGEXP } from '../constants';
 
 /**
  * Removes the first two arguments injected by Node
@@ -42,7 +40,7 @@ export const getRelatedQuickstarts = (
  * @returns the "local path" portion of the filepath
  */
 export const getComponentLocalPath = (filePath: string): string => {
-  const componentPath = filePath.split(COMPONENT_PREFIX_REGEX).pop() ?? '';
+  const componentPath = filePath.split(COMPONENT_PREFIX_REGEXP).pop() ?? '';
   return path.dirname(componentPath);
 };
 

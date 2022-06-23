@@ -1,14 +1,8 @@
 import fetch from 'node-fetch';
 import * as parseLinkHeader from 'parse-link-header';
-
-const QUICKSTART_CONFIG_REGEXP = new RegExp(
-  'quickstarts/.+/config.+(yml|yaml)'
-);
+import { QUICKSTART_CONFIG_REGEXP, DATA_SOURCE_CONFIG_REGEXP } from '../constants';
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
-const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
-  'data-sources/.+/config.+(yml|yaml)'
-);
 
 /**
  * Pulls the next page off of a `Link` header
