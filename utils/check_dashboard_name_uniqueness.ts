@@ -13,8 +13,8 @@ const findMatchingDashboardNames = (
   return dashboards.reduce<Dashboard[]>((acc, { identifier, config }) => {
     const duplicates = dashboards.filter(
       (dashboard) =>
-        dashboard.identifier === identifier &&
-        dashboard.config.name !== config.name
+        dashboard.identifier !== identifier &&
+        dashboard.config.name === config.name
     );
 
     return [...new Set([...acc, ...duplicates])];
@@ -24,6 +24,7 @@ const findMatchingDashboardNames = (
 const main = () => {
   const allDashboards = Dashboard.getAll();
   const nameMatches = findMatchingDashboardNames(allDashboards);
+  console.log(nameMatches);
 
   if (nameMatches.length > 0) {
     console.error(`ERROR: Found matching quickstart dashboard names`);
@@ -32,7 +33,7 @@ const main = () => {
       console.error(`${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`)
     );
     console.error(
-      `Please update your quickstart dashboard's localPath to be unique\n`
+      `Please update your quickstart dashboard's name to be unique\n`
     );
     process.exit(1);
   }
