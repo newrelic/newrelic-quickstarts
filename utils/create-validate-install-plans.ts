@@ -1,5 +1,8 @@
 import { prop, passedProcessArguments } from './lib/helpers';
-import { fetchPaginatedGHResults } from './lib/github-api-helpers';
+import {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+} from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
 import InstallPlan from './lib/InstallPlan';
@@ -38,7 +41,7 @@ const main = async () => {
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
 
   // Get all install-plan mutation variables
-  const plans = files
+  const plans = filterOutTestFiles(files)
     .map(prop('filename'))
     .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
     .map((filename) => getInstallPlanId(filename))

@@ -1,4 +1,7 @@
-import { fetchPaginatedGHResults } from './lib/github-api-helpers';
+import {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+} from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
 import Quickstart from './lib/Quickstart';
@@ -29,7 +32,7 @@ const main = async () => {
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
 
   // Get all quickstart mutation variables
-  const quickstarts = files
+  const quickstarts = filterOutTestFiles(files)
     .map(prop('filename'))
     .filter(
       (filePath) =>

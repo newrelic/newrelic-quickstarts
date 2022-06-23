@@ -1,6 +1,9 @@
 import * as path from 'path';
 
-import { fetchPaginatedGHResults } from './lib/github-api-helpers';
+import {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+} from './lib/github-api-helpers';
 import { chunk, translateMutationErrors } from './lib/nr-graphql-helpers';
 import { passedProcessArguments, prop } from './lib/helpers';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
@@ -22,7 +25,7 @@ const main = async () => {
 
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
 
-  const dataSources = files
+  const dataSources = filterOutTestFiles(files)
     .map(prop('filename'))
     .filter((filename) => DATA_SOURCE_CONFIG_REGEXP.test(filename))
     .map((filename) => path.dirname(filename).replace('data-sources/', ''))
