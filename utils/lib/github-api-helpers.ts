@@ -92,7 +92,6 @@ export const filterQuickstartConfigFiles = (
 export const filterOutTestFiles = (
   files: GithubAPIPullRequestFile[]
 ): GithubAPIPullRequestFile[] => {
-  //console.log(files);
   return files.filter(
     ({ filename }) =>
       !MOCK_FILES_REGEXP.test(filename) && !TEMPLATE_REGEXP.test(filename)
