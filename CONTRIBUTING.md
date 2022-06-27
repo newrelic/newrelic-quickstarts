@@ -31,6 +31,10 @@
       - [Images directory & preview images](#images-directory--preview-images)
       - [Icons](#icons)
     - [Keywords](#keywords)
+  - [Quickstart Preview](#quickstart-preview)
+    - [Local Quickstart Preview](#local-quickstart-preview)
+      - [Step-by-step guide to view Local Quickstart Preview](#step-by-step-guide-to-view-local-quickstart-preview)
+    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
   - [Feature requests](#feature-requests)
   - [Pull requests](#pull-requests)
   - [Contributor license agreement](#contributor-license-agreement)
@@ -83,9 +87,9 @@ This example is based on the Fastly quickstart which can be [found here](./quick
 ### Style tips
 
 - Maintain a strong active voice. Lead sentences with verbs.
-  - Avoid “Allows you to monitor your uptime”
+  - Avoid "Allows you to monitor your uptime"
 - Avoid being too formal. Avoid words like `thus` and `lastly`, and feel free to use `we` and `our`.
-- In general, we should only lightly touch on what a given technology does. The user is already using Node, so we don’t need to sell them on it exactly. What we need to focus on is the challenges of monitoring that technology and then sell on that.
+- In general, we should only lightly touch on what a given technology does. The user is already using Node, so we don't need to sell them on it exactly. What we need to focus on is the challenges of monitoring that technology and then sell on that.
 
 Check out our [doc team's voice and tone guidelines](https://docs.newrelic.com/docs/style-guide/writing-guidelines/voice-strategies-docs-sound-new-relic/).
 
@@ -94,16 +98,11 @@ Check out our [doc team's voice and tone guidelines](https://docs.newrelic.com/d
 When writing about a quickstart the following language rules should be followed:
 
 1. Capitalize the term quickstart if the word is at the start of a sentence or header.
-
-> "Quickstarts are a great way to get started with New Relic!"
-
-2. If the term quickstarts is anywhere else in a sentence, use lower case.
-
-> "New Relic offers you a wide range of quickstarts to get you started."
-
-3. Quickstarts is always a single word.
-
-> "Always use quickstarts, not quick starts."
+    > "Quickstarts are a great way to get started with New Relic!"
+1. If the term quickstarts is anywhere else in a sentence, use lower case.
+    > "New Relic offers you a wide range of quickstarts to get you started."
+1. Quickstarts is always a single word.
+    > "Always use quickstarts, not quick starts."
 
 ### Quickstarts description template
 
@@ -162,9 +161,9 @@ Quickstart authors represent the creator of the quickstart.
 
 You can define multiple author names, but it's recommended to use one of the follow formats.
 
-1.  company name
-2.  company name + author name
-3.  author name
+1. company name
+2. company name + author name
+3. author name
 
 #### Install plans
 
@@ -189,9 +188,10 @@ You can define multiple author names, but it's recommended to use one of the fol
 
 `https://newrelic.com/instant-observability/{slug}/{id}`
 
- The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
+The quickstart `slug` field defines the URL for the [instant-observability website](https://newrelic.com/instant-observability/). It's important that you don't change the name after the quickstart has been created as the URL will break, and return a 404 if this field changes. Another important note is that `slug` must be all lower case and kebab-case.
 
  Example:
+
  ```yml
  slug: this-is-kebab-case-and-lower-cased
  ```
@@ -249,19 +249,19 @@ documentation:
 - In most cases a quickstart that is referencing an [experimental open source project](https://github.com/newrelic-experimental) should be set to the `Community` level.
 - If you are referencing an experimental project and want to set the quickstart to `Verified` please be aware of the support requirements below.
 
-**New Relic**
+**New Relic:**
 
 - Verified for quality by New Relic
 - Created by New Relics employees
 - Supported by New Relic
 
-**Verified**
+**Verified:**
 
 - Verified for quality by New Relic
 - Created by New Relics employees or partners
 - Supported by individual authors or partners
 
-**Community**
+**Community:**
 
 - Contributed & supported by the community
 - Created by community members
@@ -293,8 +293,8 @@ documentation:
 
 #### Dashboard name uniqueness
 
-- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `node check_dashboard_name_uniqueness`.
-- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `yarn run check-dashboard-name-uniqueness`.
+- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.ts) will check and notify you of duplicate dashboard names in the repository.
 - this script needs to run from the `Utils` directory.
 - As a best practice you should run this script when creating a new dashboard.
 
@@ -337,6 +337,18 @@ documentation:
 - Max 1
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
+
+### Data Source ID's
+
+> See the [docs](https://github.com/newrelic/newrelic-quickstarts/blob/main/docs/graphql-schema-docs.md#nr1catalogquickstartmetadatainput) for more details on `Data Source ID's`
+
+Data source ID's are optional. When adding data source ID's the following format should be used. The ID needs to match the ID from the config file within the appropriate [data-sources](./data-sources) directory.
+
+```yml
+dataSourceIds:
+  - argocd
+  - postman
+```
 
 ### Keywords
 
@@ -389,9 +401,41 @@ that is not defined in this list below, it will be reviewed for use after you su
 - tracing
 - windows
 
+## Quickstart Preview
+
+Quickstart Previews are available for contributors to review their new or improved quickstarts directly from the Public I/O site! We provide two ways to view a preview:
+
+### Local Quickstart Preview
+
+- To view a local quickstart preview, you can run the command `yarn preview node-js/express` or `yarn preview catchpoint` using the _path_ to the quickstart within the `quickstarts/` directory.
+- This script needs to be run under the `utils` directory.
+- The script will run a local server for the Public I/O site to fetch files from the specified quickstart.
+- The command line will provide a link that can be navigated to view the quickstart.
+  - In order for local quickstart preview to be enabled on the Public I/O site, there needs to be a `config.yml` file present in the quickstart directory. However, there does not need to have any content inside the file.
+  - _Only one quickstart may be served for local quickstart preview_
+
+> Note: While working on a quickstart, changes may not be updated in the local preview automatically. If you do not see immediate changes, refresh the page to pull in recent updates.
+
+#### Step-by-step guide to view Local Quickstart Preview
+
+Starting from the top level of the repository: `newrelic-quickstarts`
+
+```bash
+cd utils
+yarn install
+yarn preview aws/amazon-msk
+```
+
+> Note: `aws/amazon-msk` is just an example. It can be replaced with the path to any quickstart.
+
+### Pull Request Quickstart Preview
+
+- Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
+- If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+
 ## Feature requests
 
-Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they’ll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
+Feature requests should be submitted in the [Issue tracker](../../issues), with a description of the expected behavior & use case, where they'll remain closed until sufficient interest, [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/), has been [shown by the community](../../issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
 Before submitting an Issue, please search for similar ones in the
 [closed issues](../../issues?q=is%3Aissue+is%3Aclosed+label%3Aenhancement).
 
@@ -406,8 +450,8 @@ Before submitting an Issue, please search for similar ones in the
 
 Keep in mind that when you submit your Pull Request, you'll need to sign the CLA via the click-through using CLA-Assistant. If you'd like to execute our corporate CLA, or if you have any questions, please drop us an email at opensource@newrelic.com.
 
-For more information about CLAs, please check out Alex Russell’s excellent post,
-[“Why Do I Need to Sign This?”](https://infrequently.org/2008/06/why-do-i-need-to-sign-this/).
+For more information about CLAs, please check out Alex Russell's excellent post,
+["Why Do I Need to Sign This?"](https://infrequently.org/2008/06/why-do-i-need-to-sign-this/).
 
 ## Slack
 
