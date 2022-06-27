@@ -1,19 +1,23 @@
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
-import { findMainQuickstartConfigFiles, readYamlFile } from "./helpers";
+import * as fs from 'fs';
 
-import { QuickstartConfig } from './types/QuickstartConfig';
+import { v4 as uuidv4 } from 'uuid';
 
-const main = (paths: string[]): void => {
-  for (const path of paths) {
-    const config: QuickstartConfig = readYamlFile<QuickstartConfig>(path).contents[0];
+import Quickstart from './lib/Quickstart';
 
-    if (config && !('id' in config)) {
+const main = (quickstarts: Quickstart[]): void => {
+  for (const quickstart of quickstarts) {
+    if (!quickstart.config.id) {
+      console.log(`Generated ID for ${quickstart.config.title}`);
       const newId: string = uuidv4();
-      const rawConfig: string = fs.readFileSync(path, { encoding: 'utf8' });
+      const rawConfig: string = fs.readFileSync(
+        quickstart.getConfigFilePath(),
+        { encoding: 'utf8' }
+      );
       const configWithId: string = `id: ${newId}\n${rawConfig}`;
 
-      fs.writeFileSync(path, configWithId, { encoding: 'utf8' });
+      fs.writeFileSync(quickstart.getConfigFilePath(), configWithId, {
+        encoding: 'utf8',
+      });
     }
   }
 };
@@ -24,7 +28,7 @@ const main = (paths: string[]): void => {
  * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
  */
 if (require.main === module) {
-  const configPaths: string[] = findMainQuickstartConfigFiles();
-  
-  main(configPaths);
+  const quickstarts = Quickstart.getAll();
+
+  main(quickstarts);
 }

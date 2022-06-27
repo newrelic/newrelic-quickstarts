@@ -1,37 +1,35 @@
-const fs = require('fs');
-const path = require('path');
-
-const {
-  readQuickstartFile,
-  findMainQuickstartConfigFiles,
-} = require('./helpers');
+import * as fs from 'fs';
+import * as path from 'path';
+import Quickstart from './lib/Quickstart';
 
 /**
  * Method to validate icons exist if supplied.
- * @param {string[]} mainConfigPaths array of absolute paths for each main config
+ * @param {string[]} quickstarts array of absolute paths for each main config
  * @returns {string[]} error messages for errors encountered
  */
 export const validateIcon = (
-    mainConfigPaths: string[]
+    quickstarts: Quickstart[]
   ): string[] => {
-  const errorMessages = [];
 
-  for (const configPath of mainConfigPaths) {
-    const {
-      contents: [config],
-    } = readQuickstartFile(configPath);
+  const errorMessages = quickstarts.map((quickstart) => {
+    if (quickstart.config.icon) {
+      const configPath = path.dirname(quickstart.getConfigFilePath());
+      const iconPath = path.join(configPath, quickstart.config.icon);
 
-    if ('icon' in config) {
-      const iconPath: string = path.join(path.dirname(configPath), config.icon);
-      if (fs.existsSync(iconPath) === false) {
-        errorMessages.push(
-          `Icon for ${configPath} is supplied but does not exist at ${iconPath}`
-        );
+      if (!fs.existsSync(iconPath)) {
+        return `Icon for ${configPath} is supplied but does not exist at ${iconPath}`;
+      }
+      else {
+        // empty string to be filtered out
+        return '' 
       }
     }
-  }
+    else {
+      return `No icon found for ${quickstart.config.title}`;
+    }
+  });
 
-  return errorMessages;
+  return errorMessages.filter(Boolean);
 };
 
 /**
@@ -56,7 +54,7 @@ export const handleErrors = (
 
 const main = () => {
   console.log(''); // add an extra new line for more visual separation in the workflow
-  var mainConfigPaths: string[] = findMainQuickstartConfigFiles();
+  var mainConfigPaths = Quickstart.getAll()
   var errorMessages: string[] = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
