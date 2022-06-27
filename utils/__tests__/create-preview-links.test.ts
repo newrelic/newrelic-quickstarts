@@ -1,24 +1,21 @@
 'use strict';
-import * as ghHelpers from '../lib/github-api-helpers';
-import {
+const {
+  mockGitHubResponseFilenames,
+  addFilenameObject,
+} = require('./test-utilities');
+
+const ghHelpers = require('../github-api-helpers');
+
+const {
   generatePreviewComment,
   createComment,
   createPreviewLink,
   getQuickstartsFromPRFiles,
-} from '../create-preview-links';
+} = require('../create-preview-links');
 
-import type { GithubAPIPullRequestFile } from '../lib/github-api-helpers';
-
-jest.mock('../lib/github-api-helpers', () => {
-  return {
-    ...jest.requireActual('../lib/github-api-helpers'),
-    fetchPaginatedGHResults: jest.fn(),
-  };
-});
+jest.mock('../github-api-helpers');
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log');
-
-const mockedGithubHelpers = ghHelpers as jest.Mocked<typeof ghHelpers>;
 
 const expectCommentHeading = `### Click the link(s) below to view a preview of your changes on newrelic.com/instant-observability<br/><br/>`;
 const previewLink = `https://newrelic.com/instant-observability/preview`;
@@ -30,13 +27,10 @@ describe('create-preview-links', () => {
 
   describe('getQuickstartsFromPRFiles', () => {
     test('returns an array of quickstart local paths', async () => {
-      mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
-        {
-          filename: 'quickstarts/apache/config.yml',
-        } as GithubAPIPullRequestFile,
-        {
-          filename: 'quickstarts/battlesnake/config.yml',
-        } as GithubAPIPullRequestFile,
+      ghHelpers.fetchPaginatedGHResults.mockReturnValueOnce([
+        { filename: 'quickstarts/apache/config.yml' },
+        { filename: 'quickstarts/nested/test/dashboards/test-dash/dash.json' },
+        { filename: 'quickstarts/apache/logo.svg' },
       ]);
 
       const quickstarts = await getQuickstartsFromPRFiles(
@@ -44,7 +38,7 @@ describe('create-preview-links', () => {
         'testtoken'
       );
       expect(quickstarts).toHaveLength(2);
-      expect(quickstarts).toEqual(['apache', 'battlesnake']);
+      expect(quickstarts).toEqual(['apache', 'nested/test']);
     });
   });
 
@@ -109,7 +103,7 @@ describe('create-preview-links', () => {
     });
 
     test('fails when Github API call errors', async () => {
-      mockedGithubHelpers.fetchPaginatedGHResults.mockRejectedValue(
+      ghHelpers.fetchPaginatedGHResults.mockRejectedValue(
         new Error('test API down')
       );
 
@@ -122,9 +116,9 @@ describe('create-preview-links', () => {
     });
 
     test('does not set Github workflow output when there are no quickstart changes', async () => {
-      mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
-        { filename: 'utils/test-script.js' } as GithubAPIPullRequestFile,
-        { filename: 'docs/test/config.yml' } as GithubAPIPullRequestFile,
+      ghHelpers.fetchPaginatedGHResults.mockReturnValueOnce([
+        { filename: 'utils/test-script.js' },
+        { filename: 'data-sources/test/config.yml' },
       ]);
 
       const res = await generatePreviewComment(
@@ -139,15 +133,14 @@ describe('create-preview-links', () => {
     });
 
     test('sets Github workflow output when there are quickstart changes', async () => {
-      mockedGithubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce([
-        {
-          filename: 'quickstarts/apache/config.yml',
-        } as GithubAPIPullRequestFile,
-        { filename: 'quickstarts/apache/logo.svg' } as GithubAPIPullRequestFile,
-        { filename: 'utils/test-script.js' } as GithubAPIPullRequestFile,
+      ghHelpers.fetchPaginatedGHResults.mockReturnValueOnce([
+        { filename: 'quickstarts/apache/config.yml' },
+        { filename: 'quickstarts/nested/test/dashboards/test-dash/dash.json' },
+        { filename: 'quickstarts/apache/logo.svg' },
+        { filename: 'utils/test-script.js' },
       ]);
 
-      const expectComment = `${expectCommentHeading}- [apache](${previewLink}?pr=1&quickstart=apache)`;
+      const expectComment = `${expectCommentHeading}- [apache](${previewLink}?pr=1&quickstart=apache)<br/>- [nested/test](${previewLink}?pr=1&quickstart=nested%2Ftest)`;
 
       const res = await generatePreviewComment('testurl', '1', 'testtoken');
       expect(res).toBe(true);

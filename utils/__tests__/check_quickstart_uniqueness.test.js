@@ -1,10 +1,16 @@
 'use strict';
 import checkQuickstartUniqueness from '../check_quickstart_uniqueness';
-import Quickstart from '../lib/Quickstart';
+import * as helpers from '../helpers';
 
 jest.mock('fs');
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  readQuickstartFile: jest.fn(),
+  removeRepoPathPrefix: jest.fn(),
+  findMainQuickstartConfigFiles: jest.fn(),
+}));
 
 describe('Action: check quickstart uniqueness', () => {
   afterEach(() => {
@@ -12,11 +18,20 @@ describe('Action: check quickstart uniqueness', () => {
   });
 
   test('finds exact id match', () => {
-    const mockGetAll = jest.fn().mockReturnValueOnce([
-      { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 12345 } },
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
+      'test/path/config.yml',
+      'test/2/path/config.yml',
     ]);
-    Quickstart.getAll = mockGetAll;
+    helpers.readQuickstartFile
+      .mockReturnValueOnce({
+        path: 'testpath',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'testpathother',
+        contents: [{ id: '12345' }],
+      });
+
     checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
@@ -24,12 +39,24 @@ describe('Action: check quickstart uniqueness', () => {
   });
 
   test('finds more than 2 id matches', () => {
-    const mockGetAll = jest.fn().mockReturnValueOnce([
-      { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/3/path/config.yml', config: { id: 12345 } },
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
+      'test/path/config.yml',
+      'test/2/path/config.yml',
+      'test/3/path/config.yml',
     ]);
-    Quickstart.getAll = mockGetAll;
+    helpers.readQuickstartFile
+      .mockReturnValueOnce({
+        path: 'testpath',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'testpathother',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'testpathother',
+        contents: [{ id: '12345' }],
+      });
 
     checkQuickstartUniqueness();
 
@@ -38,12 +65,19 @@ describe('Action: check quickstart uniqueness', () => {
   });
 
   test('does not find match', () => {
-    const mockGetAll = jest.fn().mockReturnValueOnce([
-      { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/3/path/config.yml', config: { id: 34567} },
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
+      'test/path/config.yml',
+      'test/2/path/config.yml',
     ]);
-    Quickstart.getAll = mockGetAll;
+    helpers.readQuickstartFile
+      .mockReturnValueOnce({
+        path: 'testpath',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'testpathother',
+        contents: [{ id: '54321' }],
+      });
 
     checkQuickstartUniqueness();
 
@@ -52,15 +86,34 @@ describe('Action: check quickstart uniqueness', () => {
   });
 
   test('finds and returns separate id matches', () => {
-    const mockGetAll = jest.fn().mockReturnValueOnce([
-      { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/3/path/config.yml', config: { id: 12345} },
-      { configPath: 'test/4/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/4/path/config.yml', config: { id: 98765} },
+    helpers.findMainQuickstartConfigFiles.mockReturnValueOnce([
+      'test/path/config.yml',
+      'test/2/path/config.yml',
+      'test/3/path/config.yml',
+      'test/4/path/config.yml',
+      'test/5/path/config.yml',
     ]);
-
-    Quickstart.getAll = mockGetAll
+    helpers.readQuickstartFile
+      .mockReturnValueOnce({
+        path: 'test/path/config.yml',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'test/2/path/config.yml',
+        contents: [{ id: '54321' }],
+      })
+      .mockReturnValueOnce({
+        path: 'test/3/path/config.yml',
+        contents: [{ id: '12345' }],
+      })
+      .mockReturnValueOnce({
+        path: 'test/4/path/config.yml',
+        contents: [{ id: '54321' }],
+      })
+      .mockReturnValueOnce({
+        path: 'test/5/path/config.yml',
+        contents: [{ id: '98765' }],
+      });
 
     checkQuickstartUniqueness();
 
