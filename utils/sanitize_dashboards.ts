@@ -1,9 +1,22 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as glob from 'glob';
+// Removes the first two arguments passed by `node`, these aren't needed for this function to run - CM
+const pathsToSanitize = process.argv.slice(2);
 
-const sanitizeRawContent = (rawConfig: string): string => {
-  return rawConfig
+type DirectoriesAndJsonFiles = {
+  directories: string[]; 
+  jsonFiles: string[];
+};
+
+if (pathsToSanitize.length < 1)
+  console.log(
+    "You must pass a file path as an argument for the sanitize function to run \nExample: 'yarn sanitize-dashboard node-js/express'"
+  );
+
+const sanitizeDashboard = (
+  fileContent: string
+  ): string => {
+  return fileContent
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
     .replace(
       /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
@@ -13,26 +26,46 @@ const sanitizeRawContent = (rawConfig: string): string => {
     .replace(/[\}\]]\,(?!\s*?[\{\[\"\'\w])/g, '}'); // Remove trailing commas if any left after json blocks
 };
 
+const checkDirForDashboardJson = (
+  directory: string
+  ): DirectoriesAndJsonFiles => {
+  const files = fs.readdirSync(directory, { withFileTypes: true });
+  
+  return {
+    directories: files
+      .filter((file) => file.isDirectory())
+      .map((file) => path.resolve(directory, file.name)),
+    jsonFiles: files
+      .filter((file) => file.name.includes('json'))
+      .map((file) => path.resolve(directory, file.name)),
+  };
+};
 
-const sanitizeDashboards = (pathsToSanitize: string[]) => {
-  pathsToSanitize.forEach((dashboardId) => {
-    const globPaths: string[] = glob.sync(
-      path.resolve('..', 'dashboards', dashboardId, '*.json')
-    );
+pathsToSanitize.forEach((i) => {
+  const directory: string = path.resolve('..', 'quickstarts', `${i}`, 'dashboards');
+  const files: DirectoriesAndJsonFiles = checkDirForDashboardJson(directory);
+  let jsonFiles = files.jsonFiles;
 
-    if (globPaths.length !== 1) {
-      console.log(
-        'No dashboard or .json files exist within this directory, skipping sanitization...'
-      );
-      return;
+  for (let nestedDir of files.directories) {
+    let nestedFiles = checkDirForDashboardJson(nestedDir);
+    if (nestedFiles.jsonFiles.length > 0) {
+      jsonFiles = jsonFiles.concat(nestedFiles.jsonFiles);
     }
+  }
 
-    const filePath: string = globPaths.pop()!;
-    const dashboardRawContent: string = fs.readFileSync(filePath, {encoding: 'utf8' });
-    const sanitizedRawContent: string = sanitizeRawContent(dashboardRawContent);
+  if (jsonFiles.length < 1) {
+    console.log(
+      'No .json files exist within this directory, skipping sanitization...'
+    );
+    return;
+  }
 
-    if (dashboardRawContent !== sanitizedRawContent) {
-      fs.writeFile(filePath, sanitizedRawContent, { encoding: 'utf8' }, function (err) {
+  for (let filePath of jsonFiles) {
+    const quickStart: string = fs.readFileSync(filePath, { encoding: 'utf8' });
+    const cleanFile: string = sanitizeDashboard(quickStart);
+
+    if (cleanFile !== quickStart) {
+      fs.writeFile(filePath, cleanFile, { encoding: 'utf8' }, function (err) {
         if (err) {
           console.error(`Error updating ${filePath}`);
           process.exit(1);
@@ -41,22 +74,5 @@ const sanitizeDashboards = (pathsToSanitize: string[]) => {
         }
       });
     }
-  });
-
-}
-
-const main = () => {
-  const pathsToSanitize = process.argv.slice(2);
-
-  if (pathsToSanitize.length < 1)
-    console.log(
-      'You must pass a file path as an argument for the sanitize function to run.:',
-      "Example: 'yarn sanitize-dashboard node-js/express'"
-    );
-
-  sanitizeDashboards(pathsToSanitize);
-}
-
-if (require.main === module) {
-  main();
-}
+  }
+});

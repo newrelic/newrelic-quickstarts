@@ -1,9 +1,10 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as glob from 'glob';
-import Quickstart from '../lib/Quickstart';
 
 import { RmDirOptions } from 'fs';
+
+import { findMainQuickstartConfigFiles } from '../helpers';
 
 const DIR_PATH = path.resolve(__dirname, '../../alert-policies');
 
@@ -18,8 +19,8 @@ const main = () => {
   setupAlertPolicyDir();
 
   // find all alerts with alert conditions
-  const quickstartsWithAlerts = Quickstart.getAll()
-    .map(quickstart => path.dirname(quickstart.configPath))
+  const quickstartsWithAlerts = findMainQuickstartConfigFiles()
+    .map(path.dirname)
     .filter((dir) => fs.existsSync(path.join(dir, 'alerts')));
 
   // make an alert-policy directory for each quickstart
@@ -58,7 +59,7 @@ const main = () => {
     const quickstartName = path.basename(quickstartDirPath);
     const rawConfig = fs.readFileSync(configFilePath!, { encoding: 'utf-8' });
     const updatedConfig = rawConfig.concat(
-      '\nalertPolicies:\n  - ',
+      '\nalert-policies:\n  - ',
       quickstartName
     );
 

@@ -1,9 +1,12 @@
 'use strict';
-import { expect, afterEach } from '@jest/globals';
-import * as fs from 'fs';
+const { expect, afterEach } = require('@jest/globals');
+const fs = require('fs');
 
-import { validateIcon, handleErrors } from '../validate_icons';
+const helpers = require('../helpers');
 
+const { validateIcon, handleErrors } = require('../validate_icons');
+
+jest.mock('../helpers');
 jest.mock('fs');
 
 describe('validate Icon tests', () => {
@@ -12,112 +15,64 @@ describe('validate Icon tests', () => {
   });
 
   describe('validateIcon', () => {
-    test('returns no icon found when Icon is not supplied', () => {
-      const errorMessages = validateIcon([
-        {
-          isValid: true,
-          basePath: '/path/repos/newrelic-quickstarts',
-          identifier: 'quickstarts/test-quickstart/config.yml',
-          configPath:
-            '/Users/mickeyryan/repos/newrelic-quickstarts/quickstarts/test-quickstart/config.yml',
-          config: {
-            id: '123',
-            title: 'Test quickstart',
-          },
-          components: [],
-        },
-      ]);
+    test('returns no errors when Icon is not supplied', () => {
+      helpers.readQuickstartFile.mockReturnValueOnce({ contents: [{}] });
 
-      expect(errorMessages).toStrictEqual([
-        'No icon found for Test quickstart',
-      ]);
+      const errorMessages = validateIcon(['fake_config_path']);
+
+      expect(errorMessages).toStrictEqual([]);
     });
 
     test('returns no errors when Icon is supplied and exists', () => {
-      fs.existsSync.mockReturnValue(true);
-      const errorMessages = validateIcon([
-        {
-          isValid: true,
-          basePath: '/path/newrelic-quickstarts',
-          identifier: 'quickstarts/test-quickstart/config.yml',
-          getConfigFilePath: jest.fn().mockImplementation(() => 'test/path'),
-          configPath:
-            '/path/newrelic-quickstarts/quickstarts/test-quickstart/config.yml',
-          config: {
-            id: '123',
-            title: 'Test quickstart',
-            icon: 'logo.svg',
+      helpers.readQuickstartFile.mockReturnValueOnce({
+        contents: [
+          {
+            icon: 'fake_icon_path',
           },
+        ],
+      });
+      fs.existsSync.mockReturnValue(true);
 
-          components: [],
-        },
-      ]);
+      const errorMessages = validateIcon(['fake_config_path']);
 
       expect(errorMessages.length).toBe(0);
     });
 
     test('returns icon errors when icon errors are detected', () => {
-      fs.existsSync.mockReturnValue(false);
-      const [errorMessage] = validateIcon([
-        {
-          isValid: true,
-          basePath: '/path/newrelic-quickstarts',
-          identifier: 'quickstarts/test-quickstart/config.yml',
-          getConfigFilePath: jest.fn().mockImplementation(() => 'test/path'),
-          configPath:
-            '/path/newrelic-quickstarts/quickstarts/test-quickstart/config.yml',
-          config: {
-            id: '123',
-            title: 'fake_config_path',
-            icon: 'logo.svg',
+      helpers.readQuickstartFile.mockReturnValueOnce({
+        contents: [
+          {
+            icon: 'fake_icon_path',
           },
+        ],
+      });
+      fs.existsSync.mockReturnValue(false);
 
-          components: [],
-        },
-      ]);
+      const [errorMessage] = validateIcon(['fake_config_path']);
 
       expect(errorMessage).toBe(
-        'Icon for test is supplied but does not exist at test/logo.svg'
+        'Icon for fake_config_path is supplied but does not exist at fake_icon_path'
       );
     });
 
     test('returns icon errors across multiple files', () => {
+      helpers.readQuickstartFile.mockReturnValue({
+        contents: [
+          {
+            icon: 'fake_icon_path',
+          },
+        ],
+      });
       fs.existsSync.mockReturnValue(false);
+      const mainConfigPaths = [
+        'fake_config_path',
+        'fake_config_path_2',
+        'fake_config_path_3',
+      ];
 
-      const errorMessages = validateIcon([
-        {
-          isValid: true,
-          basePath: '/path/newrelic-quickstarts',
-          identifier: 'quickstarts/test-quickstart/config.yml',
-          getConfigFilePath: jest.fn().mockImplementation(() => 'test/path'),
-          configPath:
-            '/path/newrelic-quickstarts/quickstarts/test-quickstart/config.yml',
-          config: {
-            id: '123',
-            title: 'fake_config_path',
-            icon: 'logo.svg',
-          },
+      const errorMessages = validateIcon(mainConfigPaths);
 
-          components: [],
-        },
-        {
-          isValid: true,
-          basePath: '/path/newrelic-quickstarts',
-          identifier: 'quickstarts/other/test-quickstart/config.yml',
-          getConfigFilePath: jest.fn().mockImplementation(() => 'test/path'),
-          configPath:
-            '/path/newrelic-quickstarts/quickstarts/other/test-quickstart/config.yml',
-          config: {
-            id: '123',
-            title: 'fake_config_path',
-            icon: 'logo.svg',
-          },
-
-          components: [],
-        },
-      ]);
-
-      expect(errorMessages.length).toBe(2);
+      expect(errorMessages.length).toBe(3);
     });
   });
 
