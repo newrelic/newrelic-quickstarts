@@ -1,23 +1,20 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
+import * as glob from 'glob';
+
+// Types
+import { Request, Response } from 'express';
 
 import Quickstart from './lib/Quickstart';
 
 const GREEN = '\x1b[32m';
 const PORT = process.env.PORT || '3000';
+const PARENT_DIRECTORY = path.resolve(__dirname, '../quickstarts');
 const BASE_PREVIEW_LINK =
   'https://newrelic.com/instant-observability/preview?local=true';
 
 const app = express();
-
-app.use(
-  cors({
-    origin: '*',
-  })
-);
-
-app.use('/', express.static(path.resolve(__dirname, '..')));
 
 /**
  * Helper function to ensure that an identifier has been supplied
@@ -31,10 +28,12 @@ const validateArgs = (identifier: string) => {
     process.exit(1);
   }
 
-  // FIXME: determine why this is using the _directory_ not the _configuration_
+  const configPath = glob.sync(path.join(PARENT_DIRECTORY, identifier, 'config.*'))[0] ?? '';
+  const configFile = configPath.split('/').pop();
+  
   const quickstart = new Quickstart(
-    identifier,
-    path.resolve(__dirname, '..', 'quickstarts')
+    `${identifier}/${configFile}`,
+    path.resolve(PARENT_DIRECTORY)
   );
 
   if (!quickstart.isValid) {
@@ -63,6 +62,19 @@ const main = async () => {
   validateArgs(identifier);
 
   const link = getPreviewLink(identifier);
+  
+  app.use(
+    cors({
+      origin: '*',
+    })
+  );
+  app.use('/', express.static(path.resolve(__dirname, '..')));
+
+  app.get('/', (req: Request, res: Response) => {
+    const response = glob.sync(path.join(PARENT_DIRECTORY, `/${identifier}/**/*.*`))
+                    .map(filepath => filepath.split('/newrelic-quickstarts/')[1]);                  
+    res.json(response);
+  });
 
   app.listen(PORT, () => {
     console.log(`Now serving files on http://localhost:${PORT}`);
