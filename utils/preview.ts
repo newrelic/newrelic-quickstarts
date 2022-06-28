@@ -9,7 +9,7 @@ import * as glob from 'glob';
 import * as cors from 'cors';
 
 // Helpers
-import { removeRepoPathPrefix } from './helpers';
+import { removeRepoPathPrefix } from './lib/helpers';
 
 // App
 const app = express();

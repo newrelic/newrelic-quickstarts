@@ -1,15 +1,8 @@
-import {
-  readQuickstartFile,
-  removeRepoPathPrefix,
-  findMainQuickstartConfigFiles,
-} from './helpers';
-
-import { QuickstartConfig } from "./types/QuickstartConfig";
-import { FilePathAndContents } from "./helpers";
+import Quickstart from './lib/Quickstart';
 
 export type IdsAndPaths = {
   id: string;
-  path: string;
+  configPath: string;
 };
 
 /**
@@ -18,10 +11,12 @@ export type IdsAndPaths = {
 const getMatchingIds = (
     idsAndPaths: IdsAndPaths[]
   ): IdsAndPaths[] => {
-  return idsAndPaths.reduce((acc:IdsAndPaths[], { id, path }:IdsAndPaths) => {
+  return idsAndPaths.reduce((acc:IdsAndPaths[], { id, configPath }:IdsAndPaths) => {
     const duplicates = idsAndPaths.filter(
       (quickstart: IdsAndPaths) =>
-        quickstart.id && quickstart.id === id && quickstart.path !== path
+        quickstart.id &&
+        quickstart.id === id &&
+        quickstart.configPath !== configPath
     );
 
     return [...new Set([...acc, ...duplicates])];
@@ -29,14 +24,12 @@ const getMatchingIds = (
 };
 
 const main = (): void => {
-  const configPaths: string[] = findMainQuickstartConfigFiles();
-  const configs: FilePathAndContents<QuickstartConfig>[] = configPaths.map((path) => readQuickstartFile<QuickstartConfig>(path));
-  
-  const idsAndPaths = configs.map((c: FilePathAndContents<QuickstartConfig>) => ({
-    id: c.contents[0].id,
-    path: c.path,
+  const quickstarts = Quickstart.getAll();
+  const IdsAndPaths = quickstarts.map(({ config: { id }, configPath }) => ({
+    id,
+    configPath,
   }));
-  const idMatches: IdsAndPaths[] = getMatchingIds(idsAndPaths);
+  const idMatches: IdsAndPaths[] = getMatchingIds(IdsAndPaths);
 
   if (idMatches.length == 0) {
     return console.log(`All quickstart ids are unique`);
@@ -48,7 +41,7 @@ const main = (): void => {
       `An id should not be set by the user, these are auto-generated`
     );
     idMatches.forEach((m:IdsAndPaths) =>
-      console.error(`${m.id} in ${removeRepoPathPrefix(m.path)}`)
+      console.error(`${m.id} in quickstarts/${m.configPath}`)
     );
     console.error(
       `Please remove your quickstart's id and we will auto-generate it\n`
