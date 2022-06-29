@@ -1,6 +1,16 @@
-import { fetchPaginatedGHResults } from './github-api-helpers';
-import { buildUniqueQuickstartSet } from './helpers';
+import Quickstart from './lib/Quickstart';
+import * as path from 'path';
+import {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+} from './lib/github-api-helpers';
 import { IO_PREVIEW_PAGE_URL } from './constants';
+import {
+  prop,
+  getRelatedQuickstarts,
+  getComponentLocalPath,
+} from './lib/helpers';
+import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
 
 /**
  * Retrieves the individual quickstarts changed or created in a pull request
@@ -15,12 +25,28 @@ export const getQuickstartsFromPRFiles = async (
   const filesURL = `${prURL}/files`;
 
   const files = await fetchPaginatedGHResults(filesURL, token);
-  const uniqueQuickstarts = files.reduce(
-    buildUniqueQuickstartSet,
-    new Set<string>()
-  );
 
-  return [...uniqueQuickstarts.values()];
+  const quickstartPaths = filterOutTestFiles(files)
+    .map(prop('filename'))
+    .filter(
+      (filePath) =>
+        QUICKSTART_CONFIG_REGEXP.test(filePath) ||
+        COMPONENT_PREFIX_REGEXP.test(filePath)
+    )
+    .flatMap((filePath) => {
+      if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
+        return new Quickstart(filePath);
+      }
+
+      return getRelatedQuickstarts(getComponentLocalPath(filePath));
+    })
+    .filter((quickstart) => quickstart.isValid)
+    .map((quickstart) =>
+      path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!)
+    )
+    .map((configPath) => configPath.split('quickstarts/').pop()!);
+
+  return [...new Set(quickstartPaths)];
 };
 
 /**
@@ -86,7 +112,7 @@ export const generatePreviewComment = async (
     console.log(`Fetching PR: ${prURL}`);
     const quickstarts = await getQuickstartsFromPRFiles(prURL, token);
 
-    console.log(`Found ${quickstarts.length} quickstarts`);
+    console.log(`Found ${quickstarts.length} quickstart(s)`);
     const links = quickstarts.map((q) => ({
       path: q,
       link: createPreviewLink(prNumber, q),

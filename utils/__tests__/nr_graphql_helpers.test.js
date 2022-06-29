@@ -1,8 +1,5 @@
 'use strict';
-const {
-  getCategoryTermsFromKeywords,
-  chunk,
-} = require('../nr-graphql-helpers');
+import { getCategoryTermsFromKeywords, chunk } from '../lib/nr-graphql-helpers';
 
 describe('getCategoryTermsFromKeywords', () => {
   test('getCategoryTermsFromKeywords returns undefined if no keywords are provided', () => {
