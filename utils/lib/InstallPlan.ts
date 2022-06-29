@@ -18,7 +18,7 @@ import type {
   InstallPlanTargetInput,
 } from '../types/InstallPlanMutationVariables';
 
-interface InstallPlanMutationResponse {
+export interface InstallPlanMutationResponse {
   installPlanStep: {
     id: string;
   };

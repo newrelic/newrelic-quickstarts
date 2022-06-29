@@ -7,7 +7,8 @@ import {
 import { chunk, translateMutationErrors } from './lib/nr-graphql-helpers';
 import { passedProcessArguments, prop } from './lib/helpers';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
-import DataSource from './lib/DataSource';
+import DataSource, { DataSourceMutationResponse } from './lib/DataSource';
+import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
   'data-sources/.+/config.+(yml|yaml)'
@@ -31,12 +32,17 @@ const main = async () => {
     .map((filename) => path.dirname(filename).replace('data-sources/', ''))
     .map((filename) => new DataSource(filename));
 
+  const results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
+    name: string;
+  })[] = [];
   // Submit all of the mutations (in chunks of 5)
-  const results = await Promise.all(
-    chunk(dataSources, 5).flatMap((chunk) =>
-      chunk.map((source) => source.submitMutation(isDryRun))
-    )
-  );
+  for (const c of chunk(dataSources, 5)) {
+    const res = await Promise.all(
+      c.map((source) => source.submitMutation(isDryRun))
+    );
+
+    results.concat(res);
+  }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
 
