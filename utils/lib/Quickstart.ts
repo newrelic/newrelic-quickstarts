@@ -23,7 +23,7 @@ import type {
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
 
-interface QuickstartMutationResponse {
+export interface QuickstartMutationResponse {
   quickstart: {
     id: string;
   };

@@ -4,7 +4,7 @@ import {
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
-import Quickstart from './lib/Quickstart';
+import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import {
   prop,
@@ -14,6 +14,7 @@ import {
 } from './lib/helpers';
 
 import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
+import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 const main = async () => {
   const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
@@ -53,11 +54,17 @@ const main = async () => {
     }, []);
 
   // Submit all of the mutations in chunks of 5
-  const results = await Promise.all(
-    chunk(quickstarts, 5).flatMap((chunk) =>
-      chunk.map((quickstart) => quickstart.submitMutation(dryRun))
-    )
-  );
+  const results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
+    name: string;
+  })[] = [];
+
+  for (const c of chunk(quickstarts, 5)) {
+    const res = await Promise.all(
+      c.map((quickstart) => quickstart.submitMutation(dryRun))
+    );
+
+    results.concat(res);
+  }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
 

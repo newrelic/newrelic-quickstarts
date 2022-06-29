@@ -15,7 +15,7 @@ import type {
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
 
-interface DataSourceMutationResponse {
+export interface DataSourceMutationResponse {
   dataSource: {
     id: string;
   };

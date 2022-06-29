@@ -5,11 +5,12 @@ import {
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
-import InstallPlan from './lib/InstallPlan';
+import InstallPlan, { InstallPlanMutationResponse } from './lib/InstallPlan';
 import { InstallPlanConfig } from './types/InstallPlanConfig';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 
@@ -48,12 +49,17 @@ const main = async () => {
     .filter(Boolean)
     .map((installId) => new InstallPlan(installId));
 
+  const results: (NerdGraphResponseWithLocalErrors<InstallPlanMutationResponse> & {
+    name: string;
+  })[] = [];
   // Submit all of the mutations (in chunks of 5)
-  const results = await Promise.all(
-    chunk(plans, 5).flatMap((chunk) =>
-      chunk.map((plan) => plan.submitMutation(isDryRun))
-    )
-  );
+  for (const c of chunk(plans, 5)) {
+    const res = await Promise.all(
+      c.map((plan) => plan.submitMutation(isDryRun))
+    );
+
+    results.concat(res);
+  }
 
   // Find the failed mutations and report
   const failures = results.filter((r) => r.errors && r.errors.length);
