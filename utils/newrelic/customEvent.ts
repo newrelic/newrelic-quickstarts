@@ -86,3 +86,16 @@ export const track = async (
     ...metadata,
   });
 };
+
+/**
+ * Send a custom New Relic event recoreding the success status and whether or
+ * not this was a dry-run attempt.
+ */
+export const recordNerdGraphResponse = async (
+  hasFailed: boolean,
+  event: CUSTOM_EVENT
+) => {
+  const status = hasFailed ? 'failed' : 'success';
+
+  await track(event, { status });
+};

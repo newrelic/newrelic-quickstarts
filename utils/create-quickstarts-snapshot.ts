@@ -3,16 +3,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  FilePathAndContents,
-  findMainQuickstartConfigFiles,
-  readQuickstartFile,
-} from './helpers';
-import { buildMutationVariables } from './create_validate_pr_quickstarts';
-import { QuickstartConfig } from './types/QuickstartConfig';
 import { QuickstartMutationVariable } from './types/QuickstartMutationVariable';
-
-type QuickstartFileAndConfig = FilePathAndContents<QuickstartConfig>;
+import Quickstart from './lib/Quickstart';
 
 /**
  * Saves a JSON file for a quickstart, given the GraphQL Mutation variables.
@@ -36,15 +28,10 @@ const saveQuickstartMutationVariable = (
 
 const main = () => {
   // get all quickstart config.yml filepaths
-  const quickstartConfigFiles = findMainQuickstartConfigFiles();
+  const quickstarts = Quickstart.getAll();
 
-  // convert all the config filepaths to objects
-  const quickstartConfigs =
-    quickstartConfigFiles.map<QuickstartFileAndConfig>(readQuickstartFile);
-
-  // build the GraphQL API variables for each quickstart
-  const quickstartMutationVariables = quickstartConfigs.map(
-    buildMutationVariables
+  const quickstartMutationVariables = quickstarts.map((qs) =>
+    qs.getMutationVariables(true)
   );
 
   // save the variables as a JSON file in the `/snapshots` directory

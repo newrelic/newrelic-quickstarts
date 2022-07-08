@@ -1,0 +1,31 @@
+name: Questions per Second
+
+description: |+
+  This alert is triggered when the current rate of Questions is greater than 2 standard deviations above the baseline for 60s, which could be an early indicator of a saturation problem for your instance.
+  It is important to note that this alert is disabled by default and you need to edit the configuration in New Relic One to add a targeted MySQL instance:
+  "WHERE displayName = 'MySql Instance Name'"
+  This allows the baseline to be calculated against a single instance instead of all running MySQL instances being monitored.
+
+type: BASELINE
+nrql:
+  # Cannot use FACET in Baseline alerts
+  query: "FROM MysqlSample SELECT average(query.questionsPerSecond)"
+
+# Direction in which baseline is set (Default: LOWER_ONLY)
+baselineDirection: UPPER_ONLY
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 2
+    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
+    thresholdDuration: 120
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
