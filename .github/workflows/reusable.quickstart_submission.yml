@@ -21,6 +21,10 @@ on:
       nr-license-key:
         required: true
 
+env:
+  PR_NUMBER: ${{ inputs.pr-number }}
+  DRY_RUN: ${{ inputs.dry-run }}
+
 jobs:
   submit-install-plans:
     name: Submit install plans
@@ -39,7 +43,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: cd utils && yarn install
+        run: cd utils && yarn install --frozen-lockfile
 
       - name: Update install plans
         env:
@@ -48,8 +52,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github-token }}
           NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
-          cd utils && yarn create-validate-install-plans $URL ${{ inputs.dry-run }}
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
+          cd utils && yarn create-validate-install-plans "$URL" "$DRY_RUN"
 
   submit-data-sources:
     name: Submit data sources
@@ -68,7 +72,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: cd utils && yarn install
+        run: cd utils && yarn install --frozen-lockfile
 
       - name: Update data sources
         env:
@@ -77,8 +81,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github-token }}
           NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
-          cd utils && yarn create-validate-data-sources $URL ${{ inputs.dry-run }}
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
+          cd utils && yarn create-validate-data-sources "$URL" "$DRY_RUN"
 
   submit-quickstarts:
     needs: [submit-install-plans]
@@ -98,7 +102,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: cd utils && yarn install
+        run: cd utils && yarn install --frozen-lockfile
 
       - name: Update quickstarts
         env:
@@ -107,5 +111,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
         run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ inputs.pr-number }}/files"
-          cd utils && yarn create-validate-pr-quickstarts $URL ${{ inputs.dry-run }}
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
+          cd utils && yarn create-validate-pr-quickstarts "$URL" "$DRY_RUN"
