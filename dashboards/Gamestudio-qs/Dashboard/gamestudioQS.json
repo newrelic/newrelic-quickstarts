@@ -1,0 +1,392 @@
+{
+    "name": "GamestudioQS",
+    "description": null,
+    "pages": [
+      {
+        "name": "Performance",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Host Memory Usage",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(memoryUsedBytes / memoryTotalBytes * 100) AS 'Used %', average(memoryFreeBytes / memoryTotalBytes * 100) AS 'Free %' FROM SystemSample SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Error rate by function",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT percentage(count(*), WHERE error is true) AS 'Error rate' FROM Transaction TIMESERIES FACET `request.uri` LIMIT 10 SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Host CPU Usage",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(cpuSystemPercent) FROM SystemSample TIMESERIES SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 1,
+                "min": 0
+              }
+            }
+          },
+          {
+            "title": "Average server response time",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(duration * 1000) AS 'Response time' FROM Transaction TIMESERIES SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Development",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Build Time (Minutes)",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(cpuSystemPercent) AS 'Build Time' FROM SystemSample TIMESERIES SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 1,
+                "min": 0
+              }
+            }
+          },
+          {
+            "title": "Asset load times (ms)",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 5,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT round(count(databaseCallCount + appId)) AS 'Objects', round(median(databaseCallCount + 2)) AS 'Images', round(max(priority)) AS 'Video', round(max(priority + 5)) AS 'Audio' FROM Transaction TIMESERIES LIMIT 10 SINCE 8 hours ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Memory Leaks",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(duration * 1000) AS 'Memory Leaks' FROM Transaction TIMESERIES SINCE 1800 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Demographics",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Player Logins",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT rate(count(*), 1 minute) AS 'Logins per minute' FROM Transaction SINCE 1800 seconds ago COMPARE WITH 86400 seconds ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Player Count Over Time",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 7,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(((totalTime OR duration OR 0) + (queueDuration OR 0) OR 0) * 1000) AS 'Player Count', average((queueDuration OR 0) * 1000) AS 'Xbox', average((externalDuration OR 0) * 1000) AS 'PlayStation', average((gcCumulative OR 0) * 1000) AS 'PC' FROM Transaction TIMESERIES LIMIT 10 SINCE 8 hours ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Platform",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(((totalTime OR duration OR 0) + (queueDuration OR 0) OR 0) * 1000) AS 'Mobile', count(totalTime + 10) AS 'Xbox', median(totalTime + 12) AS 'PlayStation', max(duration + 34) AS 'PC' FROM Transaction TIMESERIES LIMIT 10 SINCE 8 hours ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Country",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT round(count(databaseCallCount)) AS 'US', round(median(databaseCallCount + 12)) AS 'CA', round(max(priority + 3)) AS 'GB', round(max(priority + 5)) AS 'DE', round(max(priority + 7)) AS 'IN', round(max(priority + 10)) AS 'FR' FROM Transaction TIMESERIES LIMIT 10 SINCE 8 hours ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Language",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT round(count(databaseCallCount + appId)) AS 'English', round(median(databaseCallCount + 2)) AS 'Japanese', round(max(priority)) AS 'Spanish', round(max(priority + 5)) AS 'French' FROM Transaction TIMESERIES LIMIT 10 SINCE 8 hours ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
