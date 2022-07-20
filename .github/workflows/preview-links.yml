@@ -4,6 +4,7 @@ on:
   pull_request_target:
     branches:
       - main
+    types: [opened]
 
 defaults:
   run:
@@ -26,7 +27,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Create preview links
         id: links
@@ -35,7 +36,7 @@ jobs:
         run: |
           yarn create-preview-links "$PR_URL" "$PR_NUMBER"
 
-      - name: Comment 
+      - name: Comment
         if: steps.links.outputs.comment != ''
         env:
           COMMENT: ${{ steps.links.outputs.comment }}

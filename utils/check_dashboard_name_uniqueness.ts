@@ -1,51 +1,36 @@
-import * as glob from 'glob';
-import * as path from 'path';
-import {
-  readQuickstartFile,
-  removeRepoPathPrefix,
-  getMatchingNames,
-  cleanQuickstartName,
-} from './helpers';
+import { removeRepoPathPrefix } from './lib/helpers';
 
-interface DashboardNamesAndPaths {
-  name: string;
-  path: string;
-}
+import Dashboard from './lib/Dashboard';
 
-// TODO: move this to a types file when we convert other scripts to typescript
-interface DashboardConfigs {
-  path: string;
-  contents: {
-    name: string;
-  }[];
-}
+/**
+ * Returns any dashboards with matching dashboard names
+ * @param dashboards - An array of objects containing the path and name of a dashboard
+ * @returns - An array of matching values
+ */
+const findMatchingDashboardNames = (
+  dashboards: Array<Dashboard>
+): Array<Dashboard> => {
+  return dashboards.reduce<Dashboard[]>((acc, { identifier, config }) => {
+    const duplicates = dashboards.filter(
+      (dashboard) =>
+        dashboard.identifier !== identifier &&
+        dashboard.config.name === config.name
+    );
 
-/** Returns any quickstart dashboards with matching names and their filepaths */
-const findMatchingDashboardNames = (): DashboardNamesAndPaths[] => {
-  const dashboardConfigs = glob.sync(
-    path.resolve(process.cwd(), '../quickstarts/**/dashboards/*/*.+(json)')
-  );
-  // TODO: remove 'as' when we update readQuickstartFile to typescript
-  const parsedDashboardConfigs = dashboardConfigs.map(
-    readQuickstartFile
-  ) as DashboardConfigs[];
-
-  const dashboardNamesAndPaths = parsedDashboardConfigs.map((configFile) => ({
-    name: cleanQuickstartName(configFile.contents[0].name),
-    path: configFile.path,
-  }));
-
-  // TODO: remove 'as' when we update getMatchingNames to typescript
-  return getMatchingNames(dashboardNamesAndPaths) as DashboardNamesAndPaths[];
+    return [...new Set([...acc, ...duplicates])];
+  }, []);
 };
 
 const main = () => {
-  const nameMatches = findMatchingDashboardNames();
+  const allDashboards = Dashboard.getAll();
+  const nameMatches = findMatchingDashboardNames(allDashboards);
+  console.log(nameMatches);
+
   if (nameMatches.length > 0) {
     console.error(`ERROR: Found matching quickstart dashboard names`);
     console.error(`Punctuation and white space are removed before comparison`);
     nameMatches.forEach((m) =>
-      console.error(`${m.name} in ${removeRepoPathPrefix(m.path)}`)
+      console.error(`${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`)
     );
     console.error(
       `Please update your quickstart dashboard's name to be unique\n`
