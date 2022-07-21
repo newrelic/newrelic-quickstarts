@@ -4,7 +4,7 @@
 
 NRzure is a quickstart made to allow a quick and easy setup for instant observabilty of you Azure Active Directory security needs. With this dashboard, you can see valuable information such as active connections, incoming and successful requests, user errors, and a direct portal to you Azure Directory logs. This gives valuable information in an easy to visualize way to help you protect and monitor your company's security with Azure Active Directory.
 
-##NRZure Short Summary
+## NRZure Short Summary
 
 Azure active directory quickstart
 
