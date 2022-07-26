@@ -2,30 +2,38 @@
 import { getCategoryTermsFromKeywords, chunk } from '../lib/nr-graphql-helpers';
 
 describe('getCategoryTermsFromKeywords', () => {
-  test('getCategoryTermsFromKeywords returns undefined if no keywords are provided', () => {
+  test('getCategoryTermsFromKeywords returns undefined if no keywords are provided', async () => {
     const mockKeywords = undefined;
-    const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
+    const categoriesFromKeywords = await getCategoryTermsFromKeywords(
+      mockKeywords
+    );
 
     expect(categoriesFromKeywords).toEqual(undefined);
   });
 
-  test('getCategoryTermsFromKeywords returns undefined if no keywords match a category', () => {
+  test('getCategoryTermsFromKeywords returns undefined if no keywords match a category', async () => {
     const mockKeywords = ['python', 'apm', 'http'];
-    const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
+    const categoriesFromKeywords = await getCategoryTermsFromKeywords(
+      mockKeywords
+    );
 
     expect(categoriesFromKeywords).toEqual(undefined);
   });
 
-  test('getCategoryTermsFromKeywords returns 1 categoryTerm given a set of keywords where a keyword belong to 1 category', () => {
+  test('getCategoryTermsFromKeywords returns 1 categoryTerm given a set of keywords where a keyword belong to 1 category', async () => {
     const mockKeywords = ['python', 'azure'];
-    const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
+    const categoriesFromKeywords = await getCategoryTermsFromKeywords(
+      mockKeywords
+    );
 
     expect(categoriesFromKeywords).toEqual(['azure']);
   });
 
-  test('getCategoryTermsFromKeywords returns 2 categoryTerms given a set of keywords where keywords belong to 2 categories', () => {
+  test('getCategoryTermsFromKeywords returns 2 categoryTerms given a set of keywords where keywords belong to 2 categories', async () => {
     const mockKeywords = ['python', 'os', 'containers'];
-    const categoriesFromKeywords = getCategoryTermsFromKeywords(mockKeywords);
+    const categoriesFromKeywords = await getCategoryTermsFromKeywords(
+      mockKeywords
+    );
 
     expect(categoriesFromKeywords).toEqual(['os', 'containers']);
   });
