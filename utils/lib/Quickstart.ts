@@ -127,7 +127,9 @@ class Quickstart {
    * Get mutation variables from quickstart config
    * @returns - mutation varaibles for quickstart
    */
-  getMutationVariables(dryRun: boolean): QuickstartMutationVariable {
+  async getMutationVariables(
+    dryRun: boolean
+  ): Promise<QuickstartMutationVariable> {
     const {
       authors,
       description,
@@ -144,7 +146,7 @@ class Quickstart {
 
     const metadata = {
       authors: authors && authors.map((author) => ({ name: author })),
-      categoryTerms: getCategoryTermsFromKeywords(keywords),
+      categoryTerms: await getCategoryTermsFromKeywords(keywords),
       description: description && description.trim(),
       displayName: title && title.trim(),
       slug: slug && slug.trim(),
@@ -188,7 +190,7 @@ class Quickstart {
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
-      variables: this.getMutationVariables(dryRun),
+      variables: await this.getMutationVariables(dryRun),
     });
 
     // filePath may need to be changed for this rework

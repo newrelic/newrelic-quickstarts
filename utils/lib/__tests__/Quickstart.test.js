@@ -74,12 +74,12 @@ describe('Quickstart', () => {
   });
 
   describe('getMutationVariables', () => {
-    test('Returns variables for quickstart', () => {
+    test('Returns variables for quickstart', async () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-1/config.yml',
         MOCK_FILES_BASEPATH
       );
-      const variables = qs.getMutationVariables(true);
+      const variables = await qs.getMutationVariables(true);
 
       expect(variables).toEqual({
         id: '00000000-0000-0000-0000-000000000000',
@@ -108,12 +108,12 @@ describe('Quickstart', () => {
       });
     });
 
-    test('Returns variables for quickstart with components', () => {
+    test('Returns variables for quickstart with components', async () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-2/config.yml',
         MOCK_FILES_BASEPATH
       );
-      const variables = qs.getMutationVariables(true);
+      const variables = await qs.getMutationVariables(true);
 
       expect(variables.id).toEqual('mock-2-id');
       expect(variables.quickstartMetadata.alertConditions).toHaveLength(2);
