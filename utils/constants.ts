@@ -94,4 +94,16 @@ export const DATA_SOURCE_MUTATION = gql`
   }
 `;
 
-
+export const CATEGORIES_QUERY = gql`
+  {
+    actor {
+      nr1Catalog {
+        categories {
+          displayName
+          slug
+          terms
+        }
+      }
+    }
+  }
+`;
