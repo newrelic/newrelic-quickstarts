@@ -139,7 +139,7 @@ type CategoryTermsNRGraphqlResults = {
 /**
  * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
- * @returns {String[] | undefined } An array of quickstart categoryTerms
+ * @returns {Promise<String[] | undefined>} An array of quickstart categoryTerms
  *
  * @example
  * // input
@@ -160,10 +160,9 @@ export const getCategoryTermsFromKeywords = async (
     variables: {},
   });
 
-  const { categories: instantObservabilityCategories } =
-    data?.actor?.nr1Catalog ?? [];
+  const { categories } = data.actor.nr1Catalog;
 
-  const allCategoryKeywords = instantObservabilityCategories?.flatMap(
+  const allCategoryKeywords = categories.flatMap(
     (category) => category.terms
   );
 
