@@ -44,7 +44,11 @@ export default [
     associatedKeywords: ['mlops'],
   },
   {
-    displayName: 'Notifications',
-    associatedKeywords: ['notifications'],
+    displayName: 'Network',
+    associatedKeywords: ['network'],
+  },
+  {
+    displayName: 'Partner',
+    associatedKeywords: ['newrelic partner'],
   },
 ];
