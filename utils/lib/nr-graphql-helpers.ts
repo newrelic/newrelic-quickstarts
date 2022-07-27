@@ -128,8 +128,6 @@ type CategoryTermsNRGraphqlResults = {
   actor: {
     nr1Catalog: {
       categories: {
-        displayName: string;
-        slug: string;
         terms: string[];
       }[];
     };
