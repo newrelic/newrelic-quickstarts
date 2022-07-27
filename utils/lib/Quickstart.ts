@@ -125,7 +125,7 @@ class Quickstart {
 
   /**
    * Get mutation variables from quickstart config
-   * @returns - mutation varaibles for quickstart
+   * @returns - Promised mutation variables for quickstart
    */
   async getMutationVariables(
     dryRun: boolean
