@@ -1,6 +1,9 @@
 import * as path from 'path';
+import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
+
+nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
 
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
@@ -78,6 +81,10 @@ describe('Quickstart', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-1/config.yml',
         MOCK_FILES_BASEPATH
+      );
+
+      nrGraphQlHelpers.getCategoryTermsFromKeywords.mockResolvedValueOnce(
+        undefined
       );
       const variables = await qs.getMutationVariables(true);
 
