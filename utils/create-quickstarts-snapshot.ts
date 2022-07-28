@@ -30,12 +30,12 @@ const main = () => {
   // get all quickstart config.yml filepaths
   const quickstarts = Quickstart.getAll();
 
-  const quickstartMutationVariables = quickstarts.map((qs) =>
-    qs.getMutationVariables(true)
-  );
+  quickstarts.map(async (qs) => {
+    saveQuickstartMutationVariable(await qs.getMutationVariables(true))
+  });
 
-  // save the variables as a JSON file in the `/snapshots` directory
-  quickstartMutationVariables.forEach(saveQuickstartMutationVariable);
 };
 
-main();
+if (require.main === module) {
+  main();
+}
