@@ -99,8 +99,6 @@ export const CATEGORIES_QUERY = gql`
     actor {
       nr1Catalog {
         categories {
-          displayName
-          slug
           terms
         }
       }
