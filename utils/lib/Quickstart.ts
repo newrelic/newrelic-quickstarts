@@ -98,7 +98,7 @@ class Quickstart {
 
       return yaml.load(file.toString('utf-8')) as QuickstartConfig;
     } catch (e) {
-      console.error('Unable to parse quickstart config', this.configPath, e);
+      console.error(`Unable to parse quickstart config at ${this.configPath}`);
       this.isValid = false;
 
       return this.config;
