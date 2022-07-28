@@ -40,7 +40,7 @@ const validateArgs = (identifier: string, configFile: string) => {
 
   if (!quickstart.isValid) {
     console.error(
-      `Could not find a config.yml or config.yaml for ${identifier}.`
+      `\n*** Could not find a config.yml or config.yaml for ${identifier}***\n`
     );
     process.exit(1);
   }
