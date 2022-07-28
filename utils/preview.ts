@@ -12,7 +12,7 @@ import Quickstart from './lib/Quickstart';
 import { QuickstartConfig } from './types/QuickstartConfig';
 
 const GREEN = '\x1b[32m';
-const PORT = process.env.PORT || '3000';
+const PORT = process.env.PORT || '3001';
 const PARENT_DIRECTORY = path.resolve(__dirname, '../quickstarts');
 const DASHBOARDS_DIRECTORY = path.resolve(__dirname, '../dashboards');
 const ALERTS_DIRECTORY = path.resolve(__dirname, '../alert-policies');
