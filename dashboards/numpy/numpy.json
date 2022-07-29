@@ -1,0 +1,666 @@
+{
+    "name": "NumPy",
+    "description": null,
+    "pages": [
+      {
+        "name": "Numpy",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![logo](https://upload.wikimedia.org/wikipedia/commons/3/31/NumPy_logo_2020.svg)"
+            }
+          },
+          {
+            "title": "Throughput(request per a day)",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT rate(count(apm.service.transaction.duration), 1 day ) as 'Web throughput' FROM Metric WHERE (entity.guid = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy') AND (transactionType = 'Web') LIMIT MAX SINCE '2022-07-10 13:51:00-0700'UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Errors",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(newrelic.timeslice.value) AS `Errors/all` FROM Metric WHERE metricTimesliceName = 'Errors/all' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 21:51:00-0700' UNTIL '2022-07-19 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0.5
+                }
+              ]
+            }
+          },
+          {
+            "title": "Responses (per hour)",
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT rate(average(newrelic.timeslice.value),1 hour) * 1000000 AS `Responses` FROM Metric WHERE metricTimesliceName = 'Python/WSGI/Response' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Web Transaction Percentile",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT percentile(duration, 95) * 1000, percentile(duration, 99) * 1000, median(duration) * 1000 as Median, average(duration) * 1000 as Average FROM Transaction WHERE (entityGuid = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy') AND ((transactionType = 'Web' AND name = 'WebTransaction/Function/__main__:numpy_path')) LIMIT MAX SINCE '2022-07-10 13:51:00-0700' UNTIL '2022-07-20 05:19:00-0700' COMPARE WITH 1 week ago TIMESERIES  EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Network Traffic",
+            "layout": {
+              "column": 4,
+              "row": 4,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(transmitBytesPerSecond) AS 'Transmit bytes per second', average(receiveBytesPerSecond) AS 'Receive bytes per second' FROM NetworkSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto SINCE '2022-07-08 20:36:00-0700' UNTIL '2022-07-19 21:05:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Web Transaction",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT percentile(duration, 95) * 1000, percentile(duration, 99) * 1000, median(duration) * 1000 as Median, average(duration) * 1000 as Average FROM Transaction WHERE (entityGuid = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy') AND ((transactionType = 'Web' AND name = 'WebTransaction/Function/__main__:numpy_path')) LIMIT MAX SINCE '2022-07-10 13:51:00-0700' UNTIL '2022-07-20 05:19:00-0700' COMPARE WITH 1 week ago EXTRAPOLATE"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "value": 100
+                }
+              ]
+            }
+          },
+          {
+            "title": "Caller Duration",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(newrelic.timeslice.value) * 10 AS `DurationByCaller` FROM Metric WHERE metricTimesliceName = 'DurationByCaller/Unknown/Unknown/Unknown/Unknown/all' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' TIMESERIES MAX  UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "No.of Logins",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(newrelic.timeslice.value) AS `Logins` FROM Metric WHERE metricTimesliceName = 'Logging/lines' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' TIMESERIES AUTO UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Numpy Web Transaction",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(newrelic.timeslice.value) * 1000 AS `WebTransaction:numpy` FROM Metric WHERE metricTimesliceName = 'WebTransaction/Function/__main__:numpy_path' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' TIMESERIES AUTO UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Segment Breakdown",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 7,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(newrelic.timeslice.value, exclusiveTime: true) as value FROM Metric WHERE (entity.guid = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy') AND (scope = 'WebTransaction/Function/__main__:numpy_path') FACET `metricTimesliceName` LIMIT 5 SINCE '2022-07-10 13:51:00-0700' UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "NumPy Apdex Score ",
+            "layout": {
+              "column": 8,
+              "row": 11,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "\nSELECT apdex(newrelic.timeslice.value) AS `Apdex` FROM Metric WHERE metricTimesliceName = 'Apdex/Function/__main__:numpy_path' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy'SINCE '2022-07-10 13:51:00-0700' TIMESERIES AUTO UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Application Host",
+            "layout": {
+              "column": 1,
+              "row": 15,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(newrelic.timeslice.value) AS `Application Host Count` FROM Metric WHERE metricTimesliceName = 'Application/Host/count' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' TIMESERIES AUTO UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Requests",
+            "layout": {
+              "column": 7,
+              "row": 15,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(newrelic.timeslice.value) AS `RequestSampler` FROM Metric WHERE metricTimesliceName = 'Supportability/Python/RequestSampler/requests' AND `entity.guid` = 'MzUxMDYxM3xBUE18QVBQTElDQVRJT058NTM0ODA0NTEy' SINCE '2022-07-10 13:51:00-0700' TIMESERIES MAX UNTIL '2022-07-20 05:19:00-0700'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Infrastructure",
+        "description": null,
+        "widgets": [
+          {
+            "title": "CPU usage (%)",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(cpuPercent) AS 'CPU used %' FROM SystemSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Memory usage (%)",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(memoryUsedPercent) AS 'Memory used %' FROM SystemSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Storage usage (%)",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(diskUsedPercent) as 'Storage used %' FROM StorageSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Network traffic",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 8,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(transmitBytesPerSecond) AS 'Transmit bytes per second', average(receiveBytesPerSecond) AS 'Receive bytes per second' FROM NetworkSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Disk usage",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(diskUsedPercent) as 'Used %' FROM StorageSample FACET device WHERE entityId = '278992791438902252' LIMIT 4"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Load average",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 7,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(loadAverageOneMinute) as '1 minute', average(loadAverageFiveMinute) AS '5 minutes', average(loadAverageFifteenMinute) AS '15 minutes' FROM SystemSample WHERE `entityGuid` = 'MzUxMDYxM3xJTkZSQXxOQXwyNzg5OTI3OTE0Mzg5MDIyNTI' TIMESERIES auto"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Processes running",
+            "layout": {
+              "column": 8,
+              "row": 7,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(cpuPercent) as 'CPU %', latest(threadCount) as 'Threads' FROM ProcessSample FACET processId, processDisplayName WHERE entityId = '278992791438902252' ORDER BY cpuPercent asc LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
