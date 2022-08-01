@@ -68,9 +68,14 @@ abstract class Component<ConfigType, MutationVariablesType> {
     return shortPath ?? filePath;
   }
 
-  static throwComponentError(component: string, identifier: string): Error {
+  /**
+   * Throws an error at specified component level for error handling
+   * @param componentType - type of component
+   * @param identifier - component identifier
+   */
+  static throwComponentError(componentType: string, identifier: string): Error {
     throw new Error(
-      `${component.toLocaleUpperCase()} is invalid\nPlease check the reference at: ${identifier}`
+      `${componentType.toLocaleUpperCase()} is invalid\nPlease check the reference at: ${identifier}`
     );
   }
 }
