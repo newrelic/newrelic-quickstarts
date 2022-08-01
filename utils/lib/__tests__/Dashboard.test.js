@@ -125,5 +125,11 @@ describe('Dashboard', () => {
 
       expect(mutationVar.screenshots).toHaveLength(0);
     });
+
+    test('throws an error when dashboard is invalid', () => {
+      const dash = new Dashboard('invalid-dashboard-path',MOCK_FILES_BASEPATH);
+      expect(() => dash.getMutationVariables()).toThrow(Error);
+    })
+
   });
 });

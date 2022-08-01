@@ -233,5 +233,10 @@ describe('Alert', () => {
       );
       expect(mutationVar[1].rawConfiguration).toEqual(mockPolicyErrorJson);
     });
+    
+    test('throws an error when alert policy is invalid', () => {
+      const alert = new Alert('mock-fake-path', MOCK_FILES_BASEPATH);
+      expect(() => alert.getMutationVariables()).toThrow(Error);
+    })
   });
 });
