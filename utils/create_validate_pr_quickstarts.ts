@@ -58,12 +58,23 @@ const main = async () => {
     name: string;
   })[] = [];
 
-  for (const c of chunk(quickstarts, 5)) {
-    const res = await Promise.all(
-      c.map((quickstart) => quickstart.submitMutation(dryRun))
-    );
+  // Class implementations may throw an error
+  const quickstartErrors: Error[] = [];
 
-    results.concat(res);
+  for (const c of chunk(quickstarts, 5)) {
+    try {
+      const res = await Promise.all(
+        c.map((quickstart) => quickstart.submitMutation(dryRun))
+      );
+      results.concat(res);
+    } catch (err) {
+      const error = err as Error;
+
+      console.error(error.message);
+      quickstartErrors.push(error);
+      return [];
+    }
+
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
@@ -72,7 +83,7 @@ const main = async () => {
     translateMutationErrors(errors!, name)
   );
 
-  const hasFailed = failures.length > 0;
+  const hasFailed = failures.length > 0 || quickstartErrors.length > 0;
 
   // Record event in New Relic
   const event = dryRun
