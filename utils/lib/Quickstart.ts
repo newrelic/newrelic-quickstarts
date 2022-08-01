@@ -232,6 +232,9 @@ class Quickstart {
         } catch (err) {
           const error = err as Error
           console.log(error.message)
+
+          // mark quickstart as invalid due to component
+          this.isValid = false;
         }
       }
       );
