@@ -73,7 +73,10 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    *
    * @returns The ID for this install plan
    */
-  getMutationVariables() {
+  getMutationVariables(): string | Error {
+    if (!this.isValid) {
+      Component.throwComponentError('install plan', this.identifier);
+    }
     return this.config.id;
   }
 

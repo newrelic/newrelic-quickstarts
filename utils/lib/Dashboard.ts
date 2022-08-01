@@ -54,7 +54,11 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * Get mutation variables from dashboard config
    * @returns - mutation variables for dashboard.
    */
-  getMutationVariables(): QuickstartDashboardInput {
+  getMutationVariables(): QuickstartDashboardInput | Error {
+    if (!this.isValid) {
+      Component.throwComponentError('dashboard', this.identifier);
+    }
+
     const { name, description } = this.config;
     const screenshotPaths = this.getScreenshotPaths();
 

@@ -129,7 +129,12 @@ class Quickstart {
    */
   async getMutationVariables(
     dryRun: boolean
-  ): Promise<QuickstartMutationVariable> {
+  ): Promise<QuickstartMutationVariable | Error> {
+    if (!this.isValid) {
+      throw new Error(
+        `Quickstart is invalid\nPlease check the quickstart reference at: ${this.identifier}`
+      );
+    }
     const {
       authors,
       description,
@@ -181,7 +186,7 @@ class Quickstart {
       id: id ? id : MOCK_UUID,
       dryRun,
       quickstartMetadata,
-    };
+    } as QuickstartMutationVariable;
   }
 
   public async submitMutation(dryRun = true) {
@@ -190,7 +195,9 @@ class Quickstart {
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
-      variables: await this.getMutationVariables(dryRun),
+      variables: (await this.getMutationVariables(
+        dryRun
+      )) as QuickstartMutationVariable,
     });
 
     // filePath may need to be changed for this rework
@@ -218,8 +225,15 @@ class Quickstart {
 
       // otherwise, we have some components of this type
       // add them to the mutation variables
-      const variablesForType = componentsOfType.map((c) =>
-        c.getMutationVariables()
+      const variablesForType = componentsOfType.map((c) =>{
+
+        try {
+          return c.getMutationVariables()
+        } catch (err) {
+          const error = err as Error
+          console.log(error.message)
+        }
+      }
       );
 
       return {

@@ -51,7 +51,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
         return yaml.load(file.toString('utf-8')) as QuickstartConfigAlert;
       });
     } catch (e) {
-      console.log('Unable to parse YAML config', this.configPath, e);
+      console.log(`Unable to parse YAML config for alert: ${this.configPath}`);
       this.isValid = false;
 
       return this.config;
@@ -59,8 +59,14 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   }
 
   getMutationVariables() {
-    if (!this.isValid) {
-      return [];
+    const isPathGiven = this.configPath === ''
+    
+    if (!this.isValid && isPathGiven) {
+      Component.throwComponentError('alert', this.identifier);
+    }
+
+    if (!this.isValid && !isPathGiven) {
+      return []
     }
 
     return this.config.map((condition) => {
