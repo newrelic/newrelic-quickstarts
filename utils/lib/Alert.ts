@@ -22,6 +22,12 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
       this.isValid = false;
+      const errorMessage =
+        filePaths.length > 1
+          ? `Alert at ${this.identifier} contains multiple configuration files.\n`
+          : `Alert at ${this.identifier} does not exist. Please double check this location.\n`;
+      
+      console.error(errorMessage)
       return '';
     }
 
