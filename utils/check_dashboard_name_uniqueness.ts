@@ -22,19 +22,29 @@ const findMatchingDashboardNames = (
 };
 
 const main = () => {
-  const allDashboards = Dashboard.getAll();
-  const nameMatches = findMatchingDashboardNames(allDashboards);
-  console.log(nameMatches);
+  try {
+    const allDashboards = Dashboard.getAll();
+    const nameMatches = findMatchingDashboardNames(allDashboards);
+    console.log(nameMatches);
 
-  if (nameMatches.length > 0) {
-    console.error(`ERROR: Found matching quickstart dashboard names`);
-    console.error(`Punctuation and white space are removed before comparison`);
-    nameMatches.forEach((m) =>
-      console.error(`${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`)
-    );
-    console.error(
-      `Please update your quickstart dashboard's name to be unique\n`
-    );
+    if (nameMatches.length > 0) {
+      console.error(`ERROR: Found matching quickstart dashboard names`);
+      console.error(
+        `Punctuation and white space are removed before comparison`
+      );
+      nameMatches.forEach((m) =>
+        console.error(
+          `${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`
+        )
+      );
+      console.error(
+        `Please update your quickstart dashboard's name to be unique\n`
+      );
+      process.exit(1);
+    }
+  } catch (err) {
+    const error = err as Error;
+    console.log(error.message);
     process.exit(1);
   }
 };
