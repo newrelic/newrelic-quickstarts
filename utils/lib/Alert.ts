@@ -62,7 +62,9 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     const isPathGiven = this.configPath === ''
     
     if (!this.isValid && isPathGiven) {
-      Component.throwComponentError('alert', this.identifier);
+      Component.throwComponentError(
+        `Alert is invalid.\nPlease check if the path at ${this.identifier} exists.`
+      );
     }
 
     if (!this.isValid && !isPathGiven) {

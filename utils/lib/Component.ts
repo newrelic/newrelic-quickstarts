@@ -70,12 +70,11 @@ abstract class Component<ConfigType, MutationVariablesType> {
 
   /**
    * Throws an error at specified component level for error handling
-   * @param componentType - type of component
-   * @param identifier - component identifier
+   * @param errorMessage - error message to throw
    */
-  static throwComponentError(componentType: string, identifier: string): Error {
+  static throwComponentError(errorMessage: string): Error {
     throw new Error(
-      `${componentType.toLocaleUpperCase()} is invalid\nPlease check the reference at: ${identifier}`
+      errorMessage
     );
   }
 }

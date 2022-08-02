@@ -32,7 +32,12 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
       this.isValid = false;
-      return '';
+      const errorMessage =
+        filePaths.length > 1
+          ? `Data source at ${this.identifier} contains multiple configuration files.\n`
+          : `Data source at ${this.identifier} does not exist. Please double check this location.\n`;
+      
+      Component.throwComponentError(errorMessage)
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -77,6 +82,12 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   public async submitMutation(dryRun = true) {
+    if (!this.isValid) {
+      Component.throwComponentError(
+        `Data source is invalid.\nPlease check the dashboard at ${this.identifier}\n`
+      );
+    }
+
     const { data, errors } = await fetchNRGraphqlResults<
       DataSourceMutationVariable,
       DataSourceMutationResponse

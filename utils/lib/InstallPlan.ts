@@ -75,7 +75,9 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    */
   getMutationVariables(): string | Error {
     if (!this.isValid) {
-      Component.throwComponentError('install plan', this.identifier);
+      Component.throwComponentError(
+        `Install plan is invalid.\nPlease check the install plan at ${this.identifier}\n`
+      );
     }
     return this.config.id;
   }
@@ -84,6 +86,12 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    * Submits a mutation to NerdGraph for a single install plan.
    */
   public async submitMutation(dryRun = true) {
+    if (!this.isValid) {
+      Component.throwComponentError(
+        `Install plan is invalid.\nPlease check the dashboard at ${this.identifier}\n`
+      );
+    }
+
     const { data, errors } = await fetchNRGraphqlResults<
       InstallPlanMutationVariable,
       InstallPlanMutationResponse
