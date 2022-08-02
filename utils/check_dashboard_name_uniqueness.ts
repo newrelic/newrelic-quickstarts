@@ -22,6 +22,7 @@ const findMatchingDashboardNames = (
 };
 
 const main = () => {
+  const catchErrors = []
   try {
     const allDashboards = Dashboard.getAll();
     const nameMatches = findMatchingDashboardNames(allDashboards);
@@ -44,9 +45,17 @@ const main = () => {
     }
   } catch (err) {
     const error = err as Error;
-    console.log(error.message);
+    catchErrors.push(error.message)
+  }
+
+  if (catchErrors.length > 0) {
+    [...new Set(catchErrors)].forEach((error) => {
+      console.error(error)
+    })
+
     process.exit(1);
   }
+
 };
 
 if (require.main === module) {

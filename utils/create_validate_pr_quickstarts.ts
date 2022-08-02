@@ -53,13 +53,28 @@ const main = async () => {
       return acc;
     }, []);
 
+  const invalidQuickstarts = quickstarts
+    .map((qs) => {
+      qs.validate();
+      if (qs.isValid) {
+        return qs;
+      } else {
+        return undefined;
+      }
+    })
+    .filter(Boolean);
+
+  if (invalidQuickstarts.length > 0) {
+    process.exit(1);
+  }
+
   // Submit all of the mutations in chunks of 5
   const results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
     name: string;
   })[] = [];
 
   // Class implementations may throw an error
-  const quickstartErrors: Error[] = [];
+  const quickstartErrors: string[] = [];
 
   for (const c of chunk(quickstarts, 5)) {
     try {
@@ -70,11 +85,9 @@ const main = async () => {
     } catch (err) {
       const error = err as Error;
 
-      console.error(error.message);
-      quickstartErrors.push(error);
+      quickstartErrors.push(error.message);
       return [];
     }
-
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
@@ -82,6 +95,8 @@ const main = async () => {
   failures.forEach(({ errors, name }) =>
     translateMutationErrors(errors!, name)
   );
+
+  quickstartErrors.forEach((errorMessage) => console.error(errorMessage));
 
   const hasFailed = failures.length > 0 || quickstartErrors.length > 0;
 
