@@ -128,15 +128,6 @@ describe('Quickstart', () => {
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
-
-    test('Throws an error when quickstart is invalid', () => {
-      const qs = new Quickstart(
-        'quickstarts/mock-quickstart-DNE/config.yml',
-        MOCK_FILES_BASEPATH
-      );
-
-      expect(qs.getMutationVariables()).rejects.toThrow(Error);
-    })
   });
 
   describe('validate', () => {

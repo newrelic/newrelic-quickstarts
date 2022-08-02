@@ -90,10 +90,5 @@ describe('InstallPlan', () => {
         fallback: undefined,
       });
     });
-
-    test('throws an error when install plan config is invalid', () => {
-      const install = new InstallPlan('mock-fake', MOCK_FILES_BASEPATH);
-      expect(() => install.getMutationVaraibles()).toThrow(Error);
-    })
   });
 });
