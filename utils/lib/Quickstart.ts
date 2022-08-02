@@ -129,9 +129,9 @@ class Quickstart {
    */
   async getMutationVariables(
     dryRun: boolean
-  ): Promise<QuickstartMutationVariable | Error> {
+  ): Promise<QuickstartMutationVariable> {
     if (!this.isValid) {
-      throw new Error(
+      console.error(
         `Quickstart is invalid\nPlease check the quickstart reference at: ${this.identifier}`
       );
     }
@@ -195,9 +195,7 @@ class Quickstart {
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
-      variables: (await this.getMutationVariables(
-        dryRun
-      )) as QuickstartMutationVariable,
+      variables: await this.getMutationVariables(dryRun),
     });
 
     // filePath may need to be changed for this rework
@@ -225,18 +223,8 @@ class Quickstart {
 
       // otherwise, we have some components of this type
       // add them to the mutation variables
-      const variablesForType = componentsOfType.map((c) =>{
-
-        try {
-          return c.getMutationVariables()
-        } catch (err) {
-          const error = err as Error
-          console.log(error.message)
-
-          // mark quickstart as invalid due to component
-          this.isValid = false;
-        }
-      }
+      const variablesForType = componentsOfType.map((c) =>
+        c.getMutationVariables()
       );
 
       return {

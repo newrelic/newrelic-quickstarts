@@ -27,9 +27,10 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       const errorMessage =
         filePaths.length > 1
           ? `Dashboard at ${this.identifier} contains multiple configuration files.\n`
-          : `Dashbboard at ${this.identifier} does not exist. Please double check this location.\n`;
+          : `Dashboard at ${this.identifier} does not exist. Please double check this location.\n`;
       
-      Component.throwComponentError(errorMessage)
+      console.error(errorMessage)
+      return ''
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -59,9 +60,9 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * Get mutation variables from dashboard config
    * @returns - mutation variables for dashboard.
    */
-  getMutationVariables(): QuickstartDashboardInput | Error {
+  getMutationVariables(): QuickstartDashboardInput {
     if (!this.isValid) {
-      Component.throwComponentError(
+      console.error(
         `Dashboard is invalid.\nPlease check the dashboard at ${this.identifier}\n`
       );
     }

@@ -22,7 +22,7 @@ abstract class Component<ConfigType, MutationVariablesType> {
 
   abstract getConfigFilePath(): string;
   abstract getConfigContent(): ConfigType;
-  abstract getMutationVariables(): MutationVariablesType | Error;
+  abstract getMutationVariables(): MutationVariablesType;
 
   get fullPath() {
     return path.join(this.basePath, this.configPath);
@@ -66,16 +66,6 @@ abstract class Component<ConfigType, MutationVariablesType> {
   static removeBasePath(filePath: string, basePath: string): string {
     const shortPath = filePath.split(`${basePath}/`).pop();
     return shortPath ?? filePath;
-  }
-
-  /**
-   * Throws an error at specified component level for error handling
-   * @param errorMessage - error message to throw
-   */
-  static throwComponentError(errorMessage: string): Error {
-    throw new Error(
-      errorMessage
-    );
   }
 }
 

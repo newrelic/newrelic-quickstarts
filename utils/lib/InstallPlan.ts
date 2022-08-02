@@ -73,9 +73,9 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    *
    * @returns The ID for this install plan
    */
-  getMutationVariables(): string | Error {
+  getMutationVariables(): string{
     if (!this.isValid) {
-      Component.throwComponentError(
+      console.error(
         `Install plan is invalid.\nPlease check the install plan at ${this.identifier}\n`
       );
     }
@@ -87,7 +87,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    */
   public async submitMutation(dryRun = true) {
     if (!this.isValid) {
-      Component.throwComponentError(
+      console.error(
         `Install plan is invalid.\nPlease check the dashboard at ${this.identifier}\n`
       );
     }
