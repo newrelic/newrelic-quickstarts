@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
+import Dashboard from '../Dashboard';
 
 nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
 
@@ -53,6 +54,11 @@ describe('Quickstart', () => {
   });
 
   describe('getComponents', () => {
+
+    afterAll(() => {
+      jest.resetAllMocks();
+    })
+
     test('Returns empty array when there are no components', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-5/config.yml',
@@ -74,6 +80,30 @@ describe('Quickstart', () => {
       expect(components).toBeDefined();
       expect(components).toHaveLength(3);
     });
+
+    test('Ensure quickstart is invalid from invalid components', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
+      const qs = new Quickstart(
+        'quickstarts/mock-quickstart-8/config.yml',
+        MOCK_FILES_BASEPATH
+      );
+
+      const components = qs.getComponents();
+
+      expect(components).toBeDefined();
+      expect(qs.isValid).toBe(true);
+
+
+      // all components are invalid
+      qs.components.forEach(component => {
+        expect(component.isValid).toBe(false)
+      })
+
+      qs.validate()
+
+      expect(qs.isValid).toBe(false);
+
+    })
   });
 
   describe('getMutationVariables', () => {
@@ -160,7 +190,7 @@ describe('Quickstart', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
 
-      expect(quickstarts).toHaveLength(7);
+      expect(quickstarts).toHaveLength(8);
     });
 
     test('Handles no quickstarts in directory', () => {
