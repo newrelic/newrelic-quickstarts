@@ -22,40 +22,21 @@ const findMatchingDashboardNames = (
 };
 
 const main = () => {
-  const catchErrors = []
-  try {
-    const allDashboards = Dashboard.getAll();
-    const nameMatches = findMatchingDashboardNames(allDashboards);
-    console.log(nameMatches);
+  const allDashboards = Dashboard.getAll();
+  const nameMatches = findMatchingDashboardNames(allDashboards);
+  console.log(nameMatches);
 
-    if (nameMatches.length > 0) {
-      console.error(`ERROR: Found matching quickstart dashboard names`);
-      console.error(
-        `Punctuation and white space are removed before comparison`
-      );
-      nameMatches.forEach((m) =>
-        console.error(
-          `${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`
-        )
-      );
-      console.error(
-        `Please update your quickstart dashboard's name to be unique\n`
-      );
-      process.exit(1);
-    }
-  } catch (err) {
-    const error = err as Error;
-    catchErrors.push(error.message)
-  }
-
-  if (catchErrors.length > 0) {
-    [...new Set(catchErrors)].forEach((error) => {
-      console.error(error)
-    })
-
+  if (nameMatches.length > 0) {
+    console.error(`ERROR: Found matching quickstart dashboard names`);
+    console.error(`Punctuation and white space are removed before comparison`);
+    nameMatches.forEach((m) =>
+      console.error(`${m.identifier} in ${removeRepoPathPrefix(m.configPath)}`)
+    );
+    console.error(
+      `Please update your quickstart dashboard's name to be unique\n`
+    );
     process.exit(1);
   }
-
 };
 
 if (require.main === module) {
