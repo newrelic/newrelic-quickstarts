@@ -126,7 +126,7 @@ describe('Quickstart', () => {
       expect(variables.quickstartMetadata.alertConditions).toHaveLength(2);
       expect(variables.quickstartMetadata.dashboards).toHaveLength(1);
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
-      expect(variables.quickstartMetadata.dataSources).toHaveLength(1);
+      expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
   });
 
