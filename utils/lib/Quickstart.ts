@@ -52,8 +52,8 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
   { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
-    mutationKey: 'dataSourceIds',
+    configKey: 'dataSources',
+    mutationKey: 'dataSources',
     ctor: DataSource,
   },
 ];
