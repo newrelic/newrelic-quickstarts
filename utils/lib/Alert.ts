@@ -65,16 +65,10 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   }
 
   getMutationVariables() {
-    const isPathGiven = this.configPath === ''
-    
-    if (!this.isValid && isPathGiven) {
+    if (!this.isValid) {
       console.error(
         `Alert is invalid.\nPlease check if the path at ${this.identifier} exists.`
       );
-      return []
-    }
-
-    if (!this.isValid && !isPathGiven) {
       return []
     }
 
