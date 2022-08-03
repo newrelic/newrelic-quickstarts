@@ -186,7 +186,7 @@ class Quickstart {
       id: id ? id : MOCK_UUID,
       dryRun,
       quickstartMetadata,
-    } as QuickstartMutationVariable;
+    };
   }
 
   public async submitMutation(dryRun = true) {
