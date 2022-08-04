@@ -20,7 +20,7 @@ describe('Action: check quickstart uniqueness', () => {
     checkQuickstartUniqueness();
 
     expect(global.console.log).not.toHaveBeenCalled();
-    expect(global.console.error).toHaveBeenCalledTimes(5);
+    expect(global.console.error).toHaveBeenCalledTimes(4);
   });
 
   test('finds more than 2 id matches', () => {
