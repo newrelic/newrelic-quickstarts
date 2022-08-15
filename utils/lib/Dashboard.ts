@@ -24,7 +24,13 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
 
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
       this.isValid = false;
-      return ``;
+      const errorMessage =
+        filePaths.length > 1
+          ? `Dashboard at ${this.identifier} contains multiple configuration files.\n`
+          : `Dashboard at ${this.identifier} does not exist. Please double check this location.\n`;
+      
+      console.error(errorMessage)
+      return ''
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -43,7 +49,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       const file = fs.readFileSync(this.fullPath);
       return JSON.parse(file.toString('utf-8'));
     } catch (e) {
-      console.log('Unable to read and parse JSON config', this.configPath, e);
+      console.log('Unable to read and parse JSON config', this.configPath);
       this.isValid = false;
 
       return this.config;
@@ -55,6 +61,12 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * @returns - mutation variables for dashboard.
    */
   getMutationVariables(): QuickstartDashboardInput {
+    if (!this.isValid) {
+      console.error(
+        `Dashboard is invalid.\nPlease check the dashboard at ${this.identifier}\n`
+      );
+    }
+
     const { name, description } = this.config;
     const screenshotPaths = this.getScreenshotPaths();
 
@@ -84,7 +96,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
    * for a dashboard's mutation variable
    * @returns - Object with URL for the mutation variable
    */
-  getScreenshotUrl(screenshotPath: string): { url: string; } {
+  getScreenshotUrl(screenshotPath: string): { url: string } {
     const splitConfigPath = path.dirname(this.configPath);
     const screenShotFileName = path.basename(screenshotPath);
 
