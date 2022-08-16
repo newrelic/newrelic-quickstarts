@@ -52,7 +52,7 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
   { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
+    configKey: 'dataSources',
     mutationKey: 'dataSourceIds',
     ctor: DataSource,
   },
@@ -130,6 +130,11 @@ class Quickstart {
   async getMutationVariables(
     dryRun: boolean
   ): Promise<QuickstartMutationVariable> {
+    if (!this.isValid) {
+      console.error(
+        `Quickstart is invalid\nPlease check the quickstart reference at: ${this.identifier}`
+      );
+    }
     const {
       authors,
       description,
@@ -235,10 +240,10 @@ class Quickstart {
     });
 
     if (invalidComponents.length) {
-      console.log('The following components are not valid:');
+      console.error('The following components are not valid:');
 
       for (const { identifier: localPath } of invalidComponents) {
-        console.log(`\t ${localPath}`);
+        console.error(`\t ${localPath}`);
       }
 
       this.isValid = false;
