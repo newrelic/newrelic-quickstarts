@@ -21,6 +21,10 @@ jest.spyOn(global.console, 'log').mockImplementation(() => {});
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
 describe('Alert', () => {
+  afterAll(() => {
+    jest.resetAllMocks();
+  }) 
+
   describe('constructor', () => {
     test('Creates valid Alert', () => {
       const alert = new Alert('mock-alert-policy-2', MOCK_FILES_BASEPATH);
@@ -29,9 +33,11 @@ describe('Alert', () => {
     });
 
     test('Creates invalid Alert when file does not exist', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {})
       const alert = new Alert('mock-alert-infinity', MOCK_FILES_BASEPATH);
       expect(alert.isValid).toBe(false);
       expect(alert.config).not.toBeDefined();
+      expect(console.error).toHaveBeenCalled();
     });
   });
 
@@ -43,15 +49,19 @@ describe('Alert', () => {
     });
 
     test('Fails to create valid config path when alert policy does not exist', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {})
       const alert = new Alert('mock-alert-infinity', MOCK_FILES_BASEPATH);
       expect(alert.configPath).toEqual('');
       expect(alert.isValid).toBe(false);
+      expect(console.error).toHaveBeenCalled();
     });
 
     test('Fails to create valid config path basePath is invalid', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {})
       const alert = new Alert('mock-alert-infinity', __dirname);
       expect(alert.configPath).toEqual('');
       expect(alert.isValid).toBe(false);
+      expect(console.error).toHaveBeenCalled();
     });
   });
 
@@ -233,5 +243,6 @@ describe('Alert', () => {
       );
       expect(mutationVar[1].rawConfiguration).toEqual(mockPolicyErrorJson);
     });
+    
   });
 });
