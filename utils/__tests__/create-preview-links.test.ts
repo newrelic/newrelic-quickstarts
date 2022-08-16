@@ -152,7 +152,7 @@ describe('create-preview-links', () => {
       const res = await generatePreviewComment('testurl', '1', 'testtoken');
       expect(res).toBe(true);
       expect(console.log).toHaveBeenCalledWith(
-        `::set-output name=comment::${JSON.stringify(expectComment)}`
+        `::set-output name=comment::${expectComment}`
       );
     });
   });
