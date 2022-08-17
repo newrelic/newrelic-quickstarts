@@ -32,7 +32,8 @@ export const getQuickstartsFromPRFiles = async (
       .map(filePath => path.dirname(filePath.split('quickstarts/').pop()!))
 
   /*
-    We can rely on a quickstart existing, and use the quickstart class with 
+    We can rely on a quickstart existing on the `main` branch because if it isn't, then it was created in this 
+    pull request and will be caught by the logic above. We can then use the Quickstart class with 
     getRelatedQuickstarts to get all quickstarts related to the component.  If
     the component itself exists we know a quickstart related to it also exists.
   */
