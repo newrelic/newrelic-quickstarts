@@ -32,7 +32,7 @@ const validateArgs = (identifier: string, configFile: string) => {
     );
     process.exit(1);
   }
-  
+
   const quickstart = new Quickstart(
     `${identifier}/${configFile}`,
     path.resolve(PARENT_DIRECTORY)
@@ -40,7 +40,7 @@ const validateArgs = (identifier: string, configFile: string) => {
 
   if (!quickstart.isValid) {
     console.error(
-      `Could not find a config.yml or config.yaml for ${identifier}.`
+      `\n*** Could not find a config.yml or config.yaml for ${identifier}***\n`
     );
     process.exit(1);
   }
@@ -51,32 +51,37 @@ const validateArgs = (identifier: string, configFile: string) => {
  * and an optional port.
  */
 const getPreviewLink = (identifier: string) => {
-  const port = PORT !== '&port=3000' ? PORT : '';
+  const port = PORT !== '3000' ? `&port=${PORT}` : '';
   return `${BASE_PREVIEW_LINK}&quickstart=${identifier}${port}`;
 };
 
 /**
- * Takes an absolute path and removes everything prior to and including 'newrelic-quickstarts' 
+ * Takes an absolute path and removes everything prior to and including 'newrelic-quickstarts'
  * @returns file paths starting at quickstarts/ | dashboards/ | alert-policies/ Example: dashboards/battlesnake-game-tracking/battlesnake-game-tracking.json
  */
-const removePathPrefixes = (filePath: string) => filePath.split('/newrelic-quickstarts/')[1];
+const removePathPrefixes = (filePath: string) =>
+  filePath.split('/newrelic-quickstarts/')[1];
 
 /**
- * Takes a string array of directories (dashboards for a quickstart) and base directory (dashboards | alert-policies) and returns all the files from the directories in a flat map 
+ * Takes a string array of directories (dashboards for a quickstart) and base directory (dashboards | alert-policies) and returns all the files from the directories in a flat map
  */
-const getFilesFromDirectories = (directories: string[], rootDir: string) => directories.flatMap(dir => glob.sync(path.join(rootDir, `${dir}/*.*`)).map(removePathPrefixes))
+const getFilesFromDirectories = (directories: string[], rootDir: string) =>
+  directories.flatMap((dir) =>
+    glob.sync(path.join(rootDir, `${dir}/*.*`)).map(removePathPrefixes)
+  );
 /**
  * Entrypoint.
  */
 const main = async () => {
   const identifier = process.argv[2];
-  const configPath = glob.sync(path.join(PARENT_DIRECTORY, identifier, 'config.*'))[0] ?? '';
+  const configPath =
+    glob.sync(path.join(PARENT_DIRECTORY, identifier, 'config.*'))[0] ?? '';
   const configFile = configPath.split('/').pop() ?? '';
 
   validateArgs(identifier, configFile);
 
   const link = getPreviewLink(identifier);
-  
+
   app.use(
     cors({
       origin: '*',
@@ -85,16 +90,23 @@ const main = async () => {
   app.use('/', express.static(path.resolve(__dirname, '..')));
 
   app.get('/', (req: Request, res: Response) => {
-    const quickstartFiles = glob.sync(path.join(PARENT_DIRECTORY, `/${identifier}/**/*.*`))
-                    .map(removePathPrefixes);
-    
+    const quickstartFiles = glob
+      .sync(path.join(PARENT_DIRECTORY, `/${identifier}/**/*.*`))
+      .map(removePathPrefixes);
+
     const config = yaml.load(
       fs.readFileSync(configPath).toString('utf-8')
     ) as QuickstartConfig;
 
-    const dashboardFiles = getFilesFromDirectories(config.dashboards || [], DASHBOARDS_DIRECTORY);
-    const alertPolicyFiles = getFilesFromDirectories(config.alertPolicies || [], ALERTS_DIRECTORY);
-    
+    const dashboardFiles = getFilesFromDirectories(
+      config.dashboards || [],
+      DASHBOARDS_DIRECTORY
+    );
+    const alertPolicyFiles = getFilesFromDirectories(
+      config.alertPolicies || [],
+      ALERTS_DIRECTORY
+    );
+
     res.json([...quickstartFiles, ...dashboardFiles, ...alertPolicyFiles]);
   });
 
