@@ -56,7 +56,7 @@ const main = async () => {
   const invalidQuickstarts = quickstarts
     .map((qs) => {
       qs.validate();
-      return (qs.isValid ? qs : undefined);
+      return !qs.isValid ? qs : undefined;
     })
     .filter(Boolean);
 
