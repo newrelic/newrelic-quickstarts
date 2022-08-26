@@ -53,17 +53,37 @@ const main = async () => {
       return acc;
     }, []);
 
+  const invalidQuickstarts = quickstarts
+    .map((qs) => {
+      qs.validate();
+      return !qs.isValid ? qs : undefined;
+    })
+    .filter(Boolean);
+
+  if (invalidQuickstarts.length > 0) {
+    process.exit(1);
+  }
+
   // Submit all of the mutations in chunks of 5
   const results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
     name: string;
   })[] = [];
 
-  for (const c of chunk(quickstarts, 5)) {
-    const res = await Promise.all(
-      c.map((quickstart) => quickstart.submitMutation(dryRun))
-    );
+  // Class implementations may throw an error
+  const quickstartErrors: string[] = [];
 
-    results.concat(res);
+  for (const c of chunk(quickstarts, 5)) {
+    try {
+      const res = await Promise.all(
+        c.map((quickstart) => quickstart.submitMutation(dryRun))
+      );
+      results.concat(res);
+    } catch (err) {
+      const error = err as Error;
+
+      quickstartErrors.push(error.message);
+      return [];
+    }
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
@@ -72,7 +92,9 @@ const main = async () => {
     translateMutationErrors(errors!, name)
   );
 
-  const hasFailed = failures.length > 0;
+  quickstartErrors.forEach((errorMessage) => console.error(errorMessage));
+
+  const hasFailed = failures.length > 0 || quickstartErrors.length > 0;
 
   // Record event in New Relic
   const event = dryRun
