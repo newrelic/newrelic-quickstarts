@@ -25,34 +25,6 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 Head over to our [contributing guide](./CONTRIBUTING.md) to learn how to define your own quickstart! 
 
-## Testing
-
-### Importer (Deprecated)
-
-> WARNING: The importer is for testing only and might change or be removed in the future. You can still use it today for testing, but it is not meant to be used in a production environment.
-
-We've included an `importer` utility for testing quickstarts on your account. You can run this using the included [import.sh](./import.sh) script.
-
-> Note: The importer spins up a docker container, so you must have docker installed and running for this to function
-
-1. Modify [importer-config.sh](./importer-config.sh) with your account number and New Relic API Key
-2. Run [import.sh](./import.sh) from the root of this project:
-
-   ```bash
-   # Usage:
-   ./import.sh $QUICKSTART_NAME
-
-   # Example
-   > ./import.sh mysql
-   ```
-
-   If your quickstart is in a sub-directory please include that too for example `python/flask`
-
-```
- # Example
- > ./import.sh python/flask
-```
-
 ## Support
 
 New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find this project's topic/threads here:
