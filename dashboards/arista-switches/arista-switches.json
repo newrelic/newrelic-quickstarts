@@ -1,0 +1,446 @@
+{
+    "name": "Arista Switch Overview",
+    "description": "",
+    "pages": [
+      {
+        "name": "Switch Overview",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Device Inventory",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT round(latest(kentik.snmp.Uptime)/100/60/60/24, .01) AS 'Uptime (Days)' FACET entity.name AS 'Device Name', SysDescr AS 'System Description', src_addr AS 'Device IP' WHERE instrumentation.name = 'arista-switch' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Interface Inventory",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(if_OperStatus) AS 'Interface Status', latest(if_Speed) AS 'Interface Speed' FACET device_name, if_interface_name AS 'interface_name', if_Name OR if_Alias AS 'description' WHERE instrumentation.name = 'arista-switch' LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top 100 - Traffic IN (Mbs)",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(max(kentik.snmp.ifHCInOctets)*8/1000/1000, 1 second) AS 'Mbs' FACET device_name, if_interface_name TIMESERIES 5 MINUTES WHERE instrumentation.name = 'arista-switch' LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 100 - Traffic IN (%)",
+            "layout": {
+              "column": 7,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.snmp.IfInUtilization) AS 'rcv_%' FACET device_name, if_interface_name TIMESERIES 5 MINUTES WHERE instrumentation.name = 'arista-switch' LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Top 100 - Traffic OUT (Mbs)",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(max(kentik.snmp.ifHCOutOctets)*8/1000/1000, 1 second) AS 'Mbs' FACET device_name, if_interface_name TIMESERIES 5 MINUTES WHERE instrumentation.name = 'arista-switch' LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 100 - Traffic OUT (%)",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.snmp.IfOutUtilization) AS 'xmt_%' FACET device_name, if_interface_name TIMESERIES 5 MINUTES WHERE instrumentation.name = 'arista-switch' LIMIT 100"
+                }
+              ],
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "eAPI: BGP and MLAG",
+        "description": null,
+        "widgets": [
+          {
+            "title": "eAPI - BGP Peer Details",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.eapi.bgp.Version) AS 'BGP Version' FACET device_name AS 'Device Name', router_id AS 'Router ID', vrf AS 'VRF', asn AS 'Local ASN', peer AS 'Peer', peer_asn AS 'Peer ASN', peer_state AS 'Peer State', under_maintenance AS 'Under Maintenance?' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "eAPI - BGP Peer Messages",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.eapi.bgp.MsgReceived) AS 'Received Messages', max(kentik.eapi.bgp.MsgSent) AS 'Sent Messages', latest(kentik.eapi.bgp.InMsgQueue) AS 'In Queue', latest(kentik.eapi.bgp.OutMsgQueue) AS 'Out Queue' FACET device_name AS 'Device Name', router_id AS 'Router ID', peer AS 'Peer' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "eAPI - BGP Prefix Announcements",
+            "layout": {
+              "column": 7,
+              "row": 6,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT max(kentik.eapi.bgp.PrefixReceived) AS 'Prefixes Received', max(kentik.eapi.bgp.PrefixAccepted) AS 'Prefixes Accepted', max(kentik.eapi.bgp.PrefixReceived) - max(kentik.eapi.bgp.PrefixAccepted) AS 'Delta' FACET device_name AS 'Device Name', router_id AS 'Router ID', peer AS 'Peer' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "eAPI - MLAG Details",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 12,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.eapi.mlag.PortsConfigured) AS 'Configured Ports', latest(kentik.eapi.mlag.PortsActiveFull) AS 'Active-Full', latest(kentik.eapi.mlag.PortsActivePartial) AS 'Active-Partial', latest(kentik.eapi.mlag.PortsInactive) AS 'Inactive', latest(kentik.eapi.mlag.PortsDisabled) AS 'Disabled', latest(kentik.eapi.mlag.PortsErrdisabled) AS 'Error-Disabled' FACET device_name AS 'Device Name', config_sanity AS 'Config Sanity', domain_id AS 'Domain ID', local_interface AS 'Local Interface', local_intf_status AS 'Interface Status', neg_status AS 'Negotiating Status', peer_address AS 'Peer Address', peer_link AS 'Peer Link', peer_link_status AS 'Peer Status', state AS 'MLAG State' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Hardware Sensors",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Fan Sensors",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg kentik.snmp.sensor_value",
+                  "precision": null,
+                  "type": "humanized"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(kentik.snmp.sensor_value) AS 'Sensor Value' FACET device_name, entity_description, sensor_status, sensor_units WHERE instrumentation.name = 'arista-switch' AND sensor_type = 'rpm' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Temperature Sensors",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg kentik.snmp.sensor_value",
+                  "precision": null,
+                  "type": "humanized"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(kentik.snmp.sensor_value)*0.1 AS 'Sensor Value' FACET device_name, entity_description, sensor_status, sensor_units WHERE instrumentation.name = 'arista-switch' AND sensor_type = 'celsius' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Input/Output Power Sensors",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg kentik.snmp.sensor_value",
+                  "precision": null,
+                  "type": "humanized"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(kentik.snmp.sensor_value) AS 'Sensor Value' FACET device_name, entity_description, sensor_status, sensor_units WHERE instrumentation.name = 'arista-switch' AND sensor_type IN ('amperes', 'voltsac', 'voltsAC') AND entity_description RLIKE r'Input.*|Output.*' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power and Voltage Sensors",
+            "layout": {
+              "column": 7,
+              "row": 6,
+              "width": 6,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg kentik.snmp.sensor_value",
+                  "precision": null,
+                  "type": "humanized"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(kentik.snmp.sensor_value) AS 'Sensor Value' FACET device_name, entity_description, sensor_status, sensor_units WHERE instrumentation.name = 'arista-switch' AND sensor_type NOT IN ('rpm', 'celsius') AND entity_description NOT RLIKE r'Input.*|Output.*' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }

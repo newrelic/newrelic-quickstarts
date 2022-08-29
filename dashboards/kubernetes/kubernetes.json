@@ -1202,11 +1202,200 @@
       "description": null,
       "widgets": [
         {
-          "title": "",
+          "title": "Current Resource Configuration",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 9,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(cpuRequestedCores) AS 'CPU request', \nlatest(cpuLimitCores) AS 'CPU limit', \nlatest(memoryRequestedBytes/1024/1024) AS 'Memory request (MB)', \nlatest(memoryLimitBytes/1024/1024) AS 'Memory limit (MB)' \nFROM K8sContainerSample SINCE 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Suggested Resource Configuration",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT percentile(cpuUsedCores, 95) * (1 + 50/100) AS 'CPU request', \npercentile(cpuUsedCores, 95) * (1 + 100/100) AS 'CPU limit', \npercentile(memoryUsedBytes/1024/1024, 95) * (1 + 50/100) AS 'Memory request (MB)', \npercentile(memoryUsedBytes/1024/1024, 95) * (1 + 100/100) AS 'Memory limit (MB)' \nFROM K8sContainerSample SINCE 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Potential Resource Savings per Replica",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(cpuRequestedCores) - (percentile(cpuUsedCores, 95) * (1 + 50/100)) AS 'CPU request', \nlatest(cpuLimitCores) - (percentile(cpuUsedCores, 95) * (1 + 100/100)) AS 'CPU limit', \nlatest(memoryRequestedBytes/1024/1024) - (percentile(memoryUsedBytes/1024/1024, 95) * (1 + 50/100)) AS 'Memory request (MB)', \nlatest(memoryLimitBytes/1024/1024) - (percentile(memoryUsedBytes/1024/1024, 95) * (1 + 100/100)) AS 'Memory limit (MB)' \nFROM K8sContainerSample SINCE 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": -50000
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": -0.01
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# About This Page\n **Use the suggested recommendations to highly POTENTIAL optimizations, and test well before shipping to any production environments.  Always make sure you use filters to narrow down the set of data so that the recommendations are sensible.  For example filter by such attributes as cluster, deployment, and namesspace.**\n\n  ## How to Use These Recommendations\n\n  There are several specific variables in your K8s configurations that can be adjusted based on what you see in this report.\n  \n * [Requests & Limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)\n  * [Memory](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory)\n  * [CPU](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu)\n   * [ResourceQuota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)\n  * [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/)\n  \n **The mechanics behind k8s resources are explained here:** https://blog.kubecost.com/blog/requests-and-limits/\n\n ## Acknowledgement\n\nAt Futurestack 2022 we showed how to use this data to potentially optimize both memory and CPU configures. Please utilize the dashboard filtering capabilities to filter to a specfic cluster, namespace, or container.\n\n## See the Futurestack presentation by [Frank Dornberger](https://newrelic.com/blog/authors/frank-dornberger) [here](https://www.youtube.com/watch?v=yiv1hnfekl4) and Frank's blog post [here](https://newrelic.com/blog/how-to-relic/movingimage-kubernetes-containers)\n## The demonstration environment from the workshop can be found in [Github](https://github.com/frank-dornberger/futurestack-2022-workshop)."
+          }
+        },
+        {
+          "title": "High CPU Throttle Count (indicator of over-utilization)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(containerCpuCfsThrottledPeriodsDelta) FROM K8sContainerSample SINCE 1 week ago FACET containerName TIMESERIES MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "High OOM Killed Count (indicator of over-utilization)",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM K8sContainerSample WHERE reason = 'OOMKilled' SINCE 1 week ago FACET containerName TIMESERIES MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Over-Utilization Indicators\n\nIn some environments we may be over-utilizing key resources.  In those scenarios optimization is contra-indicated.\n\nCPU Thottling and OOM Kills are good indicators of potential overutilization of CPU and Memory resources.\n\n[Assigning CPU Resources to Containers and Pods](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/)\n\n[Assigning Memory Resources to Containers and Pods](https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/)"
+          }
+        },
+        {
+          "title": "Suggestion Report",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 11,
             "height": 9
           },
           "linkedEntityGuids": null,
@@ -1226,22 +1415,6 @@
             "platformOptions": {
               "ignoreTimeRange": false
             }
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
-            "height": 9
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Container Optimization\n\nOverprovisioning is not uncommon when K8s is initially depoyed.  New Relic k8s observability makes it possible to make data driven deicisions on how to optimially configure your containers.  At Futurestack 2022 we showed how to use this data to potentially optimize both memory and CPU configures.  For better ease of use you may consider using the dashboard filtering capabilities to filter to a specfic cluster, namespace, or deployment.\n\n## See the Futurestack presentation by [Frank Dornberger](https://newrelic.com/blog/authors/frank-dornberger) [here](https://www.youtube.com/watch?v=yiv1hnfekl4) and Frank's blog post [here](https://newrelic.com/blog/how-to-relic/movingimage-kubernetes-containers)\n## The demonstration environment from the workshop can be found in [Github](https://github.com/frank-dornberger/futurestack-2022-workshop)."
           }
         }
       ]
