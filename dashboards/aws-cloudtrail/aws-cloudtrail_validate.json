@@ -1,0 +1,88 @@
+{
+    "name": "Aws cloudtrail",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws cloudtrail",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Failed events",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT COUNT(*) FROM InfrastructureEvent WHERE provider='CloudTrail' (errorCode IS NOT NULL OR errorMessage IS NOT NULL) FACET eventName SINCE 1 WEEK AGO TIMESERIES AUTO"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "::: beyond\n![AWS CloudTrail Icon](https://integrations.nr-assets.net/providers/cloudtrail.png) **AWS CloudTrail** \n\nAWS CloudTrail is a service that enables governance, compliance, operational auditing, and risk auditing of your AWS account. With CloudTrail, you can log, continuously monitor, and retain account activity related to actions across your AWS infrastructure.\n\n\n:::"
+                    }
+                },
+                {
+                    "title": "Console login events",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT COUNT(*) FROM InfrastructureEvent WHERE provider='CloudTrail' eventName = 'ConsoleLogin' FACET CASES (WHERE errorMessage IS NULL AS 'Successful login', WHERE errorMessage IS NOT NULL as 'Failed login') SINCE 1 WEEK AGO TIMESERIES AUTO"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Total events per region",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT COUNT(*) FROM InfrastructureEvent WHERE provider='CloudTrail' FACET awsRegion SINCE 1 WEEK AGO"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "permissions": "PUBLIC_READ_WRITE"
+}

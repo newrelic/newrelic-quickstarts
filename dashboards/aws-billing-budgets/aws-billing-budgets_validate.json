@@ -1,0 +1,128 @@
+{
+    "name": "Aws billing budgets",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws billing budgets",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Cost by service",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT latest(`aws.billing.budgetType`) as 'Budget Type', max(`aws.billing.actualAmount.byBudget`) as 'Actual Amount', max(`aws.billing.limitAmount.byBudget`) as 'Budget Limit', latest(`aws.billing.forecastedAmount.byBudget`) as 'Forecast' FROM Metric facet `aws.billing.budgetName` since 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "::: beyond\n![Amazon Billing Icon](https://integrations.nr-assets.net/providers/aws_billing_budgets.png) **AWS Billing** \n\nAmazon Billing allows you to track your AWS infrastructure billing forecasts and costs. \n\nEach chart is reporting every 4 hours.\n\n\n:::"
+                    }
+                },
+                {
+                    "title": "Cost - actual amount for \"cost\" budgets",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT max(`aws.billing.actualAmount.byBudget`) FROM Metric where `aws.billing.budgetType` = 'COST' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Usage - actual amount for \"usage\" budgets",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT max(`aws.billing.actualAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='USAGE' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Cost - forecasted amount for \"cost\" budgets",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT max(`aws.billing.forecastedAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='COST' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Usage - forecasted amount for \"usage\" budgets",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT max(`aws.billing.forecastedAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='USAGE' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "permissions": "PUBLIC_READ_WRITE"
+}

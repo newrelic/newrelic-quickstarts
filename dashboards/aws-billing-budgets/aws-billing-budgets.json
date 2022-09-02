@@ -1,13 +1,13 @@
 {
-    "name": "Aws cloudfront",
+    "name": "Aws billing budgets",
     "description": "",
     "pages": [
         {
-            "name": "Aws cloudfront",
+            "name": "Aws billing budgets",
             "description": "",
             "widgets": [
                 {
-                    "title": "Requests per minute, by distribution",
+                    "title": "Cost by service",
                     "layout": {
                         "height": 3,
                         "width": 8,
@@ -15,13 +15,13 @@
                         "column": 1
                     },
                     "visualization": {
-                        "id": "viz.line"
+                        "id": "viz.table"
                     },
                     "rawConfiguration": {
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT sum(`aws.cloudfront.Requests`) FROM Metric FACET `aws.cloudfront.domainName` TIMESERIES 5 minutes until 6 minutes ago"
+                                "query": "SELECT latest(`aws.billing.budgetType`) as 'Budget Type', max(`aws.billing.actualAmount.byBudget`) as 'Actual Amount', max(`aws.billing.limitAmount.byBudget`) as 'Budget Limit', latest(`aws.billing.forecastedAmount.byBudget`) as 'Forecast' FROM Metric facet `aws.billing.budgetName` since 1 day ago"
                             }
                         ]
                     }
@@ -38,11 +38,11 @@
                         "id": "viz.markdown"
                     },
                     "rawConfiguration": {
-                        "text": "::: beyond\n![Amazon CloudFront Icon](https://integrations.nr-assets.net/providers/aws_cloudfront.png) **Amazon CloudFront** \n\nAmazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .php, and image files, to your users. CloudFront delivers your content through a worldwide network of data centers called edge locations. \n\nEach chart is reporting every minute.\n\n\n:::"
+                        "text": "::: beyond\n![Amazon Billing Icon](https://integrations.nr-assets.net/providers/aws_billing_budgets.png) **AWS Billing** \n\nAmazon Billing allows you to track your AWS infrastructure billing forecasts and costs. \n\nEach chart is reporting every 4 hours.\n\n\n:::"
                     }
                 },
                 {
-                    "title": "Requests per minute",
+                    "title": "Cost - actual amount for \"cost\" budgets",
                     "layout": {
                         "height": 3,
                         "width": 4,
@@ -50,19 +50,19 @@
                         "column": 1
                     },
                     "visualization": {
-                        "id": "viz.billboard"
+                        "id": "viz.line"
                     },
                     "rawConfiguration": {
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT rate(sum(`aws.cloudfront.Requests`), 5 minute) as 'requests/minute' FROM Metric since 60 minutes ago until 6 minutes ago"
+                                "query": "SELECT max(`aws.billing.actualAmount.byBudget`) FROM Metric where `aws.billing.budgetType` = 'COST' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
                             }
                         ]
                     }
                 },
                 {
-                    "title": "Bytes transferred",
+                    "title": "Usage - actual amount for \"usage\" budgets",
                     "layout": {
                         "height": 3,
                         "width": 4,
@@ -76,16 +76,16 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT sum(`aws.cloudfront.BytesDownloaded`) as 'Downloaded', sum(`aws.cloudfront.BytesUploaded`) as 'Uploaded' FROM Metric TIMESERIES SINCE 1 day ago until 6 minutes ago"
+                                "query": "SELECT max(`aws.billing.actualAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='USAGE' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
                             }
                         ]
                     }
                 },
                 {
-                    "title": "Error rate (overall)",
+                    "title": "Cost - forecasted amount for \"cost\" budgets",
                     "layout": {
                         "height": 3,
-                        "width": 12,
+                        "width": 4,
                         "row": 7,
                         "column": 1
                     },
@@ -96,7 +96,27 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT average(`aws.cloudfront.4xxErrorRate`) as '4xx errors', average(`aws.cloudfront.5xxErrorRate`) as '5xx errors' FROM Metric TIMESERIES 5 minutes since 6 hours ago UNTIL 6 minutes ago"
+                                "query": "SELECT max(`aws.billing.forecastedAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='COST' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Usage - forecasted amount for \"usage\" budgets",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.billing.forecastedAmount.byBudget`) FROM Metric where `aws.billing.budgetType`='USAGE' TIMESERIES auto since 4 days ago facet `aws.billing.budgetName`"
                             }
                         ]
                     }
