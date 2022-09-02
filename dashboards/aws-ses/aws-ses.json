@@ -1,0 +1,87 @@
+{
+    "name": "Aws ses",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws ses",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Account metrics",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.ses.Bounce`) as 'Bounce', sum(`aws.ses.Send`) as 'Send', sum(`aws.ses.Delivery`) as 'Delivery', sum(`aws.ses.Open`) as 'Open', sum(`aws.ses.Click`) as 'Click', sum(`aws.ses.Complaint`) as 'Complaint' FROM Metric SINCE 30 minutes ago UNTIL 10 minutes ago TIMESERIES 1 minute"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "::: beyond\n![Amazon SES Icon](https://integrations.nr-assets.net/providers/aws_ses.png) **AWS SES** \n\nAmazon Simple Email Service (Amazon SES) evolved from the email platform that Amazon.com created to communicate with its own customers. In order to serve its ever-growing global customer base, Amazon.com needed to build an email platform that was flexible, scalable, reliable, and cost-effective. Amazon SES is the result of years of Amazon's own research, development, and iteration in the areas of sending and receiving email. \n\nEach chart is reporting every minute.\n\n\n:::"
+                    }
+                },
+                {
+                    "title": "Complaint rates",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.ses.Complaint`) * 100 / sum(`aws.ses.Delivery`) as 'Complaint rate' FROM Metric SINCE 30 minutes ago UNTIL 10 minutes ago TIMESERIES 1 minute"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Ses service limit usage",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.trustedadvisor.limitUsage`) FROM Metric WHERE aws.trustedadvisor.service='SES' FACET aws.trustedadvisor.limitName, aws.region TIMESERIES SINCE 1 week ago LIMIT 1000"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

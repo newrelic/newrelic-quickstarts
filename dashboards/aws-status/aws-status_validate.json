@@ -1,0 +1,233 @@
+{
+    "name": "Aws status",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws status",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Fetching errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 10,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT count(*) FROM IntegrationError WHERE error='EntityUnavailable' FACET dataSourceName, entityName SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Authentication errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT count(*) as 'Number of errors' FROM IntegrationError WHERE error = 'AccountAccessDenied' FACET dataSourceName, awsRegion SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Total api calls",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT sum(requestCount) as 'API calls' FROM IntegrationProviderReport FACET awsServiceName SINCE 1 month ago TIMESERIES"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Permission errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 7,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT count(*) as 'Number of errors', max(timestamp) as 'Last seen' FROM IntegrationError WHERE error = 'ServiceAccessDenied' FACET dataSourceName, method, awsRegion SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Cloudwatch api calls",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT sum(requestCount) FROM IntegrationProviderReport WHERE awsServiceName = 'AmazonCloudWatch' FACET dataSourceName SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Log-based integration errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 13,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT count(*) as 'Number of errors' FROM IntegrationError WHERE error = 'IngestServiceError' FACET dataSourceName SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Data freshness",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT latest(timestamp) FROM IntegrationDataFreshnessReport FACET dataSourceName"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Data updates",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT uniqueCount(dataSourceName) FROM IntegrationDataFreshnessReport WHERE dataType = 'inventory' FACET dataSourceName SINCE 1 hour ago TIMESERIES"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Account changes",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT timestamp, description, actorEmail from NrAuditEvent where targetId =  since 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Usage of deprecated log ingestion lambda",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT count(*) as 'Number of warnings' FROM IntegrationError WHERE error = 'DeprecatedLogIngestionLambda' FACET dataSourceName SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Throttling errors per service",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 10,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 1,
+                                "query": "SELECT sum(throttleException) as 'Throttling Errors' FROM IntegrationProviderReport FACET awsServiceName Since 1 days ago TIMESERIES"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "permissions": "PUBLIC_READ_WRITE"
+}

@@ -1,0 +1,247 @@
+{
+    "name": "Aws stream status",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws stream status",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Discarded messages",
+                    "layout": {
+                        "height": 3,
+                        "width": 5,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM IntegrationError SELECT count(*) as 'Discarded Events' where provider like 'aws_metric_streams' TIMESERIES extrapolate FACET reason"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Total metric updates by aws region",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 6
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT datapointcount() WHERE collector.name='cloudwatch-metric-streams' FACET aws.region"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 3,
+                        "row": 1,
+                        "column": 10
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "::: beyond\n# AWS CloudWatch Metric Streams\n\nThis dashboard monitors the status of the connection from AWS CloudWatch Metric Streams to your New Relic account. \n\n## Exploring Metric Streams data \nIf you'd like to further explore the data, use the following filter `WHERE collector.name = 'cloudwatch-metric-streams'`. \n\n\n:::"
+                    }
+                },
+                {
+                    "title": "Total metric updates",
+                    "layout": {
+                        "height": 3,
+                        "width": 3,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT datapointcount() WHERE collector.name='cloudwatch-metric-streams' EXTRAPOLATE"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Unique aws namespaces",
+                    "layout": {
+                        "height": 3,
+                        "width": 3,
+                        "row": 4,
+                        "column": 4
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT uniqueCount(aws.Namespace) as 'Namespaces' WHERE collector.name = 'cloudwatch-metric-streams' EXTRAPOLATE"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Unique metric names",
+                    "layout": {
+                        "height": 3,
+                        "width": 3,
+                        "row": 4,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT uniqueCount(metricName) as 'Metric Names' WHERE collector.name = 'cloudwatch-metric-streams' EXTRAPOLATE"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Total metric updates by aws namespace",
+                    "layout": {
+                        "height": 6,
+                        "width": 6,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT datapointcount() WHERE collector.name = 'cloudwatch-metric-streams' FACET aws.Namespace EXTRAPOLATE LIMIT MAX"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Authentication errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 3,
+                        "row": 7,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'Number of errors' FROM IntegrationError WHERE error = 'AccountAccessDenied' FACET dataSourceName, awsRegion SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Total api calls",
+                    "layout": {
+                        "height": 3,
+                        "width": 3,
+                        "row": 7,
+                        "column": 10
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(requestCount) as 'API calls' FROM IntegrationProviderReport FACET awsServiceName SINCE 1 month ago TIMESERIES"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Permission errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 10,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'Number of errors', max(timestamp) as 'Last seen' FROM IntegrationError WHERE error = 'ServiceAccessDenied' FACET dataSourceName, method, awsRegion SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Estimated bytes ingested",
+                    "layout": {
+                        "height": 4,
+                        "width": 3,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT rate(bytecountestimate(), 1 month) as 'Data Ingest' WHERE collector.name='cloudwatch-metric-streams' SINCE 30 DAYS AGO"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Estimated bytes ingested by aws namespace",
+                    "layout": {
+                        "height": 4,
+                        "width": 6,
+                        "row": 13,
+                        "column": 4
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "FROM Metric SELECT rate(bytecountestimate(), 1 month) as 'Data Ingest' WHERE collector.name='cloudwatch-metric-streams' FACET aws.Namespace SINCE 30 DAYS AGO LIMIT 100"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
