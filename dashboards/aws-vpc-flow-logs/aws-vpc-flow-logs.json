@@ -1,0 +1,167 @@
+{
+    "name": "Aws vpc flow logs",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws vpc flow logs",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Traffic by vpc id",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.bytes`) / 1024 / 1024 from PrivateNetworkSample where provider='VpcNetworkInterface' TIMESERIES auto since 1 day ago facet `provider.vpcId`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Traffic by subnet id",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.bytes`) / 1024 / 1024 from PrivateNetworkSample where provider='VpcNetworkInterface' TIMESERIES auto since 1 day ago facet `provider.subnetId`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "::: beyond\n![Amazon VPC Icon](https://integrations.nr-assets.net/providers/aws_vpc.png) **AWS VPC Flow Logs** \n\nVPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC.\n\nEach chart is reporting every minute.\n\n\n:::"
+                    }
+                },
+                {
+                    "title": "Traffic by ec2 instance",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.bytes`) / 1024 / 1024 from PrivateNetworkSample where provider='VpcNetworkInterface' facet `provider.privateDnsName` since 1 day ago TIMESERIES"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Traffic by requester id",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.bytes`) / 1024 / 1024 from PrivateNetworkSample where provider='VpcNetworkInterface' TIMESERIES auto since 1 day ago facet `provider.requesterId`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Accepted/rejected traffic",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.bytes`) / 1024 / 1024 from PrivateNetworkSample where provider='VpcNetworkInterface' TIMESERIES auto since 1 day ago facet `provider.action`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Rejected traffic by source ip",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.packets`) from PrivateNetworkSample where provider='VpcNetworkInterface' `provider.action` = 'REJECT' TIMESERIES auto since 1 day ago facet `provider.sourceAddress`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Top rejected ips",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`provider.packets`) from PrivateNetworkSample where provider='VpcNetworkInterface' `provider.action` = 'REJECT' since 1 hour ago facet `provider.sourceAddress`"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
