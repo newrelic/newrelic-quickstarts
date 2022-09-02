@@ -1,0 +1,252 @@
+{
+    "name": "Aws lambda enhanced",
+    "description": "",
+    "pages": [
+        {
+            "name": "Aws lambda enhanced",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Function executions",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM AwsLambdaTraceSample FACET `provider.functionName`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Request ids",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM AwsLambdaTraceSample FACET `provider.awsRequestId`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Duration (seconds)",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`provider.duration`) / 1000 FROM AwsLambdaTraceSample FACET `provider.functionName` TIMESERIES auto"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Number of cold starts",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM AwsLambdaTraceSample WHERE `provider.isColdStart` is true FACET `provider.functionName` TIMESERIES auto"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Memory usage (mb)",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`provider.memoryMb`) FROM AwsLambdaTraceSample FACET `provider.functionName` TIMESERIES auto"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Error rate",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT filter(count(*), WHERE `provider.isFailed` is true) * 100 / count(*) FROM AwsLambdaTraceSample FACET `provider.functionName` TIMESERIES auto"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Number of executions per container",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`provider.containerExecutions`) FROM AwsLambdaTraceSample FACET `provider.functionName`, `provider.containerGuid` TIMESERIES auto"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Error types",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 10,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM AwsLambdaTraceSample WHERE `provider.isFailed` is true FACET `provider.exceptionClass`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Error messages",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 10,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM AwsLambdaTraceSample WHERE `provider.isFailed` is true FACET `provider.exceptionMessage`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Tracebacks",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT `provider.traceback` FROM AwsLambdaTraceSample WHERE `provider.isFailed` is true "
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Aws sdk operations",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 16,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT `provider.service` as 'Service', `provider.operation` as 'Operation', `provider.target` as 'Target', `provider.duration` as 'Duration (ms)', `provider.isFailed` as 'Failed' FROM AwsLambdaOperationSample WHERE  "
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Source of invocation",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 19,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT `provider.sourceService` as 'Service', `provider.sourceId` as 'Entity', `provider.sourceAction` as 'Action' FROM AwsLambdaTraceSample WHERE `provider.sourceService` is not null "
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
