@@ -315,3 +315,45 @@ jobs:
               "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "context": "Validation / Quickstart dashboard name is unique"
             }'
+
+  dashboard-helper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "::set-output name=pr-number::$PR_NUMBER"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: cd utils && yarn install --frozen-lockfile
+
+      - name: Run dashboard helper
+        id: helper
+        run: |
+          cd utils && yarn dashboard-helper
+
+      - name: Comment
+        if: steps.helper.outputs.comment != ''
+        env:
+          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT: ${{ steps.helper.outputs.comment }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body "$COMMENT"
