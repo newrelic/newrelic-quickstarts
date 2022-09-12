@@ -1,5 +1,6 @@
-import Dashboard from './lib/Dashboard';
-import { fetchPaginatedGHResults } from './lib/github-api-helpers';
+import fetch from 'node-fetch';
+import { fetchPaginatedGHResults, filterOutTestFiles } from './lib/github-api-helpers';
+import { prop } from './lib/helpers';
 
 const guidRegex = /guid[`'"\) ]/;
 const entityGuidRegex = /entityGuid/;
@@ -53,22 +54,31 @@ const runHelper = async (prUrl?: string, token?: string): Promise<boolean> => {
     return false;
   }
 
-  const dashboards = Dashboard.getAll();
   const warnings: string[] = [];
 
   const files = await fetchPaginatedGHResults(
-    new URL(`/files`, prUrl).href,
+    new URL(prUrl).href,
     token
   );
 
-  for (const dash of dashboards) {
-    const dashLines = JSON.stringify(dash.config, null, 2).split('\n');
+  const dashboardFileRegEx = /dashboards\/\S*\.json$/;
+  const dashboardsInPR = filterOutTestFiles(files)
+    .filter(({ status }) => status != "removed")
+    .filter(({ filename }) => dashboardFileRegEx.test(filename));
+
+  for (const dash of dashboardsInPR) {
+    const response = await fetch(dash.raw_url, {
+      headers: { authorization: `token ${token}` },
+    });
+    const responseJSON = await response.json();
+    const dashLines = JSON.stringify(responseJSON, null, 2).split('\n');
+    console.log(dashLines);
 
     dashLines.forEach((line, lineNumber) => {
       const output = checkLine(line);
       if (output.length > 0) {
         output.forEach((o) =>
-          warnings.push(`| ${o} | ${dash.configPath} | ${lineNumber + 1} |`)
+          warnings.push(`| ${o} | ${dash.filename} | ${lineNumber + 1} |`)
         );
       }
     });
