@@ -52,7 +52,7 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
   { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
+    configKey: 'dataSources',
     mutationKey: 'dataSourceIds',
     ctor: DataSource,
   },
@@ -98,7 +98,7 @@ class Quickstart {
 
       return yaml.load(file.toString('utf-8')) as QuickstartConfig;
     } catch (e) {
-      console.error('Unable to parse quickstart config', this.configPath, e);
+      console.error(`Unable to parse quickstart config at ${this.configPath}`);
       this.isValid = false;
 
       return this.config;
@@ -125,9 +125,16 @@ class Quickstart {
 
   /**
    * Get mutation variables from quickstart config
-   * @returns - mutation varaibles for quickstart
+   * @returns - Promised mutation variables for quickstart
    */
-  getMutationVariables(dryRun: boolean): QuickstartMutationVariable {
+  async getMutationVariables(
+    dryRun: boolean
+  ): Promise<QuickstartMutationVariable> {
+    if (!this.isValid) {
+      console.error(
+        `Quickstart is invalid\nPlease check the quickstart reference at: ${this.identifier}`
+      );
+    }
     const {
       authors,
       description,
@@ -144,7 +151,7 @@ class Quickstart {
 
     const metadata = {
       authors: authors && authors.map((author) => ({ name: author })),
-      categoryTerms: getCategoryTermsFromKeywords(keywords),
+      categoryTerms: await getCategoryTermsFromKeywords(keywords),
       description: description && description.trim(),
       displayName: title && title.trim(),
       slug: slug && slug.trim(),
@@ -188,7 +195,7 @@ class Quickstart {
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
-      variables: this.getMutationVariables(dryRun),
+      variables: await this.getMutationVariables(dryRun),
     });
 
     // filePath may need to be changed for this rework
@@ -233,10 +240,10 @@ class Quickstart {
     });
 
     if (invalidComponents.length) {
-      console.log('The following components are not valid:');
+      console.error('The following components are not valid:');
 
       for (const { identifier: localPath } of invalidComponents) {
-        console.log(`\t ${localPath}`);
+        console.error(`\t ${localPath}`);
       }
 
       this.isValid = false;

@@ -21,6 +21,10 @@ jest.spyOn(global.console, 'log').mockImplementation(() => {});
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
 describe('Dashboard', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
   describe('constructor', () => {
     test('Creates valid Dashboard', () => {
       const dash = new Dashboard('mock-dashboard-2', MOCK_FILES_BASEPATH);
@@ -29,12 +33,14 @@ describe('Dashboard', () => {
     });
 
     test('Creates invalid Dashboard when file does not exist', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const dash = new Dashboard(
         'mock-dashboard-infinity',
         MOCK_FILES_BASEPATH
       );
       expect(dash.isValid).toBe(false);
       expect(dash.config).not.toBeDefined();
+      expect(console.error).toBeCalled();
     });
   });
 
@@ -46,18 +52,22 @@ describe('Dashboard', () => {
     });
 
     test('Fails to create valid config path when dashboard does not exist', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const dash = new Dashboard(
         'mock-dashboard-infinite',
         MOCK_FILES_BASEPATH
       );
       expect(dash.configPath).toEqual('');
       expect(dash.isValid).toBe(false);
+      expect(console.error).toBeCalled();
     });
 
     test('Fails to create valid config path, basePath is invalid', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const dash = new Dashboard('mock-dashboard-2', __dirname);
       expect(dash.configPath).toEqual('');
       expect(dash.isValid).toBe(false);
+      expect(console.error).toBeCalled();
     });
   });
 
@@ -125,5 +135,6 @@ describe('Dashboard', () => {
 
       expect(mutationVar.screenshots).toHaveLength(0);
     });
+
   });
 });

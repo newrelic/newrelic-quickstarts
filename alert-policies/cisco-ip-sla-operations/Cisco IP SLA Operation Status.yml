@@ -1,0 +1,35 @@
+name: Cisco IP SLA Operation Status
+
+description: |+
+  This alert monitors the status of all active Cisco IP SLA Operations and will trigger when the latest sense code for a single operation is not equal to 'ok' for at least 60 seconds.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT count(*) FACET device_name, rtt_operation_tag, rtt_operation_sense WHERE rtt_operation_admin_status = 'active' AND rtt_operation_sense IS NOT NULL AND rtt_operation_sense != 'ok'"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 60
+    thresholdOccurrences: ALL
+
+expiration:
+  closeViolationsOnExpiration: true
+  openViolationOnExpiration: true
+  expirationDuration: 600
+
+
+signal:
+  aggregationDelay: 60
+  aggregationMethod: EVENT_FLOW
+  aggregationTimer: null
+  aggregationWindow: 60
+  fillOption: NONE
+  fillValue: null
+  slideBy: 30
+
+violationTimeLimitSeconds: 86400
