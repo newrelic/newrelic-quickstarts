@@ -346,8 +346,12 @@ jobs:
 
       - name: Run dashboard helper
         id: helper
+        env:
+          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd utils && yarn dashboard-helper
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
+          cd utils && yarn dashboard-helper $URL
 
       - name: Comment
         if: steps.helper.outputs.comment != ''
