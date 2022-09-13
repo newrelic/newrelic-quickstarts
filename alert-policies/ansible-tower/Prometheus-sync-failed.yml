@@ -1,11 +1,11 @@
-name: Errors on Job
+name: Prometheus Sync Failed
 
 description: |
-  This alert is triggered when the error is higher than 3 during 5 minutes
+  This alert is triggered when the Prometheus sync fails are above 1 for 5 minutes
 
 type: STATIC
 nrql:
-  query: "FROM Metric SELECT count(*) WHERE status = 'error'"
+  query: "FROM Metric SELECT sum(prometheus_target_sync_failed_total)"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -16,7 +16,16 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 3
+    threshold: 1
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 2
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
