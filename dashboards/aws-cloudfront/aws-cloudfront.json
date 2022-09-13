@@ -1,107 +1,140 @@
 {
-    "name": "Aws cloudfront",
-    "description": "",
-    "pages": [
+  "name": "AWS Cloudfront",
+  "description": null,
+  "pages": [
+    {
+      "name": "AWS Cloudfront",
+      "description": null,
+      "widgets": [
         {
-            "name": "Aws cloudfront",
-            "description": "",
-            "widgets": [
-                {
-                    "title": "Requests per minute, by distribution",
-                    "layout": {
-                        "height": 3,
-                        "width": 8,
-                        "row": 1,
-                        "column": 1
-                    },
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT sum(`aws.cloudfront.Requests`) FROM Metric FACET `aws.cloudfront.domainName` TIMESERIES 5 minutes until 6 minutes ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "title": "",
-                    "layout": {
-                        "height": 6,
-                        "width": 4,
-                        "row": 1,
-                        "column": 9
-                    },
-                    "visualization": {
-                        "id": "viz.markdown"
-                    },
-                    "rawConfiguration": {
-                        "text": "::: beyond\n![Amazon CloudFront Icon](https://integrations.nr-assets.net/providers/aws_cloudfront.png) **Amazon CloudFront** \n\nAmazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .php, and image files, to your users. CloudFront delivers your content through a worldwide network of data centers called edge locations. \n\nEach chart is reporting every minute.\n\n\n:::"
-                    }
-                },
-                {
-                    "title": "Requests per minute",
-                    "layout": {
-                        "height": 3,
-                        "width": 4,
-                        "row": 4,
-                        "column": 1
-                    },
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT rate(sum(`aws.cloudfront.Requests`), 5 minute) as 'requests/minute' FROM Metric since 60 minutes ago until 6 minutes ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "title": "Bytes transferred",
-                    "layout": {
-                        "height": 3,
-                        "width": 4,
-                        "row": 4,
-                        "column": 5
-                    },
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT sum(`aws.cloudfront.BytesDownloaded`) as 'Downloaded', sum(`aws.cloudfront.BytesUploaded`) as 'Uploaded' FROM Metric TIMESERIES SINCE 1 day ago until 6 minutes ago"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "title": "Error rate (overall)",
-                    "layout": {
-                        "height": 3,
-                        "width": 12,
-                        "row": 7,
-                        "column": 1
-                    },
-                    "visualization": {
-                        "id": "viz.line"
-                    },
-                    "rawConfiguration": {
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT average(`aws.cloudfront.4xxErrorRate`) as '4xx errors', average(`aws.cloudfront.5xxErrorRate`) as '5xx errors' FROM Metric TIMESERIES 5 minutes since 6 hours ago UNTIL 6 minutes ago"
-                            }
-                        ]
-                    }
-                }
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 7
+          },
+          "title": "Distribution Overview",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(provider.requests.Sum) AS 'Requests' FROM LoadBalancerSample WHERE provider = 'CloudFrontDistribution' AND providerAccountId LIKE '%' FACET provider.domainName AS 'Domain name', provider.enabled AS 'Enabled', provider.status AS 'Status', provider.priceClass AS 'Price class' SINCE 1 day ago"
+              }
             ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "height": 3,
+            "width": 5
+          },
+          "title": "Bytes Transferred",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(provider.bytesDownloaded.Sum) as 'Downloaded', sum(provider.bytesUploaded.Sum) as 'Uploaded' FROM LoadBalancerSample WHERE provider = 'CloudFrontDistribution' AND providerAccountId LIKE '%' SINCE 1 hour ago"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Cloudfront Errors",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(provider.error4xxErrorRate.Average) as '4xx errors', average(provider.error5xxErrorRate.Average) as '5xx errors' FROM LoadBalancerSample WHERE providerAccountId LIKE '%' and provider = 'CloudFrontDistribution' TIMESERIES 5 minutes since 1 hour ago"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Requests Per Minute",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(provider.requests.Sum) FROM LoadBalancerSample WHERE providerAccountId LIKE '%' and provider = 'CloudFrontDistribution' FACET provider.domainName SINCE 1 hour ago TIMESERIES"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "# Of Distributions Enabled",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(provider.domainName) AS 'Total distributions' FROM LoadBalancerSample WHERE providerAccountId LIKE '%' AND provider = 'CloudFrontDistribution' FACET provider.enabled SINCE 1 hour ago"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
         }
-    ]
+      ]
+    }
+  ]
 }
