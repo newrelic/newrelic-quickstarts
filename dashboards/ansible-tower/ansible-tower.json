@@ -1,5 +1,5 @@
 {
-  "name": "Ansible Tower",
+  "name": "Ansible-Tower-Prometheus",
   "description": null,
   "pages": [
     {
@@ -23,7 +23,7 @@
           }
         },
         {
-          "title": "Successful Metrics",
+          "title": "Successful",
           "layout": {
             "column": 4,
             "row": 1,
@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) AS '' WHERE status = 'successful'"
+                "query": "FROM Metric SELECT sum(awx_status_total) AS '' WHERE status = 'successful' WHERE metricName LIKE '%awx_status_total%'"
               }
             ],
             "platformOptions": {
@@ -49,13 +49,13 @@
             },
             "thresholds": [
               {
-                "value": 1
+                "value": 0
               }
             ]
           }
         },
         {
-          "title": "Error Metrics",
+          "title": "Error",
           "layout": {
             "column": 7,
             "row": 1,
@@ -73,7 +73,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) AS '' WHERE status = 'error'"
+                "query": "FROM Metric SELECT sum(awx_status_total) AS '' WHERE status = 'error' WHERE metricName LIKE '%awx_status_total%'"
               }
             ],
             "platformOptions": {
@@ -82,13 +82,13 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 1
+                "value": 0
               }
             ]
           }
         },
         {
-          "title": "Failed Metrics",
+          "title": "Failed",
           "layout": {
             "column": 10,
             "row": 1,
@@ -106,7 +106,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) AS '' WHERE status = 'failed'"
+                "query": "FROM Metric SELECT sum(awx_status_total) AS '' WHERE status = 'failed' WHERE metricName LIKE '%awx_status_total%'"
               }
             ],
             "platformOptions": {
@@ -115,7 +115,7 @@
             "thresholds": [
               {
                 "alertSeverity": "WARNING",
-                "value": 1
+                "value": 0
               }
             ]
           }
@@ -215,6 +215,36 @@
           },
           "rawConfiguration": {
             "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(*) FACET job"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job Status",
+          "layout": {
+            "column": 4,
+            "row": 5,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
               "showOtherSeries": false
             },
             "legend": {
@@ -223,277 +253,40 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) FACET job WHERE job = 'prometheus' OR job = 'tower'"
+                "query": "FROM Metric SELECT sum(awx_pending_jobs_total) AS 'Pending Jobs', sum(awx_running_jobs_total) AS 'Running Jobs' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Organizations",
-          "layout": {
-            "column": 4,
-            "row": 5,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_organizations_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
         {
-          "title": "Teams",
+          "title": "Organizations, Teams and Users",
           "layout": {
-            "column": 7,
-            "row": 5,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_teams_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Users",
-          "layout": {
-            "column": 9,
-            "row": 5,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_users_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Hosts",
-          "layout": {
-            "column": 11,
-            "row": 5,
-            "width": 2,
+            "column": 1,
+            "row": 9,
+            "width": 5,
             "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_hosts_total) FACET type "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Inventories",
-          "layout": {
-            "column": 4,
-            "row": 7,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+            "legend": {
+              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_inventories_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Inventory Scripts",
-          "layout": {
-            "column": 7,
-            "row": 7,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_inventory_scripts_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Schedules",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_schedules_total) AS '' LIMIT MAX"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "License Type",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 4,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(license_type) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Job Templates",
-          "layout": {
-            "column": 5,
-            "row": 9,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_job_templates_total) AS ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Workflow Job Templates",
-          "layout": {
-            "column": 7,
-            "row": 9,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_workflow_job_templates_total) AS ''"
+                "query": "FROM Metric SELECT sum(awx_organizations_total) AS 'Organisations', sum(awx_teams_total) AS 'Teams', sum(awx_users_total) AS 'Users'  TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -504,10 +297,10 @@
         {
           "title": "Instance Memory",
           "layout": {
-            "column": 9,
+            "column": 6,
             "row": 9,
-            "width": 4,
-            "height": 4
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -539,12 +332,12 @@
           }
         },
         {
-          "title": "Instance License - Free",
+          "title": "Hosts",
           "layout": {
-            "column": 1,
-            "row": 11,
-            "width": 2,
-            "height": 2
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -557,7 +350,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_license_instance_free) AS '' LIMIT MAX"
+                "query": "FROM Metric SELECT sum(awx_hosts_total) FACET type "
               }
             ],
             "platformOptions": {
@@ -566,12 +359,12 @@
           }
         },
         {
-          "title": "Instance License - Total",
+          "title": "License Type",
           "layout": {
-            "column": 3,
-            "row": 11,
-            "width": 2,
-            "height": 2
+            "column": 6,
+            "row": 12,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -584,7 +377,61 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_license_instance_total) AS ''"
+                "query": "FROM Metric SELECT latest(license_type) AS ''"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job Templates",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(awx_job_templates_total) AS ''"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Workflow Job Templates",
+          "layout": {
+            "column": 11,
+            "row": 12,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(awx_workflow_job_templates_total) AS ''"
               }
             ],
             "platformOptions": {
@@ -595,9 +442,9 @@
         {
           "title": "Install UUID",
           "layout": {
-            "column": 5,
-            "row": 11,
-            "width": 4,
+            "column": 1,
+            "row": 13,
+            "width": 5,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -620,12 +467,12 @@
           }
         },
         {
-          "title": "Job Status",
+          "title": "Inventories and Inventory Scripts",
           "layout": {
             "column": 1,
-            "row": 13,
-            "width": 10,
-            "height": 5
+            "row": 15,
+            "width": 5,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -641,7 +488,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_pending_jobs_total) AS 'Pending Jobs', sum(awx_running_jobs_total) AS 'Running Jobs' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT sum(awx_inventories_total) AS 'Inventories', sum(awx_inventory_scripts_total) AS 'Inventory Scripts' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -653,12 +500,45 @@
           }
         },
         {
-          "title": "Sessions",
+          "title": "Instance Licenses",
+          "layout": {
+            "column": 6,
+            "row": 15,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(awx_license_instance_total) AS 'Total', sum(awx_license_instance_free) AS 'Free' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Schedules",
           "layout": {
             "column": 11,
-            "row": 13,
+            "row": 15,
             "width": 2,
-            "height": 5
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -671,7 +551,34 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_sessions_total) AS '' LIMIT MAX FACET type "
+                "query": "FROM Metric SELECT sum(awx_schedules_total) AS '' LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Sessions",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(awx_sessions_total) AS 'Sessions' LIMIT MAX FACET type "
               }
             ],
             "platformOptions": {
@@ -682,10 +589,10 @@
         {
           "title": "Instance Launch Type",
           "layout": {
-            "column": 1,
+            "column": 6,
             "row": 18,
             "width": 7,
-            "height": 3
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -707,44 +614,11 @@
           }
         },
         {
-          "title": "Organizations",
-          "layout": {
-            "column": 8,
-            "row": 18,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_organizations_total) TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
           "title": "Cumulative Metric Status",
           "layout": {
             "column": 1,
-            "row": 21,
-            "width": 7,
+            "row": 22,
+            "width": 12,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -762,36 +636,6 @@
               {
                 "accountId": 0,
                 "query": "FROM Metric SELECT count(status) FACET status "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Teams",
-          "layout": {
-            "column": 8,
-            "row": 21,
-            "width": 5,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(awx_teams_total) TIMESERIES "
               }
             ],
             "platformOptions": {
