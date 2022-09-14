@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { fetchPaginatedGHResults, filterOutTestFiles } from './lib/github-api-helpers';
-import { prop } from './lib/helpers';
 
 const guidRegex = /guid[`'"\) ]/;
 const entityGuidRegex = /entityGuid/;
@@ -8,7 +7,7 @@ const entityGuidFieldRegex = /\"linkedEntityGuids\": (?:(?!null))/;
 const permissionsFieldRegex = /\"permissions\": /;
 const accountIdRegEx = /\"accountId\": (?:(?!0))/;
 
-const checkLine = (line: string) => {
+export const checkLine = (line: string) => {
   const warningsFound = [];
 
   if (guidRegex.test(line)) {
@@ -31,10 +30,12 @@ const checkLine = (line: string) => {
 };
 
 const encodedNewline = '%0A';
-const createWarningComment = (warnings: string[]) => {
+export const createWarningComment = (warnings: string[]) => {
+
   const commentMessage = [
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
   ];
+
   const tableHeader = `| Warning | Filepath | Line # | ${encodedNewline}| --- | --- | --- | `;
   commentMessage.push(tableHeader);
 
@@ -42,10 +43,11 @@ const createWarningComment = (warnings: string[]) => {
 
   const linkToDocs = `${encodedNewline}Reference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. ${encodedNewline}`;
   commentMessage.push(linkToDocs);
+
   return commentMessage.join(encodedNewline);
 };
 
-const runHelper = async (prUrl?: string, token?: string): Promise<boolean> => {
+export const runHelper = async (prUrl?: string, token?: string): Promise<boolean> => {
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
     return false;
@@ -65,26 +67,35 @@ const runHelper = async (prUrl?: string, token?: string): Promise<boolean> => {
     token
   );
 
-  const dashboardFileRegEx = /dashboards\/\S*\.json$/;
+  const dashboardFileRegEx = /^dashboards\/\S*\.json$/;
   const dashboardsInPR = filterOutTestFiles(files)
     .filter(({ status }) => status != "removed")
     .filter(({ filename }) => dashboardFileRegEx.test(filename));
 
   for (const dash of dashboardsInPR) {
-    const response = await fetch(dash.raw_url, {
-      headers: { authorization: `token ${token}` },
-    });
-    const responseJSON = await response.json();
-    const dashLines = JSON.stringify(responseJSON, null, 2).split('\n');
-
-    dashLines.forEach((line, lineNumber) => {
-      const output = checkLine(line);
-      if (output.length > 0) {
-        output.forEach((o) =>
-          warnings.push(`| ${o} | ${dash.filename} | ${lineNumber + 1} |`)
-        );
+    try {
+      const response = await fetch(dash.raw_url, {
+        headers: { authorization: `token ${token}` },
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} - ${dash.raw_url}`);
       }
-    });
+      const responseJSON = await response.json();
+
+      const dashLines = JSON.stringify(responseJSON, null, 2).split('\n');
+
+      dashLines.forEach((line, lineNumber) => {
+        const output = checkLine(line);
+        if (output.length > 0) {
+          output.forEach((o) =>
+            warnings.push(`| ${o} | ${dash.filename} | ${lineNumber + 1} |`)
+          );
+        }
+      });
+    } catch (error: any) {
+      console.error('Error:', error.message);
+      return false;
+    }
   }
 
   if (warnings.length > 0) {
