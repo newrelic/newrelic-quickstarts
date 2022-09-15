@@ -1,34 +1,6 @@
 import fetch from 'node-fetch';
 import { fetchPaginatedGHResults, filterOutTestFiles } from './lib/github-api-helpers';
 
-// const guidRegex = /guid[`'"\) ]/;
-// const entityGuidRegex = /entityGuid/;
-// const entityGuidFieldRegex = /\"linkedEntityGuids\": (?:(?!null))/;
-// const permissionsFieldRegex = /\"permissions\": /;
-// const accountIdRegEx = /\"accountId\": (?:(?!0))/;
-
-// export const checkLine = (line: string) => {
-//   const warningsFound = [];
-
-//   if (guidRegex.test(line)) {
-//     warningsFound.push(`\"guid\" should not be used`);
-//   }
-//   if (entityGuidRegex.test(line)) {
-//     warningsFound.push(`\"entityGuid\" should not be used`);
-//   }
-//   if (entityGuidFieldRegex.test(line)) {
-//     warningsFound.push(`\"linkedEntityGuid\" must be set to null`);
-//   }
-//   if (permissionsFieldRegex.test(line)) {
-//     warningsFound.push(`\"permissions\" field should not be used`);
-//   }
-//   if (accountIdRegEx.test(line)) {
-//     warningsFound.push(`\"accountId\" must be zero`);
-//   }
-
-//   return warningsFound;
-// };
-
 const regexAndWarning: [RegExp, string][] = [
   [/guid[`'"\) ]/, `\"guid\" should not be used`],
   [/entityGuid/, `\"entityGuid\" should not be used`],
