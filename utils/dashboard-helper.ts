@@ -8,6 +8,7 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
 ];
+
 export const checkLine = (line: string) => {
   const warningsFound = [];
   for (const [regex, warning] of regexAndWarning) {
@@ -17,7 +18,6 @@ export const checkLine = (line: string) => {
   }
   return warningsFound;
 };
-
 
 const encodedNewline = '%0A';
 export const createWarningComment = (warnings: string[]) => {
