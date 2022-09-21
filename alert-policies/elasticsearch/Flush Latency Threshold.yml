@@ -1,0 +1,39 @@
+# Name of the alert
+name: Flush Latency Threshold
+
+# Description and details
+description: |+
+  This alert will trigger when the Flush latency for an Elasticsearch cluster's primary shards is >5ms.
+  This is measured by: # of Flushes / Time spent on Flushes (ms) for the evaluated time window.
+  Increased Flush Latency is an indication that your disks cannot keep up with your cluster's demands and you may need to reconfigure the 'flush_threshold_size' setting to reduce the translog size needed to trigger a flush operation.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "FROM ElasticsearchCommonSample SELECT (latest(primaries.flushesTotal) - earliest(primaries.flushesTotal))/(latest(primaries.flushTotalTimeInMilliseconds) - earliest(primaries.flushTotalTimeInMilliseconds)) FACET hostname"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE # Options: ABOVE | BELOW | EQUALS
+    # Value that triggers a violation
+    threshold: 5
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Advanced Signal Settings
+signal:
+  # Type of value that should be used to fill gaps
+  fillOption: LAST_VALUE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400

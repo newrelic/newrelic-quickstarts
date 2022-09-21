@@ -782,6 +782,15 @@ The list of category terms associated with the quickstart
 </td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>dataSources</strong></td>
+<td valign="top">[Nr1CatalogDataSource!]!</td>
+<td>
+
+The list of data sources associated with the quickstart
+
+</td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top">String</td>
 <td>
@@ -1330,6 +1339,15 @@ The list of category terms associated with the quickstart
 <td>
 
 A list of dashboard components that are included in the quickstart
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>dataSourceIds</strong></td>
+<td valign="top">[ID!]</td>
+<td>
+
+A list of data source ids corresponding to the data sources associated with this quickstart
 
 </td>
 </tr>

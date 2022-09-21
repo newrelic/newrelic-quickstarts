@@ -1,0 +1,262 @@
+{
+  "name": "Battlesnake Server Status",
+  "description": "A dashboard to monitor your Battlesnake server's performance. It's important to keep all responses to the `/move` endpoint under 500ms. Furthermore, it's possible that your snake may be in multiple concurrent matches at the same time. It's important to make sure you server and web application are running smoothly to keep you in the game!",
+  "pages": [
+    {
+      "name": "Battlesnake Server Status",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 6,
+            "width": 4
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# 🐍 Battlesnake Server Status\n\nWhen developing a battlesnake and hosting it on a server, it's important to consider the following concepts:\n\n* Battlesnakes may be playing [multiple games at once](https://docs.battlesnake.com/guides/tips#consider-concurrency-and-use-game-ids)\n* Servers should [always be online](https://docs.battlesnake.com/guides/tips#keep-your-battlesnake-server-running) and ready to play at any time\n* Most importantly, the server [must respond within `500ms`](https://docs.battlesnake.com/guides/tips#dont-take-too-long-to-respond) or the Battlesnake's move will be chosen at random!\n\nThis dashboard should help provide the necessary insights to ensure that a Battlesnake server is set up for success.\n\n## Helpful Links\n* [Battlesnake API docs](https://docs.battlesnake.com/)\n* [List of starter projects](https://docs.battlesnake.com/references/starter-projects)\n* [Spring 2022 League](https://play.battlesnake.com/league/spring-league-2022/)\n* [New Relic APM docs](https://docs.newrelic.com/docs/apm/new-relic-apm/getting-started/introduction-apm)"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Time consumed by top web transactions",
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(apm.service.transaction.duration), 1 second) * 100 FROM Metric WHERE (transactionType = 'Web') AND (transactionName IN ('WebTransaction/Expressjs/POST//move', 'WebTransaction/Expressjs/GET//', 'WebTransaction/Expressjs/GET/(not found)', 'WebTransaction/Expressjs/POST//start', 'WebTransaction/Expressjs/POST//end')) FACET `transactionName` LIMIT 5 SINCE 1 hour AGO TIMESERIES EXTRAPOLATE"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Network traffic",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(transmitBytesPerSecond) AS 'Transmit bytes per second', average(receiveBytesPerSecond) AS 'Receive bytes per second' FROM NetworkSample TIMESERIES auto"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Moves per minute",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Transaction WHERE request.uri = '/move' LIMIT MAX SINCE 1 hour ago TIMESERIES 1 minute"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "layout": {
+            "column": 8,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Requests by endpoint",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Transaction WHERE request.uri IN ('/move', '/start', '/end', '/') LIMIT MAX FACET request.uri"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Load average",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(loadAverageOneMinute) as '1 minute', average(loadAverageFiveMinute) AS '5 minutes', average(loadAverageFifteenMinute) AS '15 minutes' FROM SystemSample TIMESERIES auto"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "CPU usage (%)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(cpuPercent) AS 'CPU used %' FROM SystemSample TIMESERIES auto"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Average disk free (%)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(diskFreePercent) FROM SystemSample SINCE 1 hour ago TIMESERIES "
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Memory usage (%)",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(memoryUsedPercent) AS 'Memory used %' FROM SystemSample TIMESERIES auto"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.area"
+          },
+          "layout": {
+            "column": 10,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Throughput",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(count(apm.service.transaction.duration), 1 minute) as 'Web' FROM Metric WHERE (transactionType = 'Web') FACET `transactionType` LIMIT 5 SINCE 1 hour AGO TIMESERIES "
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}

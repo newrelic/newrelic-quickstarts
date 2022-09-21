@@ -1,0 +1,380 @@
+{
+  "name": "Battlesnake Performance",
+  "description": "Monitor your Battlesnake's performance and see how it stacks up against your competition!",
+  "pages": [
+    {
+      "name": "Battlesnake Performance",
+      "description": null,
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 3
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# 🐍 Competition\nHow is your snake doing against it's opponents?"
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Games played against opponents",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(snakeGameId) AS 'Games' FROM Transaction WHERE snakeRules != 'solo' SINCE 1 week AGO LIMIT Max"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Turns made with snake present",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'Turns' FROM Transaction SINCE 1 day AGO FACET CASES (WHERE snakeOpponent_1_Name IS NULL AS 'Alive', WHERE snakeOpponent_1_Name IS NOT NULL AS 'Dead') ORDER BY max(snakeTurn)"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Snakes played against",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(snakeGameId) AS 'Games played' FROM Transaction FACET snakeOpponent_1_Name AS 'Opponent' SINCE 1 week AGO LIMIT Max"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# ❤️ Survival\nSurvive as many turns as possible."
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Most turns in a single game",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeTurn) AS 'Turns' FROM Transaction SINCE 1 week AGO LIMIT MAX"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Most turns per day",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeTurn) FROM Transaction SINCE 1 week AGO TIMESERIES 1 day FACET snakeGameId ORDER BY max(snakeTurn) LIMIT 1"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Games with most turns",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeTurn) AS 'Turns' FROM Transaction SINCE 1 week AGO FACET snakeGameId AS 'Game ID' LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "# 💪 Growth\nEat food to grow your snake (or don't)."
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "height": 3,
+            "width": 2
+          },
+          "title": "Longest snake",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeLength) AS 'Length' FROM Transaction SINCE 1 week AGO LIMIT MAX"
+              }
+            ],
+            "thresholds": []
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Longest snake per day",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeLength) FROM Transaction SINCE 1 week AGO TIMESERIES 1 day FACET snakeGameId ORDER BY max(snakeLength) LIMIT 1"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.table"
+          },
+          "layout": {
+            "column": 10,
+            "row": 7,
+            "height": 3,
+            "width": 3
+          },
+          "title": "Games with the longest snake",
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(snakeLength) AS 'Length' FROM Transaction SINCE 1 week AGO FACET snakeGameId AS 'Game ID' LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Game types played",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(snakeGameId) FROM Transaction FACET snakeRules SINCE 1 week AGO LIMIT MAX"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.line"
+          },
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Games per day",
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(snakeGameId) AS 'Games played' FROM Transaction SINCE 1 week AGO TIMESERIES 1 day LIMIT MAX"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          },
+          "linkedEntityGuids": null
+        },
+        {
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "height": 3,
+            "width": 4
+          },
+          "title": "Number of snakes per turn",
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) AS 'Turns' FROM Transaction SINCE 1 week AGO LIMIT MAX FACET CASES (WHERE snakeOpponent_1_Name IS NULL AS 'One', WHERE snakeOpponent_1_Name IS NOT NULL AND snakeOpponent_2_NAME IS NULL AS 'Two', WHERE snakeOpponent_2_Name IS NOT NULL AND snakeOpponent_3_Name IS NULL AS 'Three', WHERE snakeOpponent_3_Name IS NOT NULL AND snakeOpponent_4_Name IS NULL AS 'Four')"
+              }
+            ]
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    },
+    {
+      "name": "Instructions",
+      "description": "Basic instructions for setting up Battlesnake-specific instrumentation",
+      "widgets": [
+        {
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "height": 3,
+            "width": 12
+          },
+          "title": "",
+          "rawConfiguration": {
+            "text": "Instructions\n===\n\n1. Instrument your Battlensake server with a [New Relic APM agent](https://docs.newrelic.com/docs/apm/new-relic-apm/getting-started/introduction-apm/).\n2. Add a custom script from [this repository](https://github.com/zstix/nr-battlesnake-attributes) to your snake application logic."
+          },
+          "linkedEntityGuids": null
+        }
+      ]
+    }
+  ]
+}

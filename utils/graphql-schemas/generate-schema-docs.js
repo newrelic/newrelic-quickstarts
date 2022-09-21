@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { fetchNRGraphqlResults } = require('../nr-graphql-helpers');
+const { fetchNRGraphqlResults } = require('../lib/nr-graphql-helpers');
 const { fullSchemaQuery } = require('./constants');
 const { renderSchema } = require('graphql-markdown');
 

@@ -1,5 +1,7 @@
 # Customer experience bottom of the funnel analysis instructions 
-![Customer experience quality foundation screen shot](dashboards/om-bofu-analysis/om-bofu-analysis.png)
+![Customer experience quality foundation screen shot](../dashboards/om-bofu-analysis/om-bofu-analysis.png)
+
+/dashboards/om-bofu-analysis/om-bofu-analysis.png
 
 ## Install the bottom of the funnel analysis dashboard
 Follow the quickstart menu prompts to install the dashboard
@@ -43,8 +45,8 @@ The following tracks conversions on the basis that a user is authenticated by th
 
 The same query as above but for a single page application (__AjaxRequests__)
 >FROM AjaxRequest SELECT funnel(customerId, <br>
-      WHERE appName = ‘CustomerPortal’ and requestUrl like ‘%Checkout%’ AS ‘Begin Checkout’ and httpResponseCode >= 200 and httpResponseCode < 300, <br>
-      WHERE appName = ‘CustomerPortal’ and requestUrl like ‘%OrderConfirmed%’ AS ‘Order Confirmed’ and httpResponseCode >= 200 and httpResponseCode < 300)<br>
+      WHERE appName = ‘CustomerPortal’ and requestUrl like ‘%Checkout%’ and httpResponseCode >= 200 and httpResponseCode < 300 AS ‘Begin Checkout’, <br>
+      WHERE appName = ‘CustomerPortal’ and requestUrl like ‘%OrderConfirmed%’ and httpResponseCode >= 200 and httpResponseCode < 300 AS ‘Order Confirmed’)<br>
 
 The funnel query pulls from a single data type. You won’t be able to combine PageViews and AjaxRequests in the same funnel.  If your bottom of the funnel flow includes a mix of PageViews and AjaxRequests you can capture the overall conversion rate by focusing on the PageViews at the start and the end.
 

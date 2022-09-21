@@ -1,0 +1,1104 @@
+{
+    "name": "Cisco Hardware Status",
+    "description": null,
+    "pages": [
+      {
+        "name": "Issues",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 1
+            },
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# This tab highlights Cisco hardware sensors that are not in their normal state.  These queries can be adjusted to reflect your own requirements."
+            }
+          },
+          {
+            "title": "Sensors Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET entity_sensor_status as 'Type' WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_status IS NOT NULL and entity_sensor_status NOT IN ('ok','unavailable') LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Entity Sensors - Except ok and unavailable",
+            "layout": {
+              "column": 3,
+              "row": 2,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(entity_sensor_status), filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue FACET device_name, Index, entity_name, entity_sensor_scale, entity_sensor_type WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_status IS NOT NULL and entity_sensor_status NOT IN ('ok','unavailable') LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Entity Sensors Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, entity_description, entity_sensor_status WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_status IS NOT NULL and entity_sensor_status NOT IN ('ok','unavailable') LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power Supply Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET power_supply_state WHERE instrumentation.name LIKE 'cisco%' and power_supply_state IS NOT NULL and power_supply_state NOT IN ('normal') LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Power Supply State - Excluding normal",
+            "layout": {
+              "column": 3,
+              "row": 6,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(power_supply_state) FACET device_name, Index, power_status_description WHERE instrumentation.name LIKE 'cisco%' and power_supply_state IS NOT NULL and power_supply_state NOT IN ('normal') LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Power Supply Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 6,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, power_status_description, power_supply_state WHERE instrumentation.name LIKE 'cisco%' and power_supply_state IS NOT NULL and power_supply_state NOT IN ('normal') LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET fan_state WHERE instrumentation.name LIKE 'cisco%' and fan_state IS NOT NULL and fan_state NOT IN ('normal') LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Fan State - Excluding normal",
+            "layout": {
+              "column": 3,
+              "row": 10,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(fan_state) FACET device_name, Index, fan_descr WHERE instrumentation.name LIKE 'cisco%' and fan_state IS NOT NULL and fan_state NOT IN ('normal') LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Fan Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, fan_descr, fan_state WHERE instrumentation.name LIKE 'cisco%' and fan_state IS NOT NULL and fan_state NOT IN ('normal') LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan Tray Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET cefcFanTrayOperStatus WHERE cefcFanTrayOperStatus NOT IN ('up') and cefcFanTrayOperStatus IS NOT NULL LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Fan Tray - Excluding up",
+            "layout": {
+              "column": 3,
+              "row": 14,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(cefcFanTrayOperStatus) FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFanTrayStatus' and cefcFanTrayOperStatus NOT IN ('up') LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan Tray Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 14,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, entity_name, cefcFanTrayOperStatus WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFanTrayStatus' and cefcFanTrayOperStatus NOT IN ('up') LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Temp Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET temp_state WHERE instrumentation.name LIKE 'cisco%' and temp_state IS NOT NULL WHERE temp_state NOT IN ('normal') LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Temp State - Excluding normal",
+            "layout": {
+              "column": 3,
+              "row": 18,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(temp_state) FACET device_name, Index, temp_descr WHERE instrumentation.name LIKE 'cisco%' and temp_state IS NOT NULL WHERE temp_state NOT IN ('normal') LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Temp Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 18,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, temp_descr, temp_state WHERE instrumentation.name LIKE 'cisco%' and temp_state IS NOT NULL WHERE temp_state NOT IN ('normal') LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Line Card and Module Status Issues",
+            "layout": {
+              "column": 1,
+              "row": 22,
+              "width": 2,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET cefcModuleOperStatus WHERE cefcModuleOperStatus IS NOT NULL and cefcModuleOperStatus NOT IN ('ok') LIMIT MAX COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Line Card and Module Statuses - Excluding ok",
+            "layout": {
+              "column": 3,
+              "row": 22,
+              "width": 6,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(cefcModuleOperStatus), latest(cefcModuleAdminStatus), latest(cefcModuleResetReason) FACET device_name, Index, entity_name WHERE `mib-table` = 'cefcModule' and cefcModuleOperStatus NOT IN ('ok') LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Line Card and Module Status Issues",
+            "layout": {
+              "column": 9,
+              "row": 22,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(Index) FACET device_name, entity_name, cefcModuleOperStatus WHERE `mib-table` = 'cefcModule' and cefcModuleOperStatus NOT IN ('ok') and cefcModuleOperStatus IS NOT NULL LIMIT MAX TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Inventory",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Cisco Device List - Edit widget to enable filtering to a specific device to see available hardware sensor data",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(instrumentation.name) as Profile, latest(SysObjectID) FACET device_name, tags.kentik.model as Model WHERE instrumentation.name LIKE 'cisco%' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 5,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## Cisco provides a large variety of SNMP OID's related to hardware sensors, but different models and firmware versions vary in which MIB's they support.  Edit the above widget to enable filtering this dashboard to narrow down to a specific device to see which OID values we are collecting from it."
+            }
+          },
+          {
+            "title": "Number of Items associated with Hardware MIB Tables",
+            "layout": {
+              "column": 6,
+              "row": 4,
+              "width": 7,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT uniqueCount(Index) as 'Table Rows' FROM Metric FACET `mib-table` WHERE instrumentation.name LIKE '%cisco%' and `mib-name` in ('CISCO-ENTITY-FRU-CONTROL-MIB','CISCO-ENTITY-SENSOR-MIB','CISCO-ENVMON-MIB') LIMIT MAX"
+                }
+              ],
+              "thresholds": []
+            }
+          },
+          {
+            "title": "Entity Hardware Serials ",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(entity_serial) FACET device_name, Index, entity_class, entity_name, entity_description, entity_model WHERE instrumentation.name LIKE 'cisco%' and entity_serial IS NOT NULL and entity_serial != '' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power Supply State - ciscoEnvMonMIB",
+            "layout": {
+              "column": 7,
+              "row": 8,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(power_supply_state) FACET device_name, Index, power_status_description WHERE instrumentation.name LIKE 'cisco%' and power_supply_state IS NOT NULL LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Fan RPM - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(entity_sensor_status),  latest(kentik.snmp.entSensorValue) as entSensorValue FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'ciscoEntitySensorMIB' and entity_sensor_type = 'rpm' LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Voltage State - ciscoEnvMonMIB",
+            "layout": {
+              "column": 7,
+              "row": 11,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(voltage_state), latest(kentik.snmp.voltage_value) FACET device_name, Index, voltage_descr WHERE instrumentation.name LIKE 'cisco%' and (voltage_state IS NOT NULL or kentik.snmp.voltage_value IS NOT NULL) LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Temp Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue, latest(entity_sensor_status) FACET device_name, Index, entity_name, entity_sensor_type, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_type = 'celsius' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Temp State - ciscoEnvMonMIB",
+            "layout": {
+              "column": 7,
+              "row": 14,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(temp_state), latest(kentik.snmp.temp_value) FACET device_name, Index, temp_descr WHERE instrumentation.name LIKE 'cisco%' and (kentik.snmp.temp_value IS NOT NULL or temp_state IS NOT NULL)  LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "AC Voltage Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue, latest(entity_sensor_status) FACET device_name, Index, entity_name, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' WHERE entity_sensor_type LIKE 'voltsac' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan State - ciscoEnvMonMIB",
+            "layout": {
+              "column": 7,
+              "row": 17,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(fan_state) FACET device_name, Index, fan_descr WHERE instrumentation.name LIKE 'cisco%' and fan_state IS NOT NULL LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "DC Voltage Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue, latest(entity_sensor_status) FACET device_name, Index, entity_name, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' WHERE entity_sensor_type LIKE 'voltsdc' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan Trays - cefcFanTrayStatus",
+            "layout": {
+              "column": 7,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(cefcFanTrayOperStatus) FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFanTrayStatus' LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Amperage Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 23,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000000, WHERE entity_sensor_scale = 'micro') or filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue, latest(entity_sensor_status) FACET device_name, Index, entity_name, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' WHERE entity_sensor_type LIKE 'amperes' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Fan Speeds - cefcFanTable",
+            "layout": {
+              "column": 7,
+              "row": 23,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.snmp.cefcFanSpeedPercent) as 'Fan %', latest(kentik.snmp.cefcFanSpeed) as 'Fan Speed' FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFan' LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Wattage Use Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 26,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.snmp.entSensorValue) as entSensorValue FACET device_name, Index, entity_name, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_type = 'watts' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power Supply Groups - cefcFRUPowerSupplyGroup",
+            "layout": {
+              "column": 7,
+              "row": 26,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.snmp.cefcTotalDrawnCurrent) as cefcTotalDrawnCurrent, latest(kentik.snmp.cefcTotalAvailableCurrent) as cefcTotalAvailableCurrent FACET device_name, Index, entity_name, redundancy_mode, cefcPowerUnits WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFRUPowerSupplyGroup' LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Optical dBm Power Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 29,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as entSensorValue, latest(entity_sensor_status) FACET device_name, Index, entity_name, entity_sensor_scale WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_type = 'dbm' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Line Card and Module Statuses - cefcModule",
+            "layout": {
+              "column": 7,
+              "row": 29,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(cefcModuleOperStatus), latest(cefcModuleAdminStatus), latest(cefcModuleResetReason), latest(cefcModuleResetReasonDescription) FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcModule' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Truth Value Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 32,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(entity_sensor_status) FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' WHERE entity_sensor_type LIKE 'truthvalue' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power over Ethernet - cefcFRUPowerStatus",
+            "layout": {
+              "column": 7,
+              "row": 32,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(kentik.snmp.cefcFRUCurrent) as cefcFRUCurrent, latest(fru_power_admin_status), latest(fru_power_oper_status) FACET device_name, Index, entity_name, entity_description WHERE instrumentation.name LIKE 'cisco%' and `mib-table` = 'cefcFRUPowerStatus'  LIMIT MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Special Sensors - ciscoEntitySensorMIB",
+            "layout": {
+              "column": 1,
+              "row": 35,
+              "width": 6,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(latest(kentik.snmp.entSensorValue)/1000, WHERE entity_sensor_scale = 'milli') or latest(kentik.snmp.entSensorValue) as Value, latest(entity_sensor_status) as Status FACET device_name, Index, entity_name WHERE instrumentation.name LIKE 'cisco%' and entity_sensor_type = 'specialenum' and entity_name IS NOT NULL LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }

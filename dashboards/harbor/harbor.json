@@ -1,0 +1,220 @@
+{
+  "name": "Harbor Prometheus",
+  "description": null,
+  "pages": [
+    {
+      "name": "Harbor Prometheus",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Harbor Logo](https://cncf-branding.netlify.app/img/projects/harbor/horizontal/color/harbor-horizontal-color.png)\n--\n### Overview\n`harbor` registry is an enterprise-class registry server that stores and distributes container images. Harbor extends the open source Docker Distribution by adding the functionalities usually required by an enterprise, such as security, identity, and management. As an enterprise private registry, Harbor offers enhanced performance and security.\n\n### About this dashboard\n\nThis dashboard uses `harbor` metrics emitted by Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  "
+          }
+        },
+        {
+          "title": "Service Health",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(harbor_up) FROM Metric FACET component SINCE 30 minutes ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Traffic (http requests)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(harbor_core_http_request_total) FROM Metric FACET operation SINCE 60 MINUTES AGO UNTIL now TIMESERIES 5 minutes"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latency (average http response time)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(harbor_core_http_request_duration_seconds) FROM Metric SINCE 24 hours ago TIMESERIES UNTIL now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Repositories in use",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(harbor_project_repo_total) FROM Metric FACET project_name SINCE 24 hours ago LIMIT 10 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Project quota consumption (%)",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Utilization",
+                "precision": 1,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (latest(harbor_project_quota_usage_byte)/1073741824)/(latest(harbor_project_quota_byte)/1073741824) * 100 as Utilization FROM Metric FACET project_name ORDER BY Utilization LIMIT 10 SINCE 1 hours ago UNTIL now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 50
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 85
+              }
+            ]
+          }
+        },
+        {
+          "title": "In-flight requests",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(harbor_core_http_inflight_requests) FROM Metric SINCE 60 MINUTES AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}

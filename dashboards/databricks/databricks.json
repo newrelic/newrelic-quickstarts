@@ -1,0 +1,427 @@
+{
+    "name": "Databricks: Spark - Overview v2",
+    "description": "",
+    "pages": [
+      {
+        "name": "Spark - Overview",
+        "description": "",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "\n![Add Images](https://d2.alternativeto.net/dist/icons/apache-spark_147518.png?width=128&height=128&mode=crop&upscale=false)"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 2,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "Spark Application Count",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(spark.app.ID) AS '# of Apps' since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "Workers",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(spark.executor.ID) AS '# of Workers' where spark.executor.ID != 'driver' since 1 minute ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "Job Tasks Running",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select uniqueCount(spark.job.StageIds) AS 'Jobs Running' where spark.job.Status = 'RUNNING' since 1 minute ago "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "Stages Running",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select filter(uniqueCount(spark.job.StageIds), WHERE spark.job.Status = 'RUNNING') as 'Stages Running' since 1 minute ago "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 6,
+              "row": 1,
+              "height": 2,
+              "width": 1
+            },
+            "title": "Tasks Running",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT round(rate(sum(spark.job.numactivetasks), 5 seconds)) as 'Tasks Running' WHERE spark.job.Status = 'RUNNING'  since 1 minute ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 2,
+              "width": 2
+            },
+            "title": "Cluster Load",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(loadAverageOneMinute), uniqueCount(hostname) AS 'Hosts', sum(processorCount) AS 'CPUs' FROM SystemSample  since 15 minutes ago until 1 minute ago TIMESERIES"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Spark Node CPU Utilization",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "from SystemSample SELECT latest(cpuPercent) as 'CPU %', latest(coreCount) as 'Cores' FACET hostname where hostname LIKE '%-%-%-%-%-%-%' LIMIT 50 SINCE 1 minute ago  "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "height": 2,
+              "width": 2
+            },
+            "title": "GC Time",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.executor.totalgctime) AS 'Garbage Collection' facet spark.executor.ID since 1 hour ago TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 3,
+              "row": 3,
+              "height": 2,
+              "width": 3
+            },
+            "title": "Cores Used",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.app.Cores) AS 'Cluster Cores' since 1 hour ago TIMESERIES "
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 6,
+              "row": 3,
+              "height": 2,
+              "width": 3
+            },
+            "title": "Jobs",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(uniqueCount(spark.job.StageIds), WHERE spark.job.Status ='RUNNING') as 'RUNNING' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Spark Node Memory Utilization",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "from SystemSample SELECT 100 * average(memoryUsedBytes) / (average(memoryFreeBytes) + average(memoryUsedBytes)) as PctUsed, average(memoryFreeBytes)/1000000 AS 'Avg MB Free' FACET hostname WHERE hostname LIKE '%-%-%-%-%-%-%' LIMIT 50 SINCE 1 minute ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Job Stages",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(uniqueCount(spark.job.StageIds), WHERE spark.job.Status ='SUCCEEDED') as 'Succeeded', filter(uniqueCount(spark.job.StageIds), WHERE spark.job.Status = 'RUNNING') as 'Running', filter(uniqueCount(spark.job.StageIds), WHERE spark.job.Status = 'FAILED') as 'Failed' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Job Tasks",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select latest(spark.job.numcompletedtasks) as 'Completed Tasks', latest(spark.job.numtasks) as 'Running Tasks' FACET spark.job.Status TIMESERIES since 1 hours ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Shuffle Read/Write Records",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.executor.totalshuffleread) AS 'Reads', latest(spark.executor.totalshufflewrite) AS 'Writes' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Shuffle Read/Write Bytes",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select latest(spark.stage.shufflereadbytes) AS 'Read Bytes', latest(spark.stage.shufflewritebytes) AS 'Write Bytes' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "height": 4,
+              "width": 4
+            },
+            "title": "Processes Utilization",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*), average(threadCount), average(cpuPercent), average(cpuSystemPercent) FROM ProcessSample FACET commandName WHERE hostname LIKE '%-%-%-%-%-%-%' SINCE 5 minutes ago limit 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Stage Input/Output Records",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.stage.inputrecords) AS 'Input', latest(spark.stage.outputrecords) AS 'Output' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Stage Input/Output Bytes",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.stage.inputbytes) AS 'Input Bytes', latest(spark.stage.outputbytes) AS 'Output Bytes' TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "height": 2,
+              "width": 4
+            },
+            "title": "RDD Blocks",
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(spark.executor.rddblocks) AS BlocksUsed TIMESERIES since 1 hour ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }

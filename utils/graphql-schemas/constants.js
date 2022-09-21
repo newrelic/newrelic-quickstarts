@@ -77,6 +77,6 @@ fragment TypeRef on __Type {
       }
     }
   }
-}`
+}`;
 
 module.exports = { fullSchemaQuery };

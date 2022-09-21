@@ -1,0 +1,573 @@
+{
+    "name": "MSSQL On-Host Integration w/ Query Plans",
+    "description": "Sample SQL Server dashboard with query plans included",
+    "pages": [
+      {
+        "name": "SQL Overview",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 4,
+              "width": 4
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "# Microsoft SQL Server\n\n![Add Images](https://sqlandme.com/sql.png)\n\n* Database/Log Space\n* Memory\n* Waits/Blocking\n* Blocked Processes\n\n\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 4,
+              "width": 2
+            },
+            "title": "Average Connections Per Host",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`stats.connections`) FROM MssqlInstanceSample SINCE 1 hour AGO FACET label.db_hostname"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 4,
+              "width": 2
+            },
+            "title": "FileGroup Space Used (%)",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": " FROM MssqlCustomQuerySample SELECT latest(filegroupSpace_file_used_percent) WHERE filegroupSpace_database_name IS NOT NULL FACET label.db_hostname, filegroupSpace_database_name SINCE 1 hour ago"
+                }
+              ],
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 90
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "height": 4,
+              "width": 4
+            },
+            "title": "Log Space Used %",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(`logSpace_Log Space Used (%)`) WHERE `logSpace_Database Name` IS NOT NULL FACET label.db_hostname, `logSpace_Database Name`"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "SQL Compilations Per Second",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`stats.sqlCompilationsPerSecond`) FROM MssqlInstanceSample TIMESERIES FACET label.db_hostname SINCE 1 hour ago"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Buffer Cache Hit Ratio",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`system.bufferPoolHitPercent`) AS 'Buffer Cache Hit Ratio' FROM MssqlInstanceSample TIMESERIES FACET label.db_hostname SINCE 1 hour ago"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.area"
+            },
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Page Life Expectancy (secs)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`bufferpool.pageLifeExpectancyInMilliseconds`) / 1000 FROM MssqlInstanceSample SINCE 1 hour AGO TIMESERIES FACET label.db_hostname"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "height": 4,
+              "width": 5
+            },
+            "title": "Lock Waits Per Second",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`stats.lockWaitsPerSecond`) FROM MssqlInstanceSample TIMESERIES FACET label.db_hostname"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "layout": {
+              "column": 6,
+              "row": 8,
+              "height": 4,
+              "width": 7
+            },
+            "title": "Wait Percentage by Type",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(waitTypes_wait_percentage) AS 'Wait Type' FROM MssqlCustomQuerySample WHERE waitTypes_wait_type IS NOT NULL FACET label.db_hostname,waitTypes_wait_type LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Number of Blocked Processes",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`instance.blockedProcessesCount`) from MssqlInstanceSample timeseries since 1 hour ago FACET label.db_hostname"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 5,
+              "row": 12,
+              "height": 3,
+              "width": 8
+            },
+            "title": "Open Transactions",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT label.db_hostname, activeProcesses_session_id, activeProcesses_sql_hostname, activeProcesses_last_batch_time, activeProcesses_open_transaction_count, activeProcesses_database_name, activeProcesses_sql_command, activeProcesses_query_text, activeProcesses_program_name, activeProcesses_spid_status, activeProcesses_start_time, activeProcesses_cpu_time, activeProcesses_logical_read_count  WHERE activeProcesses_open_transaction_count > 0 since 2 months ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 15,
+              "height": 4,
+              "width": 12
+            },
+            "title": "Blocking Queries",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample\nSELECT blockingProcesses_sql_hostname, blockingProcesses_resource_type, blockingProcesses_database_name,\nblockingProcesses_block_object, blockingProcesses_request_mode, blockingProcesses_waiter_spid,\nblockingProcesses_waiter_text, blockingProcesses_blocking_spid, blockingProcesses_blocking_lock,\nblockingProcesses_blocking_text\nWHERE blockingProcesses_resource_type IS NOT NULL since 12 months ago\nLIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 19,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Failed Jobs/Backups",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(failedJobs_job_message) FROM MssqlCustomQuerySample WHERE failedJobs_run_status IN (0,4) FACET label.db_hostname, failedJobs_job_name, failedJobs_run_date, failedJobs_run_time SINCE 1 day ago"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      },
+      {
+        "name": "Query Performance",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Query Execution Count",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(frequentQueries_execution_count) FACET label.db_hostname,frequentQueries_complete_text"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Long Queries - CPU Time in Sec by DB",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_cpu_time_total_ms)/1000 WHERE longRunning_database_name IS NOT NULL AND longRunning_database_name != '' FACET label.db_hostname, longRunning_database_name"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Total Elapsed Time in Sec by Query (Short Name)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_duration_total_ms)/1000 WHERE longRunning_short_text IS NOT NULL FACET label.db_hostname,longRunning_short_text TIMESERIES 1 MINUTE"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": false
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": " Average Logical Writes by Query (Short Name)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_logical_writes_avg) WHERE longRunning_short_text IS NOT NULL FACET label.db_hostname,longRunning_short_text TIMESERIES 1 MINUTE LIMIT MAX"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Average Logical Reads by DB, Query (Long Name)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_logical_reads_avg) WHERE longRunning_short_text IS NOT NULL FACET label.db_hostname,longRunning_database_name, longRunning_complete_text LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "height": 3,
+              "width": 4
+            },
+            "title": "Highest CPU Time in Sec by Query (Short Name)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_cpu_time_total_ms)/1000 WHERE longRunning_short_text IS NOT NULL FACET label.db_hostname,longRunning_short_text LIMIT MAX"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Avg Duration in Sec per Query",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_duration_avg_ms)/1000 WHERE longRunning_complete_text IS NOT NULL FACET label.db_hostname,longRunning_complete_text TIMESERIES AUTO LIMIT MAX"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.table"
+            },
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "height": 3,
+              "width": 12
+            },
+            "title": "Query Execution Count & Total Duration/CPU Time/IO",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM MssqlCustomQuerySample SELECT latest(longRunning_duration_total_ms)/1000 AS 'Total Duration (s)', latest(longRunning_cpu_time_total_ms)/1000 AS 'Total CPU Time (s)', latest(longRunning_logical_reads_total) AS 'Total Logical Reads', latest(longRunning_writes_total) AS 'Total Logical Writes', latest(longRunning_physical_reads_total) AS 'Total Physical Reads' FACET label.db_hostname,longRunning_database_name AS 'DB Name', longRunning_complete_text AS 'SQL', longRunning_execution_count AS 'COUNT' WHERE longRunning_execution_count IS NOT NULL LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
