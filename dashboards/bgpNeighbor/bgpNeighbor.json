@@ -1,0 +1,173 @@
+{
+  "name": "BGP Neighbor Summary",
+  "description": null,
+  "pages": [
+    {
+      "name": "BGP Neighbor Summary",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Devices with BGP OIDs ",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 8,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(Index) as Neighbors\n, uniqueCount(remote_as)\n, filter(uniqueCount(Index),where bgpPeerAdminStatus = 'start') as AdminEnabledNeighbors  \n, filter(uniqueCount(Index),where bgpPeerState = 'established') as EstablishedNeighbors\n, filter(uniqueCount(Index),where bgpPeerState != 'established' and bgpPeerState is not null and bgpPeerAdminStatus = 'start'  ) as NotEstablishedNeighbors\nfacet device_name, instrumentation.name \nwhere `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp'\n limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Remote AS",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(device_name) as ConfiguredDevices\n, filter(uniqueCount(device_name),where bgpPeerAdminStatus = 'start') as AdminEnabledNeighbors  \n, filter(uniqueCount(device_name),where bgpPeerState = 'established') as EstablishedNeighbors\nfacet remote_as\nwhere `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp'\n limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "BGP Peer States",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(device_name, Index)\nwhere `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp'\nfacet bgpPeerState\nlimit max\ncompare with 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "BGP Peer States",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 5,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(device_name, Index)\nwhere `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp'\nfacet bgpPeerState\nlimit max\ntimeseries 5 minutes"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Remote AS Count",
+          "layout": {
+            "column": 10,
+            "row": 5,
+            "width": 3,
+            "height": 3
+          },
+
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(remote_as)\nwhere `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp'\ncompare with 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "BGP Summary",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 8
+          },
+
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(remote_as), latest(bgpPeerState) as State, latest(bgpPeerAdminStatus) as AdminStatus, latest(kentik.snmp.bgpPeerInUpdates) as InUpdates, latest(kentik.snmp.bgpPeerOutUpdates) as OutUpdates, latest(kentik.snmp.bgpPeerInTotalMessages)as InMessages, latest(kentik.snmp.bgpPeerOutTotalMessages) as OutMessages, latest(kentik.snmp.bgpPeerFsmEstablishedTransitions) as EstablishedTransitions, latest(kentik.snmp.bgpPeerFsmEstablishedTime) as EstablishedTimeInSeconds, latest(retry_interval), latest(hold_time_established), latest(keep_alive_established)\n facet device_name, neighbor_ip  where `mib-name` = 'BGP4-MIB' and tags.container_service = 'snmp' limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
