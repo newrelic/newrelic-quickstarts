@@ -65,7 +65,7 @@ const main = async () => {
   }
 
   // Submit all of the mutations in chunks of 5
-  const results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
+  let results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
     name: string;
   })[] = [];
 
@@ -77,7 +77,8 @@ const main = async () => {
       const res = await Promise.all(
         c.map((quickstart) => quickstart.submitMutation(dryRun))
       );
-      results.concat(res);
+
+      results = [...results, ...res];
     } catch (err) {
       const error = err as Error;
 
