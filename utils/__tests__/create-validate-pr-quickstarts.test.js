@@ -63,6 +63,32 @@ describe('create-validate-pr-quickstarts', () => {
     jest.resetAllMocks();
   });
 
+  test('succeeds on happy path', async () => {
+    const files = mockGithubAPIFiles([validQuickstartFilename]);
+    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+
+    Quickstart.mockImplementation(() => {
+      return {
+        config: {
+          installPlans: ['valid-id'],
+        },
+        isValid: true,
+        validate: jest.fn().mockImplementation(() => true),
+        submitMutation: jest.fn().mockResolvedValueOnce({
+          data: {},
+          errors: [],
+        }),
+      };
+    });
+    InstallPlan.mockImplementationOnce(() => {
+      return { isValid: true };
+    });
+
+    const hasErrored = await createValidateQuickstarts('url', 'token');
+    expect(hasErrored).toBe(false);
+  });
+
   test('fails for nerdgraph validation error', async () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
