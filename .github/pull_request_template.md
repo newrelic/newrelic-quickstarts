@@ -1,6 +1,6 @@
 # Summary
 
-A concise description of the changes being introduced. Please review the pre-merge checklist section to validate this PR is ready for review.
+A concise description of the changes being introduced. Please review the pre-merge checklist section to validate this pull request is ready for review and merge. **If it is not ready, please mark the pull request as a draft.**
 
 <!-- DON'T DELETE THIS SECTION BELOW IF SUBMITTING A NEW QUICKSTART -->
 ## Pre merge checklist
