@@ -1,13 +1,13 @@
 {
-  "name": "AWS AppRunner Dashboard",
+  "name": "App Runner Telemetry",
   "description": null,
   "pages": [
     {
-      "name": "AWS AppRunner Dashboard",
+      "name": "AppRunner logs DB",
       "description": null,
       "widgets": [
         {
-          "title": "Application logs",
+          "title": "AppRunner Requests",
           "layout": {
             "column": 1,
             "row": 1,
@@ -16,172 +16,31 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(*) FROM Log WHERE `aws.logGroup` = '/aws/apprunner/${AppRunner-container-name}/${application-hash}/application' SINCE 2 hours ago facet `aws.logGroup` TIMESERIES MAX"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Application logs",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "logger.log-table-widget"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT `log_severity`,`timestamp`,`message` FROM Log WHERE `aws.logGroup` = '/aws/apprunner/${AppRunner-container-name}/${application-hash}/application'"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Service logs",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(*) FROM Log WHERE `aws.logGroup` = '/aws/apprunner/${AppRunner-container-name}/${application-hash}/service' SINCE 2 hours ago facet `aws.logGroup` TIMESERIES MAX"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Service logs",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "logger.log-table-widget"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT `log_severity`,`timestamp`,`message` FROM Log WHERE `aws.logGroup` = '/aws/apprunner/${AppRunner-container-name}/${application-hash}/service'"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Metrics (Active Instances)",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
             "id": "viz.area"
           },
           "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(`aws.apprunner.ActiveInstances`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' AND `aws.accountId` = '533243300146' SINCE 24 HOURS AGO TIMESERIES"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Metrics (Successful Responses)",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(`aws.apprunner.2xxStatusResponses`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' AND `aws.accountId` = '533243300146' SINCE 24 HOURS AGO TIMESERIES"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Metrics (CPU and Memory)",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`aws.apprunner.CPUUtilization`), average(`aws.apprunner.MemoryUtilization`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' AND `aws.accountId` = '533243300146' SINCE 24 HOURS AGO TIMESERIES"
+                "query": "SELECT count(`aws.apprunner.Requests`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId` SINCE 24 HOURS AGO TIMESERIES"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         },
         {
-          "title": "Metrics (Requests)",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(`aws.apprunner.Requests`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' AND `aws.accountId` = '533243300146' SINCE 24 HOURS AGO TIMESERIES"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Metrics (Latency)",
+          "title": "Request Latency",
           "layout": {
             "column": 5,
-            "row": 10,
+            "row": 1,
             "width": 4,
             "height": 3
           },
@@ -190,13 +49,247 @@
             "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`aws.apprunner.RequestLatency`), min(`aws.apprunner.RequestLatency`), max(`aws.apprunner.RequestLatency`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' AND `aws.accountId` = '533243300146' SINCE 24 HOURS AGO TIMESERIES"
+                "query": "SELECT min(`aws.apprunner.RequestLatency`), average(`aws.apprunner.RequestLatency`), max(`aws.apprunner.RequestLatency`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId`  SINCE 24 HOURS AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Status Responses",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(`aws.apprunner.2xxStatusResponses`), count(`aws.apprunner.4xxStatusResponses`), count(`aws.apprunner.5xxStatusResponses`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId` SINCE 24 HOURS AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Active AppRunner Instances",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(`aws.apprunner.ActiveInstances`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId` SINCE 24 HOURS AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU Utilization",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws.apprunner.CPUUtilization`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId` SINCE 24 HOURS AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Memory Utilization",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws.apprunner.MemoryUtilization`) FROM Metric WHERE `collector.name` = 'cloudwatch-metric-streams' FACET `aws.accountId` SINCE 24 HOURS AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Application logs ",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Log WHERE `aws.logGroup` LIKE '%/application' SINCE 1648578495571 UNTIL 1648664890571 facet `aws.logGroup` TIMESERIES MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Application logs",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT message FROM Log WHERE aws.logGroup LIKE '/aws/apprunner/%' AND aws.logGroup LIKE '%/application'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Service logs ",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM Log WHERE `aws.logGroup` LIKE '%/service' SINCE 1648578245099 UNTIL 1648664640099 FACET `aws.logGroup` TIMESERIES MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Service logs",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT message FROM Log WHERE aws.logGroup LIKE '/aws/apprunner/%' AND aws.logGroup LIKE '%/service'"
               }
             ]
           }
