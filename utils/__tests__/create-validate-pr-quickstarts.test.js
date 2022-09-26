@@ -138,4 +138,14 @@ describe('create-validate-pr-quickstarts', () => {
     const hasErrored = await createValidateQuickstarts('url', 'token');
     expect(hasErrored).toBe(false);
   });
+
+  test('does not process removed file', async () => {
+    const files = mockGithubAPIFiles([validQuickstartFilename]);
+    files[0].status = 'removed';
+    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+
+    const hasErrored = await createValidateQuickstarts('url', 'token');
+    expect(hasErrored).toBe(false);
+  });
 });
