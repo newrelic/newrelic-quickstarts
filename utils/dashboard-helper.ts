@@ -1,5 +1,9 @@
 import fetch from 'node-fetch';
-import { fetchPaginatedGHResults, filterOutTestFiles } from './lib/github-api-helpers';
+import {
+  fetchPaginatedGHResults,
+  filterOutTestFiles,
+  isNotRemoved,
+} from './lib/github-api-helpers';
 
 const regexAndWarning: [RegExp, string][] = [
   [/guid[`'"\) ]/, `\"guid\" should not be used`],
@@ -21,7 +25,6 @@ export const checkLine = (line: string) => {
 
 const encodedNewline = '%0A';
 export const createWarningComment = (warnings: string[]) => {
-
   const commentMessage = [
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
   ];
@@ -37,7 +40,10 @@ export const createWarningComment = (warnings: string[]) => {
   return commentMessage.join(encodedNewline);
 };
 
-export const runHelper = async (prUrl?: string, token?: string): Promise<boolean> => {
+export const runHelper = async (
+  prUrl?: string,
+  token?: string
+): Promise<boolean> => {
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
     return false;
@@ -52,14 +58,11 @@ export const runHelper = async (prUrl?: string, token?: string): Promise<boolean
 
   const warnings: string[] = [];
 
-  const files = await fetchPaginatedGHResults(
-    new URL(prUrl).href,
-    token
-  );
+  const files = await fetchPaginatedGHResults(new URL(prUrl).href, token);
 
   const dashboardFileRegEx = /^dashboards\/\S*\.json$/;
   const dashboardsInPR = filterOutTestFiles(files)
-    .filter(({ status }) => status != "removed")
+    .filter(isNotRemoved)
     .filter(({ filename }) => dashboardFileRegEx.test(filename));
 
   for (const dash of dashboardsInPR) {
