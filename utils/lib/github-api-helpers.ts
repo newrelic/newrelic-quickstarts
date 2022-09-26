@@ -123,9 +123,9 @@ export const filterDataSources = (
 };
 
 /**
- * Returns whether a file was removed during a pull request
+ * Returns whether a file exists or was removed during a pull request
  * @param file the results from Github API
- * @returns files from Github API excluding removed files
+ * @returns a boolean indicating whether the file exists
  */
-export const isFileRemoved = (file: GithubAPIPullRequestFile): boolean =>
-  file.status === 'removed';
+export const isNotRemoved = (file: GithubAPIPullRequestFile): boolean =>
+  file.status !== 'removed';
