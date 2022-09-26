@@ -121,3 +121,11 @@ export const filterDataSources = (
     DATA_SOURCE_CONFIG_REGEXP.test(filename)
   );
 };
+
+/**
+ * Returns whether a file was removed during a pull request
+ * @param file the results from Github API
+ * @returns files from Github API excluding removed files
+ */
+export const isFileRemoved = (file: GithubAPIPullRequestFile): boolean =>
+  file.status === 'removed';

@@ -3,6 +3,7 @@ import * as path from 'path';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
+  isFileRemoved,
 } from './lib/github-api-helpers';
 import { chunk, translateMutationErrors } from './lib/nr-graphql-helpers';
 import { passedProcessArguments, prop } from './lib/helpers';
@@ -27,6 +28,7 @@ const main = async () => {
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
 
   const dataSources = filterOutTestFiles(files)
+    .filter((file) => !isFileRemoved(file))
     .map(prop('filename'))
     .filter((filename) => DATA_SOURCE_CONFIG_REGEXP.test(filename))
     .map((filename) => path.dirname(filename).replace('data-sources/', ''))

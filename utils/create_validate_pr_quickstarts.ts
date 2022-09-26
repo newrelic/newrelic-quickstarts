@@ -1,6 +1,7 @@
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
+  isFileRemoved,
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
@@ -63,6 +64,7 @@ export const createValidateQuickstarts = async (
 
   // Get all quickstart mutation variables
   const quickstarts = filterOutTestFiles(files)
+    .filter((file) => !isFileRemoved(file))
     .map(prop('filename'))
     .filter(
       (filePath) =>

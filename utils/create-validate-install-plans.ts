@@ -2,6 +2,7 @@ import { prop, passedProcessArguments } from './lib/helpers';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
+  isFileRemoved,
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 import { recordNerdGraphResponse, CUSTOM_EVENT } from './newrelic/customEvent';
@@ -43,6 +44,7 @@ const main = async () => {
 
   // Get all install-plan mutation variables
   const plans = filterOutTestFiles(files)
+    .filter((file) => !isFileRemoved(file))
     .map(prop('filename'))
     .filter((filename) => INSTALL_CONFIG_REGEXP.test(filename))
     .map((filename) => getInstallPlanId(filename))
