@@ -1,0 +1,152 @@
+{
+    "name": "Amazon EC2",
+    "description": "",
+    "pages": [
+        {
+            "name": "Amazon EC2",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Instances per region",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT uniqueCount(entity.id) FROM Metric WHERE metricName = 'aws.ec2.CPUUtilization' facet `aws.region`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Instance state",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 1,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT uniqueCount(entity.id) FROM Metric WHERE metricName = 'aws.ec2.CPUUtilization' FACET `aws.ec2.state` TIMESERIES AUTO SINCE 1 day ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Instance types",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT uniqueCount(`entity.id`) FROM Metric WHERE metricName = 'aws.ec2.CPUUtilization' FACET `aws.ec2.instanceType`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "EC2 service limit usage",
+                    "layout": {
+                        "height": 3,
+                        "width": 6,
+                        "row": 4,
+                        "column": 7
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.trustedadvisor.limitUsage`) FROM Metric WHERE aws.trustedadvisor.service='EC2' FACET aws.trustedadvisor.limitName, aws.region TIMESERIES SINCE 1 week ago LIMIT 1000"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Average CPU utilization per instance type",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.ec2.CPUUtilization`) FROM Metric TIMESERIES 5 minutes SINCE 1 hour ago FACET `aws.ec2.instanceType`"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "CPU utilization min / max",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.ec2.CPUUtilization`) AS 'Max', min(aws.ec2.CPUUtilization) AS 'Min', average(aws.ec2.CPUUtilization) AS 'Average' FROM Metric WHERE metricName = 'aws.ec2.CPUUtilization' TIMESERIES 5 minutes SINCE 1 hour ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Highest CPU utilization",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.ec2.CPUUtilization`) AS 'CPU Utilization' FROM Metric since 1 hour ago LIMIT 10 FACET label.Name AS 'Instance Name'"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
