@@ -1,0 +1,340 @@
+{
+  "name": "Quickstart - Cilium",
+  "description": null,
+  "pages": [
+    {
+      "name": "Quickstart - Cilium",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# ![Cilium Operator](https://avatars.githubusercontent.com/u/21054566?s=200&amp;v=4)&nbsp;\n#### Kubernetes Native Network Monitoring\n\nCilium is an open source software for providing, securing and observing network connectivity \nbetween container workloads - cloud native, and fueled by the revolutionary Kernel technology eBPF. "
+          }
+        },
+        {
+          "title": "Nodes",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(cilium_nodes_all_num) AS 'avg-nodes' FROM Metric LIMIT 100 TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pod Events",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (rate(average(cilium_kubernetes_events_total), 1 SECONDS) * 60) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, action) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "API Call Latency (Max Node)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max((`__result_0` / `__result_1`)) FROM (SELECT rate(sum(cilium_agent_api_process_time_seconds_sum), 1 SECONDS) AS `__result_0`, rate(sum(cilium_agent_api_process_time_seconds_count), 1 SECONDS) AS `__result_1` FROM Metric  FACET dimensions() LIMIT 100 TIMESERIES 60000 SLIDE BY 30000) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(path, pod, method) LIMIT 100 TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Forwarded Packets",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(cilium_forward_count_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, direction) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Open File Descriptors",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(cilium_process_open_fds) * cardinality(cilium_process_open_fds)) FROM Metric  SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Trace Flow Distribution",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) FROM Metric  SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, subtype) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "IPv4 Conntrack TCP",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(cilium_datapath_conntrack_gc_entries) AS 'MAX_IPV4_TCP_ALIVE' FROM Metric WHERE (((((k8s_app = 'cilium') AND (status = 'alive')) AND (family = 'ipv4')) AND (protocol = 'TCP'))) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(family, status) LIMIT 100 TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "System-wide BPF memory usage",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average((`__result_0` + `__result_1`) AS 'AVG_bpf_memory_bytes_avg') FROM (SELECT latest(cilium_bpf_maps_virtual_memory_max_bytes) AS `__result_0`, latest(cilium_bpf_progs_virtual_memory_max_bytes) AS `__result_1` FROM Metric FACET dimensions() LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Forwarded vs Dropped",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, verdict) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 Port Distribution",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_port_distribution_total), 1 SECONDS) FROM Metric WHERE NOT ((port = '0')) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(protocol, pod, port) LIMIT 10 TIMESERIES 60000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
