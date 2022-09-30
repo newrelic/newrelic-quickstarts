@@ -1,0 +1,517 @@
+{
+  "name": "Envoy",
+  "description": null,
+  "pages": [
+    {
+      "name": "Envoy",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![](https://seeklogo.com/images/E/envoy-proxy-logo-AA21B06AE5-seeklogo.com.png)"
+          }
+        },
+        {
+          "title": "Active HTTP Connections",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_active), 5 minutes) AS 'Active' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES  auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTPx Connections",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_http1_active), 5 minutes) AS 'HTTP1 Active', rate(sum(envoy_http_downstream_cx_http1_total), 5 minutes) AS 'HTTP1 Total', rate(sum(envoy_http_downstream_cx_http2_active), 5 minutes) AS 'HTTP2 Active', rate(sum(envoy_http_downstream_cx_http2_total), 5 minutes) AS 'HTTP2 Total', rate(sum(envoy_http_downstream_cx_http3_active), 5 minutes) AS 'HTTP3 Active', rate(sum(envoy_http_downstream_cx_http3_total), 5 minutes) AS 'HTTP3 Total' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES  auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cluster Assignment",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(envoy_cluster_assignment_stale) AS 'Assignment Stale', count(envoy_cluster_assignment_timeout_received) AS 'Timeout Received' WHERE instrumentation.source='EnvoyProxy_Int' FACET instance SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP API Return Code (Avg)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '2XX' FROM Metric  WHERE envoy_response_code_class IN (2, '2') and instrumentation.source='EnvoyProxy_Int' TIMESERIES AUTO "
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '3XX' FROM Metric  WHERE envoy_response_code_class IN (3, '3') and instrumentation.source='EnvoyProxy_Int' TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '4XX' FROM Metric  WHERE envoy_response_code_class IN (4, '4') and instrumentation.source='EnvoyProxy_Int' TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '5XX' FROM Metric  WHERE envoy_response_code_class IN (5, '5') and instrumentation.source='EnvoyProxy_Int' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Downstream Connections",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_length_ms_bucket), 5 minutes) AS 'Bucket', rate(sum(envoy_http_downstream_cx_length_ms_count), 5 minutes) AS 'Count', rate(sum(envoy_http_downstream_cx_length_ms_sum), 5 minutes) AS 'Sum' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Downstream Connections Destroy",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_destroy), 5 minutes) AS 'Destroy', rate(sum(envoy_http_downstream_cx_destroy_active_rq), 5 minutes) AS 'Destroy Active Request', rate(sum(envoy_http_downstream_cx_destroy_local), 5 minutes) AS 'Destroy Local', rate(sum(envoy_http_downstream_cx_destroy_local_active_rq), 5 minutes) AS 'Destroy Local Active Request', rate(sum(envoy_http_downstream_cx_destroy_remote), 5 minutes) AS 'Destroy Remote', rate(sum(envoy_http_downstream_cx_destroy_remote_active_rq), 5 minutes) AS 'Destroy Remote Active Request' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES  auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Listener Admin Main Thread Downstream Conn",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_listener_admin_main_thread_downstream_cx_active), 5 minutes) AS 'Active', rate(sum(envoy_listener_admin_main_thread_downstream_cx_total), 5 minutes) AS 'Total' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Downstream Conn TX",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_tx_bytes_buffered), 5 minutes) AS 'Bytes Buffered', rate(sum(envoy_http_downstream_cx_tx_bytes_total), 5 minutes) AS 'Bytes Total' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Downstream Connections RX",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_http_downstream_cx_rx_bytes_buffered), 5 minutes) AS 'Bytes Buffered', rate(sum(envoy_http_downstream_cx_rx_bytes_total), 5 minutes) AS 'Bytes Total' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cluster Upstream Active",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(count(envoy_cluster_upstream_rq_active), WHERE instrumentation.source='EnvoyProxy_Int') FACET instance TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Listener Admin Downstream Conn TX",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_listener_admin_downstream_cx_active), 5 minutes) AS 'Active', rate(sum(envoy_listener_admin_downstream_cx_destroy), 5 minutes) AS 'Destroy', rate(sum(envoy_listener_admin_downstream_cx_total), 5 minutes) AS 'Total' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Listener Admin Downstream Conn Length",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(envoy_listener_admin_downstream_cx_length_ms_bucket), 5 minutes) AS 'Bucket', rate(sum(envoy_listener_admin_downstream_cx_length_ms_count), 5 minutes) AS 'Count', rate(sum(envoy_listener_admin_downstream_cx_length_ms_sum\r\n), 5 minutes) AS 'Sum' FROM Metric WHERE instrumentation.source='EnvoyProxy_Int' FACET instance TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Envoy Cluster per Host",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(envoy_cluster_default_total_match_count) FROM Metric where instrumentation.source='EnvoyProxy_Int' FACET instance SINCE 1 DAY AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cluster Upstream Requests Completed",
+          "layout": {
+            "column": 4,
+            "row": 14,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(count(envoy_cluster_upstream_rq_completed), WHERE instrumentation.source='EnvoyProxy_Int') FACET instance TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cluster Circuit Breakers RQ",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(envoy_cluster_circuit_breakers_default_rq_open ) AS 'Default RQ Open', count(envoy_cluster_circuit_breakers_default_rq_pending_open) AS 'Default RQ Pending Open', count(envoy_cluster_circuit_breakers_default_rq_retry_open) AS 'R Retry Open', count(envoy_cluster_circuit_breakers_high_rq_open) AS 'High RQ Open', count(envoy_cluster_circuit_breakers_high_rq_pending_open) AS 'High RQ Pending Open', count(envoy_cluster_circuit_breakers_high_rq_retry_open) AS 'High RQ Retry Open' FACET instance WHERE instrumentation.source='EnvoyProxy_Int' SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
