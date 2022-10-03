@@ -1,17 +1,19 @@
 ---
 # Name of the alert
-name: GitLab | Check Sidekiq Queue Latency for 5m
+name: Name of this alert condition
 
 # Description and details
 description: |+
-  Calculates this queue's latency, the difference in seconds since the oldest job in the queue was enqueued.
+  Describe the purpose of this alert condition.
+  You can use multiple lines.
+  Try to be as descriptive as possible and provide "The Why".
 
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
-  query: "FROM Metric SELECT latest(sidekiq_queue_latency_seconds) WHERE instrumentation.source = 'GitLab_Prometheus' facet instance"
+  query: "FROM SystemSample SELECT average(cpuPercent) FACET entityName"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE 
@@ -20,20 +22,27 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: ABOVE | ABOVE_OR_EQUALS | BELOW | BELOW_OR_EQUALS | EQUALS | NOT_EQUALS
     # Value that triggers a violation; float value
-    threshold: 60
+    threshold: 90
     # Time in seconds; 120 - 3600
-    thresholdDuration: 300
+    thresholdDuration: 600
     # How many data points must be in violation for the duration
-    thresholdOccurrences: ALL
+    thresholdOccurrences: ALL | AT_LEAST_ONCE
+
+  # Adding a Warning threshold is optional
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 80
+    thresholdDuration: 300
+    thresholdOccurrences: ALL | AT_LEAST_ONCE
 
 # Loss of Signal Settings
 expiration:
   # Close open violations if signal is lost (Default: false)
-  closeViolationsOnExpiration: false
+  closeViolationsOnExpiration: true | false
   # Open "Loss of Signal" violation if signal is lost (Default: false)
-  openViolationOnExpiration: false
+  openViolationOnExpiration: true | false
   # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
   expirationDuration: 
 
@@ -41,15 +50,15 @@ expiration:
 # Duration of the time window used to evaluate the NRQL Condition
 signal:
   # How long we wait for data that belongs in each aggregation window 
-  aggregationDelay: 60 # seconds
+  aggregationDelay: 1200 # seconds
   # The method that determines when we consider an aggregation window to complete so that we can evaluate the signals for violations.
-  aggregationMethod: EVENT_FLOW
+  aggregationMethod: CADENCE | EVENT_FLOW | EVENT_TIMER
   # How long we wait after each data point arrives to make sure we've processed the whole batch.
-  aggregationTimer: null # seconds
+  aggregationTimer: 1200 # seconds
   # Controls the duration of the time window used to evaluate the NRQL query 
-  aggregationWindow: 60 # seconds; 30 seconds <= x < 15 minutes
+  aggregationWindow: 1200 # seconds; 30 seconds <= x < 15 minutes
   # Option that determines the type of value that should be used to fill gaps (empty windows).
-  fillOption: NONE # defaults to STATIC
+  fillOption: STATIC | NONE | LAST_VALUE # defaults to STATIC
   # If using the static fill option, this value is used for filling.
   fillValue: null # default
   # This setting gathers data in overlapping time windows to smooth the chart line, making it easier to spot trends.
