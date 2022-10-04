@@ -1,0 +1,1141 @@
+{
+    "name": "AWS Cloudfront Web Logs",
+    "description": null,
+    "pages": [
+      {
+        "name": "Overview",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## ![New Relic logo](https://newrelic.com/static-assets/images/icons/avatar-newrelic.png) Amazon Cloudfront Access Logs (Overview)     \n\n---\n\n\n\n![Add Images](https://d0.awsstatic.com/logos/powered-by-aws.png?canvas=1200:630&width=1200&height=430&fit=bounds&bg-color=FFFFFF)\n\n\n---\n#### [Amazon Cloudfront](https://aws.amazon.com/cloudfront/) Collect & Analyze Web Access logs from your Amazon Cloudfront Distribution.  \n* cloudfront-web = Cloudfront Standard Logs (using S3 bucket + Lambda)\n* cloudfront-rtl = Cloudfront Real Time Logs (using Kinesis Data Stream)\n"
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT percentage(count (*), WHERE x_edge_result_type='Hit') AS 'Cache Hit Ratio' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' AND (x_edge_result_type='Hit' OR x_edge_result_type='Miss')\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0.9
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0.8
+                }
+              ]
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT percentage(count (*), WHERE numeric(sc_status) >= 200 and numeric(sc_status) < 400) AS 'Success Rate (2xx,3xx)' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0.9
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0.8
+                }
+              ]
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT percentage(count (*), WHERE numeric(sc_status) >= 400 and numeric(sc_status) <= 599) AS 'Error Rate (4xx,5xx)' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0.2
+                },
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0.1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Cache Hit/Miss (over time}",
+            "layout": {
+              "column": 5,
+              "row": 3,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' AND (x_edge_result_type='Hit' OR x_edge_result_type='Miss') FACET x_edge_result_type TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "HTTP Status code distribution",
+            "layout": {
+              "column": 9,
+              "row": 3,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET sc_status AS 'Status'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Logs Received",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) as 'Total Logs' WHERE logtype LIKE 'cloudfront-%' FACET logtype"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Logs Received (over time)",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) as 'Total Logs' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET logtype TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Edge Response Result Type NOT Hit OR Miss",
+            "layout": {
+              "column": 5,
+              "row": 6,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' AND x_edge_response_result_type!='Hit' AND x_edge_response_result_type!='Miss' FACET x_edge_response_result_type TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Requests by Status Code",
+            "layout": {
+              "column": 9,
+              "row": 6,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' facet sc_status TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Bandwidth over time",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT sum(numeric(sc_bytes)) as 'Content Bytes Served', sum(numeric(cs_bytes)) AS 'Client Bytes Sent' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Edge Response Result Type",
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET x_edge_response_result_type  "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Field Level Encryption Status",
+            "layout": {
+              "column": 9,
+              "row": 9,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'  FACET fle_status"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Latest Logs",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 12,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "logger.log-table-widget"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT logtype,message  WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Client Information",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## ![New Relic logo](https://newrelic.com/static-assets/images/icons/avatar-newrelic.png) Amazon Cloudfront Access Logs (Client Information)     \n\n---\n\n\n\n![Add Images](https://d0.awsstatic.com/logos/powered-by-aws.png?canvas=1200:630&width=1200&height=430&fit=bounds&bg-color=FFFFFF)\n\n\n---"
+            }
+          },
+          {
+            "title": "Requests by Edge Location",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET x_edge_location"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Requests By Client IP",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "  SELECT count(*)  FROM Log WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET c_ip as 'Client IP'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Requests by Client Country Code",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET c_country"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Requests by Edge Location (over time)",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET x_edge_location TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Requests By Client IP (over time)",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "  SELECT count(*)  FROM Log WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET c_ip as 'Client IP' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Requests by User Agent",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cs_user_agent AS 'User Agent'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 URI by Status Code (2xx,3xx)",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND numeric(sc_status)>199 AND numeric(sc_status)<400 AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET sc_status AS 'Status', cs_uri_stem AS 'URI' LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 URI by Status Code (4xx,5xx)",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND numeric(sc_status)>399 AND numeric(sc_status)<600 AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET sc_status AS 'Status', cs_uri_stem AS 'URI' LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Requests by URI",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET  cs_uri_stem AS 'URI'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Requests by Referer",
+            "layout": {
+              "column": 5,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET  cs_referer AS 'Referer'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 URI by Cache Miss",
+            "layout": {
+              "column": 9,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE x_edge_result_type='Miss' AND logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET x_edge_result_type AS 'Result Type', cs_uri_stem AS 'URI'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Requests by Client Port",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET  c_port AS 'Client Port'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Requests by Client Port",
+            "layout": {
+              "column": 5,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET  cs_ip_version AS 'IP Version'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Cache Miss by URI (over time)",
+            "layout": {
+              "column": 9,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE x_edge_result_type='Miss' AND logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cs_uri_stem AS 'URI' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Performance",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## ![New Relic logo](https://newrelic.com/static-assets/images/icons/avatar-newrelic.png) Amazon Cloudfront Access Logs (Performance)     \n\n---\n\n\n\n![Add Images](https://d0.awsstatic.com/logos/powered-by-aws.png?canvas=1200:630&width=1200&height=430&fit=bounds&bg-color=FFFFFF)\n\n\n---"
+            }
+          },
+          {
+            "title": "Time Taken to Serve Response",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cases(WHERE numeric(time_taken) <= 10 as '<10ms',WHERE numeric(time_taken) > 10 and numeric(time_taken) <= 50 as '10-50ms',WHERE numeric(time_taken) >50 as '>50ms') TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Time to First Byte",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cases(WHERE numeric(time_to_first_byte) <= 10 as '<10ms',WHERE numeric(time_to_first_byte) > 10 and numeric(time_to_first_byte) <= 50 as '10-50ms',WHERE numeric(time_to_first_byte) >50 as '>50ms') TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cs_method AS 'Method'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Time Taken (Avg. and 95th Percentile)",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log   SELECT average(numeric(time_taken)) AS 'Average', percentile(numeric(time_taken ),95) AS 'Percentile' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'  TIMESERIES "
+                }
+              ],
+              "nullValues": {
+                "nullValue": "preserve"
+              },
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Time to First Byte (Avg. and 95th Percentile)",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log   SELECT average(numeric(time_to_first_byte)) AS 'Average', percentile(numeric(time_to_first_byte),95) AS 'Percentile' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' TIMESERIES "
+                }
+              ],
+              "nullValues": {
+                "nullValue": "preserve"
+              },
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "HTTP Protocol, Version",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET cs_protocol, cs_protocol_version"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Time Taken by Edge Location (Average)",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log   SELECT average(numeric(time_taken)) AS 'Average Time Taken' WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%'  FACET x_edge_location TIMESERIES LIMIT MAX"
+                }
+              ],
+              "nullValues": {
+                "nullValue": "default"
+              },
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TLS Versions and Cipher",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Log SELECT count(*) WHERE logtype LIKE 'cloudfront-%' AND message NOT LIKE '%#Fields%' AND message NOT LIKE '%#Version%' FACET ssl_protocol AS 'SSL Protocol', ssl_cipher AS 'SSL Cipher'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
