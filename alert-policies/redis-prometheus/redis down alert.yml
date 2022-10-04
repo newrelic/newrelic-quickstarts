@@ -1,11 +1,12 @@
-name: Too many client connections
+name: Redis down alert
 
 description: |+
-  This alert is triggered when the number of connected redis clients is high .
+  This alert is triggered when the Redis instance is not responding for a continuous 5 minutes.
+
 type: STATIC
 nrql:
-  query: "SELECT average(redis_rejected_connections_total) from Metric where instrumentation.name='remote-write' and instrumentation.provider='prometheus'"
-
+  query: "SELECT Sum(redis_up) FROM Metric where instrumentation.name='remote-write'"
+ß
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
 
@@ -13,7 +14,7 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: EQUALS
     # Value that triggers a violation
     threshold: 0
     # Time in seconds; 120 - 3600
