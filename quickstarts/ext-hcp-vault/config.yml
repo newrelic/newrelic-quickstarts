@@ -1,0 +1,84 @@
+# Sets the URL name of the quickstart on public I/O (required)
+slug: ext-hcp-vault
+
+# Displayed in the UI (required)
+title: HCP Vault
+
+# Long-form description of the quickstart (required)
+description: |
+  The HCP Vault quickstart allows you to get visibility into the performance and available of your HCP Vault service and dependencies. Use this quickstart together with the mock up integrations.
+
+  ## HCP Vault quickstart highlights
+
+  The New Relic quickstart uses dashboards to proactively monitor your HCP Vault servers, like:
+  - whether a cluster node has been sealed by a user or during startup
+  - number of authentication requests handled
+  - the duration of requests handled
+  
+  ## Monitoring HCP Vault
+
+  This quickstart utilizes New Relic's ability to ingest Prometheus data (either from our OpenMetrics integration or via Prometheus remote write). See instructions for [sending Prometheus data to New Relic here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/).
+
+  ### How do I configure my integration to scrape HCP Vault severs?
+
+  The approach to getting your Prometheus metrics into New Relic differs depending on which integration you use.
+
+  #### Prometheus Remote Write
+
+  In addition to setting up your `remote_write` configuration as described [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/install-configure-remote-write/set-your-prometheus-remote-write-integration/), you will need to add the following scrape configuration to your `prometheus.yml` config file:
+
+  ```
+  - job_name: 'vault'
+    metrics_path: "/v1/sys/metrics"
+    params:
+      format: ['prometheus']
+    scheme: https
+    tls_config:
+      ca_file: your_ca_here.pem
+    bearer_token: "your_vault_token_here"
+    static_configs:
+    - targets: ['your_vault_server_here:8200']
+  ```
+  (This helpful Prometheus job defnition sourced from [HCP Vault Telemetry](https://www.vaultproject.io/docs/configuration/telemetry))
+
+  Then, after reloading Prometheus config, you can check that your HCP Vault pods are appearing under your [Prometheus targets](https://prometheus.io/docs/prometheus/latest/querying/api/#targets).
+
+# Displayed in search results and recommendations. Summarizes a quickstarts functionality.
+summary: |
+  The HCP Vault quickstart allows you to get visibility into the performance of your instances.
+
+# Support level: New Relic | Verified | Community (required)
+level: Community
+
+# Authors of the quickstart (required)
+authors:
+  - Irvin Arias @Kinect-Consulting
+  - Omar Castillo @Kinect-Consulting
+  - Iara Silva @Kinect-Consulting
+  - David Perez @Kinect-Consulting
+
+# Keywords for filtering / searching criteria in the UI
+keywords:
+  - HCP
+  - Vault
+  - HashiCorp
+  - Prometheus
+  - remote-write
+
+documentation:
+  - name: HashiCorp Vault installation docs
+    description: |
+      The HCP Vault quickstart allows you to get visibility into the performance of your instances.
+    url: >-
+      https://www.vaultproject.io/docs/configuration/telemetry
+
+installPlans:
+  - ext-hcp-vault
+# Allows us to construct reusable "install plans" and just use their ID in the quickstart config
+alertPolicies:
+  - ext-hcp-vault
+dashboards:
+  - ext-hcp-vault
+# Content / Design
+icon: logo.svg
+website: https://cloud.hashicorp.com/products/vault
