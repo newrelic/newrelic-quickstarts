@@ -1,33 +1,18 @@
 {
-    "name": "CoreDNS",
+    "name": "Confluent Cloud",
     "description": null,
+    "permissions": "PUBLIC_READ_WRITE",
     "pages": [
       {
-        "name": "Heath and requests",
+        "name": "Confluent Cloud",
         "description": null,
         "widgets": [
           {
-            "title": "",
+            "title": "Number of Brokers",
             "layout": {
               "column": 1,
               "row": 1,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "![CoreDNS Logo](https://raw.githubusercontent.com/coredns/logo/master/Icon/CoreDNS_Colour_Icon.svg)"
-            }
-          },
-          {
-            "title": "Num of CoreDNS instances reporting UP",
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "width": 3,
+              "width": 4,
               "height": 3
             },
             "linkedEntityGuids": null,
@@ -35,452 +20,22 @@
               "id": "viz.billboard"
             },
             "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT uniqueCount(instance) where instrumentation.provider = 'prometheus' AND k8s_app LIKE '%dns' AND metricName = 'up'  "
-                }
-              ],
-              "thresholds": []
-            }
-          },
-          {
-            "title": "Sum of DNS panics",
-            "layout": {
-              "column": 6,
-              "row": 1,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT sum(coredns_panics_total) as 'CoreDNS Panics' WHERE instrumentation.provider = 'prometheus'"
-                }
-              ],
-              "thresholds": [
-                {
-                  "alertSeverity": "WARNING",
-                  "value": 1
-                },
-                {
-                  "alertSeverity": "CRITICAL",
-                  "value": 10
-                }
-              ]
-            }
-          },
-          {
-            "title": "Server request ratio",
-            "layout": {
-              "column": 8,
-              "row": 1,
-              "width": 5,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "facet": {
-                "showOtherSeries": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT sum(coredns_dns_responses_total) facet instance  WHERE instrumentation.provider = 'prometheus' "
-                }
-              ]
-            }
-          },
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 2,
-              "height": 6
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "# Request Rate & Size"
-            }
-          },
-          {
-            "title": "Total request rate by type",
-            "layout": {
-              "column": 3,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
               "facet": {
                 "showOtherSeries": false
               },
-              "legend": {
-                "enabled": true
-              },
               "nrqlQueries": [
                 {
                   "accountId": 0,
-                  "query": "FROM Metric SELECT rate(sum(coredns_dns_requests_total), 1 second) facet type WHERE instrumentation.provider = 'prometheus'TIMESERIES "
+                  "query": "SELECT latest(kafka.brokers) FROM Metric0"
                 }
               ],
-              "yAxisLeft": {
-                "zero": true
+              "platformOptions": {
+                "ignoreTimeRange": false
               }
             }
           },
           {
-            "title": "Total forward rate",
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT rate(sum(coredns_forward_requests_total), 1 second) facet to WHERE instrumentation.provider = 'prometheus'  TIMESERIES "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Request size bytes",
-            "layout": {
-              "column": 3,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.99), (100 * 0.50)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(server, zone, proto) LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Response size bytes percentile",
-            "layout": {
-              "column": 7,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.99), (100*0.5)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(server, zone, proto) LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 10,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "# Request & Response Duration"
-            }
-          },
-          {
-            "title": "Request forward duration seconds",
-            "layout": {
-              "column": 3,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(coredns_forward_request_duration_seconds_bucket, (100 * 0.99), (100 * 0.5)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET to LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Request response time",
-            "layout": {
-              "column": 7,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(coredns_dns_request_duration_seconds_bucket, (100 * 0.99), (100 * 0.5)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(server, zone) LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "Cache",
-        "description": null,
-        "widgets": [
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 2,
-              "height": 6
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "# Cache stats"
-            }
-          },
-          {
-            "title": "CoreDNS ratio of cache hits / misses",
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bullet"
-            },
-            "rawConfiguration": {
-              "limit": 1,
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT count(coredns_cache_hits_total)/(count(coredns_cache_misses_total) + count(coredns_cache_hits_total))  WHERE instrumentation.provider = 'prometheus' "
-                }
-              ]
-            }
-          },
-          {
-            "title": "Total cache entries",
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (average(coredns_cache_entries) * cardinality(coredns_cache_entries)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET type LIMIT 100 TIMESERIES 30000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Cache hit rate by type",
-            "layout": {
-              "column": 3,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(coredns_cache_hits_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET type LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Cache miss rate by type",
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(coredns_cache_misses_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW LIMIT 100 TIMESERIES 300000 SLIDE BY 10000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "Errors",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Num of CoreDNS instances reporting UP",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT uniqueCount(instance) where instrumentation.provider = 'prometheus' AND k8s_app LIKE '%dns' AND metricName = 'up'  TIMESERIES "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Response codes",
+            "title": "Consumer Group Lag",
             "layout": {
               "column": 5,
               "row": 1,
@@ -489,11 +44,11 @@
             },
             "linkedEntityGuids": null,
             "visualization": {
-              "id": "viz.stacked-bar"
+              "id": "viz.line"
             },
             "rawConfiguration": {
               "facet": {
-                "showOtherSeries": true
+                "showOtherSeries": false
               },
               "legend": {
                 "enabled": true
@@ -501,13 +56,19 @@
               "nrqlQueries": [
                 {
                   "accountId": 0,
-                  "query": "SELECT sum(coredns_dns_responses_total) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET rcode LIMIT 100 TIMESERIES "
+                  "query": "SELECT latest(kafka.consumer_group.lag) FROM Metric TIMESERIES FACET `topic` LIMIT 100"
                 }
-              ]
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
             }
           },
           {
-            "title": "",
+            "title": "Records Recieved Per Minute",
             "layout": {
               "column": 9,
               "row": 1,
@@ -516,16 +77,60 @@
             },
             "linkedEntityGuids": null,
             "visualization": {
-              "id": "viz.markdown"
+              "id": "viz.line"
             },
             "rawConfiguration": {
-              "text": "## Understanding CoreDNS `rcode`\nThese should predominantly be `NOERROR`, other codes could indicate a poorly performing system. The possible resonpse codes for CoreDNS Prometheus monitoring can be found [here](https://github.com/miekg/dns/blob/af5144a5ca498e2cfee14264e31371d8af111709/msg.go#L137-L159)."
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(confluent_kafka_server_received_records) FROM Metric TIMESERIES FACET `topic` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
             }
           },
           {
-            "title": "Sum of DNS panics",
+            "title": "Topics",
             "layout": {
               "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.topic.partitions) FROM Metric FACET `topic` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Cluster Partitions",
+            "layout": {
+              "column": 5,
               "row": 4,
               "width": 4,
               "height": 3
@@ -535,26 +140,484 @@
               "id": "viz.billboard"
             },
             "rawConfiguration": {
-              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
               "nrqlQueries": [
                 {
                   "accountId": 0,
-                  "query": "FROM Metric SELECT sum(coredns_panics_total) as 'CoreDNS Panics' WHERE instrumentation.provider = 'prometheus'"
+                  "query": "SELECT latest(confluent_kafka_server_partition_count) FROM Metric FACET `kafka_id` LIMIT 100"
                 }
               ],
-              "thresholds": [
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Records Sent Per Minute",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
                 {
-                  "alertSeverity": "WARNING",
-                  "value": 1
-                },
-                {
-                  "alertSeverity": "CRITICAL",
-                  "value": 10
+                  "accountId": 0,
+                  "query": "SELECT latest(confluent_kafka_server_sent_records) FROM Metric TIMESERIES FACET `topic` LIMIT 100"
                 }
-              ]
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Cluster Retained Bytes",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(confluent_kafka_server_retained_bytes) FROM Metric TIMESERIES FACET `kafka_id` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Recieved Bytes by Topic",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(confluent_kafka_server_received_bytes) FROM Metric TIMESERIES FACET `topic` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Sent Bytes by Topic",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(confluent_kafka_server_sent_bytes) FROM Metric TIMESERIES FACET `topic` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Latency in ms (Average)",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.request_latency_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "MS"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Consumer Fetch Rate",
+            "layout": {
+              "column": 5,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.consumer_fetch_rate_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Incoming Byte Rate Average",
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.incoming_byte_rate_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Outgoing Byte Rate Average",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.outgoing_byte_rate_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Request Rate Average",
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.request_rate_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "REQUESTS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Request Size Average",
+            "layout": {
+              "column": 9,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.request_size_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Requests in Flight",
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.requests_in_flight) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Response Rate Average",
+            "layout": {
+              "column": 5,
+              "row": 16,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.response_rate_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "REQUESTS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Broker Respone Size Average",
+            "layout": {
+              "column": 9,
+              "row": 16,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kafka.brokers.response_size_avg) FROM Metric TIMESERIES FACET `broker` LIMIT 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
             }
           }
         ]
       }
-    ]
+    ],
+    "variables": []
   }
