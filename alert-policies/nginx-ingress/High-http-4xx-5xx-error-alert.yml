@@ -1,0 +1,27 @@
+name: High http 4xx/5xx error alert
+
+description: |+
+ This alert is triggered when the http request success rate drops below 95 percent. This alert may be further configured as per the desired success percentage requirements.
+type: STATIC
+nrql:
+  query: "SELECT (rate(sum(conditional(WHERE ((instrumentation.name = 'remote-write') AND NOT ((status RLIKE '[4-5].*'))), nginx_ingress_controller_requests)), 1 SECONDS)*100 / rate(sum(conditional(WHERE (instrumentation.name = 'remote-write'), nginx_ingress_controller_requests)), 1 SECONDS)) as '(%) Ingress successful requests' FROM Metric"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: BELOW_OR_EQUALS
+    # Value that triggers a violation
+    threshold: 95
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
+
