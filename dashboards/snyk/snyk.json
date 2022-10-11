@@ -1,22 +1,39 @@
 {
-    "name": "Snyk",
+    "name": "Snyk Security API",
     "description": null,
+    "permissions": "PUBLIC_READ_WRITE",
     "pages": [
         {
-            "name": "Snyk",
+            "name": "Issue Summary",
             "description": null,
             "widgets": [
                 {
-                    "title": "Total Vulnerabilities per Project",
+                    "title": "",
                     "layout": {
                         "column": 1,
                         "row": 1,
-                        "width": 4,
-                        "height": 3
+                        "width": 2,
+                        "height": 8
                     },
                     "linkedEntityGuids": null,
                     "visualization": {
-                        "id": "viz.bar"
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Snyk Issue Summary\n\n![Snyk logo](https://pbs.twimg.com/profile_images/1546892102717493248/o9Ha4bVC_200x200.jpg)\n\nThis dashboard provides an easy and organized overview of all the issues provided by Snyk. You can easily search and filter for various attributes such as Severity or Project and dive-deeper into more detailed aspects.\n\n## Data Source\n- [Snyk webhook](https://github.com/snyk-playground/cx-tools/tree/main/webhook-examples#13-new-relic-events)\n- New Relic Security API\n\n## Time Window\n- 1 week\n\n## Version\n- Version 1.0"
+                    }
+                },
+                {
+                    "title": "Total Issues",
+                    "layout": {
+                        "column": 3,
+                        "row": 1,
+                        "width": 2,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
                     },
                     "rawConfiguration": {
                         "facet": {
@@ -25,7 +42,7 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW facet project"
+                                "query": "SELECT count(*) as 'Issues' FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' since 1 week ago"
                             }
                         ],
                         "platformOptions": {
@@ -34,16 +51,184 @@
                     }
                 },
                 {
-                    "title": "Total Vulnerabilities per Project",
+                    "title": "Critical Severity",
                     "layout": {
                         "column": 5,
                         "row": 1,
-                        "width": 8,
+                        "width": 2,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "dataFormatters": [],
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'Critical' FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and severity = 'CRITICAL' and source = 'Snyk' since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": [
+                            {
+                                "alertSeverity": "CRITICAL",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "High Severity",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 2,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "dataFormatters": [],
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'High' FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and severity = 'HIGH' and source = 'Snyk' since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": [
+                            {
+                                "alertSeverity": "CRITICAL",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Medium Severity",
+                    "layout": {
+                        "column": 9,
+                        "row": 1,
+                        "width": 2,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "dataFormatters": [],
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'Medium' FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and severity = 'MEDIUM' and source = 'Snyk' since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": [
+                            {
+                                "alertSeverity": "WARNING",
+                                "value": 0
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Low Severity",
+                    "layout": {
+                        "column": 11,
+                        "row": 1,
+                        "width": 2,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "dataFormatters": [],
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) as 'Low' FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and severity = 'LOW' and source = 'Snyk' since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": [
+                            {
+                                "alertSeverity": "WARNING",
+                                "value": 100
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Issues by Severity",
+                    "layout": {
+                        "column": 3,
+                        "row": 3,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": [
+                        "MzM5NTkwN3xWSVp8REFTSEJPQVJEfDU4OTk0MzQ"
+                    ],
+                    "visualization": {
+                        "id": "viz.pie"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": true
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet severity since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Severity",
+                    "layout": {
+                        "column": 7,
+                        "row": 3,
+                        "width": 6,
                         "height": 3
                     },
                     "linkedEntityGuids": null,
                     "visualization": {
-                        "id": "viz.line"
+                        "id": "viz.area"
                     },
                     "rawConfiguration": {
                         "facet": {
@@ -55,131 +240,274 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT (average(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET project LIMIT 100 TIMESERIES 30000"
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet severity TIMESERIES since 1 week ago"
                             }
                         ],
                         "platformOptions": {
                             "ignoreTimeRange": false
-                        },
-                        "yAxisLeft": {
-                            "zero": true
                         }
                     }
                 },
                 {
-                    "title": "Critical Severities",
+                    "title": "Issues by Title",
+                    "layout": {
+                        "column": 3,
+                        "row": 6,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": [
+                        "MzM5NTkwN3xWSVp8REFTSEJPQVJEfDU4OTk0MzQ"
+                    ],
+                    "visualization": {
+                        "id": "viz.pie"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": true
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet title since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Title",
+                    "layout": {
+                        "column": 7,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet title TIMESERIES since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Project",
+                    "layout": {
+                        "column": 1,
+                        "row": 9,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": [
+                        "MzM5NTkwN3xWSVp8REFTSEJPQVJEfDU4OTk0MzQ"
+                    ],
+                    "visualization": {
+                        "id": "viz.pie"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": true
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet projectName since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Project",
+                    "layout": {
+                        "column": 7,
+                        "row": 9,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet projectName TIMESERIES since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Entity Lookup",
+                    "layout": {
+                        "column": 1,
+                        "row": 12,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": [
+                        "MzM5NTkwN3xWSVp8REFTSEJPQVJEfDU4OTk0MzQ"
+                    ],
+                    "visualization": {
+                        "id": "viz.pie"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": true
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet entityLookupValue since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Entity Lookup",
+                    "layout": {
+                        "column": 7,
+                        "row": 12,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet entityLookupValue TIMESERIES since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Issue Details",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Entity Types",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": [
+                        "MzM5NTkwN3xWSVp8REFTSEJPQVJEfDU5ODUwNTU"
+                    ],
+                    "visualization": {
+                        "id": "viz.pie"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": true
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet entityType since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Entity Types",
+                    "layout": {
+                        "column": 5,
+                        "row": 1,
+                        "width": 8,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet entityType since 1 week ago TIMESERIES "
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Issues by Package",
                     "layout": {
                         "column": 1,
                         "row": 4,
-                        "width": 2,
-                        "height": 3
-                    },
-                    "linkedEntityGuids": null,
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "rawConfiguration": {
-                        "facet": {
-                            "showOtherSeries": false
-                        },
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'Critical' FROM Metric WHERE (severity = 'critical') SINCE 60 MINUTES AGO UNTIL NOW "
-                            }
-                        ],
-                        "platformOptions": {
-                            "ignoreTimeRange": false
-                        }
-                    }
-                },
-                {
-                    "title": "High Severities",
-                    "layout": {
-                        "column": 3,
-                        "row": 4,
-                        "width": 2,
-                        "height": 3
-                    },
-                    "linkedEntityGuids": null,
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "rawConfiguration": {
-                        "facet": {
-                            "showOtherSeries": false
-                        },
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'High' FROM Metric WHERE (severity = 'high') SINCE 60 MINUTES AGO UNTIL NOW "
-                            }
-                        ],
-                        "platformOptions": {
-                            "ignoreTimeRange": false
-                        }
-                    }
-                },
-                {
-                    "title": "Medium Severities",
-                    "layout": {
-                        "column": 5,
-                        "row": 4,
-                        "width": 2,
-                        "height": 3
-                    },
-                    "linkedEntityGuids": null,
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "rawConfiguration": {
-                        "facet": {
-                            "showOtherSeries": false
-                        },
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'Medium' FROM Metric WHERE (severity = 'medium') SINCE 60 MINUTES AGO UNTIL NOW "
-                            }
-                        ],
-                        "platformOptions": {
-                            "ignoreTimeRange": false
-                        }
-                    }
-                },
-                {
-                    "title": "Low Severities",
-                    "layout": {
-                        "column": 7,
-                        "row": 4,
-                        "width": 2,
-                        "height": 3
-                    },
-                    "linkedEntityGuids": null,
-                    "visualization": {
-                        "id": "viz.billboard"
-                    },
-                    "rawConfiguration": {
-                        "facet": {
-                            "showOtherSeries": false
-                        },
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'Low' FROM Metric WHERE (severity = 'low') SINCE 60 MINUTES AGO UNTIL NOW "
-                            }
-                        ],
-                        "platformOptions": {
-                            "ignoreTimeRange": false
-                        }
-                    }
-                },
-                {
-                    "title": "Issue Types",
-                    "layout": {
-                        "column": 9,
-                        "row": 4,
-                        "width": 4,
+                        "width": 12,
                         "height": 3
                     },
                     "linkedEntityGuids": null,
@@ -193,7 +521,7 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW facet issue_type"
+                                "query": "SELECT count(*) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet pkgName since 1 week ago"
                             }
                         ],
                         "platformOptions": {
@@ -202,43 +530,32 @@
                     }
                 },
                 {
-                    "title": "Upgradeable",
+                    "title": "",
                     "layout": {
                         "column": 1,
                         "row": 7,
-                        "width": 2,
-                        "height": 3
+                        "width": 12,
+                        "height": 2
                     },
                     "linkedEntityGuids": null,
                     "visualization": {
-                        "id": "viz.billboard"
+                        "id": "viz.markdown"
                     },
                     "rawConfiguration": {
-                        "facet": {
-                            "showOtherSeries": false
-                        },
-                        "nrqlQueries": [
-                            {
-                                "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'Upgradeable' FROM Metric SINCE 60 MINUTES AGO UNTIL NOW where upgradeable ='true'"
-                            }
-                        ],
-                        "platformOptions": {
-                            "ignoreTimeRange": false
-                        }
+                        "text": "# Snyk Priority Score\n\nSnyk created a Priority Score to make the prioritization of issues as quick and easy as possible, ensuring the highest-risk issues have the highest score.\nSnyk's security group found a significant correlation between trending vulnerabilities and exploits or proof of concept's that can be found in the wild. Social trends are calculated and shown for all issues, vulnerabilities and licenses and range from 0 to 1,000 (0 is considered low risk and 1,000 is considered critical). This gives users a high degree of granularity that reflects the many considerations taken into account. The granularity avoids having too many issues ending up with the same score so users can determine priority at a glance with a high degree of accuracy.\n\n> Snyk does not use the CVSS score alone to determine priority: Snyk’s Priority Score is a comprehensive scoring system that processes multiple factors, including the CVSS score, the availability of a fix, known exploits, how new the vulnerability is, and whether it is reachable or not. See How it works section for details."
                     }
                 },
                 {
-                    "title": "Patchable",
+                    "title": "Issues by Priority Score",
                     "layout": {
-                        "column": 3,
-                        "row": 7,
-                        "width": 2,
+                        "column": 1,
+                        "row": 9,
+                        "width": 12,
                         "height": 3
                     },
                     "linkedEntityGuids": null,
                     "visualization": {
-                        "id": "viz.billboard"
+                        "id": "viz.bar"
                     },
                     "rawConfiguration": {
                         "facet": {
@@ -247,21 +564,93 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT (latest(snyk_vulnerabilities_total) * cardinality(snyk_vulnerabilities_total)) as 'Patchable' FROM Metric SINCE 60 MINUTES AGO UNTIL NOW where patchable ='true'"
+                                "query": "SELECT latest(priorityScore) FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' facet projectName, pkgName, issueId since 1 week ago"
                             }
                         ],
                         "platformOptions": {
                             "ignoreTimeRange": false
                         }
                     }
-                },
+                }
+            ]
+        },
+        {
+            "name": "Repositories",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Issues by Repository",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 5
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where entityType = 'Repository' and source = 'Snyk' facet entityLookupValue since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Container Images",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 5
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT count(*) FROM Log where entityType = 'ContainerImage' and source = 'Snyk' facet entityLookupValue since 1 week ago"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Raw Data",
+            "description": null,
+            "widgets": [
                 {
                     "title": "Raw Data",
                     "layout": {
-                        "column": 5,
-                        "row": 7,
-                        "width": 8,
-                        "height": 3
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 5
                     },
                     "linkedEntityGuids": null,
                     "visualization": {
@@ -274,7 +663,40 @@
                         "nrqlQueries": [
                             {
                                 "accountId": 0,
-                                "query": "SELECT * FROM Metric where metricName = 'snyk_vulnerabilities_total'"
+                                "query": "SELECT * FROM Log where (entityType = 'Repository' or entityType = 'ContainerImage') and source = 'Snyk' limit max since 1 week ago order by timestamp desc"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Integration Errors",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Integration Errors",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 5
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.table"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT * FROM SnykFindingsErrors since 1 week ago"
                             }
                         ],
                         "platformOptions": {
