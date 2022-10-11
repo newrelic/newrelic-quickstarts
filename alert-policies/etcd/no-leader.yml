@@ -1,11 +1,11 @@
-name: Jenkins Last Build Status - Error
+name: No Leader
 
 description: |+
-  This alert is triggered when the last build start time is 0 for 5 minutes
+  This alert is triggered when the etcd member has no leader
 
 type: STATIC
 nrql:
-  query: "SELECT latest(default_jenkins_builds_last_build_start_time_milliseconds) FROM Metric"
+  query: "SELECT (average(etcd_server_has_leader) * cardinality(etcd_server_has_leader)) FROM Metric where instrumentation.name = 'remote-write' facet instance SINCE 2 minutes ago until now"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
