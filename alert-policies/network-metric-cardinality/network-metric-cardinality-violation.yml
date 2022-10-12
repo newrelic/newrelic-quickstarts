@@ -1,0 +1,42 @@
+# Name of the alert
+name: Network Metric Cardinality Violation
+
+# Description and details
+description: |+
+  This alert triggers when cardinality violation are found on metrics from the ktranslate Network Monitoring agent.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "FROM NrIntegrationError SELECT count(*) FACET metricName WHERE rateLimitType = 'UniqueTimeseriesPerDay' AND name = 'CardinalityViolationException' AND metricName LIKE 'kentik.%'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE 
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation; float value
+    threshold: 0
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 60
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Advanced Signal Settings
+# Duration of the time window used to evaluate the NRQL Condition
+signal:
+  # How long we wait for data that belongs in each aggregation window 
+  aggregationDelay: 60 # seconds
+  # The method that determines when we consider an aggregation window to complete so that we can evaluate the signals for violations.
+  aggregationMethod: EVENT_TIMER
+  # How long we wait after each data point arrives to make sure we've processed the whole batch.
+  aggregationTimer: 5 # seconds
+  # Controls the duration of the time window used to evaluate the NRQL query 
+  aggregationWindow: 60 # seconds; 30 seconds <= x < 15 minutes
+  # Option that determines the type of value that should be used to fill gaps (empty windows).
+  fillOption: NONE # defaults to STATIC
