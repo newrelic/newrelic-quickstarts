@@ -4,7 +4,16 @@ description: |+
  This alert is triggered when the http request success rate drops below 95 percent. This alert may be further configured as per the desired success percentage requirements.
 type: STATIC
 nrql:
-  query: "SELECT (rate(sum(conditional(WHERE ((instrumentation.name = 'remote-write') AND NOT ((status RLIKE '[4-5].*'))), nginx_ingress_controller_requests)), 1 SECONDS)*100 / rate(sum(conditional(WHERE (instrumentation.name = 'remote-write'), nginx_ingress_controller_requests)), 1 SECONDS)) as '(%) Ingress successful requests' FROM Metric"
+  query: "FROM Metric 
+  SELECT filter(
+    rate(Sum(
+      nginx_ingress_controller_requests),1 seconds), 
+    WHERE status Not RLIKE '[4-5].*') * 100 
+  / filter(
+    rate(sum(
+      nginx_ingress_controller_requests), 1 seconds), WHERE status RLIKE '.*') 
+  AS 'Controller Success Rate (non-4|5xx responses)' 
+  WHERE instrumentation.name = 'remote-write' "
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
