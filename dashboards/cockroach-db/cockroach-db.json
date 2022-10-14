@@ -1,0 +1,452 @@
+{
+  "name": "CockroachDB overview dashboard",
+  "description": null,
+  "pages": [
+    {
+      "name": "Cockroach Database Dashboard",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 8
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![CockroachDB Logo](https://crl2020.imgix.net/img/stacked-logo-hr.png?auto=format,compress) \n- - -\n### Overview\n[CockroacDB](https://github.com/cockroachdb/cockroach) is a distributed SQL database built on a transactional and strongly-consistent key-value store. It scales horizontally; survives disk, machine, rack, and even datacenter failures with minimal latency disruption and no manual intervention; supports strongly-consistent ACID transactions; and provides a familiar SQL API for structuring, manipulating, and querying data.\n\n[CockroacDB](https://github.com/cockroachdb/cockroach) generates detailed time series metrics for each node in a cluster. This [page](https://www.cockroachlabs.com/docs/stable/monitor-cockroachdb-with-prometheus.html) shows you how to pull these metrics into Prometheus.\n### About this Dashboard\nThis dashboard is based on standard `CockraochDB` Prometheus metrics ingested using Prometheus [remote write](https://one.newrelic.com/marketplace/catalog-pack-details/detail?state=d8bbbb94-e24f-8ef8-a440-f815fc4b340a). Using the maximum dimensions of metrics as facets, a comprehensive view of CockroachDB can be obtained from this dashboard. \n\n\nCommon attributes used in the filter bar are:\n\n\n- `prometheus_server`\n- `instance`\n- `pod`\n\nFilter by `prometheus_server` to scope the dashboard to a specific cluster.\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 10,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### CRDB Console: Storage "
+          }
+        },
+        {
+          "title": "Capacity",
+          "layout": {
+            "column": 3,
+            "row": 2,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`Max capacity`) * cardinality(`Max capacity`)) FROM (SELECT (average(capacity) * cardinality(capacity)) AS `Max capacity` FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') FACET instance LIMIT 100 TIMESERIES 30000) SINCE 60 Minutes AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`Available capacity`) * cardinality(`Available capacity`)) FROM (SELECT (average(capacity_available) * cardinality(capacity_available)) AS `Available capacity1` FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write')  FACET instance LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT ((average(`Max capacity`) * cardinality(`Max capacity`)) - (average(`Available capacity`) * cardinality(`Available capacity`))) As 'Used Capacity' FROM (SELECT (average(capacity) * cardinality(capacity)) AS `Max capacity`, (average(capacity_available) * cardinality(capacity_available)) AS `Available capacity` FROM Metric  WHERE ((job = 'cockroachdb') AND (instrumentation.name='remote-write') )  FACET instance LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Live Bytes",
+          "layout": {
+            "column": 6,
+            "row": 2,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`Live`) * cardinality(`Live`)) FROM (SELECT (average(livebytes) * cardinality(livebytes)) AS `Live` FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write')  FACET instance LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`System`) * cardinality(`System`)) FROM (SELECT (average(sysbytes) * cardinality(sysbytes)) AS `System` FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') FACET instance LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Command Commit Latency: 99th Percentile",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(raft_process_commandcommit_latency_bucket, (100 * 0.99)) / 1000000  FROM Metric WHERE ((job = 'cockroachdb') AND (`instrumentation.name` = 'remote-write')) SINCE 1800 SECONDS AGO UNTIL NOW FACET dimensions( exclude: {'le'}) LIMIT 1000 TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "cluster=my-cockroachdb-cluster,instance=localhost:8080,instrumentation.name=remote-write,instrumentation.provider=prometheus,instrumentation.source=nginx-cockroachDb-Growth,instrumentation.version=0.0.2,job=cockroachdb,newrelic.source=prometheusAPI,prometheus_server=nginx-cockroachDb-Growth,store=1"
+                }
+              ],
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 5,
+            "width": 10,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### CRDB Console: Runtime"
+          }
+        },
+        {
+          "title": "Live Node Count",
+          "layout": {
+            "column": 3,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT min(liveness_livenodes) AS 'Live Nodes' FROM Metric  WHERE job = 'cockroachdb' AND instrumentation.name='remote-write' SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 60000 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Garbage Collection Runs / Seconds",
+          "layout": {
+            "column": 6,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sys_gc_count) , 1 SECONDS)as 'Garbage Collection Run' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Memory Usage",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_cgo_allocbytes) * cardinality(sys_cgo_allocbytes)) FROM Metric WHERE ((job = 'cockroachdb') AND (instrumentation.name = 'remote-write')) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_go_totalbytes) * cardinality(sys_go_totalbytes)) FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name = 'remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_go_allocbytes) * cardinality(sys_go_allocbytes)) FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name = 'remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_cgo_totalbytes) * cardinality(sys_cgo_totalbytes)) FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name = 'remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### CRDB Console: SQL"
+          }
+        },
+        {
+          "title": "Live SQL Connections",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(sql_conns) As 'Live SQL Connections' FROM Metric WHERE (job = 'cockroachdb') and (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW  Facet instance"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "SQL Statements",
+          "layout": {
+            "column": 4,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_select_count), 1 SECONDS) as 'Selects' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_insert_count), 1 SECONDS) AS Inserts FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write')SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_update_count), 1 SECONDS) As 'Updates' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_delete_count), 1 SECONDS) As 'Deletes' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_failure_count_count), 1 SECONDS) As 'Failures' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "SQL Byte Traffic",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_bytesin), 1 SECONDS) AS 'Byte In' FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_bytesout), 1 SECONDS)As 'Byte Out'FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "SQL Memory",
+          "layout": {
+            "column": 10,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(sql_mem_root_current) FROM Metric WHERE (job = 'cockroachdb') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW FACET dimensions() LIMIT 100 TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
