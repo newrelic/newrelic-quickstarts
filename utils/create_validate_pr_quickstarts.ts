@@ -1,6 +1,7 @@
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
+  isNotRemoved,
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
@@ -14,23 +15,56 @@ import {
 } from './lib/helpers';
 
 import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
-import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
+import {
+  NerdGraphResponseWithLocalErrors,
+  NerdGraphError,
+} from './types/nerdgraph';
 
-const main = async () => {
-  const [GITHUB_API_URL, isDryRun] = passedProcessArguments();
-  const githubToken = process.env.GITHUB_TOKEN;
-  const dryRun = isDryRun === 'true';
+type ResponseWithErrors =
+  NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
+    name: string;
+  };
 
-  if (!githubToken) {
+// filter out errors where install plan id does not exist
+const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
+  'extensions' in error &&
+  error?.extensions?.argumentPath?.includes('installPlanStepIds') &&
+  error?.message?.includes('contains an install plan step that does not exist');
+
+export const countAndOutputErrors = (
+  graphqlResponses: ResponseWithErrors[]
+): number =>
+  graphqlResponses.reduce((all, { errors, name }) => {
+    const installPlanErrors =
+      (errors?.filter(installPlanErrorExists) as NerdGraphError[]) ?? [];
+    const remainingErrors =
+      errors?.filter((error) => !installPlanErrorExists(error)) ?? [];
+
+    translateMutationErrors(remainingErrors, name, installPlanErrors);
+    return all + remainingErrors.length;
+  }, 0);
+
+export const createValidateQuickstarts = async (
+  ghUrl?: string,
+  ghToken?: string,
+  isDryRun = false
+): Promise<boolean> => {
+  if (!ghToken) {
     console.error('GITHUB_TOKEN is not defined.');
-    process.exit(1);
+    return false;
+  }
+
+  if (!ghUrl) {
+    console.error('Github PR URL is not defined.');
+    return false;
   }
 
   // Get all files from PR
-  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+  const files = await fetchPaginatedGHResults(ghUrl, ghToken);
 
   // Get all quickstart mutation variables
   const quickstarts = filterOutTestFiles(files)
+    .filter(isNotRemoved)
     .map(prop('filename'))
     .filter(
       (filePath) =>
@@ -53,29 +87,56 @@ const main = async () => {
       return acc;
     }, []);
 
+  const invalidQuickstarts = quickstarts
+    .map((qs) => {
+      qs.validate();
+      return !qs.isValid ? qs : undefined;
+    })
+    .filter(Boolean);
+
+  if (invalidQuickstarts.length > 0) {
+    process.exit(1);
+  }
+
   // Submit all of the mutations in chunks of 5
-  const results: (NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
-    name: string;
-  })[] = [];
+  let results: ResponseWithErrors[] = [];
+
+  // Class implementations may throw an error
+  const quickstartErrors: string[] = [];
 
   for (const c of chunk(quickstarts, 5)) {
-    const res = await Promise.all(
-      c.map((quickstart) => quickstart.submitMutation(dryRun))
-    );
+    try {
+      const res = await Promise.all(
+        c.map((quickstart) => quickstart.submitMutation(isDryRun))
+      );
 
-    results.concat(res);
+      results = [...results, ...res];
+    } catch (err) {
+      const error = err as Error;
+
+      quickstartErrors.push(error.message);
+    }
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
 
-  failures.forEach(({ errors, name }) =>
-    translateMutationErrors(errors!, name)
-  );
+  const errorCount = countAndOutputErrors(failures);
 
-  const hasFailed = failures.length > 0;
+  quickstartErrors.forEach((errorMessage) => console.error(errorMessage));
+
+  const hasFailed = errorCount > 0 || quickstartErrors.length > 0;
+
+  return hasFailed;
+};
+
+const main = async () => {
+  const [ghUrl, isDryRun] = passedProcessArguments();
+  const ghToken = process.env.GITHUB_TOKEN;
+  const dryRun = isDryRun === 'true';
+  const hasFailed = await createValidateQuickstarts(ghUrl, ghToken, dryRun);
 
   // Record event in New Relic
-  const event = dryRun
+  const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
     : CUSTOM_EVENT.UPDATE_QUICKSTARTS;
 

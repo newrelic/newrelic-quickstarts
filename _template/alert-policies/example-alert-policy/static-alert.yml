@@ -1,4 +1,3 @@
----
 # Name of the alert
 name: Name of this alert condition
 
@@ -23,7 +22,7 @@ terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
     operator: ABOVE | BELOW | EQUALS
-    # Value that triggers a violation
+    # Value that triggers a violation; float value
     threshold: 90
     # Time in seconds; 120 - 3600
     thresholdDuration: 600
@@ -32,8 +31,8 @@ terms:
 
   # Adding a Warning threshold is optional
   - priority: WARNING
+    operator: ABOVE
     threshold: 80
-    operator: ABOVE | BELOW | EQUALS
     thresholdDuration: 300
     thresholdOccurrences: ALL | AT_LEAST_ONCE
 
@@ -44,20 +43,25 @@ expiration:
   # Open "Loss of Signal" violation if signal is lost (Default: false)
   openViolationOnExpiration: true | false
   # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
-  expirationDuration:
+  expirationDuration: 
 
 # Advanced Signal Settings
+# Duration of the time window used to evaluate the NRQL Condition
 signal:
-  # Duration of the time window used to evaluate the NRQL Condition
-  # Time in seconds; 30 - 900 (Default: 60)
-  aggregationWindow: 60
-  # The number of windows we look back at the aggregated data
-  # Max 20 minutes, multiple of aggregationWindow
-  evaluationOffset: 3
-  # Type of value that should be used to fill gaps
-  fillOption: LAST_VALUE | NONE | STATIC
-  # Integer; Used in conjunction with STATIC fillOption, otherwise null
-  fillValue:
+  # How long we wait for data that belongs in each aggregation window 
+  aggregationDelay: 1200 # seconds
+  # The method that determines when we consider an aggregation window to complete so that we can evaluate the signals for violations.
+  aggregationMethod: CADENCE | EVENT_FLOW | EVENT_TIMER
+  # How long we wait after each data point arrives to make sure we've processed the whole batch.
+  aggregationTimer: 1200 # seconds
+  # Controls the duration of the time window used to evaluate the NRQL query 
+  aggregationWindow: 1200 # seconds; 30 seconds <= x < 15 minutes
+  # Option that determines the type of value that should be used to fill gaps (empty windows).
+  fillOption: STATIC | NONE | LAST_VALUE # defaults to STATIC
+  # If using the static fill option, this value is used for filling.
+  fillValue: 0 # default
+  # This setting gathers data in overlapping time windows to smooth the chart line, making it easier to spot trends.
+  slideBy: 60 # seconds
 
 # OPTIONAL: URL of runbook to be sent with notification
 runbookUrl:

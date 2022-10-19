@@ -4,9 +4,9 @@ import type {
   NerdGraphResponseWithLocalErrors,
 } from '../types/nerdgraph';
 
+import { CATEGORIES_QUERY } from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
-import instantObservabilityCategories from '../instant-observability-categories';
 
 const NR_API_URL = process.env.NR_API_URL || '';
 const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
@@ -124,10 +124,20 @@ export const translateMutationErrors = (
   }
 };
 
+type CategoryTermsNRGraphqlResults = {
+  actor: {
+    nr1Catalog: {
+      categories: {
+        terms: string[];
+      }[];
+    };
+  };
+};
+
 /**
  * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
  * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
- * @returns {String[] | undefined } An array of quickstart categoryTerms
+ * @returns {Promise<String[] | undefined>} An array of quickstart categoryTerms
  *
  * @example
  * // input
@@ -136,15 +146,27 @@ export const translateMutationErrors = (
  * // return
  * ['azure', 'infrastructure']
  */
-export const getCategoryTermsFromKeywords = (
+export const getCategoryTermsFromKeywords = async (
   configKeywords: string[] | undefined = []
-): string[] | undefined => {
-  const allCategoryKeywords = instantObservabilityCategories.flatMap(
-    (category) => category.associatedKeywords
+): Promise<string[] | undefined> => {
+
+  const { data } = await fetchNRGraphqlResults<
+    {},
+    CategoryTermsNRGraphqlResults
+  >({
+    queryString: CATEGORIES_QUERY,
+    variables: {},
+  });
+
+  const { categories } = data.actor.nr1Catalog;
+
+  const allCategoryKeywords = categories.flatMap(
+    (category) => category.terms
   );
 
+
   const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
-    if (allCategoryKeywords.includes(keyword)) {
+    if (allCategoryKeywords && allCategoryKeywords.includes(keyword)) {
       acc.push(keyword);
     }
     return acc;

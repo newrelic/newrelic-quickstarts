@@ -23,30 +23,28 @@ export const getQuickstartsFromPRFiles = async (
   token: string
 ): Promise<string[]> => {
   const filesURL = `${prURL}/files`;
-
   const files = await fetchPaginatedGHResults(filesURL, token);
+  const nonTestFiles = filterOutTestFiles(files);
+  
+  const quickstartPaths = nonTestFiles
+      .map(prop('filename'))
+      .filter(filePath => QUICKSTART_CONFIG_REGEXP.test(filePath))
+      .map(filePath => path.dirname(filePath.split('quickstarts/').pop()!))
 
-  const quickstartPaths = filterOutTestFiles(files)
+  /*
+    We can rely on a quickstart existing on the `main` branch because if it isn't, then it was created in this 
+    pull request and will be caught by the logic above. We can then use the Quickstart class with 
+    getRelatedQuickstarts to get all quickstarts related to the component.  If
+    the component itself exists we know a quickstart related to it also exists.
+  */
+  const componentPaths = nonTestFiles
     .map(prop('filename'))
-    .filter(
-      (filePath) =>
-        QUICKSTART_CONFIG_REGEXP.test(filePath) ||
-        COMPONENT_PREFIX_REGEXP.test(filePath)
-    )
-    .flatMap((filePath) => {
-      if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
-        return new Quickstart(filePath);
-      }
-
-      return getRelatedQuickstarts(getComponentLocalPath(filePath));
-    })
-    .filter((quickstart) => quickstart.isValid)
-    .map((quickstart) =>
-      path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!)
-    )
+    .filter(filePath => COMPONENT_PREFIX_REGEXP.test(filePath))
+    .flatMap(filePath => getRelatedQuickstarts(getComponentLocalPath(filePath)))
+    .map(quickstart => path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!))
     .map((configPath) => configPath.split('quickstarts/').pop()!);
 
-  return [...new Set(quickstartPaths)];
+  return [...new Set([...quickstartPaths, ...componentPaths])];
 };
 
 /**
@@ -119,7 +117,7 @@ export const generatePreviewComment = async (
     }));
 
     if (links.length > 0) {
-      const comment = JSON.stringify(createComment(links));
+      const comment = createComment(links);
       console.log(`::set-output name=comment::${comment}`);
     } else {
       console.log(`No quickstarts found, skipping preview`);
