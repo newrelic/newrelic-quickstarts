@@ -9,7 +9,7 @@ A concise description of the changes being introduced. Please review the pre-mer
 
 - [ ] Did you check you NRQL syntax? - Does it work?
 - [ ] Did you include an InstallPlan and Documentation reference?
-- [ ] Are all documentation links publically accessible?
+- [ ] Are all documentation links publicly accessible?
 - [ ] Did you check your descriptive content for [voice and tone](https://docs.newrelic.com/docs/style-guide/writing-strategies/voice-strategies-docs-sound-new-relic/)? 
 - [ ] Did you check your descriptive content for spelling and grammar errors?
 
