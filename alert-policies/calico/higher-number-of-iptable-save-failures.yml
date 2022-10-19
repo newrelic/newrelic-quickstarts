@@ -1,0 +1,27 @@
+name: Higher Number Of Iptables-save Failure
+
+description: |+
+  This alert is triggered when more than 5 iptable save errors  within Felix are happening
+
+type: STATIC
+nrql:
+  query: "SELECT sum(felix_iptables_restore_errors) FROM Metric facet instance SINCE 60 MINUTES AGO where instrumentation.name = 'remote-write'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 5
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
