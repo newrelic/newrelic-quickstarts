@@ -1,0 +1,697 @@
+{
+  "name": "CoreDNS Metrics",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![CoreDNS Logo](https://i.imgur.com/2P3A2zF.png) \n- - -\n### Overview\n[coreDNS](https://github.com/coredns/coredns) is a fast and flexible DNS server/forwarder. The key word here is *flexible*, with CoreDNS you are able to do what you want with your DNS data by utilizing plugins. If some functionality is not provided out of the box you can add it by [writing a plugin](https://coredns.io/explugins).CoreDNS is a [Cloud Native Computing Foundation](https://cncf.io) graduated project.\n\n### About this Dashboard\n\nThis dashboard is based on standard `coredns` Prometheus metrics ingested using Prometheus [remote write](https://one.newrelic.com/marketplace/catalog-pack-details/detail?state=d8bbbb94-e24f-8ef8-a440-f815fc4b340a).  \n\nTo filter, type `prometheus_server` into the filter bar and select the Prometheus server name to scope the dashboard to that instance.\n\nCommon attributes used in the filter bar are:\n\n- `prometheus_server`\n- `instance`\n- `pod` (if it exists on the metric)\n\n\n"
+          }
+        },
+        {
+          "title": "Build Info and Status",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "\nfrom (\nSELECT latest(version) as 'corednsversion',\nlatest(up) as 'corednsup',\nsum(coredns_panics_total) as 'corednspanics'\nfrom Metric\nWHERE metricName in ('coredns_build_info','up','coredns_panics_total')\nand instrumentation.name = 'remote-write'\nand instance like '%:9153'\nfacet instance, prometheus_server, cluster_name limit max) \nselect sum(corednsup) as 'Instances Up', sum(corednspanics) as 'Panics' facet corednsversion as 'CoreDNS Version', prometheus_server as 'Prometheus Server' limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU Time (ms)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(process_cpu_seconds_total), 1 SECONDS) * 1000 FROM Metric where instrumentation.name = 'remote-write' and instance like '%:9153' facet instance TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests per second",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) as 'Requests' FROM Metric where instrumentation.name = 'remote-write' FACET instance LIMIT 100 timeseries"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Avg. Memory Usage (bytes)",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(go_memstats_alloc_bytes) / 1000 / 1000 FROM Metric where instrumentation.name = 'remote-write' and instance like '%:9153' FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Requests",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' FACET proto LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request bytes percentiles (udp)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'udp' FACET concat(proto, ':95%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.50)) FROM Metric where proto = 'udp' FACET concat(proto, ':50%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "udp:95%ile",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "udp:50%ile",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests per second (zone)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' FACET zone LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Requests per second (DO bit)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_do_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request bytes percentiles (tcp)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.95)) as 'tcp:95%ile' FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' FACET concat(proto, ':95%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.50)) as 'tcp:50%ile' FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' FACET concat(proto, ':50%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Metric",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "Metric",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests per second (qtype)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' FACET type LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responses",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total Responses per second",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_responses_total), 1 SECONDS) as 'Responses per second' FROM Metric where instrumentation.name = 'remote-write'  LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response size percentiles (bytes, tcp)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' FACET concat(proto, ':95%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.50)) FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' FACET concat(proto, ':50%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "udp",
+                  "unit": "BYTES"
+                }
+              ]
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response size percentiles (bytes, udp)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.95)) FROM Metric where proto = 'udp' FACET concat(proto,':95%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.50)) FROM Metric where proto = 'udp' FACET concat(proto, ':50%ile') LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "udp:95%ile",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "udp:50%ile",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Responses/sec (by rcode)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_responses_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' FACET rcode LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Cache Hit %",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(coredns_cache_hits_total)/(sum(coredns_cache_misses_total) + sum(coredns_cache_hits_total)) * 100 as 'Cache Hit %' where instrumentation.name = 'remote-write' facet prometheus_server "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache hit rate per second",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_cache_hits_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' FACET type LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_cache_misses_total), 1 SECONDS) as 'misses' FROM Metric where instrumentation.name = 'remote-write' LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache entries total",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(coredns_cache_entries) * cardinality(coredns_cache_entries)) FROM Metric where instrumentation.name = 'remote-write' FACET type LIMIT 100 TIMESERIES 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache misses per second",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_cache_misses_total), 1 SECONDS) as 'Cache misses per second' FROM Metric LIMIT 100 where prometheus_server='prom-coredns' TIMESERIES 300000 SLIDE BY 10000 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
