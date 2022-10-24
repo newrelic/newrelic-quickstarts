@@ -1,0 +1,247 @@
+{
+    "name": "Amazon DynamoDB",
+    "description": "",
+    "pages": [
+        {
+            "name": "Amazon DynamoDB",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Request latency, by operation",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.SuccessfulRequestLatency.get`) as 'GetItem',average(`aws.dynamodb.SuccessfulRequestLatency.put`) as 'PutItem', average(`aws.dynamodb.SuccessfulRequestLatency.delete`) as 'DeleteItem',average(`aws.dynamodb.SuccessfulRequestLatency.update`) as 'UpdateItem',average(`aws.dynamodb.SuccessfulRequestLatency.query`) as 'Query',average(`aws.dynamodb.SuccessfulRequestLatency.scan`) as 'Scan',average(`aws.dynamodb.SuccessfulRequestLatency.batchGet`) as 'BatchGetItem',average(`aws.dynamodb.SuccessfulRequestLatency.batchWrite`) as 'BatchWriteItem'FROM Metric since yesterday TIMESERIES 30 minutes"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "![Amazon DynamoDB Icon](https://integrations.nr-assets.net/providers/aws_dynamodb.png) **Amazon DynamoDB** \n\nAmazon DynamoDB is a fully managed NoSQL database service that provides fast and predictable performance with seamless scalability. DynamoDB lets you offload the administrative burdens of operating and scaling a distributed database, so that you don't have to worry about hardware provisioning, setup and configuration, replication, software patching, or cluster scaling.\n\nEach chart is reporting every minute.\n\n\n"
+                    }
+                },
+                {
+                    "title": "Throttled requests",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.dynamodb.WriteThrottleEvents.byGlobalSecondaryIndex`) as 'Write', sum(`aws.dynamodb.ReadThrottleEvents.byGlobalSecondaryIndex`) as 'Read' FROM Metric since 1 hour ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "User errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.dynamodb.UserErrors.byRegion`) FROM Metric TIMESERIES since 6 hours ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "% of provisioned read consumed",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.ConsumedReadCapacityUnits.byGlobalSecondaryIndex` / (`aws.dynamodb.ProvisionedReadCapacityUnits.byGlobalSecondaryIndex` * 60 * 5)) * 100 FROM Metric since 1 day ago timeseries 30 minutes"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "% of provisioned write consumed",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.ConsumedWriteCapacityUnits.byGlobalSecondaryIndex` / (`aws.dynamodb.ProvisionedWriteCapacityUnits.byGlobalSecondaryIndex` * 60 * 5)) * 100 FROM Metric since 1 day ago timeseries 30 minutes"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "System errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 10,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.dynamodb.SystemErrors.scan`) + sum(`aws.dynamodb.SystemErrors.query`) + sum(`aws.dynamodb.SystemErrors.delete`) + sum(`aws.dynamodb.SystemErrors.update`) + sum(`aws.dynamodb.SystemErrors.update`) + sum(`aws.dynamodb.SystemErrors.batchWrite`) + sum(`aws.dynamodb.SystemErrors.batchGet`) + sum(`aws.dynamodb.SystemErrors.get`) as SystemErrors FROM Metric TIMESERIES since 6 hours ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Read throttled requests, by table",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 10,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.ReadThrottleEvents.byGlobalSecondaryIndex`) as 'Read Throttled Requests' FROM Metric since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Write throttled requests, by table",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 10,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.WriteThrottleEvents.byGlobalSecondaryIndex`) as 'Write Throttled Requests' FROM Metric since 6 hours ago facet `aws.dynamodb.TableName` TIMESERIES 5 minutes"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Pending replication count, by table",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.PendingReplicationCount`) FROM Metric TIMESERIES auto FACET `aws.dynamodb.TableName` UNTIL 5 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Replication latency (millis), by table",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 13,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.dynamodb.ReplicationLatency`) FROM Metric TIMESERIES auto FACET `aws.dynamodb.TableName` UNTIL 5 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "DynamoDB service limit usage",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 22,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.trustedadvisor.limitUsage`) FROM Metric WHERE aws.trustedadvisor.service='DynamoDB' FACET aws.trustedadvisor.limitName, aws.region TIMESERIES SINCE 1 week ago LIMIT 1000"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
