@@ -12,20 +12,680 @@
             "column": 1,
             "row": 1,
             "width": 4,
-            "height": 3
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# ![Cilium Operator](https://avatars.githubusercontent.com/u/21054566?s=200&amp;v=4)&nbsp;\n#### Kubernetes Native Network Monitoring\n\nCilium is an open source software for providing, securing and observing network connectivity \nbetween container workloads - cloud native, and fueled by the revolutionary Kernel technology eBPF. "
+            "text": "# ![Cilium Operator](https://i.imgur.com/sXPiz3c.png)&nbsp;\n---\n### Overview\n`Cilium` is an open source software for providing, securing and observing network connectivity \nbetween container workloads - cloud native, and fueled by the revolutionary Kernel technology eBPF. \n\n### About this Dashboard\n\nThis dashboard is based on standard `Cilium` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af). "
           }
         },
         {
           "title": "Nodes",
           "layout": {
             "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(cilium_nodes_all_num) AS 'avg-nodes' FROM Metric WHERE instrumentation.name = 'remote-write' LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pod Events",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (rate(average(cilium_kubernetes_events_total), 1 SECONDS) * 60) FROM Metric WHERE instrumentation.name = 'remote-write' FACET tuple(pod, action) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_MINUTE"
+            }
+          }
+        },
+        {
+          "title": "Errors Warnings",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(cilium_errors_warnings_total) AS 'Error & Warning Total' FROM Metric WHERE instrumentation.name = 'remote-write' FACET concat(instance,' - ',level) LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Forwarded Packets (packets per second)",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(cilium_forward_count_total), 1 SECONDS) FROM Metric WHERE instrumentation.name = 'remote-write' FACET tuple(pod, direction) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PAGES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Open File Descriptors",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(cilium_process_open_fds) * cardinality(cilium_process_open_fds)) FROM Metric  WHERE instrumentation.name = 'remote-write' LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "API Call Latency (Max Node)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max((`__result_0` / `__result_1`)) FROM (SELECT rate(sum(cilium_agent_api_process_time_seconds_sum), 1 SECONDS) AS `__result_0`, rate(sum(cilium_agent_api_process_time_seconds_count), 1 SECONDS) AS `__result_1` FROM Metric  WHERE instrumentation.name = 'remote-write' FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET tuple(path, pod, method) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            }
+          }
+        },
+        {
+          "title": "Systemwide BPF Memory Usage",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average((`__result_0` + `__result_1`) AS 'AVG_bpf_memory_bytes_avg') FROM (SELECT latest(cilium_bpf_maps_virtual_memory_max_bytes) AS `__result_0`, latest(cilium_bpf_progs_virtual_memory_max_bytes) AS `__result_1` FROM Metric WHERE instrumentation.name = 'remote-write' FACET dimensions() LIMIT MAX TIMESERIES AUTO) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CPU Usage Per Node",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (min(`__result_0`) * 100) FROM (SELECT irate(cilium_process_cpu_seconds_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE ((k8s_app = 'cilium') AND  instrumentation.name = 'remote-write') FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET pod LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        },
+        {
+          "title": "IPv4 Conntrack TCP",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(cilium_datapath_conntrack_gc_entries) AS 'MAX_IPV4_TCP_ALIVE' FROM Metric WHERE instrumentation.name = 'remote-write' AND (((((k8s_app = 'cilium') AND (status = 'alive')) AND (family = 'ipv4')) AND (protocol = 'TCP'))) FACET tuple(family, status) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "API Return Codes (sum of all nodes)",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(cilium_agent_api_process_time_seconds_count), 1 SECONDS) FROM Metric WHERE ((k8s_app = 'cilium') AND (instrumentation.name = 'remote-write')) FACET tuple(path, pod, method, return_code) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "IPv4 Contract TCP & Non-TCP",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT min(cilium_datapath_conntrack_gc_entries) AS 'MIN_IPV4_TCP_ALIVE' FROM Metric WHERE (((((k8s_app = 'cilium') AND (status = 'alive')) AND (family = 'ipv4')) ) AND (instrumentation.name = 'remote-write')) FACET tuple(family, status,protocol ) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cilium Policy Endpoints Enforcement Status",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(cilium_policy_endpoint_enforcement_status) * cardinality(cilium_policy_endpoint_enforcement_status)) FROM Metric WHERE ((k8s_app = 'cilium') AND instrumentation.name = 'remote-write') FACET enforcement LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Controller Duration",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (rate(sum(cilium_controllers_runs_duration_seconds_sum), 1 SECONDS) / rate(sum(cilium_controllers_runs_duration_seconds_count), 1 SECONDS)) FROM Metric WHERE ((k8s_app = 'cilium') AND (instrumentation.name = 'remote-write')) FACET tuple(pod, status) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            }
+          }
+        },
+        {
+          "title": "APIserver #calls (sum of all nodes)",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(cilium_k8s_client_api_latency_time_seconds_count), 1 SECONDS) FROM Metric WHERE ((k8s_app = 'cilium') AND (instrumentation.name = 'remote-write')) FACET tuple(path, pod, method) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hubble",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Trace Flow Distribution",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) AS 'Flow processed total' FROM Metric WHERE instrumentation.name = 'remote-write' AND (type = 'Trace') FACET subtype LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Forwarded vs Dropped",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_icmp_total), 1 SECONDS) FROM Metric WHERE instrumentation.name = 'remote-write' AND (family = 'IPv4') FACET type LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Flow Types",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) FROM Metric WHERE instrumentation.name = 'remote-write' FACET type TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Protocol Rate Per Hour",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_flows_processed_total),1 hour) FROM Metric  WHERE instrumentation.name = 'remote-write' FACET protocol"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total TCP Flags Per Family",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(hubble_tcp_flags_total) FROM Metric WHERE instrumentation.name = 'remote-write' FACET tuple(family,flag)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "ICMP Rate Request Per Minute By Type",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(hubble_icmp_total),1 minute) FROM Metric WHERE instrumentation.name = 'remote-write' FACET type"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operator",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Resident Memory Status",
+          "layout": {
+            "column": 1,
             "row": 1,
             "width": 4,
             "height": 3
@@ -44,7 +704,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(cilium_nodes_all_num) AS 'avg-nodes' FROM Metric LIMIT 100 TIMESERIES 30000"
+                "query": "SELECT average(cilium_operator_process_resident_memory_bytes) as 'average' FROM Metric WHERE instrumentation.name = 'remote-write' AND (io_cilium_app = 'operator') LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -53,11 +713,44 @@
           }
         },
         {
-          "title": "Pod Events",
+          "title": "Ipam Nodes",
           "layout": {
-            "column": 9,
+            "column": 5,
             "row": 1,
-            "width": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(cilium_operator_ipam_nodes) FROM Metric WHERE instrumentation.name = 'remote-write' LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CPU Usage Per Node",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -74,16 +767,19 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (rate(average(cilium_kubernetes_events_total), 1 SECONDS) * 60) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, action) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+                "query": "SELECT (min(`__result_0`) * 100) as 'min' FROM (SELECT irate(cilium_operator_process_cpu_seconds_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (io_cilium_app = 'operator') AND instrumentation.name = 'remote-write' FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET pod LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             }
           }
         },
         {
-          "title": "API Call Latency (Max Node)",
+          "title": "Operator Open File Descriptors",
           "layout": {
             "column": 1,
             "row": 4,
@@ -92,7 +788,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -104,7 +800,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT max((`__result_0` / `__result_1`)) FROM (SELECT rate(sum(cilium_agent_api_process_time_seconds_sum), 1 SECONDS) AS `__result_0`, rate(sum(cilium_agent_api_process_time_seconds_count), 1 SECONDS) AS `__result_1` FROM Metric  FACET dimensions() LIMIT 100 TIMESERIES 60000 SLIDE BY 30000) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(path, pod, method) LIMIT 100 TIMESERIES 30000"
+                "query": "SELECT (average(cilium_operator_process_open_fds) * cardinality(cilium_operator_process_open_fds)) FROM Metric WHERE instrumentation.name = 'remote-write' LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -113,16 +809,16 @@
           }
         },
         {
-          "title": "Forwarded Packets",
+          "title": "Operator Process Virtual Memory Bytes",
           "layout": {
             "column": 5,
             "row": 4,
-            "width": 4,
+            "width": 3,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -134,203 +830,41 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(cilium_forward_count_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, direction) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
+                "query": "SELECT latest(cilium_operator_process_virtual_memory_bytes) FROM Metric WHERE instrumentation.name = 'remote-write' LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
         {
-          "title": "Open File Descriptors",
+          "title": "Cilium Operator GC Metrics",
           "layout": {
-            "column": 9,
+            "column": 8,
             "row": 4,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(cilium_process_open_fds) * cardinality(cilium_process_open_fds)) FROM Metric  SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
+                "query": "select average(cilium_operator_identity_gc_runs) as 'Avg GC Runs',average(cilium_operator_identity_gc_entries) as 'Avg GC Entries' FROM Metric WHERE instrumentation.name = 'remote-write' FACET tuple(name,pod)"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Trace Flow Distribution",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) FROM Metric  SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, subtype) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "IPv4 Conntrack TCP",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT max(cilium_datapath_conntrack_gc_entries) AS 'MAX_IPV4_TCP_ALIVE' FROM Metric WHERE (((((k8s_app = 'cilium') AND (status = 'alive')) AND (family = 'ipv4')) AND (protocol = 'TCP'))) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(family, status) LIMIT 100 TIMESERIES 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "System-wide BPF memory usage",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average((`__result_0` + `__result_1`) AS 'AVG_bpf_memory_bytes_avg') FROM (SELECT latest(cilium_bpf_maps_virtual_memory_max_bytes) AS `__result_0`, latest(cilium_bpf_progs_virtual_memory_max_bytes) AS `__result_1` FROM Metric FACET dimensions() LIMIT 100 TIMESERIES 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Forwarded vs Dropped",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(hubble_flows_processed_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(pod, verdict) LIMIT 100 TIMESERIES 60000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Top 10 Port Distribution",
-          "layout": {
-            "column": 7,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(hubble_port_distribution_total), 1 SECONDS) FROM Metric WHERE NOT ((port = '0')) SINCE 60 MINUTES AGO UNTIL NOW FACET tuple(protocol, pod, port) LIMIT 10 TIMESERIES 60000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
