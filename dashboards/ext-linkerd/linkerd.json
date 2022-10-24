@@ -1,362 +1,2401 @@
 {
-  "name": "Linkerd",
-  "description": null,
-  "pages": [
-    {
-      "name": "Linkerd",
-      "description": null,
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 2,
-            "height": 2
+    "name": "Linkerd",
+    "description": null,
+    "pages": [
+      {
+        "name": "Linkerd",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 8
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![Logo](https://i.imgur.com/svj3gcA.png)\r\n- - -\r\n# Overview\r\nLinkerd is a service mesh for Kubernetes. It makes running services easier and safer by giving you runtime debugging, observability, reliability, and security—all without requiring any changes to your code.\r\n\r\nFor detailed information:\r\nhttps://linkerd.io/2.12/overview/\r\n\r\nAbout this Dashboard\r\nThis dashboard is based on standard Linkerd Prometheus metrics ingested using Prometheus remote write. It provides widgets showing different levels of metrics such as:\r\n\r\nProtocol-Level Metrics, including the following labels:\r\n   - Response Labels\r\n   - Outbound labels\r\n   - Prometheus Collector labels\r\n\r\nTransport-Level Metrics, including the following lable:\r\n   - Connection Close Labels\r\n\r\nIdentity Metrics\r\n\r\nFind more info about Linkerd metric here:\r\nhttps://linkerd.io/2.12/features/telemetry/#golden-metrics\r\n\r\nhttps://linkerd.io/2.12/reference/proxy-metrics/\r\n"
+            }
           },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
+          {
+            "title": "",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Data-Plane Telemetry\n----"
+            }
           },
-          "rawConfiguration": {
-            "text": "![Logo](https://linkerd.io/images/identity/svg/linkerd_primary_color_black.svg)"
-          }
-        },
-        {
-          "title": "Linkerd Proxy  - Request Success Rate",
-          "layout": {
-            "column": 3,
-            "row": 1,
-            "width": 10,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bullet"
-          },
-          "rawConfiguration": {
-            "limit": 100,
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT filter(count(response_total) , WHERE job = 'linkerd-proxy' and response_total IS NOT NULL AND classification = 'success' ) *100 / (FROM Metric SELECT filter(count(request_total) , WHERE job = 'linkerd-proxy' and request_total IS NOT NULL) ) as 'Linkerd Proxy - Request Success Rate %' since 1 day ago"
+          {
+            "title": "Memory usage",
+            "layout": {
+              "column": 4,
+              "row": 2,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(process_virtual_memory_bytes) from Metric FACET namespace,pod where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "CPU usage",
+            "layout": {
+              "column": 7,
+              "row": 2,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(process_cpu_seconds_total) from Metric FACET namespace,pod where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Open File Descriptors",
+            "layout": {
+              "column": 10,
+              "row": 2,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(process_open_fds) from Metric FACET namespace,pod where job = 'linkerd-proxy' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 4,
+              "row": 5,
+              "width": 9,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Control-Plane Traffic\n----"
+            }
+          },
+          {
+            "title": "Success Rate",
+            "layout": {
+              "column": 4,
+              "row": 6,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bullet"
+            },
+            "rawConfiguration": {
+              "limit": 100,
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT filter(count(response_total) , WHERE instrumentation.name = 'remote-write' AND job = 'linkerd-proxy' and instrumentation.source = 'Linkerd_Prometheus' and response_total IS NOT NULL AND classification = 'success' ) *100 / (FROM Metric SELECT filter(count(request_total) , WHERE instrumentation.name = 'remote-write' AND job = 'linkerd-proxy' and instrumentation.source = 'Linkerd_Prometheus' and request_total IS NOT NULL) ) as 'Success Rate' "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": " Request Rate (sec) By Pod",
+            "layout": {
+              "column": 7,
+              "row": 6,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(request_total)/3600 as 'Requests/sec' from Metric where instrumentation.name = 'remote-write' AND  instrumentation.source = 'Linkerd_Prometheus' FACET pod TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "P95 Latency (ms)",
+            "layout": {
+              "column": 10,
+              "row": 6,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT percentile(response_latency_ms_bucket,95) as 'Latency' from Metric FACET pod TIMESERIES  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Control-Plane Telemetry\n----"
+            }
+          },
+          {
+            "title": "Goroutines",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_goroutines) from Metric FACET component where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Process Memory",
+            "layout": {
+              "column": 4,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(process_resident_memory_bytes) from Metric FACET component where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Open FDs",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(process_open_fds) from Metric FACET component where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Threads",
+            "layout": {
+              "column": 10,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_threads) from Metric FACET component where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Control-Plane Clients/Servers\n----"
+            }
+          },
+          {
+            "title": "Server Request Rate",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(http_server_requests_total) from Metric FACET component,method,code where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "HTTP Server Latency",
+            "layout": {
+              "column": 5,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(http_server_request_latency_seconds_bucket) from Metric FACET le,component,method,code where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "HTTP Server Response Size",
+            "layout": {
+              "column": 9,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(http_server_response_size_bytes_bucket) from Metric FACET le,component,method,code where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Client Request Rate",
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(http_client_requests_total) from Metric FACET component,client,method,code where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "HTTP Client Latency",
+            "layout": {
+              "column": 5,
+              "row": 17,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(http_client_request_latency_seconds_bucket) from Metric FACET le,component,client,method,code where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Client In-Flight Requests",
+            "layout": {
+              "column": 9,
+              "row": 17,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(http_client_in_flight_requests) from Metric FACET component,client where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 20,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# General Cluster info\n----"
+            }
+          },
+          {
+            "title": "Linkerd Cluster Information",
+            "layout": {
+              "column": 1,
+              "row": 21,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(metricName) as 'Metrics'  from Metric where instrumentation.name = 'remote-write' AND job like '%linkerd%' and metricName IS NOT NULL   limit MAX FACET instance, job, pod, namespace"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd Proxy Requests - Overall",
-          "layout": {
-            "column": 1,
-            "row": 3,
-            "width": 4,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Linkerd-Destination",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(request_total) as 'Requests' from Metric where job = 'linkerd-proxy' since 1 day ago COMPARE WITH 1 day ago"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'linkerd-destination' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'linkerd-destination' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'linkerd-destination' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='destination' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='destination' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='destination' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'destination'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 Destination' from Metric  where quantile ='0.5' AND component= 'destination' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 Destination' from Metric  where quantile ='0.75' AND component= 'destination' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX Destination' from Metric  where quantile ='1' AND component= 'destination' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/destination' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='destination' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/destination' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='destination' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd Proxy Responses - Overall",
-          "layout": {
-            "column": 5,
-            "row": 3,
-            "width": 4,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Linkerd-Identity",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(response_total) as 'Responses' from Metric where job = 'linkerd-proxy' and response_total IS NOT NULL AND classification = 'success' since 1 day ago LIMIT MAX COMPARE WITH 1 day ago"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'linkerd-identity' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'linkerd-identity' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'linkerd-identity' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='identity' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='identity' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='identity' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'identity'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 Identity' from Metric  where quantile ='0.5' AND component= 'identity' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 Identity' from Metric  where quantile ='0.75' AND component= 'identity' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX Identity' from Metric  where quantile ='1' AND component= 'identity' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/identity' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='identity' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/identity' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='destination' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Average Response Latency (ms) - Overall ",
-          "layout": {
-            "column": 9,
-            "row": 3,
-            "width": 4,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Linkerd-proxy-injector",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(response_latency_ms_sum) as 'Latency' from Metric where job = 'linkerd-proxy'  since 1 day ago COMPARE WITH 1 day ago"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'linkerd-proxy-injector' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'linkerd-proxy-injector' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'linkerd-proxy-injector' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='proxy-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='proxy-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='proxy-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'proxy-injector'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 proxy-injector' from Metric  where quantile ='0.5' AND component= 'proxy-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 proxy-injector' from Metric  where quantile ='0.75' AND component= 'proxy-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX proxy-injector' from Metric  where quantile ='1' AND component= 'proxy-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/proxy-injector' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'proxy-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/proxy-injector' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='proxy-injector' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd Proxy Requests By Instance",
-          "layout": {
-            "column": 1,
-            "row": 5,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Metrics-api",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(request_total) as 'Requests' from Metric where job = 'linkerd-proxy' since 1 day ago COMPARE WITH 1 day ago FACET instance"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'metrics-api' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'metrics-api' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'metrics-api' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='metrics-api' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='metrics-api' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='metrics-api' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'metrics-api'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 Metrics-api' from Metric  where quantile ='0.5' AND component= 'metrics-api' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 Metrics-api' from Metric  where quantile ='0.75' AND component= 'metrics-api' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX Metrics-api' from Metric  where quantile ='1' AND component= 'metrics-api' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/metrics-api' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='metrics-api' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/metrics-api' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='metrics-api' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd Proxy Responses By Instance",
-          "layout": {
-            "column": 5,
-            "row": 5,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Prometheus",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(response_total) as 'Responses' from Metric where job = 'linkerd-proxy' and response_total IS NOT NULL AND classification = 'success' since 1 day ago COMPARE WITH 1 day ago FACET instance"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'prometheus' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'prometheus' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'prometheus' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='prometheus' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='prometheus' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='prometheus' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'prometheus'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 Prometheus' from Metric  where quantile ='0.5' AND component= 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 Prometheus' from Metric  where quantile ='0.75' AND component= 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX Prometheus' from Metric  where quantile ='1' AND component= 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/Prometheus' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='prometheus' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/prometheus' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='prometheus' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Average Response Latency (ms) By Instance ",
-          "layout": {
-            "column": 9,
-            "row": 5,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+        ]
+      },
+      {
+        "name": "Tap",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(response_latency_ms_sum) as 'Average Latency' from Metric where job = 'linkerd-proxy'  since 1 day ago COMPARE WITH 1 day ago FACET instance"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'tap' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'tap' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'tap' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'tap'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 tap' from Metric  where quantile ='0.5' AND component= 'tap' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 tap' from Metric  where quantile ='0.75' AND component= 'tap' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX tap' from Metric  where quantile ='1' AND component= 'tap' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/tap' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='tap' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/tap' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='tap' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd - Inbound TCP Errors Totals",
-          "layout": {
-            "column": 1,
-            "row": 8,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
+        ]
+      },
+      {
+        "name": "Tap-injector",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "legend": {
-              "enabled": true
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(inbound_tcp_errors_total) from Metric where job LIKE '%linkerd%' AND metricName = 'inbound_tcp_errors_total' since 1 day ago FACET instance"
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'tap-injector' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'tap-injector' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'tap-injector' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='tap-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'tap-injector'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 tap-injector' from Metric  where quantile ='0.5' AND component= 'tap-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 tap-injector' from Metric  where quantile ='0.75' AND component= 'tap-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX tap-injector' from Metric  where quantile ='1' AND component= 'tap-injector' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/tap-injector' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='tap-injector' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/tap-injector' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='tap-injector' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd - Outbound TCP Errors Totals",
-          "layout": {
-            "column": 4,
-            "row": 8,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
+        ]
+      },
+      {
+        "name": "Web",
+        "description": null,
+        "widgets": [
+          {
+            "title": "TCP Connections Failure",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
             },
-            "legend": {
-              "enabled": true
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(outbound_tcp_errors_total) from Metric where job like '%linkerd%' AND metricName = 'outbound_tcp_errors_total' since 1 day ago FACET instance"
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_close_total) from Metric FACET namespace where deployment = 'web' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND errno != '' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Open TCP Connections",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_open_connections) from  Metric FACET namespace where deployment = 'web' AND  instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' AND direction = 'inbound' AND namespace LIKE '%linkerd%' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "TCP Connections Duration (ms)",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(tcp_connection_duration_ms_bucket) FROM Metric FACET namespace WHERE deployment = 'web' AND direction = 'inbound' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus'  TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Go Memstats",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='web' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_alloc_bytes_total) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='web' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_stack_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' and component ='web' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_memstats_heap_inuse_bytes) from Metric where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component = 'web'  TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "GC Duration",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P50 web' from Metric  where quantile ='0.5' AND component= 'web' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'P75 web' from Metric  where quantile ='0.75' AND component= 'web' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(go_gc_duration_seconds) AS 'MAX web' from Metric  where quantile ='1' AND component= 'web' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "gRPC Message Volume",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_sent_total) AS 'sent/web' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='web' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(grpc_server_msg_received_total) AS 'received/web' from Metric  where instrumentation.name = 'remote-write' AND instrumentation.source = 'Linkerd_Prometheus' and job ='linkerd-controller' AND component ='web' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
             }
           }
-        },
-        {
-          "title": "Linkerd - Inbound HTTP Errors Totals",
-          "layout": {
-            "column": 7,
-            "row": 8,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(inbound_http_errors_total) from Metric where job like '%linkerd%' AND metricName = 'inbound_http_errors_total' since 1 day ago FACET instance"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Linkerd - Outbound HTTP Errors Totals",
-          "layout": {
-            "column": 10,
-            "row": 8,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(outbound_http_errors_total) from Metric where job like '%linkerd%' AND metricName = 'outbound_http_errors_total' since 1 day ago FACET instance"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Linkerd Kubernet Cluster Information",
-          "layout": {
-            "column": 1,
-            "row": 11,
-            "width": 12,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(metricName) as 'Metrics'  from Metric where job like '%linkerd%' and metricName IS NOT NULL  SINCE 1 day ago limit MAX FACET instance, job, pod, namespace, app "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
+        ]
+      }
+    ]
+  }
