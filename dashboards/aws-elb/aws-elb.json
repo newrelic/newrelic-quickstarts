@@ -1,0 +1,267 @@
+{
+    "name": "AWS ELB",
+    "description": "",
+    "pages": [
+        {
+            "name": "AWS ELB",
+            "description": "",
+            "widgets": [
+                {
+                    "title": "Requests, by ELB",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 1,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.elb.RequestCount`) FROM Metric TIMESERIES FACET entity.name UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "height": 6,
+                        "width": 4,
+                        "row": 1,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "\n![AWS ELB Icon](https://integrations.nr-assets.net/providers/aws_elb.png) **AWS ELB** \n\nElastic Load Balancing automatically distributes incoming application traffic across multiple Amazon EC2 instances. It enables you to achieve fault tolerance in your applications, seamlessly providing the required amount of load balancing capacity needed to route application traffic.\n\n\n"
+                    }
+                },
+                {
+                    "title": "Backend response time",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.elb.Latency`) as 'seconds' FROM Metric"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Http request errors",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 4,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.elb.HTTPCode_Backend_5XX`) as '500 errors (backend)', sum(`aws.elb.HTTPCode_Backend_4XX`) as '400 errors (backend)', sum(`aws.elb.HTTPCode_ELB_5XX`) as '500 errors (frontend)' FROM Metric TIMESERIES UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "ELBs with no healthy hosts",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT uniqueCount(entity.name) FROM Metric WHERE metricName = 'aws.elb.UnhealthyHostCount' AND `aws.elb.HealthyHostCount` = 0 UNTIL 6 minutes ago TIMESERIES LIMIT 100 FACET entity.name"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Requests per minute",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT rate(sum(`aws.elb.RequestCount`), 1 minute) as 'requests/minute' FROM Metric since 60 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Surge queue length",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 7,
+                        "column": 9
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.elb.SurgeQueueLength`) FROM Metric facet entity.name TIMESERIES UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Average backend response time, by ELB",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 10,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT average(`aws.elb.Latency`) FROM Metric TIMESERIES facet entity.name UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "ELBs, by region",
+                    "layout": {
+                        "height": 3,
+                        "width": 4,
+                        "row": 13,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.bar"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT uniqueCount(entity.id) FROM Metric WHERE metricName = 'aws.elb.RequestCount' facet aws.region"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Http requests per second, by region",
+                    "layout": {
+                        "height": 3,
+                        "width": 8,
+                        "row": 13,
+                        "column": 5
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.elb.RequestCount`) FROM Metric TIMESERIES FACET aws.region UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Backend connection errors, by ELB",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 16,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT sum(`aws.elb.BackendConnectionErrors`) FROM Metric facet entity.name TIMESERIES UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "Estimated alb consumed lcus",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 19,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.elb.EstimatedALBConsumedLCUs`) as 'Maximum' FROM Metric FACET entity.name TIMESERIES UNTIL 6 minutes ago"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "title": "ELB service limit usage",
+                    "layout": {
+                        "height": 3,
+                        "width": 12,
+                        "row": 28,
+                        "column": 1
+                    },
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "nrqlQueries": [
+                            {
+                                "accountId": 0,
+                                "query": "SELECT max(`aws.trustedadvisor.limitUsage`) FROM Metric WHERE aws.trustedadvisor.service='ELB' FACET aws.trustedadvisor.limitName, aws.region TIMESERIES SINCE 1 week ago LIMIT 1000"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
