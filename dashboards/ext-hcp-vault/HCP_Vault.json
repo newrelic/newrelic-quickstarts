@@ -1,421 +1,370 @@
 {
-  "name": "HashiCorp Vault",
-  "description": null,
-  "pages": [
-    {
-      "name": "HashiCorp Vault",
-      "description": null,
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "![HCP Vault logo](https://github.com/hashicorp/vault/raw/f22d202cde2018f9455dec755118a9b84586e082/Vault_PrimaryLogo_Black.png)"
-          }
-        },
-        {
-          "title": "Sealed Status",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
+    "name": "HashiCorp Vault",
+    "description": null,
+    "pages": [
+      {
+        "name": "HashiCorp Vault",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 5
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM(FROM(FROM Metric SELECT latest(vault_core_unsealed) as 'status') SELECT latest(status) FACET CASES(where status = 0 as 'SEALED', where status = 1 as 'UNSEALED') as stats) SELECT latest(stats) as ''"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![HCP Vault logo](https://i.imgur.com/LDdF1fD.png)\n- - -\n### Overview\n`HCP Vault` is a hosted version of Vault, which is operated by HashiCorp to allow organizations to get up and running quickly. HCP Vault uses the same binary as self-hosted Vault, which means you will have a consistent user experience. You can use the same Vault clients to communicate with HCP Vault as you use to communicate with a self-hosted Vault..\n\n### About this Dashboard\n\nThis dashboard is based on standard `HCP Vault` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `HCP Vault` instances in the cluster."
+            }
+          },
+          {
+            "title": "Sealed Status",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\r\nif(latest(vault_core_unsealed[latest]) = 1, 'UNSEALED', 'SEALED')\r\nWHERE instrumentation.name = 'remote-write'\r\nFACET instance"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Active Leases",
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vault_expire_num_leases) FACET instance WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "KV Secrets by Mount",
+            "layout": {
+              "column": 3,
+              "row": 3,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(vault_secret_kv_count) AS 'Number of Entries(Mean)' FACET instance,mount_point AS 'Mounth Path' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Identity Entities by Namespace",
+            "layout": {
+              "column": 8,
+              "row": 3,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(vault_identity_entity_count) AS 'Identity entities' WHERE instrumentation.name = 'remote-write' FACET instance,namespace"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Requests Throughput",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": " FROM Metric SELECT rate(sum(vault_core_handle_request),1 minute) as 'Requests/min' WHERE instrumentation.name = 'remote-write' FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              }
+            }
+          },
+          {
+            "title": "Tokens by Auth",
+            "layout": {
+              "column": 6,
+              "row": 6,
+              "width": 7,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vault_token_count_by_auth) as 'Count' WHERE instrumentation.name = 'remote-write' FACET instance, auth_method"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Login Throughput",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(sum(vault_core_handle_login_request),1 second) WHERE instrumentation.name = 'remote-write' FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              }
+            }
+          },
+          {
+            "title": "Available Tokens by Policy",
+            "layout": {
+              "column": 6,
+              "row": 9,
+              "width": 7,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vault_token_count_by_policy) as 'Count' WHERE instrumentation.name = 'remote-write' FACET instance, namespace"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tokens Creation by Method & TTL",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vault_token_creation) WHERE instrumentation.name = 'remote-write' FACET instance, CONCAT (auth_method,' - ',creation_ttl) TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              }
+            }
+          },
+          {
+            "title": "Token Lookups Throughput",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT rate(sum(vault_token_lookup_count), 1 second) WHERE instrumentation.name = 'remote-write' FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Tokens by TTL",
+            "layout": {
+              "column": 6,
+              "row": 12,
+              "width": 7,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vault_token_count_by_ttl) as 'Count' WHERE instrumentation.name = 'remote-write' FACET instance, creation_ttl"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 5,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# \n"
             }
           }
-        },
-        {
-          "title": "Active Leases",
-          "layout": {
-            "column": 8,
-            "row": 1,
-            "width": 1,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(vault_expire_num_leases) as ''"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "KV Secrets by Mount",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM (FROM Metric SELECT sum(vault_secret_kv_count) FACET mount_point) SELECT count(mount_point) FACET mount_point"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Identity Entities by Namespace",
-          "layout": {
-            "column": 11,
-            "row": 1,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(vault_identity_entity_count) AS 'Identity entities' FACET namespace "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Login throughput",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT rate(sum(vault_core_handle_login_request),1 minute) FACET instance TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Login Requests",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(vault_core_handle_login_request) as 'Logins count' FROM Metric TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Requests Throughput",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(vault_core_handle_request),1 second) as 'Requests/sec' FROM Metric TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "REQUESTS_PER_SECOND"
-            }
-          }
-        },
-        {
-          "title": "Available Tokens by Policy",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(vault_token_count_by_policy) as 'Count'  FACET policy "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Available Tokens by TTL",
-          "layout": {
-            "column": 3,
-            "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(vault_token_count_by_ttl) as 'Count' FACET creation_ttl "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Available Tokens by AUTH",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(vault_token_count_by_auth) as 'Count' FACET auth_method "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Tokens Creation by Method & TTL",
-          "layout": {
-            "column": 7,
-            "row": 7,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(vault_token_creation) TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Token Lookups Throughput",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT rate(sum(vault_token_lookup_count), 1 minute) TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Token Lookups Throughput",
-          "layout": {
-            "column": 7,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT rate(sum(vault_token_lookup_count), 1 minute) TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        }
-      ]
-    }
-  ],
-  "variables": []
-}
+        ]
+      }
+    ]
+  }
