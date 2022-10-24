@@ -1,84 +1,553 @@
 {
-  "name": "Gitlab",
-  "description": null,
-  "pages": [
-    {
-      "name": "Gitlab",
-      "description": null,
-      "widgets": [
-        {
-          "title": "Sidekiq Queue Latency",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
+    "name": "Gitlab",
+    "description": null,
+    "pages": [
+      {
+        "name": "Gitlab",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 10
             },
-            "legend": {
-              "enabled": true
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(sidekiq_queue_latency_seconds) WHERE instrumentation.source = 'GitLab_Prometheus' TIMESERIES AUTO"
+            "rawConfiguration": {
+              "text": "![GitLab logo](https://cdn.icon-icons.com/icons2/2699/PNG/128/gitlab_logo_icon_169112.png)\n- - -\n### Overview\n`GitLab` helps you automate the builds, integration, and verification of your code. With SAST, DAST, code quality analysis, plus pipelines that enable concurrent testing and parallel execution, your teams get quick insights about every commit so they can deliver higher quality code faster..\n\n### About this Dashboard\n\nThis dashboard is based on standard `GitLab` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `GitLab` instances in the cluster.\n\n#### This dashboard works with the following Prometheus job naming-convention:\n **Job Name**               | **Port** \n----------------------------|----------\n nginx                      | 8086     \n redis                      | 9121     \n postgres                   | 9187     \n node                       | 9100     \n gitlab\\-workhorse          | 9229     \n gitlab\\-rails              | 80/443   \n gitlab\\-sidekiq            | 8082     \n gitlab\\_exporter\\_database | 9168     \n gitlab\\_exporter\\_sidekiq  | 9168     \n gitaly                     | 9236     \n"
+            }
+          },
+          {
+            "title": "Postgres Up",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(pg_up) as 'status', latest(instrumentation.name) as 'instrumentation.name' )  SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
               }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            }
+          },
+          {
+            "title": "Node Up",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 1,
+              "height": 2
             },
-            "units": {
-              "unit": "SECONDS"
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
             },
-            "yAxisLeft": {
-              "zero": true
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'node') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Exp Sidekiq",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitlab_exporter_sidekiq') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Sidekip Up",
+            "layout": {
+              "column": 6,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitlab-sidekiq') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Workhouse",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitlab-workhorse') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Redis (:9191)",
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE instance RLIKE r'.*:9121') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Gitaly Up",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitaly') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Rails Up",
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitlab-rails') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Nginx",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'nginx') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Exporter DB",
+            "layout": {
+              "column": 12,
+              "row": 1,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM(FROM(FROM Metric SELECT latest(up) as 'status', latest(instrumentation.name) as 'instrumentation.name' WHERE job = 'gitlab_exporter_database') SELECT latest(status), latest(instrumentation.name) as 'instrumentation.name' FACET instrumentation.name,CASES(where status = 0 as '🔴', where status = 1 as '🟢') as stats) SELECT latest(stats) as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Sidekiq queue size",
+            "layout": {
+              "column": 3,
+              "row": 3,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(sidekiq_queue_size) * cardinality(sidekiq_queue_size)) WHERE instrumentation.name = 'remote-write' FACET name LIMIT MAX TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Process count",
+            "layout": {
+              "column": 8,
+              "row": 3,
+              "width": 5,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(process_count) * cardinality(process_count)) WHERE instrumentation.name = 'remote-write' FACET name LIMIT MAX TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "SQL execution time (exc. SCHEMA, BEGIN, COMMIT)",
+            "layout": {
+              "column": 3,
+              "row": 5,
+              "width": 10,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT average(gitlab_sql_duration_seconds_sum) WHERE instrumentation.name = 'remote-write' FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "SECONDS"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Node Available Memory (Gb)",
+            "layout": {
+              "column": 3,
+              "row": 7,
+              "width": 1,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(node_memory_MemTotal_bytes)/1024/1024/1024)-(average(node_memory_MemAvailable_bytes)/1024/1024/1024) as '' WHERE instrumentation.name = 'remote-write' "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Node Available Memory %",
+            "layout": {
+              "column": 4,
+              "row": 7,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT 100-((average(node_memory_MemAvailable_bytes)/1024/1024/1024)/(average(node_memory_MemTotal_bytes)/1024/1024/1024))*100 as '' WHERE instrumentation.name = 'remote-write'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 100
+                }
+              ]
+            }
+          },
+          {
+            "title": "Node Available Memory Timeseries",
+            "layout": {
+              "column": 6,
+              "row": 7,
+              "width": 7,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT 100-((average(node_memory_MemAvailable_bytes)/1024/1024/1024)/(average(node_memory_MemTotal_bytes)/1024/1024/1024))*100 as '' WHERE instrumentation.name = 'remote-write' FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Node Available Memory (Gb)",
+            "layout": {
+              "column": 3,
+              "row": 9,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(node_filesystem_avail_bytes)/1024/1024/1024 AS 'Avail GB',((average(node_filesystem_avail_bytes)/1024/1024/1024)/(average(node_filesystem_size_bytes)/1024/1024/1024))*100 AS 'Avail %' WHERE fstype NOT RLIKE r'tmpfs' FACET fstype AS 'File System Type'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Node Available Memory Timeseries",
+            "layout": {
+              "column": 6,
+              "row": 9,
+              "width": 7,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT ((average(node_filesystem_avail_bytes)/1024/1024/1024)/(average(node_filesystem_size_bytes)/1024/1024/1024))*100 AS 'Avail %' WHERE fstype NOT RLIKE r'tmpfs' FACET fstype AS 'File System Type' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
             }
           }
-        },
-        {
-          "title": "Sidekiq Queue Size",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT latest(sidekiq_queue_size) WHERE instrumentation.source = 'GitLab_Prometheus' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
+        ]
+      }
+    ]
+  }
