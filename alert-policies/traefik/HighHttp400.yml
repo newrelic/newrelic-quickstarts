@@ -4,7 +4,15 @@ description: |+
   This alert is triggered when Traefik has high HTTP 4xx error rate service.
 type: STATIC
 nrql:
-  query: "SELECT ifthen((((rate(sum(conditional(WHERE (code RLIKE '4.*'), traefik_service_requests_total)), 1 SECONDS) / rate(sum(traefik_service_requests_total), 1 SECONDS)) * 100) > 5), ((rate(sum(conditional(WHERE (code RLIKE '4.*'), traefik_service_requests_total)), 1 SECONDS) / rate(sum(traefik_service_requests_total), 1 SECONDS)) * 100)) FROM Metric FACET service WHERE instrumentation.name = 'remote-write'"
+  query: "FROM Metric 
+   SELECT filter(
+     rate(Sum(
+       traefik_service_requests_total),1 seconds), 
+     WHERE code Not RLIKE '4.*') * 100 
+   / filter(
+     rate(sum(
+       traefik_service_requests_total), 1 seconds), WHERE code RLIKE '.*') 
+   WHERE instrumentation.name = 'remote-write'"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -13,9 +21,9 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: BELOW
     # Value that triggers a violation
-    threshold: 5
+    threshold: 95
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
