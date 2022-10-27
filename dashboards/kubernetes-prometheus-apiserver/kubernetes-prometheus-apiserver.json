@@ -1,553 +1,545 @@
 {
-    "name": "Kubernetes / API server",
-    "description": null,
-    "pages": [
-      {
-        "name": "By Cluster",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Availability (30d) ",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric select latest(`apiserver_request:availability30d`) * 100 as '% Available' where verb = 'all' FACET prometheus_server"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+  "name": "Kubernetes / API server",
+  "description": null,
+  "pages": [
+    {
+      "name": "By Cluster",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Availability (30d) By Percentage",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
           },
-          {
-            "title": "ErrorBudget (30d) > 99.000%",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 8,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (100 * (latest(`apiserver_request:availability30d`) - 0.99)) FROM Metric WHERE (verb = 'all') FACET prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "title": "Read Availability (30d) ",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 4,
-              "height": 3
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric select latest(`apiserver_request:availability30d`) * 100 as '% Available' where verb = 'read' FACET prometheus_server"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`apiserver_request:availability30d`) * 100 FROM Metric WHERE verb = 'all' FACET prometheus_server"
               }
-            }
-          },
-          {
-            "title": "Read SLI - Requests",
-            "layout": {
-              "column": 5,
-              "row": 4,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (average(`code_resource:apiserver_request_total:rate5m`) * cardinality(`code_resource:apiserver_request_total:rate5m`)) FROM Metric WHERE (verb = 'read') SINCE 60 MINUTES AGO UNTIL NOW FACET code, prometheus_server LIMIT max TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Read SLI - Errors",
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.stacked-bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": " SELECT ((average(conditional(WHERE ((verb = 'read') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE ((verb = 'read') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`))) / (average(conditional(WHERE (verb = 'read'), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE (verb = 'read') , `code_resource:apiserver_request_total:rate5m`)))) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET resource, prometheus_server LIMIT MAX TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Read SLI - Duration",
-            "layout": {
-              "column": 9,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT latest(`cluster_quantile:apiserver_request_slo_duration_seconds:histogram_quantile`) FROM Metric WHERE verb = 'read' TIMESERIES FACET `resource`, prometheus_server LIMIT max SINCE 3600 seconds ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Write Availability (30d)",
-            "layout": {
-              "column": 1,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric select latest(`apiserver_request:availability30d`) * 100 as '% Available' where verb = 'write' FACET prometheus_server"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Write SLI - Requests",
-            "layout": {
-              "column": 5,
-              "row": 7,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (average(`code_resource:apiserver_request_total:rate5m`) * cardinality(`code_resource:apiserver_request_total:rate5m`)) FROM Metric WHERE (verb = 'read') SINCE 60 MINUTES AGO UNTIL NOW FACET code, prometheus_server LIMIT max TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Write SLI - Errors",
-            "layout": {
-              "column": 7,
-              "row": 7,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT ((average(conditional(WHERE ((verb = 'write') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE ((verb = 'write') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`))) / (average(conditional(WHERE (verb = 'write'), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE (verb = 'write'), `code_resource:apiserver_request_total:rate5m`)))) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET resource, prometheus_server LIMIT MAX TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Write SLI - Duration",
-            "layout": {
-              "column": 9,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT latest(`cluster_quantile:apiserver_request_slo_duration_seconds:histogram_quantile`) FROM Metric WHERE verb = 'write' TIMESERIES FACET `resource`, prometheus_server LIMIT max SINCE 3600 seconds ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Work Queue Add Rate",
-            "layout": {
-              "column": 1,
-              "row": 10,
-              "width": 6,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT sum(workqueue_adds_total) FROM Metric WHERE job = 'apiserver' TIMESERIES FACET `name`, `prometheus_server` LIMIT max SINCE 3600 seconds ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Work Queue Depth",
-            "layout": {
-              "column": 7,
-              "row": 10,
-              "width": 6,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT sum(workqueue_depth) FROM Metric WHERE job = 'apiserver' TIMESERIES FACET `instance`, `name`, `prometheus_server` LIMIT max SINCE 60 minutes ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Work Queue Latency",
-            "layout": {
-              "column": 1,
-              "row": 13,
-              "width": 12,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(workqueue_queue_duration_seconds_bucket, (100 * 0.99)) FROM Metric WHERE (job = 'apiserver') SINCE 60 MINUTES AGO UNTIL NOW FACET instance, name, prometheus_server LIMIT MAX TIMESERIES 300000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Memory",
-            "layout": {
-              "column": 1,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT latest(process_resident_memory_bytes) FROM Metric WHERE (job = 'apiserver') SINCE 60 MINUTES AGO UNTIL NOW FACET instance, prometheus_server LIMIT max TIMESERIES 30000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "CPU Usage",
-            "layout": {
-              "column": 5,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(process_cpu_seconds_total), 5 minute) FROM Metric WHERE (job = 'apiserver') TIMESERIES FACET `instance`, prometheus_server LIMIT MAX SINCE 3600 seconds ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
-            }
-          },
-          {
-            "title": "Goroutines",
-            "layout": {
-              "column": 9,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT latest(go_goroutines) FROM Metric WHERE job ='apiserver' TIMESERIES FACET `instance`, prometheus_server LIMIT max SINCE 3600 seconds ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": false
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      },
-      {
-        "name": "Dashboard Filters",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Filter by cluster (pod count)",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 12,
-              "height": 4
+        },
+        {
+          "title": "ErrorBudget (30d) > 99.000%",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
+            "legend": {
+              "enabled": true
             },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "from Metric  SELECT uniqueCount(pod) facet prometheus_server where prometheus_server!='' and prometheus_server is not null limit max"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (100 * (latest(`apiserver_request:availability30d`) - 0.99)) FROM Metric WHERE (verb = 'all') FACET prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
               }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": false
             }
           }
-        ]
-      }
-    ],
-    "variables": []
-  }
+        },
+        {
+          "title": "Read Availability (30d) By Percentage",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`apiserver_request:availability30d`) * 100 FROM Metric WHERE verb = 'read' FACET prometheus_server"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Read SLI - Requests",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`code_resource:apiserver_request_total:rate5m`) * cardinality(`code_resource:apiserver_request_total:rate5m`)) FROM Metric WHERE (verb = 'read') FACET code, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Read SLI - Errors",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " SELECT ((average(conditional(WHERE ((verb = 'read') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE ((verb = 'read') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`))) / (average(conditional(WHERE (verb = 'read'), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE (verb = 'read') , `code_resource:apiserver_request_total:rate5m`)))) FROM Metric FACET resource, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW  LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        },
+        {
+          "title": "Read SLI - Duration",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`cluster_quantile:apiserver_request_slo_duration_seconds:histogram_quantile`) FROM Metric WHERE verb = 'read' TIMESERIES FACET `resource`, prometheus_server LIMIT max SINCE 3600 seconds ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Write Availability (30d) By Percentage",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`apiserver_request:availability30d`) * 100 FROM Metric WHERE verb = 'write' FACET prometheus_server"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Write SLI - Requests",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`code_resource:apiserver_request_total:rate5m`) * cardinality(`code_resource:apiserver_request_total:rate5m`)) FROM Metric WHERE (verb = 'write') FACET code, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Write SLI - Errors",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT ((average(conditional(WHERE ((verb = 'write') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE ((verb = 'write') AND (code RLIKE '5..')), `code_resource:apiserver_request_total:rate5m`))) / (average(conditional(WHERE (verb = 'write'), `code_resource:apiserver_request_total:rate5m`)) * cardinality(conditional(WHERE (verb = 'write'), `code_resource:apiserver_request_total:rate5m`)))) FROM Metric FACET resource, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Write SLI - Duration",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`cluster_quantile:apiserver_request_slo_duration_seconds:histogram_quantile`) * 1000 FROM Metric WHERE verb = 'write' TIMESERIES FACET `resource`, prometheus_server LIMIT max SINCE 3600 seconds ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Work Queue Add Rate",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(workqueue_adds_total) FROM Metric WHERE job = 'apiserver' FACET `name`, `prometheus_server` SINCE 3600 seconds ago LIMIT max TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Work Queue Depth",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(workqueue_depth) FROM Metric WHERE job = 'apiserver' FACET `instance`, `name`, `prometheus_server` SINCE 60 minutes ago LIMIT max TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Work Queue Latency",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(workqueue_queue_duration_seconds_bucket, (100 * 0.99)) * 1000 FROM Metric WHERE (job = 'apiserver') FACET instance, name, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 300000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Memory",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(process_resident_memory_bytes) FROM Metric WHERE (job = 'apiserver') FACET instance, prometheus_server SINCE 60 MINUTES AGO UNTIL NOW LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "CPU Usage",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(process_cpu_seconds_total), 1 second) FROM Metric WHERE (job = 'apiserver') FACET `instance`, prometheus_server SINCE 3600 seconds ago LIMIT max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Goroutines",
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(go_goroutines) FROM Metric WHERE job ='apiserver' FACET `instance`, prometheus_server SINCE 3600 seconds ago LIMIT max TIMESERIES 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}

@@ -7,7 +7,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "CPU Requests Commitment",
+          "title": "CPU Requests Commitment By Percentage",
           "layout": {
             "column": 1,
             "row": 1,
@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`), where true) /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Request Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric SINCE 1 Minute ago "
               }
             ],
             "platformOptions": {
@@ -34,7 +34,7 @@
           }
         },
         {
-          "title": "CPU Limits Commitment",
+          "title": "CPU Limits Commitment by Percentage",
           "layout": {
             "column": 4,
             "row": 1,
@@ -52,7 +52,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nsum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`) /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Limit Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric SINCE 1 minute ago"
               }
             ],
             "platformOptions": {
@@ -61,7 +61,7 @@
           }
         },
         {
-          "title": "Memory Requests Commitment",
+          "title": "Memory Requests Commitment By Percentage",
           "layout": {
             "column": 7,
             "row": 1,
@@ -73,13 +73,14 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric SINCE 1 minute ago "
               }
             ],
             "platformOptions": {
@@ -88,7 +89,7 @@
           }
         },
         {
-          "title": "Memory Limits Commitment",
+          "title": "Memory Limits Commitment By Percentage",
           "layout": {
             "column": 10,
             "row": 1,
@@ -106,7 +107,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric SINCE 1 minute AGO "
               }
             ],
             "platformOptions": {
@@ -193,7 +194,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet node, prometheus_server since 1 hour ago timeseries 1 minute"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet node, prometheus_server since 1 hour ago timeseries 1 minute"
               }
             ],
             "platformOptions": {
@@ -214,13 +215,27 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Limits",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Requests",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Usage",
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET node, prometheus_server as 'Cluster' LIMIT max"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(max(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET node, prometheus_server as 'Cluster' LIMIT max"
               }
             ],
             "platformOptions": {
@@ -529,7 +544,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "CPU Requests Commitment",
+          "title": "CPU Requests Commitment By Percentage",
           "layout": {
             "column": 1,
             "row": 1,
@@ -547,7 +562,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`), where true) /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Request Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric SINCE 1 Minute ago  "
               }
             ],
             "platformOptions": {
@@ -556,7 +571,7 @@
           }
         },
         {
-          "title": "CPU Limits Commitment",
+          "title": "CPU Limits Commitment By Percentage",
           "layout": {
             "column": 4,
             "row": 1,
@@ -574,7 +589,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nsum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`) /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Limit Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric SINCE 1 minute ago"
               }
             ],
             "platformOptions": {
@@ -583,7 +598,7 @@
           }
         },
         {
-          "title": "Memory Requests Commitment",
+          "title": "Memory Requests Commitment By Percentage ",
           "layout": {
             "column": 7,
             "row": 1,
@@ -601,7 +616,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric SINCE 1 minute ago "
               }
             ],
             "platformOptions": {
@@ -610,7 +625,7 @@
           }
         },
         {
-          "title": "Memory Limits Commitment",
+          "title": "Memory Limits Commitment By Percentage",
           "layout": {
             "column": 10,
             "row": 1,
@@ -628,7 +643,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric SINCE 1 minute AGO \n"
               }
             ],
             "platformOptions": {
@@ -715,7 +730,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet prometheus_server since 1 hour ago timeseries 1 minute"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet prometheus_server since 1 hour ago timeseries 1 minute"
               }
             ],
             "platformOptions": {
@@ -736,13 +751,27 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Limits",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Requests",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Usage",
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET prometheus_server as 'Cluster' LIMIT max"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(max(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET prometheus_server as 'Cluster' LIMIT max"
               }
             ],
             "platformOptions": {
@@ -1051,7 +1080,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "CPU Requests Commitment",
+          "title": "CPU Requests Commitment By Percentage",
           "layout": {
             "column": 1,
             "row": 1,
@@ -1069,7 +1098,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`), where true) /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Request Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric SINCE 1 Minute ago  "
               }
             ],
             "platformOptions": {
@@ -1078,7 +1107,7 @@
           }
         },
         {
-          "title": "CPU Limits Commitment",
+          "title": "CPU Limits Commitment By Percentage",
           "layout": {
             "column": 4,
             "row": 1,
@@ -1096,7 +1125,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nsum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`) /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Limit Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric SINCE 1 minute ago"
               }
             ],
             "platformOptions": {
@@ -1105,7 +1134,7 @@
           }
         },
         {
-          "title": "Memory Requests Commitment",
+          "title": "Memory Requests Commitment By Percentage",
           "layout": {
             "column": 7,
             "row": 1,
@@ -1123,7 +1152,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric SINCE 1 minute ago \n"
               }
             ],
             "platformOptions": {
@@ -1132,7 +1161,7 @@
           }
         },
         {
-          "title": "Memory Limits Commitment",
+          "title": "Memory Limits Commitment By Percentage",
           "layout": {
             "column": 10,
             "row": 1,
@@ -1150,7 +1179,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric SINCE 1 minute AGO "
               }
             ],
             "platformOptions": {
@@ -1237,7 +1266,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet namespace, prometheus_server since 1 hour ago timeseries 1 minute"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet namespace, prometheus_server since 1 hour ago timeseries 1 minute"
               }
             ],
             "platformOptions": {
@@ -1258,13 +1287,27 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Limits",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Requests",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Usage",
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET namespace, prometheus_server as 'Cluster' LIMIT max"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(max(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET namespace, prometheus_server as 'Cluster' LIMIT max"
               }
             ],
             "platformOptions": {
@@ -1565,74 +1608,14 @@
               "ignoreTimeRange": true
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "By Pod",
-      "description": null,
-      "widgets": [
-        {
-          "title": "CPU Requests Commitment",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT\nfilter(sum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`), where true) /\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Request Commitment'\nFROM Metric since 1 minute ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": true
-            }
-          }
-        },
-        {
-          "title": "CPU Limits Commitment",
-          "layout": {
-            "column": 4,
-            "row": 1,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT\nsum(`node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate`) /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'cpu') and job = 'kube-state-metrics') * 100 as 'CPU Limit Commitment'\nFROM Metric since 1 minute ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": true
-            }
-          }
         },
         {
           "title": "Memory Requests Commitment",
           "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 3,
-            "height": 2
+            "column": 1,
+            "row": 39,
+            "width": 4,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -1652,9 +1635,96 @@
               "ignoreTimeRange": true
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "By Pod",
+      "description": null,
+      "widgets": [
+        {
+          "title": "CPU Requests Commitment By Percentage",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric SINCE 1 Minute ago  "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
         },
         {
-          "title": "Memory Limits Commitment",
+          "title": "CPU Limits Commitment By Percentage",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT ((average(`namespace_cpu:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_cpu:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric SINCE 1 minute ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Memory Requests Commitment By Percentage",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_requests:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_requests:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric SINCE 1 minute ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Memory Limits Commitment By Percentage",
           "layout": {
             "column": 10,
             "row": 1,
@@ -1672,7 +1742,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') /\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits Commitment'\nFROM Metric since 1 minute ago"
+                "query": "SELECT ((average(`namespace_memory:kube_pod_container_resource_limits:sum`) * cardinality(`namespace_memory:kube_pod_container_resource_limits:sum`)) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric SINCE 1 minute AGO \n"
               }
             ],
             "platformOptions": {
@@ -1714,7 +1784,7 @@
           "title": "CPU Quota",
           "layout": {
             "column": 1,
-            "row": 7,
+            "row": 10,
             "width": 12,
             "height": 4
           },
@@ -1741,7 +1811,7 @@
           "title": "Memory Usage",
           "layout": {
             "column": 1,
-            "row": 11,
+            "row": 14,
             "width": 12,
             "height": 4
           },
@@ -1759,7 +1829,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet pod, namespace, prometheus_server as 'Cluster' since 1 hour ago timeseries 1 minute"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='' and image is not null) as 'Memory Usage'\nFROM Metric facet pod, namespace, prometheus_server as 'Cluster' since 1 hour ago timeseries 1 minute"
               }
             ],
             "platformOptions": {
@@ -1771,7 +1841,7 @@
           "title": "Memory Quota",
           "layout": {
             "column": 1,
-            "row": 15,
+            "row": 18,
             "width": 12,
             "height": 4
           },
@@ -1780,13 +1850,28 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Limits",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Requests",
+                "type": "humanized"
+              },
+              {
+                "name": "Memory Usage",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(sum(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(sum(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(sum(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET pod, namespace, prometheus_server as 'Cluster' LIMIT max"
+                "query": "SELECT\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') as 'Memory Usage',\nfilter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Requests',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_requests), WHERE (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Requests %',\nfilter(max(kube_pod_container_resource_limits), WHERE (resource = 'memory') and job = 'kube-state-metrics') as 'Memory Limits',\nfilter(max(container_memory_working_set_bytes), WHERE job = 'kubelet' and container!= '' and container is not null and metrics_path='/metrics/cadvisor' and image!='') / filter(max(kube_pod_container_resource_limits), WHERE  (resource = 'memory') and job = 'kube-state-metrics') * 100 as 'Memory Limits %'\nFROM Metric SINCE 1 MINUTES AGO UNTIL NOW FACET pod, namespace, prometheus_server as 'Cluster' LIMIT max"
               }
             ],
             "platformOptions": {
@@ -1798,7 +1883,7 @@
           "title": "Current Network Usage",
           "layout": {
             "column": 1,
-            "row": 19,
+            "row": 22,
             "width": 12,
             "height": 4
           },
@@ -1825,7 +1910,7 @@
           "title": "Receive Bandwidth (per second)",
           "layout": {
             "column": 1,
-            "row": 23,
+            "row": 26,
             "width": 6,
             "height": 3
           },
@@ -1855,7 +1940,7 @@
           "title": "Transmit Bandwidth (per second)",
           "layout": {
             "column": 7,
-            "row": 23,
+            "row": 26,
             "width": 6,
             "height": 3
           },
@@ -1885,7 +1970,7 @@
           "title": "Received Packets (per second)",
           "layout": {
             "column": 1,
-            "row": 26,
+            "row": 29,
             "width": 6,
             "height": 3
           },
@@ -1915,7 +2000,7 @@
           "title": "Transmitted Packets (per second)",
           "layout": {
             "column": 7,
-            "row": 26,
+            "row": 29,
             "width": 6,
             "height": 3
           },
@@ -1945,7 +2030,7 @@
           "title": "Transmitted Packets Dropped (per second)",
           "layout": {
             "column": 1,
-            "row": 29,
+            "row": 32,
             "width": 6,
             "height": 3
           },
@@ -1975,7 +2060,7 @@
           "title": "Received Packets Dropped (per second)",
           "layout": {
             "column": 7,
-            "row": 29,
+            "row": 32,
             "width": 6,
             "height": 3
           },
@@ -2005,7 +2090,7 @@
           "title": "IOPs (Reads + Writes)",
           "layout": {
             "column": 1,
-            "row": 32,
+            "row": 35,
             "width": 6,
             "height": 3
           },
@@ -2035,7 +2120,7 @@
           "title": "Throughput (Read + Write)",
           "layout": {
             "column": 7,
-            "row": 32,
+            "row": 35,
             "width": 6,
             "height": 3
           },
@@ -2065,7 +2150,7 @@
           "title": "Current Storage IO",
           "layout": {
             "column": 1,
-            "row": 35,
+            "row": 38,
             "width": 12,
             "height": 4
           },
@@ -2085,93 +2170,6 @@
             ],
             "platformOptions": {
               "ignoreTimeRange": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Dashboard Filters",
-      "description": null,
-      "widgets": [
-        {
-          "title": "Filter by cluster (pod count)",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 8
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "from Metric  SELECT uniqueCount(pod) facet prometheus_server where prometheus_server!='' and prometheus_server is not null limit max"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Filter by node (pod count)",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 4,
-            "height": 8
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "from Metric  SELECT uniqueCount(pod) facet node where prometheus_server!='' and prometheus_server is not null limit max"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Filter by namespace (pod count)",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 8
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "from Metric  SELECT uniqueCount(pod) facet namespace where prometheus_server!='' and prometheus_server is not null limit max"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
             }
           }
         }
