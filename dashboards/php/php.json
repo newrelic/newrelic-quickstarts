@@ -3,7 +3,7 @@
 	"description": null,
 	"pages": [
 	  {
-		"name": "Dashboard",
+		"name": "PHP",
 		"description": null,
 		"widgets": [
 		  {
@@ -11,7 +11,7 @@
 			"layout": {
 			  "column": 1,
 			  "row": 1,
-			  "width": 3,
+			  "width": 2,
 			  "height": 4
 			},
 			"linkedEntityGuids": null,
@@ -25,9 +25,9 @@
 		  {
 			"title": "Transaction Count (Use filter to get specific data)",
 			"layout": {
-			  "column": 4,
+			  "column": 3,
 			  "row": 1,
-			  "width": 3,
+			  "width": 4,
 			  "height": 4
 			},
 			"linkedEntityGuids": null,
@@ -50,7 +50,7 @@
 			}
 		  },
 		  {
-			"title": "Error Rate of Web Transactions",
+			"title": "Failed Transactions",
 			"layout": {
 			  "column": 7,
 			  "row": 1,
@@ -68,7 +68,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT count(apm.service.transaction.error.count) / count(apm.service.transaction.duration) as 'Error rate' FROM Metric WHERE (appName LIKE '%PHP%') AND ((transactionType LIKE '%Web%' AND transactionName LIKE '%WebTransaction/Uri%')) LIMIT MAX FACET appName"
+				  "query": "FROM Transaction SELECT count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed transactions' where appName LIKE '%PHP%' or (tags.language LIKE '%php%') facet appName"
 				}
 			  ],
 			  "platformOptions": {
@@ -78,12 +78,16 @@
 				{
 				  "alertSeverity": "CRITICAL",
 				  "value": 1
+				},
+				{
+				  "alertSeverity": "WARNING",
+				  "value": 1
 				}
 			  ]
 			}
 		  },
 		  {
-			"title": "Failed Transactions",
+			"title": "Error Rate of Web Transactions",
 			"layout": {
 			  "column": 9,
 			  "row": 1,
@@ -101,7 +105,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed transactions' where appName LIKE '%PHP%' facet appName"
+				  "query": "SELECT count(apm.service.transaction.error.count) / count(apm.service.transaction.duration) as 'Error rate' FROM Metric WHERE (appName LIKE '%PHP%' or (tags.language LIKE '%php%')) AND ((transactionType LIKE '%Web%' AND transactionName LIKE '%WebTransaction/Uri%')) LIMIT MAX FACET appName"
 				}
 			  ],
 			  "platformOptions": {
@@ -110,10 +114,6 @@
 			  "thresholds": [
 				{
 				  "alertSeverity": "CRITICAL",
-				  "value": 1
-				},
-				{
-				  "alertSeverity": "WARNING",
 				  "value": 1
 				}
 			  ]
@@ -138,7 +138,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT percentage(count(*), WHERE error is false) AS 'Success rate' where appName LIKE '%PHP%' facet appName"
+				  "query": "FROM Transaction SELECT percentage(count(*), WHERE error is false) AS 'Success rate' where appName LIKE '%PHP%' or (tags.language LIKE '%php%') facet appName"
 				}
 			  ],
 			  "platformOptions": {
@@ -207,7 +207,7 @@
 			"layout": {
 			  "column": 4,
 			  "row": 6,
-			  "width": 3,
+			  "width": 4,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
@@ -238,9 +238,9 @@
 		  {
 			"title": "Web Transactions Time",
 			"layout": {
-			  "column": 7,
+			  "column": 8,
 			  "row": 6,
-			  "width": 4,
+			  "width": 3,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
@@ -322,7 +322,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT average(apm.service.memory.physical) FROM Metric WHERE appName LIKE '%PHP%' TIMESERIES AUTO "
+				  "query": "SELECT average(apm.service.memory.physical) as 'Memory usage' FROM Metric WHERE appName LIKE '%PHP%' TIMESERIES AUTO "
 				}
 			  ],
 			  "platformOptions": {
@@ -536,7 +536,7 @@
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.line"
+			  "id": "viz.area"
 			},
 			"rawConfiguration": {
 			  "facet": {
@@ -553,9 +553,6 @@
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
 			  }
 			}
 		  },
@@ -585,7 +582,7 @@
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.line"
+			  "id": "viz.area"
 			},
 			"rawConfiguration": {
 			  "facet": {
@@ -602,9 +599,6 @@
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
 			  }
 			}
 		  },
@@ -648,7 +642,7 @@
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.line"
+			  "id": "viz.area"
 			},
 			"rawConfiguration": {
 			  "facet": {
@@ -665,9 +659,6 @@
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
 			  }
 			}
 		  },
@@ -709,7 +700,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT percentile(duration, 50) FROM BrowserInteraction WHERE (appId = 556199596) AND (`mobileOptimized` IS NULL) AND (category IN ('Initial page load', 'Route change')) SINCE 1 week AGO FACET CASES (WHERE category = 'Initial page load' AS 'Initial page load (Window load + AJAX)', WHERE category = 'Route change' AS 'Route change') TIMESERIES auto"
+				  "query": "SELECT percentile(duration, 50) FROM BrowserInteraction WHERE (appName LIKE '%php%') AND (`mobileOptimized` IS NULL) AND (category IN ('Initial page load', 'Route change')) FACET CASES (WHERE category = 'Initial page load' AS 'Initial page load (Window load + AJAX)', WHERE category = 'Route change' AS 'Route change') TIMESERIES auto"
 				}
 			  ],
 			  "platformOptions": {
@@ -874,7 +865,7 @@
 			  "column": 1,
 			  "row": 1,
 			  "width": 3,
-			  "height": 3
+			  "height": 4
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -901,7 +892,7 @@
 			  "column": 4,
 			  "row": 1,
 			  "width": 3,
-			  "height": 3
+			  "height": 4
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -938,7 +929,7 @@
 			  "column": 7,
 			  "row": 1,
 			  "width": 3,
-			  "height": 3
+			  "height": 4
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -971,7 +962,7 @@
 			  "column": 10,
 			  "row": 1,
 			  "width": 3,
-			  "height": 3
+			  "height": 4
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
