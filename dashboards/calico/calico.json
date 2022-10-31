@@ -27,7 +27,7 @@
           "layout": {
             "column": 3,
             "row": 1,
-            "width": 4,
+            "width": 5,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -44,7 +44,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_endpoints)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_active_local_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -61,9 +61,9 @@
         {
           "title": "Active  Local Selectors",
           "layout": {
-            "column": 7,
+            "column": 8,
             "row": 1,
-            "width": 3,
+            "width": 5,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -80,43 +80,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_selectors)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Active Local Tags",
-          "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_active_local_tags) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_active_local_selectors)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -152,7 +116,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_policies)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_active_local_policies)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -188,7 +152,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_ipsets_calico)  FROM Metric facet instance,ip_version SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_ipsets_calico) FROM Metric facet instance,ip_version TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -224,7 +188,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_workload_endpoints)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_cluster_num_workload_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -260,7 +224,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_host_endpoints)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_cluster_num_host_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -296,7 +260,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_ipset_errors) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(felix_ipset_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -332,7 +296,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_int_dataplane_failures) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(felix_int_dataplane_failures) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -368,7 +332,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_resyncs_started) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(felix_resyncs_started) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -404,14 +368,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_hosts)  FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES "
+                "query": "SELECT latest(felix_cluster_num_hosts)  FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -434,29 +395,20 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.bar"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_iptables_chains)  FROM Metric facet instance, ip_version  SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(chains) FROM ( FROM Metric SELECT latest(felix_iptables_chains) AS 'chains' FACET instance, ip_version, table where instrumentation.name = 'remote-write' LIMIT MAX ) FACET instance, concat('ip_version: ',ip_version)"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -482,13 +434,13 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_iptables_chains)  FROM Metric facet table SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_iptables_chains)  FROM Metric facet table TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
+	    "units": {
               "unit": "COUNT"
             },
             "yAxisLeft": {
@@ -518,7 +470,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_iptables_restore_errors) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(felix_iptables_restore_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -554,7 +506,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_iptables_save_errors) FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT sum(felix_iptables_save_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -590,13 +542,13 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_iptables_rules) FROM Metric facet table SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_iptables_rules) FROM Metric facet table TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
+	    "units": {
               "unit": "COUNT"
             },
             "yAxisLeft": {
@@ -632,7 +584,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dataplane_endpoints)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_bpf_dataplane_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -668,7 +620,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dirty_dataplane_endpoints)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_bpf_dirty_dataplane_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
@@ -704,7 +656,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_num_ip_sets)   FROM Metric facet instance SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT latest(felix_bpf_num_ip_sets)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
               }
             ],
             "platformOptions": {
