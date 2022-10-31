@@ -6,15 +6,13 @@ description: |+
   This alert will trigger if the CoreDNS panic rate is above 0 at least once in 5 minutes
 
 # Type of alert
-type: BASELINE
+type: STATIC
 
 # NRQL query
 nrql:
   # Baseline alerts can use an optional FACET
-  query: "FROM Metric SELECT rate(sum(coredns_panics_total), 1 SECONDS) as 'Panic rate' WHERE instrumentation.name = 'remote-write' and prometheus_server is not null facet instance, prometheus_server"
+  query: "FROM Metric SELECT rate(sum(coredns_panics_total), 1 SECONDS) WHERE instrumentation.name = 'remote-write' and prometheus_server is not null facet instance, prometheus_server"
 
-# Direction in which baseline is set (Default: LOWER_ONLY)
-baselineDirection: STATIC
 
 # List of Critical and Warning thresholds for the condition
 terms:
@@ -22,11 +20,11 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation; float value
-    threshold: 2
+    threshold: 0
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
-    thresholdOccurrences: ALL
+    thresholdOccurrences: AT_LEAST_ONCE
 
   # Adding a Warning threshold is optional
   # - priority: WARNING
