@@ -1,38 +1,39 @@
 {
 	"name": "Network - Data Ingest and Cardinality",
-	"description": "",
+	"description": null,
 	"pages": [
 	  {
 		"name": "Ingest Tracking",
-		"description": "",
+		"description": null,
 		"widgets": [
 		  {
-			"visualization": {
-			  "id": "viz.markdown"
-			},
+			"title": "",
 			"layout": {
 			  "column": 1,
 			  "row": 1,
-			  "height": 4,
-			  "width": 2
+			  "width": 2,
+			  "height": 4
 			},
-			"title": "",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
 			"rawConfiguration": {
-			  "text": "**THE DETAILS IN THIS DASHBOARD ARE ESTIMATES, THE [DATA MANAGEMENT HUB](https://one.newrelic.com/launcher/data-management-nerdlets.data-management-launcher) SHOULD BE USED TO VIEW OFFICIAL INGESTION**\n\nThis page estimates the monthly ingest rates for various sources of Network Performance Monitoring (NPM) data including SNMP collection, network flow data, and the metrics and logs of the [ktranslate container](https://github.com/kentik/ktranslate) itself.\n\nControls include custom polling intervals, only collecting data from targeted interfaces, and reducing your sampling interval on your flow data. The options are explained in [the docs](https://docs.newrelic.com/docs/network-performance-monitoring/setup-performance-monitoring/advanced-config/#devices)."
-			},
-			"linkedEntityGuids": null
+			  "text": "**THE DETAILS IN THIS DASHBOARD ARE ESTIMATES, THE [DATA MANAGEMENT HUB](https://one.newrelic.com/launcher/data-management-nerdlets.data-management-launcher) SHOULD BE USED TO VIEW OFFICIAL INGESTION**\n\nThis page estimates the monthly ingest rates for various sources of Network Monitoring data including SNMP collection, API collection, network flow data, syslog data, VPC flow data, and the metrics and logs of the [ktranslate container](https://github.com/kentik/ktranslate) itself.\n\nControls include custom polling intervals, only collecting data from targeted interfaces, and reducing your sampling interval on your network and VPC flow data. The options are explained in [the docs](https://docs.newrelic.com/docs/network-performance-monitoring/setup-performance-monitoring/advanced-config)."
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.billboard"
-			},
+			"title": "1 Month Projected Ingest (GB)",
 			"layout": {
 			  "column": 3,
 			  "row": 1,
-			  "height": 4,
-			  "width": 4
+			  "width": 4,
+			  "height": 4
 			},
-			"title": "1 Month Projected Ingest (GB)",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -46,12 +47,17 @@
 				  "type": "decimal"
 				},
 				{
+				  "name": "VPC FLOW DATA",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
 				  "name": "SYSLOG DATA",
 				  "precision": 2,
 				  "type": "decimal"
 				},
 				{
-				  "name": "FLOW DATA",
+				  "name": "NETWORK FLOW DATA",
 				  "precision": 2,
 				  "type": "decimal"
 				},
@@ -61,7 +67,12 @@
 				  "type": "decimal"
 				},
 				{
-				  "name": "SNMP DATA",
+				  "name": "API POLLING",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "SNMP POLLING",
 				  "precision": 2,
 				  "type": "decimal"
 				},
@@ -71,80 +82,90 @@
 				  "type": "decimal"
 				}
 			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT\nlatest(SNMP + `SNMP Traps` + KFlow + Heartbeat + Syslog + `Health Logs`) AS 'TOTAL',\nlatest(SNMP) AS 'SNMP DATA',\nlatest(`SNMP Traps`) AS 'SNMP TRAPS',\nlatest(KFlow) AS 'FLOW DATA',\nlatest(Syslog) AS 'SYSLOG DATA',\nlatest(Heartbeat) AS 'KTRANSLATE METRICS',\nlatest(`Health Logs`) AS 'KTRANSLATE HEALTH LOGS'\nFROM (\nSELECT\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name != 'heartbeat') AS 'SNMP',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'KSnmpTrap') AS 'SNMP Traps',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'KFlow') AS 'KFlow',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-syslog') AS 'Syslog',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat') AS 'Heartbeat',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-health') AS 'Health Logs'\nFROM \nKFlow, KSnmpTrap, Log, Metric)\nSINCE 24 HOURS AGO"
+				  "query": "SELECT\n  latest(SNMP + API + Traps + KFlow + Syslog + VPC + Heartbeat + Health) AS 'TOTAL',\n  latest(SNMP) AS 'SNMP POLLING',\n  latest(Traps) AS 'SNMP TRAPS',\n  latest(API) AS 'API POLLING',\n  latest(KFlow) AS 'NETWORK FLOW DATA',\n  latest(VPC) AS 'VPC FLOW DATA',\n  latest(Syslog) AS 'SYSLOG DATA',\n  latest(Heartbeat) AS 'KTRANSLATE METRICS',\n  latest(Health) AS 'KTRANSLATE HEALTH LOGS'\nFROM (\nSELECT\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks') AND provider != 'kentik-network-synthetic') AS 'SNMP',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'KSnmpTrap') AS 'Traps',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE (eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks') AND provider != 'kentik-network-synthetic') OR eventType() = 'KExtEvent') AS 'API',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'KFlow') AS 'KFlow',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Log_VPC_Flows_AWS' OR eventType() = 'Log_VPC_Flows_GCP') AS 'VPC',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-syslog') AS 'Syslog',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat') AS 'Heartbeat',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-health') AS 'Health'\nFROM \nKExtEvent, KFlow, KSnmpTrap, Log, Log_VPC_Flows_AWS, Log_VPC_Flows_GCP, Metric)\nSINCE 24 HOURS AGO"
 				}
 			  ],
-			  "thresholds": []
-			},
-			"linkedEntityGuids": null
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.area"
-			},
+			"title": "Estimated Ingest Timeline",
 			"layout": {
 			  "column": 7,
 			  "row": 1,
-			  "height": 4,
-			  "width": 6
+			  "width": 6,
+			  "height": 4
 			},
-			"title": "Estimated Ingest Timeline (GB)",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "TOTAL",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "SNMP DATA",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "FLOW DATA",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "KTRANSLATE METRICS",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "KTRANSLATE LOGS",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
 			  "legend": {
 				"enabled": true
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT\n  filter(bytecountestimate()/10e8, WHERE eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name != 'heartbeat') AS 'SNMP',\n  filter(bytecountestimate()/10e8, WHERE eventType() = 'KSnmpTrap') AS 'SNMP Traps',\n  filter(bytecountestimate()/10e8, WHERE eventType() = 'KFlow') AS 'KFlow',\n  filter(bytecountestimate()/10e8, WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-syslog') AS 'Syslog',\n  filter(bytecountestimate()/10e8, WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat') AS 'Heartbeat',\n  filter(bytecountestimate()/10e8, WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-health') AS 'Health Logs'\nFROM \nKFlow, KSnmpTrap, Log, Metric\nSINCE 3 DAYS AGO\nTIMESERIES"
+				  "query": "SELECT\n  filter(bytecountestimate(), WHERE eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks') AND provider != 'kentik-network-synthetic') AS 'SNMP Polling',\n  filter(bytecountestimate(), WHERE eventType() = 'KSnmpTrap') AS 'SNMP Traps',\n  filter(bytecountestimate(), WHERE (eventType() = 'Metric' AND instrumentation.provider = 'kentik' AND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks') AND provider != 'kentik-network-synthetic') OR eventType() = 'KExtEvent') AS 'API Polling',\n  filter(bytecountestimate(), WHERE eventType() = 'KFlow') AS 'Network Flows',\n  filter(bytecountestimate(), WHERE eventType() = 'Log_VPC_Flows_AWS' OR eventType() = 'Log_VPC_Flows_GCP') AS 'VPC Flows',\n  filter(bytecountestimate(), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-syslog') AS 'Syslog',\n  filter(bytecountestimate(), WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat') AS 'Health Metrics',\n  filter(bytecountestimate(), WHERE eventType() = 'Log' AND collector.name = 'ktranslate' AND plugin.type = 'ktranslate-health') AS 'Health Logs'\nFROM \nKExtEvent, KFlow, KSnmpTrap, Log, Log_VPC_Flows_AWS, Log_VPC_Flows_GCP, Metric\nSINCE 7 DAYS AGO\nTIMESERIES\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "nullValues": {
+				"nullValue": "default"
+			  },
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.billboard"
-			},
+			"title": "",
 			"layout": {
 			  "column": 1,
 			  "row": 5,
-			  "height": 4,
-			  "width": 4
+			  "width": 12,
+			  "height": 1
 			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# SNMP Polling Analysis"
+			}
+		  },
+		  {
 			"title": "SNMP Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 6,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [
+				{
+				  "name": "Total SNMP Collections (Count)",
+				  "type": "humanized"
+				},
 				{
 				  "name": "Total Devices",
 				  "precision": null,
@@ -156,18 +177,13 @@
 				  "type": "humanized"
 				},
 				{
-				  "name": "Total SNMP Collected",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
 				  "name": "Total GB",
-				  "precision": null,
+				  "precision": 2,
 				  "type": "humanized"
 				},
 				{
 				  "name": "Avg GB/Device",
-				  "precision": null,
+				  "precision": 2,
 				  "type": "humanized"
 				},
 				{
@@ -176,74 +192,72 @@
 				  "type": "humanized"
 				}
 			  ],
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric \nSELECT\nuniqueCount(device_name) AS 'Total Devices',\nrate(count(*), 1 second) AS 'Total SNMP Collections/Sec',\ncount(*) AS 'Total SNMP Collected',\nbytecountestimate()/10e8 AS 'Total GB',\n(bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device',\nbytecountestimate()/count(*) AS 'Avg Bytes/SNMP Collection'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name != 'heartbeat'\nSINCE 24 HOURS AGO"
-				}
-			  ],
-			  "thresholds": []
-			},
-			"linkedEntityGuids": null
-		  },
-		  {
-			"visualization": {
-			  "id": "viz.pie"
-			},
-			"layout": {
-			  "column": 5,
-			  "row": 5,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Top 10 - SNMP Devices",
-			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
-				"showOtherSeries": true
+				"showOtherSeries": false
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name != 'heartbeat'\nFACET device_name AS 'DEVICE'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				  "query": "FROM Metric \nSELECT\n  uniqueCount(device_name) AS 'Total Devices',\n  rate(count(*), 1 second) AS 'Total SNMP Collections/Sec',\n  count(*) AS 'Total SNMP Collections (Count)',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device',\n  bytecountestimate()/count(*) AS 'Avg Bytes/SNMP Collection'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nAND provider != 'kentik-network-synthetic'\nSINCE 24 HOURS AGO"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - SNMP Devices",
+			"layout": {
+			  "column": 5,
+			  "row": 6,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT\n  bytecountestimate()/10e8 AS 'GIGABYTE'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nAND provider != 'kentik-network-synthetic'\nFACET device_name AS 'DEVICE'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "SNMP Entity Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 6,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 9,
-			  "row": 5,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "SNMP Entity Type Estimates",
 			"rawConfiguration": {
 			  "dataFormatters": [
+				{
+				  "name": "EST GB/MO",
+				  "type": "humanized"
+				},
 				{
 				  "name": "EST GB/DAY",
 				  "precision": null,
 				  "type": "humanized"
-				},
-				{
-				  "name": "EST GB/MONTH",
-				  "precision": null,
-				  "type": "humanized"
 				}
 			  ],
 			  "facet": {
@@ -252,34 +266,37 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT \nceiling(max(INTERFACES)/max(DEVICES)) AS 'AVG PHYSICAL INTERFACES'\n,max(DAY) AS 'EST GB/DAY'\n,max(MONTH) AS 'EST GB/MONTH'\nFROM (\nFROM Metric SELECT\nuniqueCount(if_PhysAddress) AS 'INTERFACES',\nuniqueCount(device_name) AS 'DEVICES',\nbytecountestimate()/10e8 AS 'DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'MONTH'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name != 'heartbeat'\nFACET entity.type)\nSINCE 24 HOURS AGO\nLIMIT MAX\nFACET entity.type AS 'ENTITY TYPE'"
+				  "query": "SELECT \n  ceiling(max(INTERFACES)/max(DEVICES)) AS 'AVG PHYSICAL INTERFACES',\n  max(DAY) AS 'EST GB/DAY',\n  max(MONTH) AS 'EST GB/MONTH'\nFROM (\n  FROM Metric SELECT\n    uniqueCount(if_PhysAddress) AS 'INTERFACES',\n    uniqueCount(device_name) AS 'DEVICES',\n    bytecountestimate()/10e8 AS 'DAY',\n    rate(bytecountestimate()/10e8, 1 MONTH) AS 'MONTH'\n  WHERE instrumentation.provider = 'kentik'\n  AND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\n  AND provider != 'kentik-network-synthetic'\n  FACET entity.type)\nFACET entity.type AS 'ENTITY TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  },
 		  {
+			"title": "SNMP Device Details",
+			"layout": {
+			  "column": 1,
+			  "row": 10,
+			  "width": 8,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 9,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "SNMP Device Details",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
 				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
+				  "precision": 4,
+				  "type": "decimal"
 				},
 				{
 				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
+				  "precision": 4,
+				  "type": "decimal"
 				}
 			  ],
 			  "facet": {
@@ -288,36 +305,27 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric SELECT\nuniqueCount(device_name, if_Index) AS 'INTERFACE COUNT',\nuniqueCount(objectIdentifier) AS 'OID COUNT',\nbytecountestimate()/10e8 AS 'DAY (GB)',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'MONTH (GB)'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name != 'heartbeat'\nFACET device_name AS 'DEVICE', entity.type AS 'ENTITY TYPE', instrumentation.name AS 'PROVIDER PROFILE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				  "query": "FROM Metric SELECT\n  bytecountestimate()/10e8 AS 'DAY (GB)',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS 'MONTH (GB)',\n  uniqueCount(device_name, if_Index) AS 'INTERFACE COUNT',\n  uniqueCount(objectIdentifier) AS 'OID COUNT'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nAND provider != 'kentik-network-synthetic'\nFACET device_name AS 'DEVICE', entity.type AS 'ENTITY TYPE', instrumentation.name AS 'PROVIDER PROFILE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - SNMP Timeline",
+			"layout": {
+			  "column": 9,
+			  "row": 10,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.area"
 			},
-			"layout": {
-			  "column": 7,
-			  "row": 9,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Top 50 - SNMP Timeline",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": false
 			  },
@@ -327,23 +335,45 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name != 'heartbeat'\nFACET device_name, entity.type\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 50"
+				  "query": "FROM Metric SELECT bytecountestimate()\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat', 'eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nAND provider != 'kentik-network-synthetic'\nFACET entity.type, device_name\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  },
 		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 14,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# SNMP Traps Analysis"
+			}
+		  },
+		  {
+			"title": "SNMP Trap Data Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 15,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.billboard"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 13,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "SNMP Trap Data Analysis - Last 24 Hours",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -377,63 +407,62 @@
 				  "type": "humanized"
 				}
 			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM KSnmpTrap \nSELECT \nuniqueCount(entity.guid) AS 'Total Devices',\nrate(count(*), 1 second) AS 'Total Traps/Sec',\ncount(*) AS 'Total Traps Collected',\nbytecountestimate()/10e8 AS 'Total GB',\n(bytecountestimate()/10e8) / uniqueCount(entity.guid) AS 'Avg GB/Device',\nbytecountestimate()/count(*) AS 'Avg Bytes/Trap'\nSINCE 24 HOURS AGO"
+				  "query": "FROM KSnmpTrap SELECT \n  uniqueCount(entity.guid) AS 'Total Devices',\n  rate(count(*), 1 second) AS 'Total Traps/Sec',\n  count(*) AS 'Total Traps Collected',\n  bytecountestimate()/count(*) AS 'Avg Bytes/Trap',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(entity.guid) AS 'Avg GB/Device'\nSINCE 24 HOURS AGO"
 				}
 			  ],
-			  "thresholds": []
-			},
-			"linkedEntityGuids": null
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - SNMP Trap Devices",
+			"layout": {
+			  "column": 5,
+			  "row": 15,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.pie"
 			},
-			"layout": {
-			  "column": 5,
-			  "row": 13,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Top 10 - SNMP Trap Devices",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
 				  "query": "FROM KSnmpTrap SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET entity.name AS 'DEVICE'\nSINCE 24 HOURS AGO\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "SNMP Trap Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 15,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 9,
-			  "row": 13,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "SNMP Trap Type Estimates",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -455,21 +484,24 @@
 				  "accountId": 0,
 				  "query": "FROM KSnmpTrap SELECT\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET TrapName, TrapOID\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "SNMP Trap Device Details",
+			"layout": {
+			  "column": 1,
+			  "row": 19,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 17,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "SNMP Trap Device Details",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -501,34 +533,25 @@
 				  "accountId": 0,
 				  "query": "FROM KSnmpTrap SELECT\nuniqueCount(TrapOID) AS 'Unique Trap Types',\ncount(*) AS 'Total Traps',\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET device_name\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - SNMP Trap Timeline",
+			"layout": {
+			  "column": 7,
+			  "row": 19,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.area"
 			},
-			"layout": {
-			  "column": 7,
-			  "row": 17,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Top 50 - SNMP Trap Timeline",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": false
 			  },
@@ -538,23 +561,259 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM KSnmpTrap SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET device_name\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 50"
+				  "query": "FROM KSnmpTrap SELECT\nbytecountestimate()\nFACET device_name\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  },
 		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 23,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# API Polling Analysis"
+			}
+		  },
+		  {
+			"title": "API Polling Data Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 24,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.billboard"
 			},
+			"rawConfiguration": {
+			  "dataFormatters": [
+				{
+				  "name": "Avg Bytes/API Collection",
+				  "precision": null,
+				  "type": "decimal"
+				},
+				{
+				  "name": "Avg GB/Endpoint",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "Total GB",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "Total API Collections (Count)",
+				  "type": "humanized"
+				},
+				{
+				  "name": "Total API Collections/Min",
+				  "type": "humanized"
+				}
+			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric \nSELECT\n  uniqueCount(entity.guid) AS 'Total API Endpoints',\n  rate(count(*), 1 MINUTE) AS 'Total API Collections/Min',\n  count(*) AS 'Total API Collections (Count)',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(entity.guid) AS 'Avg GB/Endpoint',\n  bytecountestimate()/count(*) AS 'Avg Bytes/API Collection'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nSINCE 24 HOURS AGO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 - API Polling Devices",
+			"layout": {
+			  "column": 5,
+			  "row": 24,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT\n  bytecountestimate()/10e8 AS 'GIGABYTE'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nFACET entity.name AS 'DEVICE'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "API Polling Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 24,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "dataFormatters": [
+				{
+				  "name": "EST GB/DAY",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "EST GB/MONTH",
+				  "precision": 2,
+				  "type": "decimal"
+				}
+			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT\n  uniqueCount(entity.guid) AS 'TOTAL API ENDPOINTS',\n  bytecountestimate()/10e8 AS 'EST GB/DAY',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nFACET aparse(instrumentation.name,'*.%') AS 'API TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "API Polling Device Details",
 			"layout": {
 			  "column": 1,
-			  "row": 21,
-			  "height": 4,
-			  "width": 4
+			  "row": 28,
+			  "width": 6,
+			  "height": 4
 			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "dataFormatters": [
+				{
+				  "name": "Total API Collections/Min",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "EST GB/DAY",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "EST GB/MONTH",
+				  "precision": 2,
+				  "type": "decimal"
+				}
+			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT\n  rate(count(*), 1 MINUTE) AS 'Total API Collections/Min',\n  bytecountestimate()/10e8 AS 'EST GB/DAY',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nFACET entity.name AS 'ENDPOINT NAME', aparse(instrumentation.name,'*.%') AS 'API TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 - API Polling Timeline",
+			"layout": {
+			  "column": 7,
+			  "row": 28,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT\n  bytecountestimate()\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name IN ('eapi.bgp', 'eapi.mlag', 'meraki.clients', 'meraki.uplinks')\nFACET entity.name, aparse(instrumentation.name,'*.%')\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
+		  },
+		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 32,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# Network Flow Logs Analysis"
+			}
+		  },
+		  {
 			"title": "Flow Data Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 33,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -588,63 +847,62 @@
 				  "type": "humanized"
 				}
 			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM KFlow \nSELECT \nuniqueCount(device_name) AS 'Total Devices',\nrate(count(*), 1 second) AS 'Total Flows/Sec',\ncount(*) AS 'Total Flows Collected',\nbytecountestimate()/10e8 AS 'Total GB',\n(bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device',\nbytecountestimate()/count(*) AS 'Avg Bytes/Flow'\nSINCE 24 HOURS AGO"
+				  "query": "FROM KFlow SELECT \n  uniqueCount(device_name) AS 'Total Devices',\n  rate(count(*), 1 second) AS 'Total Flows/Sec',\n  count(*) AS 'Total Flows Collected',\n  bytecountestimate()/count(*) AS 'Avg Bytes/Flow',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device'\nSINCE 24 HOURS AGO"
 				}
 			  ],
-			  "thresholds": []
-			},
-			"linkedEntityGuids": null
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - Flow Devices",
+			"layout": {
+			  "column": 5,
+			  "row": 33,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.pie"
 			},
-			"layout": {
-			  "column": 5,
-			  "row": 21,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Top 10 - Flow Devices",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
 				  "query": "FROM KFlow SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET entity.name AS 'DEVICE'\nSINCE 24 HOURS AGO\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Flow Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 33,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 9,
-			  "row": 21,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Flow Type Estimates",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -666,21 +924,24 @@
 				  "accountId": 0,
 				  "query": "FROM KFlow SELECT\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET entity.type AS 'ENTITY TYPE', Type or type AS 'FLOW TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  },
 		  {
+			"title": "Flow Device Details",
+			"layout": {
+			  "column": 1,
+			  "row": 37,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 25,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Flow Device Details",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -702,34 +963,25 @@
 				  "accountId": 0,
 				  "query": "FROM KFlow SELECT\nbytecountestimate()/10e8 AS 'DAY (GB)',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'MONTH (GB)'\nFACET entity.name AS 'DEVICE', Type or type AS 'FLOW TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - Flow Timeline",
+			"layout": {
+			  "column": 7,
+			  "row": 37,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.area"
 			},
-			"layout": {
-			  "column": 7,
-			  "row": 25,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Top 50 - Flow Timeline",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": false
 			  },
@@ -739,23 +991,235 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM KFlow SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET entity.name, Type\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 50"
+				  "query": "FROM KFlow SELECT\nbytecountestimate()\nFACET entity.name, Type\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  },
 		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 41,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# VPC Flow Logs Analysis"
+			}
+		  },
+		  {
+			"title": "VPC Flow Logs Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 42,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.billboard"
 			},
+			"rawConfiguration": {
+			  "dataFormatters": [
+				{
+				  "name": "Avg Bytes/VPC Flow Log",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "Avg GB/VPC",
+				  "precision": 2,
+				  "type": "decimal"
+				},
+				{
+				  "name": "Total GB",
+				  "precision": 2,
+				  "type": "decimal"
+				}
+			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log_VPC_Flows_AWS, Log_VPC_Flows_GCP \nSELECT\n  uniqueCount(entity.guid) AS 'Total VPCs',\n  rate(count(*), 1 SECOND) AS 'Total VPC Flow Logs/Sec',\n  count(*) AS 'Total VPC Flow Logs (Count)',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(entity.guid) AS 'Avg GB/VPC',\n  bytecountestimate()/count(*) AS 'Avg Bytes/VPC Flow Log'\nSINCE 24 HOURS AGO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 - VPC Networks",
+			"layout": {
+			  "column": 5,
+			  "row": 42,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log_VPC_Flows_AWS, Log_VPC_Flows_GCP SELECT\n  bytecountestimate()/10e8 AS 'GIGABYTE'\nFACET jsonPayload.dest_vpc.vpc_name OR jsonPayload.src_vpc.vpc_name OR vpc_id AS 'VPC'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "VPC Flow Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 42,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "dataFormatters": [
+				{
+				  "name": "EST GB/DAY",
+				  "precision": null,
+				  "type": "humanized"
+				},
+				{
+				  "name": "EST GB/MONTH",
+				  "precision": null,
+				  "type": "humanized"
+				}
+			  ],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log_VPC_Flows_AWS, Log_VPC_Flows_GCP SELECT\n  uniqueCount(entity.guid) AS 'TOTAL VPC NETWORKS',\n  bytecountestimate()/10e8 AS 'EST GB/DAY',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET CASES(WHERE eventType() = 'Log_VPC_Flows_AWS' AS 'AWS', WHERE eventType() = 'Log_VPC_Flows_GCP' AS 'GCP') AS 'VPC TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "VPC Network Details",
 			"layout": {
 			  "column": 1,
-			  "row": 29,
-			  "height": 4,
-			  "width": 4
+			  "row": 46,
+			  "width": 6,
+			  "height": 4
 			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "dataFormatters": [],
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log_VPC_Flows_AWS, Log_VPC_Flows_GCP SELECT\n  count(*) AS 'TOTAL FLOW LOGS',\n  rate(count(*), 1 SECOND) AS 'TOTAL FLOW LOGS/SEC',\n  bytecountestimate()/10e8 AS 'EST GB/DAY',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET jsonPayload.dest_vpc.vpc_name OR jsonPayload.src_vpc.vpc_name OR vpc_id AS 'VPC NETWORK', CASES(WHERE eventType() = 'Log_VPC_Flows_AWS' AS 'AWS', WHERE eventType() = 'Log_VPC_Flows_GCP' AS 'GCP') AS 'VPC TYPE'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 - VPC Flow Logs Timeline",
+			"layout": {
+			  "column": 7,
+			  "row": 46,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log_VPC_Flows_AWS, Log_VPC_Flows_GCP SELECT\n  bytecountestimate()\nFACET jsonPayload.dest_vpc.vpc_name OR jsonPayload.src_vpc.vpc_name OR vpc_id\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
+		  },
+		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 50,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# Network Syslog Analysis"
+			}
+		  },
+		  {
 			"title": "Syslog Data Analysis - Last 24 Hours",
+			"layout": {
+			  "column": 1,
+			  "row": 51,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -789,63 +1253,62 @@
 				  "type": "humanized"
 				}
 			  ],
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Log  \nSELECT \nuniqueCount(device_name) AS 'Total Devices',\nrate(count(*), 1 second) AS 'Total Syslog/Sec',\ncount(*) AS 'Total Syslog Collected',\nbytecountestimate()/10e8 AS 'Total GB',\n(bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device',\nbytecountestimate()/count(*) AS 'Avg Bytes/Syslog'\nWHERE plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO"
-				}
-			  ],
-			  "thresholds": []
-			},
-			"linkedEntityGuids": null
-		  },
-		  {
-			"visualization": {
-			  "id": "viz.pie"
-			},
-			"layout": {
-			  "column": 5,
-			  "row": 29,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Top 10 - Syslog Devices",
-			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": false
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Log SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET device_name AS 'DEVICE'\nWHERE plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				  "query": "FROM Log SELECT \n  uniqueCount(device_name) AS 'Total Devices',\n  rate(count(*), 1 second) AS 'Total Syslog/Sec',\n  count(*) AS 'Total Syslog Collected',\n  bytecountestimate()/count(*) AS 'Avg Bytes/Syslog',\n  bytecountestimate()/10e8 AS 'Total GB',\n  (bytecountestimate()/10e8) / uniqueCount(device_name) AS 'Avg GB/Device'\nWHERE collector.name = 'ktranslate'\nAND plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - Syslog Devices",
+			"layout": {
+			  "column": 5,
+			  "row": 51,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Log SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET device_name AS 'DEVICE'\nWHERE collector.name = 'ktranslate'\nAND plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Syslog Type Estimates",
+			"layout": {
+			  "column": 9,
+			  "row": 51,
+			  "width": 4,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 9,
-			  "row": 29,
-			  "height": 4,
-			  "width": 4
-			},
-			"title": "Syslog Type Estimates",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -865,23 +1328,26 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Log SELECT\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET CASES (\nWHERE severity = 0 AS 'Emergency', \nWHERE severity = 1 AS 'Alert', \nWHERE severity = 2 AS 'Critical', \nWHERE severity = 3 AS 'Error', \nWHERE severity = 4 AS 'Warning', \nWHERE severity = 5 AS 'Notice', \nWHERE severity = 6 AS 'Informational', \nWHERE severity = 7 AS 'Debug' ) AS 'Severity'\nWHERE plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				  "query": "FROM Log SELECT\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET CASES (\nWHERE severity = 0 AS 'Emergency', \nWHERE severity = 1 AS 'Alert', \nWHERE severity = 2 AS 'Critical', \nWHERE severity = 3 AS 'Error', \nWHERE severity = 4 AS 'Warning', \nWHERE severity = 5 AS 'Notice', \nWHERE severity = 6 AS 'Informational', \nWHERE severity = 7 AS 'Debug' ) AS 'Severity'\nWHERE collector.name = 'ktranslate'\nAND plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Syslog Device Details",
+			"layout": {
+			  "column": 1,
+			  "row": 55,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.table"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 33,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Syslog Device Details",
 			"rawConfiguration": {
 			  "dataFormatters": [
 				{
@@ -906,36 +1372,27 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Log SELECT\ncount(*) AS 'Total Messages',\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET device_name\nWHERE plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT MAX"
+				  "query": "FROM Log SELECT\ncount(*) AS 'Total Messages',\nbytecountestimate()/10e8 AS 'EST GB/DAY',\nrate(bytecountestimate()/10e8, 1 MONTH) AS 'EST GB/MONTH'\nFACET device_name\nWHERE collector.name = 'ktranslate'\nAND plugin.type = 'ktranslate-syslog'\nSINCE 24 HOURS AGO\nLIMIT MAX"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 - Syslog Timeline",
+			"layout": {
+			  "column": 7,
+			  "row": 55,
+			  "width": 6,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.area"
 			},
-			"layout": {
-			  "column": 7,
-			  "row": 33,
-			  "height": 4,
-			  "width": 6
-			},
-			"title": "Top 50 - Syslog Timeline",
 			"rawConfiguration": {
-			  "dataFormatters": [
-				{
-				  "name": "DAY (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				},
-				{
-				  "name": "MONTH (GB)",
-				  "precision": null,
-				  "type": "humanized"
-				}
-			  ],
 			  "facet": {
 				"showOtherSeries": false
 			  },
@@ -945,29 +1402,35 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Log SELECT\nbytecountestimate()/10e8 AS 'GIGABYTE'\nFACET device_name\nWHERE plugin.type = 'ktranslate-syslog'\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 50"
+				  "query": "FROM Log SELECT\nbytecountestimate()\nFACET device_name\nWHERE collector.name = 'ktranslate'\nAND plugin.type = 'ktranslate-syslog'\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  }
 		]
 	  },
 	  {
 		"name": "OID/Metric Analysis",
-		"description": "",
+		"description": null,
 		"widgets": [
 		  {
-			"visualization": {
-			  "id": "viz.table"
-			},
+			"title": "Unique OIDs per MIB",
 			"layout": {
 			  "column": 1,
 			  "row": 1,
-			  "height": 7,
-			  "width": 3
+			  "width": 4,
+			  "height": 7
 			},
-			"title": "Unique OIDs per MIB",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [],
 			  "facet": {
@@ -979,20 +1442,20 @@
 				  "query": "FROM Metric SELECT \nuniqueCount(objectIdentifier) AS 'OBJECT IDENTIFIERS' \nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET `mib-name` AS 'MIB'\nLIMIT MAX"
 				}
 			  ]
-			},
-			"linkedEntityGuids": null
+			}
 		  },
 		  {
+			"title": "Top 10 MIBs - Est. GB/Month",
+			"layout": {
+			  "column": 5,
+			  "row": 1,
+			  "width": 3,
+			  "height": 7
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.bar"
 			},
-			"layout": {
-			  "column": 4,
-			  "row": 1,
-			  "height": 7,
-			  "width": 3
-			},
-			"title": "Top 10 MIBs - Projected Ingest ",
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
@@ -1002,21 +1465,24 @@
 				  "accountId": 0,
 				  "query": "FROM Metric \nSELECT\nrate(bytecountestimate()/10e8,1 MONTH) AS 'MONTH'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET `mib-name` AS 'MIB'\nSINCE 24 HOURS AGO\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
 		  },
 		  {
+			"title": "Top 10 Metrics - Est. GB/Month",
+			"layout": {
+			  "column": 8,
+			  "row": 1,
+			  "width": 5,
+			  "height": 7
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.bar"
 			},
-			"layout": {
-			  "column": 7,
-			  "row": 1,
-			  "height": 7,
-			  "width": 4
-			},
-			"title": "Top 10 Metrics - Projected Ingest ",
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
@@ -1026,43 +1492,79 @@
 				  "accountId": 0,
 				  "query": "FROM Metric \nSELECT\nrate(bytecountestimate()/10e8,1 MONTH) AS 'MONTH'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET `mib-name` AS 'MIB', capture(metricName, 'kentik.snmp.(?P<METRIC>.+)') AS 'METRIC NAME', objectIdentifier AS 'OID'\nSINCE 24 HOURS AGO\nLIMIT 10"
 				}
-			  ]
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 Metrics - Ingest Bytes",
+			"layout": {
+			  "column": 1,
+			  "row": 8,
+			  "width": 12,
+			  "height": 5
 			},
-			"linkedEntityGuids": null
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT bytecountestimate()\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET `mib-name` AS 'MIB', capture(metricName, 'kentik.snmp.(?P<METRIC>.+)') AS 'METRIC NAME'\nSINCE 7 DAYS AGO TIMESERIES\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "units": {
+				"unit": "BYTES"
+			  }
+			}
 		  }
 		]
 	  },
 	  {
 		"name": "Cardinality Tracking",
-		"description": "",
+		"description": null,
 		"widgets": [
 		  {
-			"visualization": {
-			  "id": "viz.markdown"
-			},
+			"title": "",
 			"layout": {
 			  "column": 1,
 			  "row": 1,
-			  "height": 5,
-			  "width": 3
+			  "width": 3,
+			  "height": 5
 			},
-			"title": "",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
 			"rawConfiguration": {
-			  "text": "This page provides analysis of the top metrics from SNMP that are contributing to [Metric API cardinality limits](https://docs.newrelic.com/docs/telemetry-data-platform/ingest-apis/metric-api/metric-api-limits-restricted-attributes/#additional-considerations) for your account. \n\nYou can further investigate using the queries below, replacing `$METRIC_NAME` with the name of your target:\n\nFirst, get a sense of the attributes on your metric:\n```\nFROM Metric SELECT keyset() WHERE metricName = '$METRIC_NAME'\n```\n\nThen you can start investigating how much volatility exists in those attributes:\n```\nFROM Metric SELECT uniqueCount(attr1), uniqueCount(attr2), uniqueCount(...) WHERE metricName = '$METRIC_NAME'\n```\n\nYou can most easily control cardinality through a combination of reducing your polling interval and creating special [drop rules](https://docs.newrelic.com/docs/telemetry-data-platform/manage-data/drop-data-using-nerdgraph/#drop-sensitive-data) for attributes that you don't need to collect. "
-			},
-			"linkedEntityGuids": null
+			  "text": "# Cardinality Analysis\n\n## This page provides analysis of the top metrics from SNMP that are contributing to [Metric API cardinality limits](https://docs.newrelic.com/docs/telemetry-data-platform/ingest-apis/metric-api/metric-api-limits-restricted-attributes/#additional-considerations) for your account. \n\n## You can follow the [troubleshooting guide in our documentation](https://docs.newrelic.com/docs/data-apis/ingest-apis/metric-api/NRQL-high-cardinality-metrics) to help analyze the specific dimensions of the metric that are contributing the most volatility.\n\n## Metric cardinality is best controlled through a combination of reducing your polling interval, limiting collection to only interfaces you need to monitor, and creating special [drop rules](https://docs.newrelic.com/docs/telemetry-data-platform/manage-data/drop-data-using-nerdgraph/#drop-sensitive-data) for attributes that you don't need to collect. "
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.bar"
-			},
+			"title": "Top 10 Metrics by Cardinality [kentik.snmp.%]",
 			"layout": {
 			  "column": 4,
 			  "row": 1,
-			  "height": 5,
-			  "width": 3
+			  "width": 3,
+			  "height": 5
 			},
-			"title": "Top 10 Metrics by Cardinality [kentik.snmp.%]",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
@@ -1073,23 +1575,23 @@
 				  "query": "FROM Metric SELECT\ncardinality() AS 'CARDINALITY'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET capture(metricName, 'kentik.snmp.(?P<METRIC>.+)') AS 'METRIC NAME', objectIdentifier AS 'OID'\nSINCE 24 HOURS AGO\nLIMIT 10"
 				}
 			  ]
-			},
-			"linkedEntityGuids": null
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.area"
-			},
+			"title": "Top 10 Metrics by Cardinality [kentik.snmp.%]",
 			"layout": {
 			  "column": 7,
 			  "row": 1,
-			  "height": 5,
-			  "width": 6
+			  "width": 6,
+			  "height": 5
 			},
-			"title": "Top 10 Metrics by Cardinality [kentik.snmp.%]",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
 			"rawConfiguration": {
 			  "facet": {
-				"showOtherSeries": true
+				"showOtherSeries": false
 			  },
 			  "legend": {
 				"enabled": true
@@ -1099,21 +1601,24 @@
 				  "accountId": 0,
 				  "query": "FROM Metric SELECT\ncardinality() AS 'CARDINALITY'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name NOT IN ('heartbeat','netflow-events')\nFACET capture(metricName, 'kentik.snmp.(?P<METRIC>.+)') AS 'METRIC NAME', objectIdentifier AS 'OID'\nSINCE 24 HOURS AGO TIMESERIES\nLIMIT 10"
 				}
-			  ]
-			},
-			"linkedEntityGuids": null
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  },
 		  {
-			"visualization": {
-			  "id": "viz.table"
-			},
+			"title": "Cardinality Violations - Last 7 Days",
 			"layout": {
 			  "column": 1,
 			  "row": 6,
-			  "height": 3,
-			  "width": 12
+			  "width": 12,
+			  "height": 3
 			},
-			"title": "Cardinality Violations - Last 7 Days",
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
 			"rawConfiguration": {
 			  "dataFormatters": [],
 			  "facet": {
@@ -1125,141 +1630,176 @@
 				  "query": "FROM NrIntegrationError SELECT \nmetricName AS 'METRIC NAME', \nlimitValue AS 'CURRENT THRESHOLD', \nimpactEndTime AS 'RESET TIME' \nWHERE category = 'RateLimit' \nAND rateLimitType = 'UniqueTimeseriesPerDay' \nSINCE 7 DAYS AGO\nLIMIT MAX"
 				}
 			  ]
-			},
-			"linkedEntityGuids": null
-		  }
-		]
-	  },
-	  {
-		"name": "KTranslate Health",
-		"description": null,
-		"widgets": [
+			}
+		  },
 		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 9,
+			  "width": 12,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.markdown"
 			},
-			"layout": {
-			  "column": 1,
-			  "row": 1,
-			  "height": 3,
-			  "width": 2
-			},
-			"title": "",
 			"rawConfiguration": {
-			  "text": "This page reflects the health of the `ktranslate` container. Details on the data seen here can be found in [the documentation](https://docs.newrelic.com/docs/network-performance-monitoring/setup-performance-monitoring/advanced-config/#logs)."
-			},
-			"linkedEntityGuids": null
+			  "text": "# Most Likely Cardinality Violators\n\n## The most common violation source for cardinality limits in SNMP monitoring is the `IF-MIB` and interface polling. There are classes of interfaces that do not provide actionable data and you should filter those out from your environment using the `match_attributes` rules in ktranslate as shown in the [documentation examples](https://docs.newrelic.com/docs/network-performance-monitoring/advanced/advanced-config/#match_attributes-attribute)."
+			}
 		  },
 		  {
+			"title": "Lower Value Interface Categories",
+			"layout": {
+			  "column": 1,
+			  "row": 11,
+			  "width": 4,
+			  "height": 5
+			},
+			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.billboard"
 			},
-			"layout": {
-			  "column": 3,
-			  "row": 1,
-			  "height": 3,
-			  "width": 2
-			},
-			"title": "Buffer Availability",
 			"rawConfiguration": {
-			  "dataFormatters": [],
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric\nSELECT\n  latest(kentik.ktranslate.chf.kkc.jchfq) AS 'jchfq'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name = 'heartbeat'"
-				}
-			  ],
-			  "thresholds": [
-				{
-				  "alertSeverity": "WARNING",
-				  "value": 7800
-				},
-				{
-				  "alertSeverity": "CRITICAL",
-				  "value": 7500
-				}
-			  ]
-			},
-			"linkedEntityGuids": null
-		  },
-		  {
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"layout": {
-			  "column": 5,
-			  "row": 1,
-			  "height": 3,
-			  "width": 8
-			},
-			"title": "Health Metrics",
-			"rawConfiguration": {
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric\nSELECT\n  latest(kentik.ktranslate.chf.kkc.delivery_metrics_nr) AS 'metrics_batches',\n  latest(kentik.ktranslate.chf.kkc.delivery_logs_nr) AS 'logs_batches',\n  latest(kentik.ktranslate.chf.kkc.syslog_messages) AS 'syslog_batches',\n  latest(kentik.ktranslate.chf.kkc.delivery_wins_nr) AS 'delivery_wins'\nWHERE instrumentation.provider = 'kentik'\nAND instrumentation.name = 'heartbeat'\nSINCE 24 HOURS AGO \nTIMESERIES\nLIMIT MAX"
-				}
-			  ],
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			},
-			"linkedEntityGuids": null
-		  },
-		  {
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"layout": {
-			  "column": 1,
-			  "row": 4,
-			  "height": 5,
-			  "width": 4
-			},
-			"title": "Container Logs [Ignoring \"Info\" Severity]",
-			"rawConfiguration": {
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT count(*) FROM Log WHERE `collector.name` = 'ktranslate' AND plugin.type != 'ktranslate-syslog' AND `message` NOT LIKE '%[Info]%' SINCE 1 DAY AGO TIMESERIES MAX"
-				}
-			  ],
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			},
-			"linkedEntityGuids": null
-		  },
-		  {
-			"visualization": {
-			  "id": "viz.table"
-			},
-			"layout": {
-			  "column": 5,
-			  "row": 4,
-			  "height": 5,
-			  "width": 8
-			},
-			"title": "Container Logs [Ignoring \"Info\" Severity]",
-			"rawConfiguration": {
-			  "dataFormatters": [],
 			  "facet": {
 				"showOtherSeries": false
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT message FROM Log WHERE `collector.name` = 'ktranslate' AND plugin.type != 'ktranslate-syslog' AND `message` NOT LIKE '%[Info]%' SINCE 1 DAY AGO LIMIT MAX"
+				  "query": "FROM Metric \nSELECT filter(uniqueCount(device_name, if_Index), where if_interface_name like 'lo%') as 'Loopback Interfaces'\n, filter(uniqueCount(device_name, if_Index), where if_interface_name like 'po%') as 'Port Channel Interfaces'\n, filter(uniqueCount(device_name, if_Index), where if_interface_name like 'vl%') as 'VLAN Interfaces'\n, filter(uniqueCount(device_name, if_Index), where if_interface_name like 'tu%') as 'Tunnel Interfaces'"
 				}
-			  ]
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Interfaces without Alias",
+			"layout": {
+			  "column": 5,
+			  "row": 11,
+			  "width": 4,
+			  "height": 5
 			},
-			"linkedEntityGuids": null
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "colors": {
+				"seriesOverrides": [
+				  {
+					"color": "#f32735",
+					"seriesName": "No Alias"
+				  },
+				  {
+					"color": "#00ff8c",
+					"seriesName": "Has Alias"
+				  }
+				]
+			  },
+			  "facet": {
+				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric \nSELECT uniqueCount(device_name, if_Index) AS 'Total Interfaces'\nFACET CASES(\n  WHERE if_Alias IS NULL OR if_Alias = '' AS 'No Alias', \n  WHERE if_Alias IS NOT NULL AND if_Alias != '' AS 'Has Alias')"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Top 10 - Common Alias Patterns",
+			"layout": {
+			  "column": 9,
+			  "row": 11,
+			  "width": 4,
+			  "height": 5
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": true
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric \nSELECT uniqueCount(device_name, if_Index) AS 'Total'\nFACET if_Alias\nLIMIT 10"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "List of Loopback Interfaces",
+			"layout": {
+			  "column": 1,
+			  "row": 16,
+			  "width": 6,
+			  "height": 8
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric \nSELECT latest(tags.container_service) AS 'Container'\nFACET device_name, if_interface_name, if_Alias\nWHERE if_interface_name like 'lo%'\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "List of Interfaces with No Alias",
+			"layout": {
+			  "column": 7,
+			  "row": 16,
+			  "width": 6,
+			  "height": 8
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.table"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric \nSELECT latest(tags.container_service) AS 'Container'\nFACET device_name, if_interface_name, if_Alias\nWHERE if_Alias is null\nLIMIT MAX"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  }
 		]
 	  }
