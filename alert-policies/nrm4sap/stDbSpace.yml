@@ -1,0 +1,69 @@
+# Name of the alert
+name: Database Space Usage too High 
+
+# Description and details
+details: |+
+  This condtion tracks database space usage percentage.
+  Database has space allocated for its use. If used space has reached certain limit, it indicates that more
+  space need to be added to accomodte data growth. Otherwise will have the risk of run out of space.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: SELECT average(NR.SAP.DB.KPI.USED)/average(NR.SAP.DB.KPI.SIZE) * 100 as 'DB space usage' FROM Metric FACET entity.name 
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+- priority: CRITICAL
+  # Operator used to compare against the threshold.
+  operator: ABOVE
+  # Value that triggers a violation
+  threshold: 90
+  # Time in seconds; 120 - 3600
+  thresholdDuration: 600
+  # How many data points must be in violation for the duration
+  thresholdOccurrences: ALL
+
+# Adding a Warning threshold is optional
+- priority: WARNING
+  threshold: 70
+  operator: ABOVE
+  thresholdDuration: 600
+  thresholdOccurrences: ALL
+
+# Loss of Signal Settings
+expiration:
+  # Close open violations if signal is lost (Default: false)
+  closeViolationsOnExpiration: true
+  # Open "Loss of Signal" violation if signal is lost (Default: false)
+  openViolationOnExpiration: false
+  # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
+  expirationDuration: 600
+
+# Advanced Signal Settings
+signal:
+  # Duration of the time window used to evaluate the NRQL Condition
+  # Time in seconds; 30 - 900 (Default: 60)
+  aggregationWindow: 300
+  # The number of windows we look back at the aggregated data
+  # Max 20 minutes, multiple of aggregationWindow
+  evaluationOffset:
+  # Type of value that should be used to fill gaps
+  fillOption: LAST_VALUE
+  # Integer; Used in conjunction with STATIC fillOption, otherwise null
+  fillValue:
+
+# OPTIONAL: URL of runbook to be sent with notification
+runbookUrl:
+
+# OPTIONAL: Custom violation description sent with JSON payload
+description: Database space usage exceeds the designated threshold. You may want to allocate more space for database or clean up unused data to free up space.
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 3600
