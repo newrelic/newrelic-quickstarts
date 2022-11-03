@@ -77,7 +77,7 @@ For more information about CLAs, please check out Alex Russell's excellent post,
 
 ### Quickstarts
 
-Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or Wordpress.
+Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or WordPress.
 
 They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, install plans, and data sources.
 
