@@ -1,14 +1,14 @@
 name: Too Many Open requests
 
 description: |+
-  This alert is triggered when Traefik has too many open requests.
+  This alert is triggered when a Traefik service has more than 50 open requests for over 1 minute. This threshold should be adjusted to your own requirements.
 type: STATIC
 nrql:
   query: "SELECT 
   if((average(traefik_service_open_connections) > 50), 
   average(traefik_service_open_connections), 1) 
   FROM Metric 
-  WHERE instrumentation.name = 'remote-write'"
+  WHERE instrumentation.name = 'remote-write' FACET instance, service"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
