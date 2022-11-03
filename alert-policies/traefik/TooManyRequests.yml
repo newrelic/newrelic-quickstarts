@@ -1,10 +1,14 @@
-name: Traefik Service Down
+name: Too Many Open requests
 
 description: |+
-  This alert is triggered when all Traefik services are down.
+  This alert is triggered when Traefik has too many open requests.
 type: STATIC
 nrql:
-  query: "SELECT if((cardinality(traefik_service_server_up) = 0), cardinality(traefik_service_server_up), 1) FROM Metric FACET service WHERE instrumentation.name = 'remote-write'"
+  query: "SELECT 
+  if((average(traefik_service_open_connections) > 50), 
+  average(traefik_service_open_connections), 1) 
+  FROM Metric 
+  WHERE instrumentation.name = 'remote-write'"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -13,11 +17,11 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: BELOW
+    operator: ABOVE
     # Value that triggers a violation
-    threshold: 1
+    threshold: 50
     # Time in seconds; 120 - 3600
-    thresholdDuration: 300
+    thresholdDuration: 60
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
