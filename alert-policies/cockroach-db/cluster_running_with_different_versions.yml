@@ -1,0 +1,26 @@
+name: Cluster running with different versions 
+
+description: |+
+  Send an alert Cluster running with different versions of cockroachDB .
+type: STATIC
+nrql:
+  query: "SELECT count('version') From (Select latest(build_timestamp)  FROM Metric   WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') FACET tag,app_kubernetes_io_instance )  "
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 1
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 900
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
