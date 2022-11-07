@@ -1,0 +1,96 @@
+{
+  "name": "SAP Data Collection Monitoring",
+  "description": "Monitor SAP data collection and ingestion process",
+  "pages": [
+    {
+      "name": "Data Collection Monitoring",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Data Collection Summary",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Span SELECT count(*) as calls, average(duration.ms), average(NUM_RECORDS), latest(timestamp) as 'Last Run' SINCE 1 day ago WHERE entity.name = 'ABAP_COLLECTOR' FACET id LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Running Time Trend",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Span SELECT sum(duration.ms) WHERE entity.name = 'ABAP_COLLECTOR' SINCE 1 day ago FACET id  TIMESERIES 5 minutes"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Span SELECT id, SCHEDULED_TIME, duration.ms, NUM_RECORDS, DP_STARTED,DP_FINISHED, CallEIAgent, trace.id  SINCE 1 day ago WHERE entity.name = 'ABAP_COLLECTOR' ORDER BY timestamp DESC LIMIT MAX"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
