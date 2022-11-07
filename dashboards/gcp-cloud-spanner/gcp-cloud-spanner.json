@@ -1,5 +1,5 @@
 {
-  "name": "GCP Cloud Spanner",
+  "name": "GCP Cloud Spanner V2",
   "description": null,
   "pages": [
     {
@@ -287,7 +287,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Databases",
+          "title": "Top queries",
           "layout": {
             "column": 1,
             "row": 1,
@@ -305,7 +305,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) WHERE instrumentation.source = 'gcpspanner' FACET database"
+                "query": "FROM Metric SELECT count(*) WHERE instrumentation.source = 'gcpspanner' FACET query_text LIMIT 50 SINCE 1 month ago"
               }
             ],
             "platformOptions": {
@@ -380,11 +380,38 @@
           }
         },
         {
-          "title": "Execution count | Failed",
+          "title": "Top latency queries (in ms)",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_query_stats_top_avg_latency_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET query_text LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Execution count | Failed",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -419,9 +446,9 @@
         {
           "title": "Rows scanned | Returned",
           "layout": {
-            "column": 7,
+            "column": 9,
             "row": 4,
-            "width": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -476,7 +503,7 @@
           }
         },
         {
-          "title": "Databases",
+          "title": "Average execution latency (ms)",
           "layout": {
             "column": 1,
             "row": 2,
@@ -485,20 +512,26 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) WHERE instrumentation.source = 'gcpspanner' FACET database"
+                "query": "FROM Metric SELECT average(database_spanner_query_stats_total_avg_latency_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
@@ -569,7 +602,7 @@
           }
         },
         {
-          "title": "Average execution latency (ms)",
+          "title": "Failed execution count",
           "layout": {
             "column": 1,
             "row": 5,
@@ -590,7 +623,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(database_spanner_query_stats_total_avg_latency_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
+                "query": "FROM Metric SELECT sum(database_spanner_query_stats_total_all_failed_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
               }
             ],
             "platformOptions": {
@@ -668,7 +701,7 @@
           }
         },
         {
-          "title": "Failed execution count",
+          "title": "Average rows returned",
           "layout": {
             "column": 1,
             "row": 8,
@@ -689,7 +722,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_query_stats_total_all_failed_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
+                "query": "FROM Metric SELECT average(database_spanner_query_stats_total_avg_rows) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
               }
             ],
             "platformOptions": {
@@ -767,42 +800,9 @@
           }
         },
         {
-          "title": "Average rows returned",
-          "layout": {
-            "column": 1,
-            "row": 11,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT average(database_spanner_query_stats_total_avg_rows) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
           "title": "Average rows scanned",
           "layout": {
-            "column": 5,
+            "column": 1,
             "row": 11,
             "width": 4,
             "height": 3
@@ -1498,7 +1498,7 @@
           }
         },
         {
-          "title": "Databases",
+          "title": "Total average bytes",
           "layout": {
             "column": 1,
             "row": 2,
@@ -1507,20 +1507,26 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(*) WHERE instrumentation.source = 'gcpspanner' FACET database"
+                "query": "FROM Metric SELECT average(database_spanner_txn_stats_total_avg_bytes) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
@@ -1591,7 +1597,7 @@
           }
         },
         {
-          "title": "Total average bytes",
+          "title": "Commit abort count",
           "layout": {
             "column": 1,
             "row": 5,
@@ -1612,7 +1618,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(database_spanner_txn_stats_total_avg_bytes) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+                "query": "FROM Metric SELECT sum(database_spanner_txn_stats_total_commit_abort_count) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -1690,42 +1696,9 @@
           }
         },
         {
-          "title": "Commit abort count",
-          "layout": {
-            "column": 1,
-            "row": 8,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_txn_stats_total_commit_abort_count) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
           "title": "Commit retry count",
           "layout": {
-            "column": 5,
+            "column": 1,
             "row": 8,
             "width": 4,
             "height": 3
@@ -1758,7 +1731,7 @@
         {
           "title": "Commit failed precondition count",
           "layout": {
-            "column": 9,
+            "column": 5,
             "row": 8,
             "width": 4,
             "height": 3
@@ -2096,7 +2069,817 @@
           }
         }
       ]
+    },
+    {
+      "name": "Read Insights",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Total (all reads)"
+          }
+        },
+        {
+          "title": "Average CPU usage",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_total_avg_cpu_seconds) AS 'ms' WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Execution count",
+          "layout": {
+            "column": 5,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(database_spanner_read_stats_total_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average rows",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(database_spanner_read_stats_total_avg_rows) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average client wait seconds",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(database_spanner_read_stats_total_avg_client_wait_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average bytes",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_total_avg_bytes) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average reader refresh delay",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_total_avg_leader_refresh_delay_seconds) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "average locking delay (ms)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_total_avg_locking_delay_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Top Reads (per read)"
+          }
+        },
+        {
+          "title": "Average CPU usage",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_top_avg_cpu_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top execution count",
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_top_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average rows",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_rows) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Client wait seconds",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_client_wait_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average bytes",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_bytes) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Refresh delay (ms)",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_leader_refresh_delay_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average locking delay seconds",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_locking_delay_seconds*1000) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read Details",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Read count",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(database_spanner_read_stats_top_avg_cpu_seconds) WHERE instrumentation.source = 'gcpspanner' AND database_spanner_read_stats_top_avg_cpu_seconds IS NOT NULL FACET fingerprint SINCE 60 minutes ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average CPU usage",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_top_avg_cpu_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Execution Count",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average rows",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_rows) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Client wait seconds",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_top_avg_client_wait_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average bytes",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(database_spanner_read_stats_top_avg_bytes) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average leader refresh delay seconds",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(database_spanner_read_stats_top_avg_leader_refresh_delay_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average locking delay seconds",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(database_spanner_read_stats_top_avg_locking_delay_seconds) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "project_id",
+      "items": null,
+      "defaultValue": {
+        "string": ""
+      },
+      "nrqlQuery": {
+        "accountIds": [
+          3462097
+        ],
+        "query": "SELECT uniques(project_id) FROM Metric WHERE instrumentation.source = 'gcpspanner' SINCE 3 months ago"
+      },
+      "title": "Project Id",
+      "type": "NRQL"
+    },
+    {
+      "name": "instance_id",
+      "items": null,
+      "defaultValue": {
+        "string": ""
+      },
+      "nrqlQuery": {
+        "accountIds": [
+          3462097
+        ],
+        "query": "SELECT uniques (instance_id) FROM Metric WHERE instrumentation.source = 'gcpspanner' SINCE 3 months ago"
+      },
+      "title": "Instance",
+      "type": "NRQL"
+    },
+    {
+      "name": "database",
+      "items": null,
+      "defaultValue": {
+        "string": ""
+      },
+      "nrqlQuery": {
+        "accountIds": [
+          3462097
+        ],
+        "query": "SELECT uniques(database) FROM Metric WHERE instrumentation.source = 'gcpspanner' SINCE 3 months ago"
+      },
+      "title": "Database",
+      "type": "NRQL"
+    }
+  ]
 }
