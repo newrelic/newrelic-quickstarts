@@ -1,0 +1,532 @@
+{
+    "name": "Lambda Extensions",
+    "description": null,
+    "pages": [
+      {
+        "name": "Lambda Extensions",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Metrics by lambda",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.maxMemoryUsedMB`) as MaxMemoryUsedMB, average(aws.telemetry.lambda_ext.memorySizeMB) as memorySizeMB, average(aws.telemetry.lambda_ext.producedBytes) as producedBytes FROM Metric SINCE 60 MINUTES AGO FACET lambda.name"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "average duration by lambda",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.durationMs`) as durationMs, average(aws.telemetry.lambda_ext.billedDurationMs) as billedDurationMs, average(aws.telemetry.lambda_ext.initDurationMs) as initDurationMs FROM Metric SINCE 60 MINUTES AGO FACET lambda.name"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Number of invocations",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM AwsLambdaExtension  FACET lambda.name, lambda.logevent.type WHERE lambda.logevent.type='function' SINCE 60 MINUTES AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Lambda Extensions Events Types ",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM AwsLambdaExtension SINCE 60 MINUTES AGO FACET lambda.logevent.type where lambda.logevent.type !='extension'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Events (by status)",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM AwsLambdaExtension SINCE 60 MINUTES AGO facet lambda.name, record.status"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "platform runtime done vs platform start",
+            "layout": {
+              "column": 5,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM AwsLambdaExtension SINCE 60 MINUTES AGO  where lambda.logevent.type = 'platform.runtimeDone' or lambda.logevent.type='platform.start' FACET lambda.name, lambda.logevent.type "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Logs",
+            "layout": {
+              "column": 9,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "logger.log-table-widget"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT `log_severity`,`timestamp`,`message` FROM Log WHERE `aws.extension` = 'AwsLambdaExtension'"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Lambda Extensions Redux",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Metrics (billed duration)",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.py-lambda-test.billedDurationMs`) FROM Metric SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Metrics (duration)",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.py-lambda-test.durationMs`) FROM Metric  FACET  event"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Metrics (init duration)",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.py-lambda-test.initDurationMs`) FROM Metric SINCE 30 MINUTES AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Metrics (max memory used)",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT max(`aws.telemetry.lambda_ext.py-lambda-test.maxMemoryUsedMB`) FROM Metric SINCE 30 MINUTES AGO facet event,extension "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Metrics (memory size)",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT average(`aws.telemetry.lambda_ext.py-lambda-test.memorySizeMB`) FROM Metric  facet extension "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Metrics (produced bytes)",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(`aws.telemetry.lambda_ext.py-lambda-test.producedBytes`) FROM Metric SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events (extension)",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_extension SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events. (function)",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_function SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events (platform fault)",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_platform_fault SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events (platform report)",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_platform_report SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events (platform runtime done)",
+            "layout": {
+              "column": 5,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_platform_runtimeDone SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Events (platform start)",
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Lambda_Ext_platform_start SINCE 30 MINUTES AGO TIMESERIES"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Logs",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT count(*) FROM Log WHERE `aws.extension` = 'python-telemetry-api-extension' SINCE 1665591558506 UNTIL 1665677953506 facet `aws.extension` TIMESERIES MAX"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Logs",
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "logger.log-table-widget"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT `log_severity`,`timestamp`,`message` FROM Log WHERE `aws.extension` = 'python-telemetry-api-extension'"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
