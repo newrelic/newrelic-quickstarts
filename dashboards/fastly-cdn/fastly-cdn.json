@@ -3,181 +3,275 @@
   "description": "",
   "pages": [
     {
-      "name": "Fastly I/O Launch Dashboard",
-      "description": "",
+      "name": "Overview",
+      "description": null,
       "widgets": [
         {
-          "visualization": {
-            "id": "viz.markdown"
-          },
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "height": 2,
-            "width": 2
+            "width": 4,
+            "height": 3
           },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# [Fastly CDN Logs Overview](https://docs.fastly.com/en/guides/log-streaming-newrelic-logs)\n\n\n![Add Images](https://www.fastly.com/cimages/6pk8mg3yh2ee/1KOvYgrOJeCUndOpjcDOwJ/17832ecfed4f651168232c263cf6bcfd/og-image.jpg?canvas=1200:630&width=1200&height=630&fit=bounds&bg-color=FFFFFF)"
+          }
+        },
+        {
           "title": "",
-          "rawConfiguration": {
-            "text": "# Fastly CDN Logs\n\n\n![Add Images](https://www.fastly.com/cimages/6pk8mg3yh2ee/1KOvYgrOJeCUndOpjcDOwJ/17832ecfed4f651168232c263cf6bcfd/og-image.jpg?canvas=1200:630&width=1200&height=630&fit=bounds&bg-color=FFFFFF)"
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "layout": {
-            "column": 3,
-            "row": 1,
-            "height": 2,
-            "width": 2
-          },
-          "title": "Total Bandwidth (All POPs)",
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO"
-              }
-            ],
-            "thresholds": []
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.billboard"
-          },
           "layout": {
             "column": 5,
             "row": 1,
-            "height": 3,
-            "width": 2
+            "width": 2,
+            "height": 2
           },
-          "title": "Requests",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
           "rawConfiguration": {
-            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) AS 'Request Count', filter(count(*), WHERE response != 'OK') AS 'Error Count' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO"
+                "query": "FROM Log SELECT percentage(count (*), WHERE cache_status='HIT') AS 'Cache Hit Ratio' WHERE (cache_status='HIT' OR cache_status='MISS') AND fastly_datacenter IS NOT NULL since 1 hour ago COMPARE with 1 hour ago\n"
               }
             ],
-            "thresholds": []
-          },
-          "linkedEntityGuids": null
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
+              }
+            ]
+          }
         },
         {
-          "visualization": {
-            "id": "viz.pie"
-          },
+          "title": "",
           "layout": {
             "column": 7,
             "row": 1,
-            "height": 3,
-            "width": 6
+            "width": 2,
+            "height": 2
           },
-          "title": "Response Status (Count)",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(resp_status) >= 200 and numeric(resp_status) < 400) AS 'Success Rate (2xx,3xx)' WHERE fastly_datacenter IS NOT NULL compare with 1 hour ago\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(resp_status) >= 400 and numeric(resp_status) <= 499) AS 'Error Rate (4xx)' WHERE fastly_datacenter IS NOT NULL compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(resp_status) >= 500 and numeric(resp_status) <= 599) AS 'Error Rate (5xx)' WHERE fastly_datacenter IS NOT NULL since 1 hour ago compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
+          }
+        },
+        {
+          "title": "Cache Hit/Miss (over time)",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND cache_status='HIT' OR cache_status='MISS' FACET cache_status TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": true
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status  "
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL SINCE 1 hour AGO FACET resp_status  "
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
         },
         {
-          "visualization": {
-            "id": "viz.table"
-          },
+          "title": "Total Requests",
           "layout": {
             "column": 1,
-            "row": 3,
-            "height": 8,
-            "width": 4
-          },
-          "title": "Bandwidth by POP",
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL SINCE 1 day ago COMPARE WITH 1 WEEK AGO FACET fastly_datacenter LIMIT MAX ORDER BY 'Total MB'"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.table"
-          },
-          "layout": {
-            "column": 5,
             "row": 4,
-            "height": 3,
-            "width": 4
+            "width": 4,
+            "height": 2
           },
-          "title": "Top 5 URLs (503)",
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(url) AS 'Url Count' WHERE fastly_datacenter IS NOT NULL AND resp_status = '503' SINCE 1 day AGO FACET url LIMIT 5"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
+          "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.table"
+            "id": "viz.billboard"
           },
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "height": 3,
-            "width": 4
-          },
-          "title": "Top 5 URLs (2xx)",
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(url) AS 'Url Count' WHERE fastly_datacenter IS NOT NULL AND resp_status LIKE '2%' SINCE 1 day AGO FACET url LIMIT 5"
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE fastly_datacenter IS NOT NULL "
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
         },
         {
+          "title": "Total Requests (over time)",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.area"
           },
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "height": 4,
-            "width": 4
-          },
-          "title": "Client TTFB",
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
@@ -188,23 +282,26 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT average(client_resp_ttfb) AS 'Avg. Client TTFB (ms)', percentile(client_resp_ttfb,95) AS '95th Pct. Client TTFB (ms)' WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status TIMESERIES "
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE fastly_datacenter IS NOT NULL AND cache_status is NOT NULL TIMESERIES "
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
         },
         {
-          "visualization": {
-            "id": "viz.area"
-          },
+          "title": "Edge Response Result Type NOT Hit OR Miss",
           "layout": {
-            "column": 9,
-            "row": 7,
-            "height": 4,
-            "width": 4
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
           },
-          "title": "Duration by Response Status",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
@@ -215,13 +312,1078 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Avg. Duration (ms)', percentile(time_elapsed,95)/1000 AS '95th Pct. Duration (ms)' WHERE fastly_datacenter IS NOT NULL SINCE 1 day AGO FACET resp_status TIMESERIES LIMIT MAX"
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL  AND (cache_status!='HIT' AND cache_status!='MISS') FACET cache_status TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by Status Code (over time)",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL  FACET resp_status  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Bandwidth (over time)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB' WHERE fastly_datacenter IS NOT NULL timeseries SINCE 1 hour ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Edge Response Result Type",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL and cache_status IS NOT NULL FACET cache_status  "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution (range)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*)   WHERE  fastly_datacenter IS NOT NULL AND resp_status IS NOT NULL FACET cases(WHERE numeric(resp_status) >= 200 AND numeric(resp_status) < 300 as '2xx', WHERE numeric(resp_status) >= 300 AND numeric(resp_status) < 400 as '3xx', WHERE numeric(resp_status) >= 400  AND numeric(resp_status)<500 as '4xx', WHERE numeric(resp_status)>499 AND numeric(resp_status)<600 as '5xx') SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latest Logs",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT client_ip AS 'Client IP', client_device_type AS 'Device', client_browser_name AS 'Browser', request AS 'Method', resp_status AS 'Status', url AS 'URL', content_type AS 'Content Type', cache_status AS 'Cache Status', time_elapsed AS 'Time Elapsed', client_resp_ttfb AS 'Time to First Byte', fastly_datacenter AS 'Data Center', user_country_code AS 'Country'  WHERE fastly_datacenter IS NOT NULL"
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Information",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
           },
-          "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# [Fastly CDN Logs Client Information](https://docs.fastly.com/en/guides/log-streaming-newrelic-logs)\n\n\n![Add Images](https://www.fastly.com/cimages/6pk8mg3yh2ee/1KOvYgrOJeCUndOpjcDOwJ/17832ecfed4f651168232c263cf6bcfd/og-image.jpg?canvas=1200:630&width=1200&height=630&fit=bounds&bg-color=FFFFFF)"
+          }
+        },
+        {
+          "title": "Requests by Edge Location",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET fastly_datacenter since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests By Client IP",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "  SELECT count(*)  FROM Log WHERE fastly_datacenter IS NOT NULL FACET client_ip as 'Client IP' since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests by Client Country Code",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET user_country_code"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests by Edge Location (over time)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL  FACET fastly_datacenter TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests By Client IP (over time)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "  SELECT count(*)  FROM Log WHERE fastly_datacenter IS NOT NULL FACET client_ip as 'Client IP' TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (2xx,3xx)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND numeric(resp_status)>199 AND numeric(resp_status)<400 FACET resp_status AS 'Status', url AS 'URI' LIMIT 10 since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (4xx,5xx)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND numeric(resp_status)>399 AND numeric(resp_status)<600 FACET resp_status AS 'Status', url AS 'URI' LIMIT 10 since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Cache Miss",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND cache_status='MISS' FACET cache_status AS 'Result Type', url AS 'URI'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (2xx,3xx) (over time)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND numeric(resp_status)>199 AND numeric(resp_status)<400 FACET resp_status AS 'Status', url AS 'URI' TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (4xx,5xx) (over time)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND numeric(resp_status)>399 AND numeric(resp_status)<600 FACET resp_status AS 'Status', url AS 'URI' TIMESERIES LIMIT 10 since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Cache Miss (over time)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL AND cache_status='MISS' FACET url AS 'URI' TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Client Port",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET  client_port AS 'Client Port' since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Device Type",
+          "layout": {
+            "column": 4,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET client_device_type since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Method",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET  request_method since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Content Type",
+          "layout": {
+            "column": 10,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET  content_type since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Referer",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET  request_referer AS 'Referer'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by User Agent",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET request_user_agent AS 'User Agent'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Performance",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# [Fastly CDN Logs Performance](https://docs.fastly.com/en/guides/log-streaming-newrelic-logs)\n\n\n![Add Images](https://www.fastly.com/cimages/6pk8mg3yh2ee/1KOvYgrOJeCUndOpjcDOwJ/17832ecfed4f651168232c263cf6bcfd/og-image.jpg?canvas=1200:630&width=1200&height=630&fit=bounds&bg-color=FFFFFF)"
+          }
+        },
+        {
+          "title": "time_elapsed (Range)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET cases(WHERE time_elapsed <= 10 as '<10ms',WHERE time_elapsed > 10 and time_elapsed <= 50 as '10-50ms',WHERE time_elapsed >50 as '>50ms') TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "time_elapsed (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed) AS 'Average', percentile(time_elapsed,90) AS 'Percentile' WHERE fastly_datacenter IS NOT NULL TIMESERIES since 1 hour ago"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "preserve"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Bandwidth (All POPs)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL SINCE 1 hour ago COMPARE WITH 1 hour AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "client_resp_ttfb (Range)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE fastly_datacenter IS NOT NULL FACET cases(WHERE client_resp_ttfb <= 10 as '<10ms',WHERE client_resp_ttfb > 10 and client_resp_ttfb <= 50 as '10-50ms',WHERE client_resp_ttfb >50 as '>50ms') TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "client_resp_ttfb (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(client_resp_ttfb) AS 'Average', percentile(client_resp_ttfb,90) AS 'Percentile' WHERE fastly_datacenter IS NOT NULL TIMESERIES since 1 hour ago"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "preserve"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Bandwidth by Datacenter",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(client_resp_header_size_write+client_resp_body_size_write)/1000 AS 'Total MB', rate(sum(client_resp_header_size_write+client_resp_body_size_write)/1000*8, 1 minute) AS 'Total MBps' WHERE fastly_datacenter IS NOT NULL FACET fastly_datacenter TIMESERIES SINCE 1 hour ago LIMIT MAX ORDER BY 'Total MB'"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "preserve"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "time_elapsed (ms) by Response Status (Avg/90th)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Average', percentile(time_elapsed,90)/1000 AS 'Percentile' WHERE fastly_datacenter IS NOT NULL FACET resp_status TIMESERIES LIMIT MAX since 1 hour ago"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "preserve"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "client_resp_ttfb by Response Status (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(client_resp_ttfb) AS 'Average', percentile(client_resp_ttfb,90) AS 'Percentile' WHERE fastly_datacenter IS NOT NULL FACET resp_status TIMESERIES since 1 hour ago"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "preserve"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "time_elapsed (ms) by Data Center (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Average', percentile(time_elapsed,90)/1000 AS 'Percentile' WHERE fastly_datacenter IS NOT NULL FACET fastly_datacenter TIMESERIES LIMIT MAX since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "time_elapsed (ms) by URL (Avg/90th)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Average)', percentile(time_elapsed,90)/1000 AS 'Percentile' WHERE fastly_datacenter IS NOT NULL FACET url TIMESERIES LIMIT MAX since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "time_elapsed (ms) by TLS Version (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(time_elapsed)/1000 AS 'Average)', percentile(time_elapsed,90)/1000 AS 'Percentile' WHERE fastly_datacenter IS NOT NULL FACET tls_version TIMESERIES LIMIT MAX since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
         }
       ]
     }
-  ]
+  ],
+  "variables": []
 }
