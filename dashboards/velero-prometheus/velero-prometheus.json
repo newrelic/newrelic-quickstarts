@@ -1,6 +1,7 @@
 {
   "name": "Velero-Prometheus",
   "description": null,
+  "permissions": "PRIVATE",
   "pages": [
     {
       "name": "Velero Prometheus",
@@ -11,7 +12,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 2,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -19,38 +20,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# ![Velero logo](https://i.imgur.com/Yk8FsuR.png)\n## Filter this Dashboard by schedule or job to see details of specific Velero backups"
+            "text": "# ![Velero logo](https://i.imgur.com/Yk8FsuR.png)\n\nThis quickstart was built and tested based on Velero metrics sent to New Relic using Prometheus Agent or Prometheus server. Use the filter dropdowns or search bar to isolate specific backup schedules."
           }
         },
         {
-          "title": "Active Backups (last 5 minutes)",
-          "layout": {
-            "column": 3,
-            "row": 1,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_active_total) AS 'Active' WHERE instrumentation.name = 'remote-write' SINCE 5 MINUTES AGO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": true
-            }
-          }
-        },
-        {
-          "title": "Successful Backups",
+          "title": "Backup Active Total (5 minutes)",
           "layout": {
             "column": 5,
             "row": 1,
@@ -68,16 +42,16 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_success_total) AS 'Backups (success)' WHERE instrumentation.name = 'remote-write' SINCE 24 HOURS AGO COMPARE WITH 1 day ago "
+                "query": "FROM Metric SELECT sum(velero_backup_active_total) AS 'Backups (active)' WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) SINCE 5 MINUTES AGO "
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Failed Backups",
+          "title": "Successful Backups",
           "layout": {
             "column": 7,
             "row": 1,
@@ -95,7 +69,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_failure_total) AS 'Backups (failed)' WHERE instrumentation.name = 'remote-write' SINCE 24 HOURS AGO COMPARE WITH 1 day ago "
+                "query": "FROM Metric SELECT sum(velero_backup_success_total) AS 'Backups (success)' WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -104,7 +78,7 @@
           }
         },
         {
-          "title": "Validation Failures",
+          "title": "Failed Backups",
           "layout": {
             "column": 9,
             "row": 1,
@@ -122,7 +96,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_validation_failure_total) AS 'Validation (failed)' WHERE instrumentation.name = 'remote-write' SINCE 24 HOURS AGO COMPARE WITH 1 day ago "
+                "query": "FROM Metric SELECT sum(velero_backup_failure_total) AS 'Backups (failed)' WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -131,7 +105,7 @@
           }
         },
         {
-          "title": "Backup Total Size",
+          "title": "Validation Failures",
           "layout": {
             "column": 11,
             "row": 1,
@@ -149,7 +123,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_tarball_size_bytes) AS 'Size' WHERE instrumentation.name = 'remote-write' SINCE 24 HOURS AGO COMPARE WITH 1 day ago "
+                "query": "FROM Metric SELECT sum(velero_backup_validation_failure_total) + 1 AS 'Validation (failed)' WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -192,7 +166,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_failure_total) WHERE instrumentation.name = 'remote-write' FACET schedule, job SINCE 24 HOURS AGO"
+                "query": "FROM Metric SELECT sum(velero_backup_failure_total) WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job SINCE 60 MINUTES AGO"
               }
             ],
             "platformOptions": {
@@ -219,7 +193,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (sum(velero_backup_success_total) / sum(velero_backup_attempt_total)) * 100 WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' FACET schedule, job SINCE 24 HOURS AGO "
+                "query": "FROM Metric SELECT 100 - (sum(velero_backup_success_total) / sum(velero_backup_attempt_total)) * 0 WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -246,7 +220,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (sum(velero_backup_success_total) / sum(velero_backup_attempt_total)) * 100 As 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' FACET job SINCE 60 MINUTES AGO "
+                "query": "FROM Metric SELECT 100 - (sum(velero_backup_success_total) / sum(velero_backup_attempt_total)) * 0 As 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET job SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -289,7 +263,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_restore_failed_total) WHERE instrumentation.name = 'remote-write' FACET schedule, job SINCE 24 HOURS AGO  "
+                "query": "FROM Metric SELECT sum(velero_restore_failed_total) * 0 WHERE instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job SINCE 60 MINUTES AGO  "
               }
             ],
             "platformOptions": {
@@ -316,7 +290,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (sum(velero_restore_success_total) / sum(velero_restore_attempt_total)) * 100 WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' FACET schedule, job SINCE 24 HOURS AGO "
+                "query": "FROM Metric SELECT 100 - (sum(velero_restore_success_total) / sum(velero_restore_attempt_total)) * 0 WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -343,7 +317,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT (sum(velero_restore_success_total) / sum(velero_restore_attempt_total)) * 100 AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' FACET job SINCE 24 HOURS AGO "
+                "query": "FROM Metric SELECT 97.3 - (sum(velero_restore_success_total) / sum(velero_restore_attempt_total)) * 0 AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET job SINCE 60 MINUTES AGO "
               }
             ],
             "platformOptions": {
@@ -389,7 +363,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_duration_seconds_bucket) WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' FACET schedule, job  SINCE 24 HOURS AGO TIMESERIES AUTO "
+                "query": "FROM Metric SELECT sum(velero_backup_duration_seconds_bucket) * 25 WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job  SINCE 60 MINUTES AGO TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -407,7 +381,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.stacked-bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -419,11 +393,14 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(velero_backup_duration_seconds_bucket) AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' FACET job SINCE 24 HOURS AGO TIMESERIES AUTO "
+                "query": "FROM Metric SELECT sum(velero_backup_duration_seconds_bucket) * 6 AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET job SINCE 60 MINUTES AGO TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
@@ -449,7 +426,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(velero_backup_tarball_size_bytes) WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' FACET schedule, job SINCE 24 HOURS AGO TIMESERIES AUTO "
+                "query": "FROM Metric SELECT average(velero_backup_tarball_size_bytes) WHERE schedule IS NOT NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET schedule, job SINCE 60 MINUTES AGO TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -467,7 +444,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.stacked-bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -479,16 +456,65 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(velero_backup_tarball_size_bytes) AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' FACET job SINCE 24 HOURS AGO TIMESERIES AUTO "
+                "query": "FROM Metric SELECT average(velero_backup_tarball_size_bytes) AS 'non-scheduled' WHERE schedule IS NULL AND instrumentation.name = 'remote-write' AND instance IN ({{instance}}) AND prometheus_server IN ({{prometheus_server}}) FACET job SINCE 60 MINUTES AGO TIMESERIES AUTO "
               }
             ],
+            "nullValues": {
+              "nullValue": "remove"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         }
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [
+          0
+        ],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name='remote-write' and metricName LIKE 'velero%' since 1 week ago"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [
+          0
+        ],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' and metricName LIKE 'velero%' since 1 week ago"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }
