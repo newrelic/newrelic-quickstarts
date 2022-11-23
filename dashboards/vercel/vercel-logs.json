@@ -1,569 +1,797 @@
 {
-    "name": "Vercel",
-    "description": null,
-    "pages": [
-      {
-        "name": "Overview",
-        "description": null,
-        "widgets": [
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "![Vercel logo](https://logowik.com/content/uploads/images/vercel1868.jpg)\n"
-            }
+  "name": "Vercel",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "title": "Total Log Count",
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "width": 2,
-              "height": 2
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Vercel logo](https://logowik.com/content/uploads/images/vercel1868.jpg)\n"
+          }
+        },
+        {
+          "title": "Cache Hits over time",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
+            "legend": {
+              "enabled": true
             },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Hits' WHERE source = 'static' AND logtype='vercel' WHERE proxy.vercelCache = 'HIT' SINCE 3 days ago TIMESERIES"
               },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(id) as 'Logs' SINCE 7 days ago COMPARE WITH 1 week ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Misses' WHERE source = 'static' AND platform='vercel' AND proxy.vercelCache = 'MISS'  SINCE 3 days ago TIMESERIES"
               }
-            }
-          },
-          {
-            "title": "Cache Hit Rate",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 2,
-              "height": 2
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT percentage(count(*), WHERE proxy.vercelCache = 'HIT')as 'Hit rate' WHERE source = 'static'  COMPARE WITH 1 week ago SINCE 1 week ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "3xx,4xx,5xx Errors by Host",
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) WHERE proxy.statusCode >= 300 FACET host SINCE 1 month ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Method distribution",
-            "layout": {
-              "column": 10,
-              "row": 1,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT Count(id) as 'Logs' WHERE proxy.method IS NOT NULL FACET proxy.method SINCE 1 month ago LIMIT 10"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Real Time Error Logs",
-            "layout": {
-              "column": 1,
-              "row": 3,
-              "width": 6,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "logger.log-table-widget"
-            },
-            "rawConfiguration": {
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT timestamp, message, proxy.statusCode WHERE proxy.statusCode >= 300 AND message IS NOT NULL SINCE 1 month ago LIMIT 10"
-                }
-              ]
-            }
-          },
-          {
-            "title": "Top problematic IP addresses",
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT Count(*) as 'Errors' WHERE proxy.statusCode >= 300 FACET proxy.clientIp SINCE 1 month ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Region distribution",
-            "layout": {
-              "column": 10,
-              "row": 4,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT uniqueCount(id) as 'Logs' WHERE proxy.method IS NOT NULL FACET proxy.region SINCE 1 month ago LIMIT 10"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Recent build logs",
-            "layout": {
-              "column": 1,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "logger.log-table-widget"
-            },
-            "rawConfiguration": {
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT message WHERE source = 'build' SINCE 2 weeks ago limit 25"
-                }
-              ]
-            }
-          },
-          {
-            "title": "Cache Hit % over time",
-            "layout": {
-              "column": 5,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT percentage(count(*),WHERE proxy.vercelCache = 'HIT') as 'Hits' WHERE source = 'static'  SINCE 3 days ago compare with 7 days ago TIMESERIES"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Log source distribution",
-            "layout": {
-              "column": 9,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) FACET source SINCE 1 week ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
+            "yAxisLeft": {
+              "zero": true
             }
           }
-        ]
-      },
-      {
-        "name": "Serverless Function",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Total requests",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) WHERE source = 'lambda' SINCE 3 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+        },
+        {
+          "title": "3xx,4xx,5xx Errors by host",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
           },
-          {
-            "title": "Average duration",
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(duration))/60 as 'minutes' WHERE source = 'lambda' SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
           },
-          {
-            "title": "Total used memory",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 2,
-              "height": 2
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
+            "legend": {
+              "enabled": true
             },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(numeric(used_mem)) as 'MB' WHERE source = 'lambda' SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE proxy.errorCode IS NOT NULL AND logtype='vercel' FACET proxy.host SINCE 2 days ago"
               }
-            }
-          },
-          {
-            "title": "Average used memory",
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(used_mem)) as 'MB' WHERE source = 'lambda' SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Total billed duration",
-            "layout": {
-              "column": 9,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(numeric(billed_duration)) as 'Seconds' WHERE source = 'lambda' SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Average billed duration",
-            "layout": {
-              "column": 11,
-              "row": 1,
-              "width": 2,
-              "height": 2
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(billed_duration)) as 'Seconds' WHERE source = 'lambda' SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Average duration",
-            "layout": {
-              "column": 1,
-              "row": 3,
-              "width": 4,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(duration)) as 'Seconds' WHERE source = 'lambda'  TIMESERIES SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Average used memory",
-            "layout": {
-              "column": 5,
-              "row": 3,
-              "width": 4,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(used_mem)) as 'MB' WHERE source = 'lambda' TIMESERIES SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Average billed duration",
-            "layout": {
-              "column": 9,
-              "row": 3,
-              "width": 4,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT average(numeric(billed_duration)) as 'Seconds' WHERE source = 'lambda' TIMESERIES SINCE 2 weeks ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      }
-    ],
-    "variables": []
-  }
+        },
+        {
+          "title": "Total traffic (log count)",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(id) as 'Logs' WHERE logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top regions",
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT uniqueCount(id) as 'Logs' WHERE proxy.method IS NOT NULL AND logtype='vercel' FACET proxy.region SINCE 2 week ago LIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Log count by status code",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE logtype='vercel' SINCE 2 days ago FACET proxy.statusCode TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Overall cache hit rate",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count(*), WHERE proxy.vercelCache = 'HIT')as 'Hit rate' WHERE source = 'static' AND logtype='vercel' COMPARE WITH 1 week ago SINCE 2 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Caching HIT percentage by projectId",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count(*), WHERE proxy.vercelCache='HIT') WHERE logtype='vercel' AND source='static' FACET projectId LIMIT MAX SINCE 2 days ago TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top MISSED caching hosts",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count(*), WHERE proxy.vercelCache!='HIT') as 'Cache Hit Rate' WHERE logtype='vercel' AND source='static' FACET proxy.host LIMIT MAX SINCE 2 days ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Success rate by host",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count(*),WHERE proxy.statusCode < 400) AS 'success rate' WHERE logtype='vercel' SINCE 2 days ago FACET projectId LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Real Time Error Logs",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 7
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT timestamp, message, proxy.statusCode, proxy.host, projectId WHERE proxy.errorCode IS NOT NULL AND message IS NOT NULL AND logtype='vercel' AND source='static' SINCE 1 days ago LIMIT 50"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Build Logs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Build Logs\n![Vercel logo](https://logowik.com/content/uploads/images/vercel1868.jpg)\n"
+          }
+        },
+        {
+          "title": "Build activity",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT uniqueCount(buildId)as 'builds' WHERE logtype='vercel' AND source='build' SINCE 2 days ago COMPARE WITH 1 week ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Build success/fail over time",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT uniqueCount(buildId)as 'success' WHERE logtype='vercel' AND source= 'build' AND message LIKE '%done with%' SINCE 2 days ago TIMESERIES"
+              },
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT uniqueCount(buildId) as 'fail' WHERE platform= 'vercel' AND source= 'build' AND message LIKE '%failed%' SINCE 2 days ago TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top build errors",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE logtype = 'vercel' AND source = 'build' AND message LIKE '%error%' FACET message SINCE 2 days ago LIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Deployment activity by project",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT uniqueCount(deploymentId) WHERE logtype = 'vercel' AND source='build' FACET projectId LIMIT MAX SINCE 2 days ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Build success rate by project",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(uniqueCount(deploymentId),WHERE message LIKE '%done in%') WHERE logtype = 'vercel' AND source='build' FACET projectId LIMIT MAX SINCE 2 days ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Recent build logs",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT message,projectId, deploymentId, host, buildId WHERE source = 'build' AND logtype='vercel' SINCE 2 days ago limit 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Serverless Function",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total requests",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average duration",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(duration))/60 as 'minutes' WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total used memory",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(used_mem)) as 'MB' WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average used memory",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(used_mem)) as 'MB' WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total billed duration",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(billed_duration)) as 'Seconds' WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average billed duration",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(billed_duration)) as 'Seconds' WHERE source = 'lambda' AND logtype='vercel' SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average duration",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(duration)) as 'Seconds' WHERE source ='lambda' AND logtype='vercel' TIMESERIES SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average used memory",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(used_mem)) as 'MB' WHERE source = 'lambda' AND logtype='vercel' TIMESERIES SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average billed duration",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(billed_duration)) as 'Seconds' WHERE source ='lambda' AND logtype='vercel' TIMESERIES SINCE 2 days ago COMPARE WITH 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
