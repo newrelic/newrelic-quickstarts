@@ -12,14 +12,14 @@
             "column": 1,
             "row": 1,
             "width": 3,
-            "height": 4
+            "height": 5
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![drawing](https://1000logos.net/wp-content/uploads/2022/02/Gitlab-Logo.png)\n# Gitlab Dashboard"
+            "text": "![drawing](https://1000logos.net/wp-content/uploads/2022/02/Gitlab-Logo.png)\n"
           }
         },
         {
@@ -104,38 +104,11 @@
           }
         },
         {
-          "title": "Last Pipeline Run and Status",
+          "title": "Average Stage Duration",
           "layout": {
             "column": 7,
             "row": 1,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(finished_at) as 'Last Run' from Log FACET pipeline.status as 'Status' where gitlab.resource.type = 'span' where gitlab.source  ='gitlab-exporter'  LIMIT 1 since 1 day ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Average Stage Duration",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -247,7 +220,7 @@
             "column": 4,
             "row": 3,
             "width": 1,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -274,7 +247,7 @@
             "column": 5,
             "row": 3,
             "width": 1,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -301,7 +274,7 @@
             "column": 6,
             "row": 3,
             "width": 1,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -323,11 +296,11 @@
           }
         },
         {
-          "title": "Top 10 - Stage failure last hour",
+          "title": "Job failure errors",
           "layout": {
-            "column": 7,
-            "row": 3,
-            "width": 2,
+            "column": 4,
+            "row": 4,
+            "width": 3,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -341,7 +314,34 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT percentage(count(*), where status != 'success') FROM Log FACET stage where gitlab.resource.type = 'job' where gitlab.source  ='gitlab-metrics-exporter'"
+                "query": "SELECT latest(failure_reason) as 'Reason' FROM Log where status != 'success' FACET entity.name where gitlab.resource.type = 'span' where gitlab.source  ='gitlab-exporter'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Project latest pipeline and status",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(finished_at) as 'Last Run' from Log FACET entity.name as 'Project', status where gitlab.resource.type = 'span' where gitlab.source  ='gitlab-exporter'  LIMIT max since 1 day ago"
               }
             ],
             "platformOptions": {
@@ -352,10 +352,10 @@
         {
           "title": "Average Pipeline Duration",
           "layout": {
-            "column": 9,
-            "row": 4,
+            "column": 1,
+            "row": 6,
             "width": 2,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -379,10 +379,10 @@
         {
           "title": "Average Pipeline Duration",
           "layout": {
-            "column": 11,
-            "row": 4,
+            "column": 3,
+            "row": 6,
             "width": 2,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -404,66 +404,12 @@
           }
         },
         {
-          "title": "Top 10 job failure errors",
-          "layout": {
-            "column": 1,
-            "row": 5,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT uniqueCount(failure_reason) as 'Reason' FROM Log where status != 'success' FACET failure_reason where gitlab.resource.type = 'job' where gitlab.source  ='gitlab-metrics-exporter'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Self-Hosted Runners status",
-          "layout": {
-            "column": 4,
-            "row": 5,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(status) as 'Status' from Log FACET name,description since 1 hour ago where gitlab.resource.type ='runner' WHERE gitlab.source ='gitlab-metrics-exporter'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
           "title": "Average pipeline queued duration",
           "layout": {
-            "column": 9,
+            "column": 5,
             "row": 6,
             "width": 2,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -487,10 +433,10 @@
         {
           "title": "Average Job queued duration",
           "layout": {
-            "column": 11,
+            "column": 7,
             "row": 6,
             "width": 2,
-            "height": 2
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -504,6 +450,87 @@
               {
                 "accountId": 0,
                 "query": "SELECT average(gitlab_jobs.queued_duration) as 'Average job queued_duration' FROM Metric where gitlab.resource.type = 'job' where gitlab.source  ='gitlab-metrics-exporter'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 - Stage failure last hour",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT percentage(count(*), where status != 'success') FROM Log FACET stage, entity.name where gitlab.resource.type = 'job' where gitlab.source  ='gitlab-metrics-exporter'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Self-Hosted Runners status",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(status) as 'Status' from Log FACET name,description since 1 hour ago where gitlab.resource.type ='runner' WHERE gitlab.source ='gitlab-metrics-exporter'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average pipeline duration per project",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(gitlab_pipelines.duration) as 'Pipeline' from Metric facet entity.name since 1 hour ago where gitlab.resource.type ='pipeline' WHERE gitlab.source ='gitlab-metrics-exporter' limit max"
               }
             ],
             "platformOptions": {
