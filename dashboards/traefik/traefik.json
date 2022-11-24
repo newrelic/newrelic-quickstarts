@@ -1,6 +1,6 @@
 {
-  "name": "Traefik Metrics",
-  "description": null,
+  "name": "Traefik Metrics (Prometheus)",
+  "description": "This quickstart was built and tested based on Traefik metrics sent to New Relic using Prometheus Agent or Prometheus server",
   "pages": [
     {
       "name": "Traefik Metrics",
@@ -51,7 +51,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nmax(traefik_config_last_reload_success)*1000 AS 'Last Reload Success',\nmax(traefik_config_last_reload_failure)*1000 AS 'Last Reload Failure',\nsum(traefik_config_reloads_total) AS 'Total Reloads',\nsum(traefik_config_reloads_failure_total) AS 'Total Failed Reloads'\nFACET prometheus_server, instance\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nmax(traefik_config_last_reload_success)*1000 AS 'Last Reload Success',\nmax(traefik_config_last_reload_failure)*1000 AS 'Last Reload Failure',\nsum(traefik_config_reloads_total) AS 'Total Reloads',\nsum(traefik_config_reloads_failure_total) AS 'Total Failed Reloads'\nFACET prometheus_server, instance\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -78,7 +78,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nsum(traefik_entrypoint_requests_total) AS 'Total Requests'\nFACET instance, entrypoint\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nsum(traefik_entrypoint_requests_total) AS 'Total Requests'\nFACET instance, entrypoint\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -108,7 +108,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections'\nFACET instance, entrypoint\nWHERE instrumentation.name = 'remote-write'\nTIMESERIES\nLIMIT MAX"
+                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections'\nFACET instance, entrypoint\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) \nTIMESERIES\nLIMIT MAX "
               }
             ],
             "platformOptions": {
@@ -138,7 +138,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections',\nsum(traefik_entrypoint_requests_total) AS 'Total Requests',\nsum(traefik_entrypoint_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_entrypoint_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_entrypoint_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, instance, entrypoint, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections',\nsum(traefik_entrypoint_requests_total) AS 'Total Requests',\nsum(traefik_entrypoint_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_entrypoint_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_entrypoint_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, instance, entrypoint, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -165,7 +165,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nsum(traefik_service_requests_total) AS 'Total Requests'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nsum(traefik_service_requests_total) AS 'Total Requests'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -195,7 +195,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT count(traefik_service_requests_total) AS 'Total Requests' FACET instance, service, code WHERE instrumentation.name = 'remote-write' LIMIT MAX"
+                "query": "FROM Metric SELECT count(traefik_service_requests_total) AS 'Total Requests' FACET instance, service, code WHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -222,7 +222,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -249,7 +249,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nlatest(traefik_service_open_connections) AS 'Open Connections',\nsum(traefik_service_requests_total) AS 'Total Requests',\nsum(traefik_service_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_service_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, service, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nlatest(traefik_service_open_connections) AS 'Open Connections',\nsum(traefik_service_requests_total) AS 'Total Requests',\nsum(traefik_service_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_service_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, service, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -282,7 +282,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT\nlatest(traefik_tls_certs_not_after)*1000 AS 'Expiration Date'\nFACET prometheus_server, instance, cn AS 'Common Name', sans AS 'Subject Alternate Name', serial\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric SELECT\nlatest(traefik_tls_certs_not_after)*1000 AS 'Expiration Date'\nFACET prometheus_server, instance, cn AS 'Common Name', sans AS 'Subject Alternate Name', serial\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance)"
               }
             ],
             "platformOptions": {
@@ -293,5 +293,48 @@
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [
+          0
+        ],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' and metricName LIKE 'traefik%' since 1 week ago"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [
+          0
+        ],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'traefik%' since 1 week ago\n"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }
