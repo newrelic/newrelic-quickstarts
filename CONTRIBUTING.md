@@ -386,7 +386,7 @@ To convert an exported dashboard to the correct schema:
 
 1. Remove the `permissions` field
 2. Set every instance of `accountId` to `0`
-3. Set every instance of `accountIds` (plural) to []
+3. Set every instance of `accountIds` (plural) to `[]`
 4. Set every instance of `linkedEntityGuids` to `null`
 
 We provide a handy script to do this for you:
