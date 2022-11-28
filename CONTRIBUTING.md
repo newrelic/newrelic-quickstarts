@@ -386,7 +386,8 @@ To convert an exported dashboard to the correct schema:
 
 1. Remove the `permissions` field
 2. Set every instance of `accountId` to `0`
-3. Set every instance of `linkedEntityGuids` to `null`
+3. Set every instance of `accountIds` (plural) to []
+4. Set every instance of `linkedEntityGuids` to `null`
 
 We provide a handy script to do this for you:
 
@@ -411,6 +412,7 @@ exmaple-screenshot2.png
 | name        | yes       |         | The name of the dashboard, must be unique across all dashboards in the system. Name uniqueness will be checked at pull request time |
 | description | no        |         | A nice description of the dashboard, displayed in the catalogue                                                                     |
 | pages       | yes       |         | The main configuration for the dashboard, generated when exporting from New Relic                                                   |
+| variables   | no        |         | Variables for the dashboard                                                                                                         |
 
 #### Dashboard Permissions
 
