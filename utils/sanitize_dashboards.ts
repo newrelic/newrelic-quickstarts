@@ -5,7 +5,7 @@ import * as glob from 'glob';
 const sanitizeRawContent = (rawConfig: string): string => {
   return rawConfig
     .replace(/\"accountId\"\s*:\s*\d+/g, '"accountId": 0') // Anonymize account ID
-    .replace(/\"accountIds\"\s*:\s.*/g, '"accountIds": []')
+    .replace(/\"accountIds\"\s*:\s\[[.\s\S]*?\]/g, '"accountIds": []')
     .replace(
       /\"linkedEntityGuids\"\s*:\s*\[([\t\n\r]*)?.*([\t\n\r]*)?\s*\]/g,
       '"linkedEntityGuids": null'
