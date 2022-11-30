@@ -24,10 +24,10 @@ const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 describe('DataSource', () => {
   describe('constructor', () => {
     test('Creates valid DataSource', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       expect(source.isValid).toBe(true);
       expect(source.config).toBeDefined();
-      expect(source.config.id).toBe('test-data-source');
+      expect(source.identifier).toBe('mock-data-source-1');
     });
 
     test('Creates invalid DataSource when file does not exist', () => {
@@ -42,7 +42,7 @@ describe('DataSource', () => {
 
   describe('getConfigFilePath', () => {
     test('Creates valid configPath', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       expect(source.configPath).toEqual(
         'data-sources/mock-data-source-1/config.yml'
       );
@@ -59,7 +59,7 @@ describe('DataSource', () => {
     });
 
     test('Fails to create valid config path, basePath is invalid', () => {
-      const source = new DataSource('mock-data-source-1', __dirname);
+      const source = new DataSource('test-data-source', __dirname);
       expect(source.configPath).toEqual('');
       expect(source.isValid).toBe(false);
     });
@@ -81,7 +81,7 @@ describe('DataSource', () => {
       fs.readFileSync.mockImplementationOnce(() => {
         throw new Error('test');
       });
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       expect(source.isValid).toBe(false);
       expect(console.log).toHaveBeenCalledTimes(1);
     });
