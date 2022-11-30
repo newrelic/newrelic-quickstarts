@@ -11,7 +11,7 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"linkedEntityGuids\": (?:(?!null))/, `\"entityGuid\" should not be used`],
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
-  [/\"accountIds\"\s*:\s\[[.\s\S]*?\]/, `\"accountIds\" must be set to []`]
+  [/\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/, `\"accountIds\" must be set to []`]
 ];
 
 export const checkLine = (line: string) => {
