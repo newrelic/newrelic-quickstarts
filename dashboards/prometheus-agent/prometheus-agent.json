@@ -1,9 +1,9 @@
 {
-  "name": "Calico (Prometheus)",
-  "description": "This quickstart was built and tested based on Calico CNI metrics sent to New Relic using Prometheus Agent or Prometheus server",
+  "name": "Prometheus Agent",
+  "description": null,
   "pages": [
     {
-      "name": "Calico",
+      "name": "Prometheus Monitoring",
       "description": null,
       "widgets": [
         {
@@ -11,24 +11,87 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
-            "height": 4
+            "width": 3,
+            "height": 6
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![Calico Logo](https://i.imgur.com/hq2cpxI.png) \n- - -\n### Overview\n[Calico](https://github.com/projectcalico/calico) is a widely adopted, battle-tested open source networking and network security solution for Kubernetes, virtual machines, and bare-metal workloads.\nCalico provides two major services for Cloud Native applications:\n\n- Network connectivity between workloads.\n- Network security policy enforcement between workloads.\n\n\n### About this Dashboard\n\nThis dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\nFor information on the prerequisites for this dashboard, please visit [our documentation here.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/calico-integration)"
+            "text": "# Overview\n\nThis dashboard provides insight into the metrics collected into this account via the [Prometheus Agent](https://github.com/newrelic/newrelic-prometheus-configurator). \n\nIf you have integrated multiple servers, you may filter this dashboard's results to a single cluster by setting the `cluster_name` variable into the filter bar above.  \n\n&nbsp;\n\n# Usage\n\nThis dashboard tab contains charts that provide information about metrics volume sent to New Relic. These charts are useful in helping to monitor the metrics you are sending to the New Relic Remote Write.\n\n&nbsp;\n\nFor more detailed information on the health of the Prometheus servers, navigate to the next tab.\n\n&nbsp;\n\n**Note:** To gather more insights about metrics directly related to the New Relic Remote Write, check out the adhoc dashboard created for it."
           }
         },
         {
-          "title": "Number of Calico Hosts",
+          "title": "Samples Sent/Sec by Source",
           "layout": {
-            "column": 5,
+            "column": 4,
             "row": 1,
             "width": 4,
-            "height": 4
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(prometheus_remote_storage_samples_in_total), 1 second)  AS 'Samples Appended / Sec' WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Samples Sent/Sec by Source",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(prometheus_remote_storage_samples_in_total), 1 second)  AS 'Samples Appended / Sec' WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Unique Metric Name by Source",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -41,7 +104,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_hosts) AS 'Number of Calico Hosts' FROM Metric WHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )  facet prometheus_server"
+                "query": "FROM Metric SELECT uniqueCount(metricName) WHERE collector.name = 'prometheus-agent' FACET prometheus_server LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -50,48 +113,76 @@
           }
         },
         {
-          "title": "Active Policies",
+          "title": "Unique Timeseries by Source (metric cardinality)",
           "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 4
+            "column": 7,
+            "row": 4,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_policies) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT cardinality() AS 'Time Series' WHERE collector.name = 'prometheus-agent' FACET prometheus_server LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "COUNT"
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 200000
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 100000
+              }
+            ]
+          }
+        },
+        {
+          "title": "Unique Timeseries by Metric (metric cardinality)",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT cardinality(metricName) WHERE collector.name = 'prometheus-agent' FACET metricName LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
         },
         {
-          "title": "Active Local EndPoints",
+          "title": "Active Series by Source",
           "layout": {
             "column": 1,
-            "row": 5,
-            "width": 4,
-            "height": 4
+            "row": 7,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -107,14 +198,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_endpoints) FROM Metric WHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT latest(prometheus_agent_active_series) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -122,12 +210,12 @@
           }
         },
         {
-          "title": "Active IP Sets",
+          "title": "Pending Samples by Source",
           "layout": {
-            "column": 5,
-            "row": 5,
-            "width": 4,
-            "height": 4
+            "column": 4,
+            "row": 7,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -143,14 +231,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_ipsets_calico)  FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT latest(prometheus_remote_storage_samples_pending) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -158,12 +243,12 @@
           }
         },
         {
-          "title": "Active  Local Selectors",
+          "title": "Samples Retried by Source",
           "layout": {
-            "column": 9,
-            "row": 5,
-            "width": 4,
-            "height": 4
+            "column": 7,
+            "row": 7,
+            "width": 3,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -179,14 +264,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_selectors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "from Metric SELECT sum(prometheus_remote_storage_samples_retried_total) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -194,11 +276,11 @@
           }
         },
         {
-          "title": "Cluster Workload Endpoints",
+          "title": "Failed Samples by Source",
           "layout": {
             "column": 1,
-            "row": 9,
-            "width": 4,
+            "row": 10,
+            "width": 3,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -215,187 +297,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_workload_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Cluster Host Endpoints",
-          "layout": {
-            "column": 5,
-            "row": 9,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_host_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Felix Resyncing Datastore",
-          "layout": {
-            "column": 9,
-            "row": 9,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(felix_resyncs_started) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Dataplane Failed Updates",
-          "layout": {
-            "column": 1,
-            "row": 12,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(felix_int_dataplane_failures) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "IP Set Command Failures",
-          "layout": {
-            "column": 5,
-            "row": 12,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(felix_ipset_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Cluster Wide Policies",
-          "layout": {
-            "column": 9,
-            "row": 12,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric Select latest(felix_cluster_num_policies) WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(prometheus_remote_storage_samples_failed_total), 1 second)  AS 'Samples Failed/Sec' WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -409,15 +311,207 @@
       ]
     },
     {
-      "name": "IP Tables",
+      "name": "Prometheus Server Monitoring",
       "description": null,
       "widgets": [
         {
-          "title": "Active IP Tables Chains By Instance, ip_version",
+          "title": "Memory by Source+Job",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(process_resident_memory_bytes), latest(process_virtual_memory_bytes) WHERE collector.name = 'prometheus-agent' TIMESERIES AUTO FACET prometheus_server,job LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CPU by Source+Job",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(latest(process_cpu_seconds_total),1 second)*100 WHERE collector.name = 'prometheus-agent' TIMESERIES AUTO FACET prometheus_server,job LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Targets Failed to Scrape by Source",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(latest(up), WHERE up[latest]=0) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Prometheus Server Instances (Shards) by Cluster",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT UniqueCount(prometheus_server)as 'Prometheus Shards Count' WHERE collector.name = 'prometheus-agent' FACET cluster_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Target Interval Length by Source+Quantile",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT max(prometheus_target_interval_length_seconds) WHERE collector.name = 'prometheus-agent' FACET prometheus_server,quantile as quantile TIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Max Scrape Duration by Source+Job",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT max(scrape_duration_seconds) WHERE collector.name = 'prometheus-agent' TIMESERIES AUTO FACET prometheus_server,job LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Remote Write Threads by Source",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -431,7 +525,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(chains) FROM ( FROM Metric SELECT latest(felix_iptables_chains) AS 'chains' FACET prometheus_server, instance, ip_version, table WHERE instrumentation.name= 'remote-write' AND prometheus_server IN ( {{ prometheus_server }} ) AND instance IN ( {{instance}} ) LIMIT MAX ) facet concat(prometheus_server,' - ',instance) , concat('ip_version: ',ip_version)"
+                "query": "FROM Metric SELECT latest(prometheus_remote_storage_shards) WHERE collector.name = 'prometheus-agent' FACET prometheus_server LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -440,160 +534,10 @@
           }
         },
         {
-          "title": "Active IP Tables Chains By Type",
-          "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_iptables_chains) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "IP Tables Restore Errors",
+          "title": "Total WAL Corruptions by Source",
           "layout": {
             "column": 1,
-            "row": 4,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(felix_iptables_restore_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "IP Tables Save Errors",
-          "layout": {
-            "column": 4,
-            "row": 4,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(felix_iptables_save_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Active IP Tables Rules by type",
-          "layout": {
-            "column": 7,
-            "row": 4,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_iptables_rules) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance),table TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Calico-BPF",
-      "description": null,
-      "widgets": [
-        {
-          "title": "BPF EndPoints",
-          "layout": {
-            "column": 1,
-            "row": 1,
+            "row": 7,
             "width": 4,
             "height": 3
           },
@@ -611,14 +555,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dataplane_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT sum(prometheus_agent_corruptions_total) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES auto LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -626,10 +567,10 @@
           }
         },
         {
-          "title": "Failed BPF EndPoints",
+          "title": "Checkpoint Creation/Deletion Failed by Source",
           "layout": {
             "column": 5,
-            "row": 1,
+            "row": 7,
             "width": 4,
             "height": 3
           },
@@ -647,14 +588,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dirty_dataplane_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT sum(prometheus_agent_checkpoint_creations_failed_total), sum(prometheus_agent_checkpoint_deletions_failed_total) WHERE collector.name = 'prometheus-agent' FACET prometheus_server TIMESERIES  auto LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -662,10 +600,10 @@
           }
         },
         {
-          "title": "BPF IPsets",
+          "title": "Service Discovery K8s Https Requests by Source+Status",
           "layout": {
             "column": 9,
-            "row": 1,
+            "row": 7,
             "width": 4,
             "height": 3
           },
@@ -683,14 +621,44 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_num_ip_sets) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+                "query": "FROM Metric SELECT sum(prometheus_sd_kubernetes_http_request_total) WHERE collector.name = 'prometheus-agent' FACET prometheus_server, status_code TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "COUNT"
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Service Discovery K8s Events by Source+Role",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(prometheus_sd_kubernetes_events_total) WHERE collector.name = 'prometheus-agent' FACET prometheus_server,role TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
             "yAxisLeft": {
               "zero": true
@@ -700,44 +668,5 @@
       ]
     }
   ],
-  "variables": [
-    {
-      "name": "prometheus_server",
-      "items": null,
-      "defaultValues": [
-        {
-          "value": {
-            "string": "*"
-          }
-        }
-      ],
-      "nrqlQuery": {
-        "accountIds": [],
-        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' and metricName LIKE 'felix%' since 1 week ago\n\n\n"
-      },
-      "title": "Prometheus Server",
-      "type": "NRQL",
-      "isMultiSelection": true,
-      "replacementStrategy": "STRING"
-    },
-    {
-      "name": "instance",
-      "items": null,
-      "defaultValues": [
-        {
-          "value": {
-            "string": "*"
-          }
-        }
-      ],
-      "nrqlQuery": {
-        "accountIds": [],
-        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'felix%' since 1 week ago\n"
-      },
-      "title": "Instance",
-      "type": "NRQL",
-      "isMultiSelection": true,
-      "replacementStrategy": "STRING"
-    }
-  ]
+  "variables": []
 }
