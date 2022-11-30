@@ -1,7 +1,6 @@
 {
   "name": "Kubernetes / Compute Resources",
   "description": null,
-  "permissions": "PUBLIC_READ_WRITE",
   "pages": [
     {
       "name": "By Node",
@@ -25,7 +24,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -52,7 +51,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -80,7 +79,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -107,7 +106,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -137,7 +136,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (FROM Metric SELECT rate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second)*100 as usage facet container, pod, instance, namespace, cluster_name where cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) timeseries 1 minute limit max) select sum(usage) facet instance timeseries 1 minute limit max"
               }
             ],
@@ -164,7 +163,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n\trate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second) * 100 as 'CPU Usage (Pod Only)',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests)) as 'CPU Requests',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits)) as 'CPU Limits',\t\n\t(\n\t\t(sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests))) / \n\t\t(average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) *\n\t\t\tcardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable))\n\t\t)\n\t) * 100 as 'CPU Requests %',\n\t(\n\t\t(sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits))) / \n\t\t(average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) *\n\t\t\tcardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable))\n\t\t)\n\t) * 100 as 'CPU Limits %'\n\nFROM Metric WHERE cluster_name={{cluster}} \nSINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET if(node is not null, node, instance) as node LIMIT max"
               }
             ],
@@ -194,7 +193,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (SELECT average(conditional(WHERE container!='' and container is not null, container_memory_working_set_bytes)) as container_mem FROM Metric where cluster_name = {{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  facet container, instance, namespace, cluster_name, pod timeseries 1 minute limit max) select sum(container_mem) as 'Pod memory' timeseries 1 minute limit max facet instance"
               }
             ],
@@ -235,7 +234,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT average(conditional(WHERE container != '' and container is not null, container_memory_working_set_bytes)) as 'Memory Usage (Pod Only)', \nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests)) as 'Memory Requests',\nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits)) as 'Memory Limits',\n((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests %', ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits %' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET if(node is not null, node, instance) as node LIMIT max"
               }
             ],
@@ -262,7 +261,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n(average(receiveBytes) * cardinality(receiveBytes)) as 'Receive bytes/sec',\n(average(transmitBytes) * cardinality(transmitBytes)) as 'Transmit bytes/sec',\n(average(receivePackets) * cardinality(receivePackets)) as 'Receive packets/sec',\n(average(transmitPackets) * cardinality(transmitPackets)) as 'Transmit packets/sec',\n(average(droppedReceivePackets) * cardinality(droppedReceivePackets)) as 'Dropped receive packets/sec',\n(average(droppedTransmitPackets) * cardinality(droppedTransmitPackets)) as 'Dropped transmit packets/sec' FROM (\n\tSELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS receiveBytes,\n\tirate(container_network_transmit_bytes_total, 1 SECONDS) AS transmitBytes,\n\tirate(container_network_receive_packets_total, 1 SECONDS) AS receivePackets,\n\tirate(container_network_transmit_packets_total, 1 SECONDS) AS transmitPackets,\n\tirate(container_network_receive_packets_dropped_total, 1 SECONDS) AS droppedReceivePackets,\n\tirate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS droppedTransmitPackets\n\tFROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  FACET dimensions() limit max\n) SINCE 2 Minutes ago UNTIL 1 Minute ago FACET instance limit max"
               }
             ],
@@ -292,7 +291,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) FACET dimensions() LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -322,7 +321,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -352,7 +351,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -382,7 +381,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -412,7 +411,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -442,7 +441,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -472,7 +471,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ceil((average((`__result_0` + `__result_1`)) * cardinality((`__result_0` + `__result_1`)))) FROM (SELECT rate(sum(container_fs_reads_total), 1 SECONDS) AS `__result_0`, rate(sum(container_fs_writes_total), 1 SECONDS) AS `__result_1` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -502,7 +501,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average((`__result_0` + `__result_1`)) * cardinality((`__result_0` + `__result_1`))) FROM (SELECT rate(sum(container_fs_reads_bytes_total), 1 SECONDS) AS `__result_0`, rate(sum(container_fs_writes_bytes_total), 1 SECONDS) AS `__result_1` FROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) FACET dimensions() LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -529,7 +528,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT\nrate(sum(container_fs_reads_total), 1 SECONDS) as 'I/O Read Ops',\nrate(sum(container_fs_writes_total), 1 SECONDS) as 'I/O Write Ops',\nrate(sum(container_fs_reads_total), 1 SECONDS) + rate(sum(container_fs_writes_total), 1 SECONDS) as 'I/O Read + Write Ops',\nrate(sum(container_fs_reads_bytes_total), 1 SECONDS) as 'Throughput Reads',\nrate(sum(container_fs_writes_bytes_total), 1 SECONDS) as 'Throughput Writes',\nrate(sum(container_fs_reads_total), 1 SECONDS) + rate(sum(container_fs_writes_bytes_total), 1 SECONDS) as 'Throughput Reads + Writes'\n\nFROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) SINCE 2 Minutes ago UNTIL 1 Minute ago FACET instance LIMIT max"
               }
             ],
@@ -562,7 +561,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -589,7 +588,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -617,7 +616,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -644,7 +643,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -674,7 +673,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (FROM Metric SELECT rate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second)*100 as usage facet container, pod, instance, namespace, cluster_name where cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) timeseries 1 minute limit max) select sum(usage) facet concat(namespace,'/',pod) timeseries 1 minute limit max"
               }
             ],
@@ -701,7 +700,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n\trate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second) * 100 as 'CPU Usage',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests)) as 'CPU Requests',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits)) as 'CPU Limits'\nFROM Metric WHERE cluster_name={{cluster}} \nSINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET namespace,pod LIMIT max"
               }
             ],
@@ -731,7 +730,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (SELECT average(conditional(WHERE container!='' and container is not null, container_memory_working_set_bytes)) as container_mem FROM Metric where cluster_name = {{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  facet container, instance, namespace, cluster_name, pod timeseries 1 minute limit max) select sum(container_mem) as 'Pod memory' timeseries 1 minute limit max facet concat(namespace, '/', pod)"
               }
             ],
@@ -772,7 +771,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT average(conditional(WHERE container != '' and container is not null, container_memory_working_set_bytes)) as 'Memory Usage (Pod Only)', \nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests)) as 'Memory Requests',\nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits)) as 'Memory Limits'\nFROM Metric WHERE cluster_name={{cluster}} SINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET namespace, pod LIMIT max"
               }
             ],
@@ -799,7 +798,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n(average(receiveBytes) * cardinality(receiveBytes)) as 'Receive bytes/sec',\n(average(transmitBytes) * cardinality(transmitBytes)) as 'Transmit bytes/sec',\n(average(receivePackets) * cardinality(receivePackets)) as 'Receive packets/sec',\n(average(transmitPackets) * cardinality(transmitPackets)) as 'Transmit packets/sec',\n(average(droppedReceivePackets) * cardinality(droppedReceivePackets)) as 'Dropped receive packets/sec',\n(average(droppedTransmitPackets) * cardinality(droppedTransmitPackets)) as 'Dropped transmit packets/sec' FROM (\n\tSELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS receiveBytes,\n\tirate(container_network_transmit_bytes_total, 1 SECONDS) AS transmitBytes,\n\tirate(container_network_receive_packets_total, 1 SECONDS) AS receivePackets,\n\tirate(container_network_transmit_packets_total, 1 SECONDS) AS transmitPackets,\n\tirate(container_network_receive_packets_dropped_total, 1 SECONDS) AS droppedReceivePackets,\n\tirate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS droppedTransmitPackets\n\tFROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  FACET dimensions() limit max\n) SINCE 2 Minutes ago UNTIL 1 Minute ago FACET namespace, pod limit max"
               }
             ],
@@ -829,7 +828,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) FACET dimensions() LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -859,7 +858,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -889,7 +888,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -919,7 +918,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -949,7 +948,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -979,7 +978,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(pod is null, '', concat(namespace, '/', pod)) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1012,7 +1011,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -1039,7 +1038,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'cpu')), kube_node_status_allocatable)))) * 100 as 'CPU Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -1067,7 +1066,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Requests Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -1094,7 +1093,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT ((sum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits))) / (average(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)) * cardinality(conditional(WHERE ((job = 'kube-state-metrics') AND (resource = 'memory')), kube_node_status_allocatable)))) * 100 as 'Memory Limits Commitment' FROM Metric WHERE cluster_name={{cluster}} SINCE 2 Minutes ago UNTIL 1 Minute ago"
               }
             ],
@@ -1124,7 +1123,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (FROM Metric SELECT rate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second)*100 as usage facet container, pod, instance, namespace, cluster_name where cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) timeseries 1 minute limit max) select sum(usage) facet namespace timeseries 1 minute limit max"
               }
             ],
@@ -1151,7 +1150,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n\trate(sum(conditional(WHERE container!='' and container is not null, container_cpu_usage_seconds_total)), 1 second) * 100 as 'CPU Usage',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_requests)) as 'CPU Requests',\n\tsum(conditional(WHERE resource = 'cpu', kube_pod_container_resource_limits)) as 'CPU Limits'\nFROM Metric WHERE cluster_name={{cluster}} \nSINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET namespace LIMIT max"
               }
             ],
@@ -1181,7 +1180,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "From (SELECT average(conditional(WHERE container!='' and container is not null, container_memory_working_set_bytes)) as container_mem FROM Metric where cluster_name = {{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  facet container, instance, namespace, cluster_name, pod timeseries 1 minute limit max) select sum(container_mem) as 'Pod memory' timeseries 1 minute limit max facet namespace"
               }
             ],
@@ -1222,7 +1221,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT average(conditional(WHERE container != '' and container is not null, container_memory_working_set_bytes)) as 'Memory Usage (Pod Only)', \nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_requests)) as 'Memory Requests',\nsum(conditional(WHERE resource = 'memory', kube_pod_container_resource_limits)) as 'Memory Limits'\nFROM Metric WHERE cluster_name={{cluster}} SINCE 2 MINUTES AGO UNTIL 1 MINUTE AGO FACET namespace LIMIT max"
               }
             ],
@@ -1249,7 +1248,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT \n(average(receiveBytes) * cardinality(receiveBytes)) as 'Receive bytes/sec',\n(average(transmitBytes) * cardinality(transmitBytes)) as 'Transmit bytes/sec',\n(average(receivePackets) * cardinality(receivePackets)) as 'Receive packets/sec',\n(average(transmitPackets) * cardinality(transmitPackets)) as 'Transmit packets/sec',\n(average(droppedReceivePackets) * cardinality(droppedReceivePackets)) as 'Dropped receive packets/sec',\n(average(droppedTransmitPackets) * cardinality(droppedTransmitPackets)) as 'Dropped transmit packets/sec' FROM (\n\tSELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS receiveBytes,\n\tirate(container_network_transmit_bytes_total, 1 SECONDS) AS transmitBytes,\n\tirate(container_network_receive_packets_total, 1 SECONDS) AS receivePackets,\n\tirate(container_network_transmit_packets_total, 1 SECONDS) AS transmitPackets,\n\tirate(container_network_receive_packets_dropped_total, 1 SECONDS) AS droppedReceivePackets,\n\tirate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS droppedTransmitPackets\n\tFROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  FACET dimensions() limit max\n) SINCE 2 Minutes ago UNTIL 1 Minute ago FACET namespace limit max"
               }
             ],
@@ -1279,7 +1278,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) FACET dimensions() LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1309,7 +1308,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1339,7 +1338,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1369,7 +1368,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1399,7 +1398,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_transmit_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance) LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
@@ -1429,7 +1428,7 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 11732014,
+                "accountId": 0,
                 "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(container_network_receive_packets_dropped_total, 1 SECONDS) AS `__result_0` FROM Metric FACET dimensions() WHERE cluster_name={{cluster}} and namespace=if({{namespace}} != '', {{namespace}}, namespace)  and instance=if({{node}} != '', {{node}}, instance)  LIMIT max TIMESERIES 1 minute) SINCE 60 MINUTES AGO UNTIL NOW FACET if(namespace is null, '', namespace) LIMIT max TIMESERIES 1 minute"
               }
             ],
