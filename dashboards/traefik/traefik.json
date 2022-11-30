@@ -1,297 +1,336 @@
 {
-    "name": "Traefik Metrics",
-    "description": null,
-    "pages": [
-      {
-        "name": "Traefik Metrics",
-        "description": null,
-        "widgets": [
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 3,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "![New Relic logo](https://i.imgur.com/gQaFo7i.png) \n- - -\n### Overview\n`Traefik` (pronounced *traffic*) is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy.\n\n### About this Dashboard\n\nThis dashboard is based on standard `traefik` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `traefik` instances in the cluster.  "
-            }
+  "name": "Traefik (Prometheus)",
+  "description": "This quickstart was built and tested based on Traefik metrics sent to New Relic using Prometheus Agent or Prometheus server",
+  "pages": [
+    {
+      "name": "Traefik Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 4
           },
-          {
-            "title": "Configuration Reload Statistics",
-            "layout": {
-              "column": 4,
-              "row": 1,
-              "width": 9,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [
-                {
-                  "name": "Last Reload Failure",
-                  "type": "date"
-                },
-                {
-                  "name": "Last Reload Success",
-                  "type": "date"
-                }
-              ],
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nmax(traefik_config_last_reload_success)*1000 AS 'Last Reload Success',\nmax(traefik_config_last_reload_failure)*1000 AS 'Last Reload Failure',\nsum(traefik_config_reloads_total) AS 'Total Reloads',\nsum(traefik_config_reloads_failure_total) AS 'Total Failed Reloads'\nFACET prometheus_server, instance\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
           },
-          {
-            "title": "Entrypoint Total Requests",
-            "layout": {
-              "column": 1,
-              "row": 5,
-              "width": 3,
-              "height": 8
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nsum(traefik_entrypoint_requests_total) AS 'Total Requests'\nFACET instance, entrypoint\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+          "rawConfiguration": {
+            "text": "![New Relic logo](https://i.imgur.com/gQaFo7i.png) \n- - -\n### Overview\n`Traefik` (pronounced *traffic*) is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy.\n\n### About this Dashboard\n\nThis dashboard is based on standard `traefik` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `traefik` instances in the cluster.  "
+          }
+        },
+        {
+          "title": "Configuration Reload Statistics",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 4
           },
-          {
-            "title": "Open Connections per Entrypoint",
-            "layout": {
-              "column": 4,
-              "row": 5,
-              "width": 9,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections'\nFACET instance, entrypoint\nWHERE instrumentation.name = 'remote-write'\nTIMESERIES\nLIMIT MAX"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
           },
-          {
-            "title": "Entrypoint Statistics",
-            "layout": {
-              "column": 4,
-              "row": 9,
-              "width": 9,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Last Reload Failure",
+                "type": "date"
               },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections',\nsum(traefik_entrypoint_requests_total) AS 'Total Requests',\nsum(traefik_entrypoint_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_entrypoint_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_entrypoint_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, instance, entrypoint, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+              {
+                "name": "Last Reload Success",
+                "type": "date"
               }
-            }
-          },
-          {
-            "title": "Service Total Requests",
-            "layout": {
-              "column": 1,
-              "row": 13,
-              "width": 3,
-              "height": 9
+            ],
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nsum(traefik_service_requests_total) AS 'Total Requests'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nmax(traefik_config_last_reload_success)*1000 AS 'Last Reload Success',\nmax(traefik_config_last_reload_failure)*1000 AS 'Last Reload Failure',\nsum(traefik_config_reloads_total) AS 'Total Reloads',\nsum(traefik_config_reloads_failure_total) AS 'Total Failed Reloads'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance'\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
               }
-            }
-          },
-          {
-            "title": "Return Codes by Service",
-            "layout": {
-              "column": 4,
-              "row": 13,
-              "width": 5,
-              "height": 5
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT count(traefik_service_requests_total) AS 'Total Requests' FACET instance, service, code WHERE instrumentation.name = 'remote-write' LIMIT MAX"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Average Response Time (ms) per Service",
-            "layout": {
-              "column": 9,
-              "row": 13,
-              "width": 4,
-              "height": 5
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET instance, service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Service Statistics",
-            "layout": {
-              "column": 4,
-              "row": 18,
-              "width": 9,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nlatest(traefik_service_open_connections) AS 'Open Connections',\nsum(traefik_service_requests_total) AS 'Total Requests',\nsum(traefik_service_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_service_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET prometheus_server, service, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "TLS Certificate Expiration Dates",
-            "layout": {
-              "column": 1,
-              "row": 22,
-              "width": 12,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [
-                {
-                  "name": "Expiration Date",
-                  "type": "date"
-                }
-              ],
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT\nlatest(traefik_tls_certs_not_after)*1000 AS 'Expiration Date'\nFACET prometheus_server, instance, cn AS 'Common Name', sans AS 'Subject Alternate Name', serial\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write'"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      }
-    ],
-    "variables": []
-  }
+        },
+        {
+          "title": "Entrypoint Total Requests",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 3,
+            "height": 8
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(traefik_entrypoint_requests_total) AS 'Total Requests'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', entrypoint\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Open Connections per Entrypoint",
+          "layout": {
+            "column": 4,
+            "row": 5,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', entrypoint\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )\nTIMESERIES\nLIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Entrypoint Statistics",
+          "layout": {
+            "column": 4,
+            "row": 9,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nlatest(traefik_entrypoint_open_connections) AS 'Open Connections',\nsum(traefik_entrypoint_requests_total) AS 'Total Requests',\nsum(traefik_entrypoint_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_entrypoint_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_entrypoint_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', entrypoint, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Service Total Requests",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 3,
+            "height": 9
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(traefik_service_requests_total) AS 'Total Requests'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Return Codes by Service",
+          "layout": {
+            "column": 4,
+            "row": 13,
+            "width": 5,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(traefik_service_requests_total) AS 'Total Requests' FACET concat(prometheus_server,' - ',instance) AS 'Instance', service, code WHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Response Time (ms) per Service",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', service\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Service Statistics",
+          "layout": {
+            "column": 4,
+            "row": 18,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nlatest(traefik_service_open_connections) AS 'Open Connections',\nsum(traefik_service_requests_total) AS 'Total Requests',\nsum(traefik_service_requests_tls_total) AS 'Total TLS Requests',\nbucketPercentile(traefik_service_request_duration_seconds_bucket, 95) AS 'Request Duration (ms)',\naverage(traefik_service_request_duration_seconds_sum) AS 'Average Request Duration (ms)'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', service, method, protocol\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "TLS Certificate Expiration Dates",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Expiration Date",
+                "type": "date"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nlatest(traefik_tls_certs_not_after)*1000 AS 'Expiration Date'\nFACET concat(prometheus_server,' - ',instance) AS 'Instance', cn AS 'Common Name', sans AS 'Subject Alternate Name', serial\nLIMIT MAX\nWHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' and metricName LIKE 'traefik%' since 1 week ago"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'traefik%' since 1 week ago\n"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}

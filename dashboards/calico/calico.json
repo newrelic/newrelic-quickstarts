@@ -1,6 +1,6 @@
 {
-  "name": "Calico",
-  "description": null,
+  "name": "Calico (Prometheus)",
+  "description": "This quickstart was built and tested based on Calico CNI metrics sent to New Relic using Prometheus Agent or Prometheus server",
   "pages": [
     {
       "name": "Calico",
@@ -11,21 +11,48 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 2,
-            "height": 8
+            "width": 4,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![Calico Logo](https://camo.githubusercontent.com/6c155d0af5f95cb6ea8fbfde53bcf83a7781f47aa373ed9c15edd95a55c1a4ec/687474703a2f2f646f63732e70726f6a65637463616c69636f2e6f72672f696d616765732f66656c69782e706e67) \n- - -\n### Overview\n[Calico](https://github.com/projectcalico/calico) is a widely adopted, battle-tested open source networking and network security solution for Kubernetes, virtual machines, and bare-metal workloads.\nCalico provides two major services for Cloud Native applications:\n\n- Network connectivity between workloads.\n- Network security policy enforcement between workloads.\n\n\n### About this Dashboard\n\nThis dashboard is based on standard `Calico` Prometheus metrics ingested using Prometheus [remote write](https://one.newrelic.com/marketplace/catalog-pack-details/detail?state=d8bbbb94-e24f-8ef8-a440-f815fc4b340a). Most widgets utilize an `instance` facet to identify `Calico` instances in the cluster.\n##### Note:  \nAs Calico offers [eBPF data plane](https://projectcalico.docs.tigera.io/maintenance/ebpf/use-cases-ebpf)  as a choice, a seperate page Calico-BPF help to check eBPF data plane status\n"
+            "text": "![Calico Logo](https://i.imgur.com/hq2cpxI.png) \n- - -\n### Overview\n[Calico](https://github.com/projectcalico/calico) is a widely adopted, battle-tested open source networking and network security solution for Kubernetes, virtual machines, and bare-metal workloads.\nCalico provides two major services for Cloud Native applications:\n\n- Network connectivity between workloads.\n- Network security policy enforcement between workloads.\n\n\n### About this Dashboard\n\nThis dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\nFor information on the prerequisites for this dashboard, please visit [our documentation here.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/calico-integration)"
           }
         },
         {
-          "title": "Active Local EndPoints",
+          "title": "Number of Calico Hosts",
           "layout": {
-            "column": 3,
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(felix_cluster_num_hosts) AS 'Number of Calico Hosts' FROM Metric WHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} )  facet prometheus_server"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Active Policies",
+          "layout": {
+            "column": 9,
             "row": 1,
             "width": 4,
             "height": 4
@@ -44,7 +71,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_active_local_policies) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -59,83 +86,11 @@
           }
         },
         {
-          "title": "Active  Local Selectors",
+          "title": "Active Local EndPoints",
           "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 3,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_active_local_selectors)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Active Local Tags",
-          "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(felix_active_local_tags) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Active Policies",
-          "layout": {
-            "column": 3,
+            "column": 1,
             "row": 5,
-            "width": 5,
+            "width": 4,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -152,7 +107,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_active_local_policies)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_active_local_endpoints) FROM Metric WHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -169,9 +124,9 @@
         {
           "title": "Active IP Sets",
           "layout": {
-            "column": 8,
+            "column": 5,
             "row": 5,
-            "width": 5,
+            "width": 4,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -188,7 +143,43 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_ipsets_calico)  FROM Metric facet instance,ip_version TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_ipsets_calico)  FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Active  Local Selectors",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(felix_active_local_selectors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -224,7 +215,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_workload_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_cluster_num_workload_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -260,7 +251,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_host_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_cluster_num_host_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -275,7 +266,7 @@
           }
         },
         {
-          "title": "IP Set Command Failures",
+          "title": "Felix Resyncing Datastore",
           "layout": {
             "column": 9,
             "row": 9,
@@ -296,7 +287,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_ipset_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(felix_resyncs_started) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -332,7 +323,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_int_dataplane_failures) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(felix_int_dataplane_failures) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -347,7 +338,7 @@
           }
         },
         {
-          "title": "Felix Resyncing Datastore",
+          "title": "IP Set Command Failures",
           "layout": {
             "column": 5,
             "row": 12,
@@ -368,7 +359,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_resyncs_started) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(felix_ipset_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -383,7 +374,7 @@
           }
         },
         {
-          "title": "Clusters Hosts",
+          "title": "Cluster Wide Policies",
           "layout": {
             "column": 9,
             "row": 12,
@@ -404,7 +395,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_cluster_num_hosts)  FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "FROM Metric Select latest(felix_cluster_num_policies) WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -440,7 +431,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(chains) FROM ( FROM Metric SELECT latest(felix_iptables_chains) AS 'chains'  FACET instance, ip_version, table  LIMIT MAX) FACET instance, concat('ip_version: ',ip_version) WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(chains) FROM ( FROM Metric SELECT latest(felix_iptables_chains) AS 'chains' FACET prometheus_server, instance, ip_version, table WHERE instrumentation.name= 'remote-write' AND prometheus_server IN ( {{ prometheus_server }} ) AND instance IN ( {{instance}} ) LIMIT MAX ) facet concat(prometheus_server,' - ',instance) , concat('ip_version: ',ip_version)"
               }
             ],
             "platformOptions": {
@@ -470,7 +461,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_iptables_chains)  FROM Metric facet table TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_iptables_chains) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -506,7 +497,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_iptables_restore_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(felix_iptables_restore_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -542,7 +533,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(felix_iptables_save_errors) FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT sum(felix_iptables_save_errors) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -578,7 +569,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_iptables_rules) FROM Metric facet table TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_iptables_rules) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance),table TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -620,7 +611,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dataplane_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_bpf_dataplane_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -656,7 +647,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_dirty_dataplane_endpoints)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_bpf_dirty_dataplane_endpoints) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -692,7 +683,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(felix_bpf_num_ip_sets)   FROM Metric facet instance TIMESERIES WHERE instrumentation.name = 'remote-write'"
+                "query": "SELECT latest(felix_bpf_num_ip_sets) FROM Metric WHERE instrumentation.name='remote-write'AND prometheus_server IN ( {{prometheus_server}}) AND instance IN ( {{instance}} ) facet concat(prometheus_server,' - ',instance) TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -709,5 +700,44 @@
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' and metricName LIKE 'felix%' since 1 week ago\n\n\n"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'felix%' since 1 week ago\n"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }

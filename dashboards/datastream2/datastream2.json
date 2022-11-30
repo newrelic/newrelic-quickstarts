@@ -23,35 +23,87 @@
           }
         },
         {
-          "title": "HTTP Status code distribution",
+          "title": "",
           "layout": {
             "column": 5,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.pie"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [],
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET statusCode"
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(cacheStatus) = 1) AS 'Cache Hit Ratio' WHERE message='akamai' SINCE 1 hour ago compare with 1 hour ago\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
               }
             ]
           }
         },
         {
-          "title": "Success rate (2xx)",
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(statusCode) >= 200 and numeric(statusCode) < 400) AS 'Success rate (2xx/3xx)' WHERE message='akamai' since 1 hour ago compare with 1 hour ago\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
           "layout": {
             "column": 9,
             "row": 1,
-            "width": 4,
+            "width": 2,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -66,18 +118,30 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(statusCode) >= 200 and numeric(statusCode) < 300) WHERE message='akamai'\n"
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(statusCode) >= 400 and numeric(statusCode) <= 499) AS 'Error rate (4xx)' WHERE message='akamai' since 1 hour ago compare with 1 hour ago\n"
               }
             ],
-            "thresholds": []
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
           }
         },
         {
-          "title": "Error rate (4xx 5xx)",
+          "title": "",
           "layout": {
-            "column": 9,
-            "row": 3,
-            "width": 4,
+            "column": 11,
+            "row": 1,
+            "width": 2,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -92,40 +156,29 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(statusCode) >= 400 and numeric(statusCode) <= 599) WHERE message='akamai'\n"
+                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(statusCode) >= 500 and numeric(statusCode) <= 599) AS 'Error rate (5xx)' WHERE message='akamai' since 1 hour ago compare with 1 hour ago\n"
               }
             ],
-            "thresholds": []
-          }
-        },
-        {
-          "title": "Total logs received ",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "nrqlQueries": [
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
               {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) as 'Total Logs' WHERE message='akamai'"
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
               }
-            ],
-            "thresholds": []
+            ]
           }
         },
         {
-          "title": "Logs received",
+          "title": "Cache Hit/Miss (over time}",
           "layout": {
             "column": 5,
-            "row": 4,
+            "row": 3,
             "width": 4,
             "height": 3
           },
@@ -134,50 +187,31 @@
             "id": "viz.line"
           },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) as Logs WHERE message='akamai' TIMESERIES "
+                "query": "FROM Log SELECT count(*) WHERE message LIKE '%akamai%' AND (cacheStatus='1' OR cacheStatus='0') FACET cases(WHERE cacheStatus=1 AS Hit, cacheStatus=0 AS Miss) TIMESERIES "
               }
             ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
             "yAxisLeft": {
               "zero": true
             }
           }
         },
         {
-          "title": "Logs",
+          "title": "HTTP Status Code Distribution",
           "layout": {
             "column": 9,
-            "row": 5,
-            "width": 4,
-            "height": 8
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT * WHERE message='akamai'"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Cache Status",
-          "layout": {
-            "column": 1,
-            "row": 7,
+            "row": 3,
             "width": 4,
             "height": 3
           },
@@ -186,25 +220,30 @@
             "id": "viz.pie"
           },
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
-              "showOtherSeries": false
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET cases(WHERE cacheStatus = '0' as 'Cache Miss', WHERE cacheStatus = '1' as 'Cache Hit') "
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET statusCode"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         },
         {
-          "title": "Cache Hit ratio",
+          "title": "Total Requests",
           "layout": {
-            "column": 5,
-            "row": 7,
+            "column": 1,
+            "row": 4,
             "width": 4,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -218,23 +257,88 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT percentage(count (*), WHERE numeric(cacheStatus) = 1) WHERE message='akamai'\n"
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE message='akamai'"
               }
             ],
-            "thresholds": []
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         },
         {
-          "title": "Requests by status code",
+          "title": "Total Requests (over time)",
           "layout": {
             "column": 1,
-            "row": 10,
+            "row": 6,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE message='akamai' TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache Reponse Error Code (over time)",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*)  WHERE message = 'akamai' AND errorCode IS NOT NULL FACET errorCode  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by Status Code (over time)",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -249,16 +353,19 @@
                 "query": "FROM Log SELECT count(*) WHERE message='akamai' facet statusCode TIMESERIES "
               }
             ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
             "yAxisLeft": {
               "zero": true
             }
           }
         },
         {
-          "title": "Bandwidth over time",
+          "title": "Total Bandwidth (over time)",
           "layout": {
-            "column": 5,
-            "row": 10,
+            "column": 1,
+            "row": 9,
             "width": 4,
             "height": 3
           },
@@ -267,6 +374,9 @@
             "id": "viz.area"
           },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "legend": {
               "enabled": true
             },
@@ -274,6 +384,90 @@
               {
                 "accountId": 0,
                 "query": "FROM Log SELECT sum(numeric(bytes)) as 'contentBytesServed' WHERE message='akamai' TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache Response Error Code",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message = 'akamai' AND errorCode IS NOT NULL FACET errorCode SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution (range)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND statusCode IS NOT NULL FACET cases(WHERE numeric(statusCode)>199 and numeric(statusCode)<300 as '2xx', numeric(statusCode)>299 and numeric(statusCode)<400 as '3xx', numeric(statusCode)>399 and numeric(statusCode)<500 as '4xx', numeric(statusCode)>499 and numeric(statusCode)<600 as '5xx') SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latest Logs",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT cliIP AS 'Client IP', reqMethod AS 'Method', statusCode AS 'Status', cacheStatus AS 'Cache Status', reqPath AS 'URL', city AS 'Edge City', rspContentType AS 'Content Type', edgeIp AS 'Edge IP', transferTimeMSec AS 'Time(ms)', tlsVersion AS 'TLS Version', bytes AS 'Bytes'   WHERE message='akamai'"
               }
             ]
           }
@@ -301,7 +495,7 @@
           }
         },
         {
-          "title": "Country where the request originated",
+          "title": "Requests by Edge Location",
           "layout": {
             "column": 5,
             "row": 1,
@@ -316,43 +510,25 @@
             "facet": {
               "showOtherSeries": true
             },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET country"
-              }
-            ]
-          }
-        },
-        {
-          "title": "City where the request originated",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
+            "legend": {
+              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET city"
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET city WHERE city IS NOT NULl since 1 hour ago"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         },
         {
-          "title": "Log count by client IP",
+          "title": "Requests by Client IP",
           "layout": {
-            "column": 1,
-            "row": 4,
+            "column": 9,
+            "row": 1,
             "width": 4,
             "height": 3
           },
@@ -370,14 +546,437 @@
                 "accountId": 0,
                 "query": "\n  SELECT count(*)  FROM Log WHERE message='akamai' FACET cliIP as ClientIP"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         },
         {
-          "title": "Logs count user-agent",
+          "title": "Requests by Country",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET country WHERE country is NOT NULL since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests by Edge Location (over time)",
           "layout": {
             "column": 5,
             "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET city TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by Client IP (over time)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "\n  SELECT count(*)  FROM Log WHERE message='akamai' FACET cliIP as ClientIP timeseries since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (2xx,3xx)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND numeric(statusCode)>199 AND numeric(statusCode )<400  FACET statusCode AS 'Status', reqPath AS 'URI' LIMIT 10 SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (4xx,5xx)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND numeric(statusCode)>399 AND numeric(statusCode)<600  FACET statusCode  AS 'Status', reqPath AS 'URI' LIMIT 10 SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Cache Miss",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message = 'akamai' AND cacheStatus='0' FACET cases(WHERE cacheStatus='0' AS Miss), reqPath  "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (2xx,3xx) (over time)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND numeric(statusCode)>199 AND numeric(statusCode )<400  FACET statusCode AS 'Status', reqPath AS 'URI' TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (4xx,5xx) (over time)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND numeric(statusCode)>399 AND numeric(statusCode)<600  FACET statusCode  AS 'Status', reqPath AS 'URI' TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Cache Miss (over time)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message = 'akamai' AND cacheStatus='0' FACET reqPath  timeseries SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Client Port",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET reqPort AS 'Client Request Port'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Protocol/Version",
+          "layout": {
+            "column": 4,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET proto "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Method",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND reqMethod IS NOT NULL FACET reqMethod since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Method",
+          "layout": {
+            "column": 10,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' AND reqMethod IS NOT NULL FACET rspContentType since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Referer",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET referer AS 'Referer'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by User Agent",
+          "layout": {
+            "column": 5,
+            "row": 16,
             "width": 4,
             "height": 3
           },
@@ -393,9 +992,12 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET UA"
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET UA AS 'User Agent'"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         }
       ]
@@ -421,131 +1023,10 @@
           }
         },
         {
-          "title": "TLS Versions",
+          "title": "turnAroundTimeMSec (time ranges)",
           "layout": {
             "column": 5,
             "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET tlsVersion"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Request methods",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET reqMethod"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Request Ports",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET reqPort"
-              }
-            ]
-          }
-        },
-        {
-          "title": "HTTP protocols",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET proto"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Errors in requests",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Log SELECT count(*) WHERE message='akamai' and errorCode != '-' FACET errorCode"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Turn around time ranges",
-          "layout": {
-            "column": 1,
-            "row": 7,
             "width": 4,
             "height": 3
           },
@@ -554,7 +1035,6 @@
             "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
@@ -566,7 +1046,172 @@
                 "accountId": 0,
                 "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET cases(WHERE numeric(turnAroundTimeMSec) <= 10 as '<10ms',WHERE numeric(turnAroundTimeMSec) > 10 and numeric(turnAroundTimeMSec) <= 50 as '10-50ms',WHERE numeric(turnAroundTimeMSec) >50 as '>50ms') TIMESERIES "
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "turnAroundTimeMSec (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(turnAroundTimeMSec)) AS Average, percentile(numeric(turnAroundTimeMSec),90) AS 'Percentile' WHERE message='akamai'  TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "transferTimeMSec by Content Type (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(transferTimeMSec)) AS Average, percentile(numeric(transferTimeMSec),90) AS Percentile WHERE message='akamai' FACET rspContentType TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "transferTimeMSec (time ranges)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET cases(WHERE numeric(transferTimeMSec) <= 10 as '<10ms',WHERE numeric(transferTimeMSec) > 10 and numeric(transferTimeMSec) <= 50 as '10-50ms',WHERE numeric(transferTimeMSec) >50 as '>50ms') TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "transferTimeMSec (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(transferTimeMSec)) AS Average, percentile(numeric(transferTimeMSec),90) AS 'Percentile' WHERE message='akamai'  TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "transferTimeMSec by City (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(transferTimeMSec)) AS 'Average', percentile(numeric(transferTimeMSec),90) AS Percentile WHERE message='akamai' FACET city  TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
           }
         },
         {
@@ -624,8 +1269,96 @@
               }
             ]
           }
+        },
+        {
+          "title": "transferTimeMSec by TLS Version (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(numeric(transferTimeMSec)) AS Average, percentile(numeric(transferTimeMSec),90) AS Percentile WHERE message='akamai' FACET tlsVersion  TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Bandwidth by Edge Location  (over time)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(numeric(bytes)) as 'contentBytesServed' WHERE message='akamai' FACET city TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "TLS Versions",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE message='akamai' FACET tlsVersion"
+              }
+            ]
+          }
         }
       ]
     }
-  ]
+  ],
+  "variables": []
 }
