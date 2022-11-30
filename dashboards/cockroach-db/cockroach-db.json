@@ -1,5 +1,5 @@
 {
-  "name": "Cockroach Database Console",
+  "name": "Cockroach Database Console (Prometheus)",
   "description": null,
   "pages": [
     {
@@ -11,7 +11,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 3,
+            "width": 2,
             "height": 8
           },
           "linkedEntityGuids": null,
@@ -19,15 +19,15 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![CockroachDB Logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/cockroach-db/logo.png) \n- - -\n\n### Overview\n[CockroacDB](https://github.com/cockroachdb/cockroach) is a distributed SQL database built on a transactional and strongly-consistent key-value store. It scales horizontally; survives disk, machine, rack, and even datacenter failures with minimal latency disruption and no manual intervention; supports strongly-consistent ACID transactions; and provides a familiar SQL API for structuring, manipulating, and querying data.\n\n\n[CockroacDB](https://github.com/cockroachdb/cockroach) generates detailed time series metrics for each node in a cluster. This [page](https://www.cockroachlabs.com/docs/stable/monitor-cockroachdb-with-prometheus.html) shows you how to pull these metrics into Prometheus.\n\n### About this Dashboard\nThis dashboard is based on standard `CockraochDB` Prometheus metrics ingested using Prometheus [remote write](https://one.newrelic.com/marketplace/catalog-pack-details/detail?state=d8bbbb94-e24f-8ef8-a440-f815fc4b340a). Using the maximum dimensions of metrics as facets, a comprehensive view of CockroachDB can be obtained from this dashboard. \n\n\n### Troubleshooting\nIf you don't see data, you may not be configuring Prometheus to monitor itself. You should also check the 'New Relic Usage and Errors' tab to look for any errors reported there.\n\nOn the sending side, it's important to look for logged errors related to requests and rate limits. In your Prometheus logs, you may see errors like: server returned HTTP status 429 Too Many Requests: {}. Failures shown 'Prometheus Datapoint Send Failures' chart are also an indication that you should check your server logs.\n\nUsing remote write increases the memory footprint of Prometheus Server. You can use the the 'Prometheus Server Monitoring' tab to monitor the general health of your prometheus server(s).\n\nIn Prometheus, data from the write-ahead log (WAL) is sharded across in-memory queues before being sent to remote endpoints. Resource utilization is governed by the number of shards, number of samples per shard, and number of samples sent per request to an endpoint. For more information, consult the documentation on remote write tuning ."
+            "text": "![CockroachDB Logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/cockroach-db/logo.png) \n- - -\n\n\n### Overview\n\n[CockroacDB](https://github.com/cockroachdb/cockroach) is a distributed SQL database built on a transactional and strongly-consistent key-value store. It scales horizontally; survives disk, machine, rack, and even datacenter failures with minimal latency disruption and no manual intervention; supports strongly-consistent ACID transactions; and provides a familiar SQL API for structuring, manipulating, and querying data.\n\n[CockroacDB](https://github.com/cockroachdb/cockroach) generates detailed time series metrics for each node in a cluster. This [page](https://www.cockroachlabs.com/docs/stable/monitor-cockroachdb-with-prometheus.html) shows you how to pull these metrics into Prometheus.\n\n---\n\n### About this Dashboard\n\nThis dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\nFor information on the prerequisites for this dashboard, please visit [our documentation here.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/cockroach-db-integration)"
           }
         },
         {
-          "title": "Active Nodes ",
+          "title": "Active Instances",
           "layout": {
-            "column": 4,
+            "column": 3,
             "row": 1,
-            "width": 2,
+            "width": 3,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric \nSELECT latest(liveness_livenodes) as 'Active Nodes'\nWHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') compare WITH 24 hour ago"
+                "query": "FROM Metric \nSELECT latest(liveness_livenodes) as 'Active Instances'\nWHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) compare WITH 24 hour ago Facet prometheus_server"
               }
             ],
             "platformOptions": {
@@ -68,7 +68,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT  sum(`Max_capacity`) As 'Max Capacity', ((average(`Max_capacity`) * cardinality(`Max_capacity`)) - (average(`Available_capacity`) * cardinality(`Available_capacity`))) As 'Used Capacity' ,  sum(`Available_capacity`) As 'Avaliable Capacity' FROM (SELECT (average(capacity) * cardinality(capacity)) AS `Max_capacity`, (average(capacity_available) * cardinality(capacity_available)) AS `Available_capacity` FROM Metric  WHERE ((app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') )  FACET instance ) FACET instance"
+                "query": "SELECT  sum(`Max_capacity`) As 'Max Capacity', ((average(`Max_capacity`) * cardinality(`Max_capacity`)) - (average(`Available_capacity`) * cardinality(`Available_capacity`))) As 'Used Capacity' ,  sum(`Available_capacity`) As 'Avaliable Capacity' FROM (SELECT (average(capacity) * cardinality(capacity)) AS `Max_capacity`, (average(capacity_available) * cardinality(capacity_available)) AS `Available_capacity` FROM Metric  WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}}) ) FACET ({{dimensions}})"
               }
             ],
             "platformOptions": {
@@ -95,7 +95,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(`sys_fd_open_number`) * cardinality(`sys_fd_open_number`)) As 'Open(Avg)', sum(sys_fd_softlimit_number) AS 'Soft Limit' FROM (SELECT (average(sys_fd_open) * cardinality(sys_fd_open)) AS `sys_fd_open_number`,  (average(sys_fd_softlimit) * cardinality(sys_fd_softlimit)) AS `sys_fd_softlimit_number` FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') And (instrumentation.name='remote-write') FACET instance ) FACET instance"
+                "query": "SELECT (average(`sys_fd_open_number`) * cardinality(`sys_fd_open_number`)) As 'Open(Avg)', sum(sys_fd_softlimit_number) AS 'Soft Limit' FROM (SELECT (average(sys_fd_open) * cardinality(sys_fd_open)) AS `sys_fd_open_number`,  (average(sys_fd_softlimit) * cardinality(sys_fd_softlimit)) AS `sys_fd_softlimit_number` FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}}) ) FACET ({{dimensions}})"
               }
             ],
             "platformOptions": {
@@ -106,9 +106,9 @@
         {
           "title": "SSTables",
           "layout": {
-            "column": 4,
+            "column": 3,
             "row": 3,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -125,7 +125,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(rocksdb_num_sstables) * cardinality(rocksdb_num_sstables)) FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') Facet instance TIMESERIES "
+                "query": "SELECT (average(rocksdb_num_sstables) * cardinality(rocksdb_num_sstables)) FROM Metric WHERE   (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance) TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -158,7 +158,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT  latest(rocksdb_compactions) As 'Compactions'  FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') facet instance  TIMESERIES 300000 slide by 30000"
+                "query": "SELECT  latest(rocksdb_compactions) As 'Compactions'  FROM Metric WHERE   (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -170,11 +170,11 @@
           }
         },
         {
-          "title": "Log Commit Latency: 99p",
+          "title": "Log Commit Latency: percentile",
           "layout": {
-            "column": 4,
+            "column": 3,
             "row": 6,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -191,7 +191,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT bucketpercentile(raft_process_logcommit_latency_bucket,99)/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write')  FACET instance   TIMESERIES 300000 slide by 30000"
+                "query": "SELECT bucketpercentile(raft_process_logcommit_latency_bucket,{{percentile}})/1000000 FROM Metric WHERE   (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)   TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -206,7 +206,7 @@
           }
         },
         {
-          "title": "Command Commit Latency: 99p",
+          "title": "Command Commit Latency: percentile",
           "layout": {
             "column": 8,
             "row": 6,
@@ -227,7 +227,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT bucketpercentile(raft_process_commandcommit_latency_bucket, 99) / 1000000  FROM Metric WHERE ((app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write'))  FACET instance TIMESERIES 300000 slide by 30000"
+                "query": "SELECT bucketpercentile(raft_process_commandcommit_latency_bucket, {{percentile}}) / 1000000  FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -268,7 +268,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(rocksdb_flushes) As Flushes FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') facet instance  TIMESERIES 300000 slide by 30000 "
+                "query": "SELECT latest(rocksdb_flushes) As Flushes FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  TIMESERIES 300000 slide by 30000 "
               }
             ],
             "platformOptions": {
@@ -280,7 +280,7 @@
           }
         },
         {
-          "title": "Read Amplification(factor)",
+          "title": "Read Amplification(factor) ",
           "layout": {
             "column": 5,
             "row": 9,
@@ -301,7 +301,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`average number of real read operations`) FROM (SELECT average(rocksdb_read_amplification) AS `average number of real read operations` FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') FACET instance LIMIT 100 TIMESERIES 30000 slide by 30 seconds) FACET instance TIMESERIES "
+                "query": "SELECT average(`average number of real read operations`) FROM (SELECT average(rocksdb_read_amplification) AS `average number of real read operations` FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}}) LIMIT 100 TIMESERIES 30000 slide by 30 seconds) FACET ({{dimensions}})  TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -334,7 +334,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(livebytes) AS `Live` FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  Facet instance TIMESERIES 300000 slide by 30000"
+                "query": "SELECT latest(livebytes) AS `Live` FROM Metric  WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance) TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -383,7 +383,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(timeseries_write_bytes)/1000, 1 SECONDS) As 'Bytes Written (KBs)' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') facet instance  TIMESERIES 5 minutes SLIDE BY 30 seconds"
+                "query": "SELECT rate(sum(timeseries_write_bytes)/1000, 1 SECONDS) As 'Bytes Written (KBs)' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  TIMESERIES 300000 SLIDE BY 30000  "
               }
             ],
             "platformOptions": {
@@ -419,7 +419,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(timeseries_write_samples), 1 SECONDS) As 'Sample Written' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') facet instance TIMESERIES 5 minutes SLIDE BY 30 seconds"
+                "query": "SELECT rate(sum(timeseries_write_samples), 1 SECONDS) As 'Sample Written' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance) TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -455,7 +455,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(timeseries_write_errors), 1 SECONDS) As 'Errors' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') facet instance  TIMESERIES 300000 slide by 30000"
+                "query": "SELECT rate(sum(timeseries_write_errors), 1 SECONDS) As 'Errors' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  TIMESERIES 300000 slide by 30000"
               }
             ],
             "platformOptions": {
@@ -476,7 +476,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Live SQL Connection",
+          "title": "Live SQL Connections",
           "layout": {
             "column": 1,
             "row": 1,
@@ -494,7 +494,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(sql_conns) As 'Live SQL Connections' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') and (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW Compare with 1 hour ago Facet instance"
+                "query": "SELECT latest(sql_conns) As 'Live SQL Connections' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance)  SINCE 60 MINUTES AGO UNTIL NOW Compare with 1 hour ago "
               }
             ],
             "platformOptions": {
@@ -503,7 +503,7 @@
           }
         },
         {
-          "title": "SQL Statements (All Nodes)",
+          "title": "SQL Statements (selected servers and instances)",
           "layout": {
             "column": 5,
             "row": 1,
@@ -512,7 +512,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -524,35 +524,32 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_select_count), 1 SECONDS) as 'Selects' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_select_count), 1 SECONDS) as 'Selects' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
               },
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_insert_count), 1 SECONDS) AS Inserts FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_insert_count), 1 SECONDS) AS Inserts FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
               },
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_update_count), 1 SECONDS) As 'Updates' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_update_count), 1 SECONDS) As 'Updates' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
               },
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_delete_count), 1 SECONDS) As 'Deletes' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_delete_count), 1 SECONDS) As 'Deletes' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
               },
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_failure_count_count), 1 SECONDS) As 'Failures' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_failure_count_count), 1 SECONDS) As 'Failures' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Transactions (All Nodes)",
+          "title": "SQL Statement Errors (selected servers and instances)",
           "layout": {
             "column": 9,
             "row": 1,
@@ -573,19 +570,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(sql_txn_begin_count), 1 SECONDS) as 'Begins' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 600000 SLIDE BY 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_txn_commit_count), 1 SECONDS) AS Commits FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')TIMESERIES 600000 SLIDE BY 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_txn_rollback_count), 1 SECONDS) As 'Rollbacks' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 600000 SLIDE BY 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_txn_abort_count), 1 SECONDS) As 'Aborts' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
+                "query": "SELECT rate(sum(sql_failure_count), 1 SECONDS) As 'Error Rate' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 300000 SLIDE BY 30000"
               }
             ],
             "platformOptions": {
@@ -594,19 +579,111 @@
             "yAxisLeft": {
               "zero": true
             }
+          }
+        },
+        {
+          "title": "SQL Byte Traffic (selected servers and instances)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_bytesin), 1 SECONDS) AS 'Byte In' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_bytesout), 1 SECONDS)As 'Byte Out'FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 600000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Transactions (selected servers and instances)",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_txn_begin_count), 1 SECONDS) as 'Begins' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_txn_commit_count), 1 SECONDS) AS Commits FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_txn_rollback_count), 1 SECONDS) As 'Rollbacks' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sql_txn_abort_count), 1 SECONDS) As 'Aborts' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))   TIMESERIES 600000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## This section displays SQL metrics for your Cockroach Database. Use the `dimensions`  dashboard template variable to change the facet value for the widgets here."
           }
         },
         {
           "title": "SQL Memory",
           "layout": {
             "column": 1,
-            "row": 4,
-            "width": 4,
+            "row": 8,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -618,201 +695,20 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(sql_mem_root_current) FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  FACET instance TIMESERIES 300000 Slide by 30000"
+                "query": "SELECT latest(sql_mem_root_current) FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 Slide by 30000"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "SQL Statement Errors (All Nodes)",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_failure_count), 1 SECONDS) As 'Error Rate' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 300000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "SQL Byte Traffic (All Nodes)",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_bytesin), 1 SECONDS) AS 'Byte In' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sql_bytesout), 1 SECONDS)As 'Byte Out'FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 600000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Transactions Latency: 99p",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT bucketpercentile(sql_txn_latency_bucket, 99)/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "SECONDS"
-            },
-            "yAxisLeft": {
-              "zero": false
-            }
-          }
-        },
-        {
-          "title": "Service Latency: SQL, 99p",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT bucketpercentile(sql_service_latency_bucket, 99)/1000000 As 'Service Latency' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  FACET instance  TIMESERIES 300000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "KV Execution Latency: 99p",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT bucketpercentile(exec_latency_bucket, 99)/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') SINCE 60 MINUTES AGO UNTIL NOW FACET instance  TIMESERIES 300000 SLIDE BY 30000"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": false
             }
           }
         },
         {
           "title": "Open SQL Transactions",
           "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 4,
+            "column": 7,
+            "row": 8,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -829,7 +725,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(sql_txns_open) FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  FACET instance  TIMESERIES 300000 slide by 30000"
+                "query": "SELECT latest(sql_txns_open) FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})   LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
               }
             ],
             "platformOptions": {
@@ -843,9 +739,9 @@
         {
           "title": "Active SQL Statements",
           "layout": {
-            "column": 5,
-            "row": 10,
-            "width": 4,
+            "column": 1,
+            "row": 11,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -862,7 +758,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(sql_distsql_queries_active) As 'Active SQL Statements' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%')AND (instrumentation.name='remote-write') facet instance TIMESERIES 30000"
+                "query": "SELECT sum(sql_distsql_queries_active) As 'Active SQL Statements' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})   LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
               }
             ],
             "platformOptions": {
@@ -879,9 +775,9 @@
         {
           "title": "Schema Changes",
           "layout": {
-            "column": 9,
-            "row": 10,
-            "width": 4,
+            "column": 7,
+            "row": 11,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -898,7 +794,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(sql_ddl_count) As 'Schema Changes' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%')AND (instrumentation.name='remote-write')  TIMESERIES 30000"
+                "query": "SELECT sum(sql_ddl_count) As 'Schema Changes' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})  LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
               }
             ],
             "platformOptions": {
@@ -911,45 +807,28 @@
               "zero": true
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "Runtime",
-      "description": null,
-      "widgets": [
+        },
         {
-          "title": "Active Nodes ",
+          "title": "",
           "layout": {
             "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
+            "row": 14,
+            "width": 12,
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric \nSELECT latest(liveness_livenodes) as 'Active Nodes'\nWHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') compare WITH 24 hour ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
+            "text": "## This section displays SQL metrics for your Cockroach Database. Use the  `percentile` dashboard template variable to change the percentile value for the widgets here."
           }
         },
         {
-          "title": "Goroutine Count",
+          "title": "Transactions Latency: (selected percentile) ",
           "layout": {
-            "column": 5,
-            "row": 1,
+            "column": 1,
+            "row": 15,
             "width": 4,
             "height": 3
           },
@@ -967,7 +846,302 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(sys_goroutines)  As 'Goroutine Count' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') And (instrumentation.name='remote-write') facet instance  TIMESERIES 300000 slide by 30000"
+                "query": "SELECT bucketpercentile(sql_txn_latency_bucket, {{percentile}})/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})  LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Service Latency: SQL (selected percentile)",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketpercentile(sql_service_latency_bucket, {{percentile}})/1000000 As 'Service Latency' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})   LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "KV Execution Latency: (selected percentile)",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketpercentile(exec_latency_bucket, {{percentile}})/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})   LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Runtime",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Active Nodes (Cluster)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(liveness_livenodes) as 'Active Instances'\nWHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) compare WITH 24 hour ago Facet cluster_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Replicas/Node",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(replicas) As 'Replicas Per Node' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET concat(prometheus_server,'-',instance) COMPARE WITH 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Memory Usage (selected servers and instances)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_go_totalbytes) * cardinality(sys_go_totalbytes)) AS 'Memory managed by the Go layer' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 300000 slide by 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_go_allocbytes) * cardinality(sys_go_allocbytes)) As 'Memory allocated by the Go layer' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 300000 slide by 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_cgo_totalbytes) * cardinality(sys_cgo_totalbytes)) As 'Memory managed by the C layer' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 300000 slide by 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(sys_cgo_allocbytes) * cardinality(sys_cgo_allocbytes)) As 'Memory allocated by the C layer' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 300000 slide by 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Garbage Collection Runs / Seconds (selected servers and instances)",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(sys_gc_count) , 1 SECONDS)as 'Garbage Collection Run' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}}))  TIMESERIES 30000 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## This section displays SQL metrics for your Cockroach Database. Use the `dimensions`  dashboard template variable to change the facet value for the widgets here."
+          }
+        },
+        {
+          "title": "Runnable Goroutines per CPU",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(sys_runnable_goroutines_per_cpu) FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 Slide by 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Goroutine Count",
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(sys_goroutines)  As 'Goroutine Count' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 Slide by 30000"
               }
             ],
             "platformOptions": {
@@ -979,70 +1153,10 @@
           }
         },
         {
-          "title": "Garbage Collection Runs / Seconds ( All Nodes)",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(sys_gc_count) , 1 SECONDS)as 'Garbage Collection Run' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write')  TIMESERIES 30000 "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Replicas/Node",
+          "title": "GC Pause Time (seconds)",
           "layout": {
             "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(replicas) As 'Replicas Per Node' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') facet instance COMPARE WITH 1 day ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Average Memory Usage ( All Nodes)",
-          "layout": {
-            "column": 5,
-            "row": 4,
+            "row": 11,
             "width": 4,
             "height": 3
           },
@@ -1060,93 +1174,14 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(sys_go_totalbytes) * cardinality(sys_go_totalbytes)) AS 'Memory managed by the Go layer' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') TIMESERIES 300000 slide by 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT (average(sys_go_allocbytes) * cardinality(sys_go_allocbytes)) As 'Memory allocated by the Go layer' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') TIMESERIES 300000 slide by 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT (average(sys_cgo_totalbytes) * cardinality(sys_cgo_totalbytes)) As 'Memory managed by the C layer' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') TIMESERIES 300000 slide by 30000"
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT (average(sys_cgo_allocbytes) * cardinality(sys_cgo_allocbytes)) As 'Memory allocated by the C layer' FROM Metric WHERE ((app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name = 'remote-write')) TIMESERIES 300000 slide by 30000"
+                "query": "SELECT idelta(sys_gc_pause_ns)/1000000000 FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 \n"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "CPU Time (Nano Seconds) ",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT idelta(sys_cpu_user_ns) As 'User' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') And (instrumentation.name='remote-write')  TIMESERIES "
-              },
-              {
-                "accountId": 0,
-                "query": "SELECT idelta(sys_cpu_sys_ns) As 'System' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') And (instrumentation.name='remote-write')  TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Runnable Goroutines per CPU",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(sys_runnable_goroutines_per_cpu) FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') AND (instrumentation.name='remote-write') facet instance TIMESERIES 300000 slide by 30000 "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            "units": {
+              "unit": "SECONDS"
             },
             "yAxisLeft": {
               "zero": true
@@ -1157,7 +1192,7 @@
           "title": "Clock Offset",
           "layout": {
             "column": 5,
-            "row": 7,
+            "row": 11,
             "width": 4,
             "height": 3
           },
@@ -1175,7 +1210,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(clock_offset_meannanos)/1000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%')  FACET instance LIMIT 100 TIMESERIES 300000 slide by 30000"
+                "query": "SELECT latest(clock_offset_meannanos)/1000000 FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 Slide by 30000"
               }
             ],
             "platformOptions": {
@@ -1190,10 +1225,10 @@
           }
         },
         {
-          "title": "GC Pause Time (seconds)",
+          "title": "CPU Time (Nano Seconds) ",
           "layout": {
             "column": 9,
-            "row": 7,
+            "row": 11,
             "width": 4,
             "height": 3
           },
@@ -1211,14 +1246,15 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT idelta(sys_gc_pause_ns)/1000000000 FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') facet instance TIMESERIES  300000\n\n"
+                "query": "SELECT idelta(sys_cpu_user_ns) As 'User' FROM Metric WHERE  (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write') AND (prometheus_server IN ({{prometheus_server}})) AND (instance IN ({{instance}})) FACET ({{dimensions}})    TIMESERIES 300000 "
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT idelta(sys_cpu_sys_ns) As 'System' FROM Metric WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%') And (instrumentation.name='remote-write')  TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "SECONDS"
             },
             "yAxisLeft": {
               "zero": true
@@ -1226,6 +1262,108 @@
           }
         }
       ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%') AND (instrumentation.name = 'remote-write' AND metricName like 'timeseries_%' ) SINCE 1 WEEK AGO\n\n\n\n\n\n\n"
+      },
+      "title": "",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE (app_kubernetes_io_name LIKE '%cockroach%' or app_newrelic_com_name LIKE '%cockroach%' or k8s_app LIKE '%cockroach%' ) AND (instrumentation.name = 'remote-write')  AND (metricName like 'timeseries_%') SINCE 1 WEEK AGO\n\n\n"
+      },
+      "title": "",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "percentile",
+      "items": [
+        {
+          "title": null,
+          "value": "50"
+        },
+        {
+          "title": null,
+          "value": "75"
+        },
+        {
+          "title": null,
+          "value": "95"
+        },
+        {
+          "title": null,
+          "value": "99"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "95"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "dimensions",
+      "items": [
+        {
+          "title": null,
+          "value": "instance"
+        },
+        {
+          "title": null,
+          "value": "prometheus_server"
+        },
+        {
+          "title": null,
+          "value": "cluster_name"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "instance"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "IDENTIFIER"
     }
   ]
 }
