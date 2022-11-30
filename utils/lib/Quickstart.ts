@@ -145,6 +145,7 @@ class Quickstart {
       keywords,
       summary,
       installPlans,
+      dataSourceIds,
       id,
       level,
     } = this.config;
@@ -170,6 +171,7 @@ class Quickstart {
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       installPlanStepIds: installPlans,
+      dataSourceIds: dataSourceIds,
     };
 
     const quickstartMetadata = this._addComponents(metadata);
