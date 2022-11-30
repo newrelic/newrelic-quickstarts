@@ -3,7 +3,7 @@
 	"description": null,
 	"pages": [
 	  {
-		"name": "PHP",
+		"name": "Overview",
 		"description": null,
 		"widgets": [
 		  {
@@ -12,23 +12,23 @@
 			  "column": 1,
 			  "row": 1,
 			  "width": 2,
-			  "height": 4
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.markdown"
 			},
 			"rawConfiguration": {
-			  "text": "![logo](https://www.php.net/images/logos/new-php-logo.svg)\n\nInstrument your application with New Relic - [Add Data](https://one.newrelic.com/launcher/catalog-pack-details.launcher/?pane=eyJuZXJkbGV0SWQiOiJjYXRhbG9nLXBhY2stZGV0YWlscy5jYXRhbG9nLXBhY2stY29udGVudHMiLCJxdWlja3N0YXJ0SWQiOiI0NzVkZWM2OS0xMGM5LTRiYzYtODMxMi0zY2FhMjY2ZmIwMjgifQ==).\n\nDetect common [installation and configuration problems](https://download.newrelic.com/nrdiag/nrdiag_latest.zip) with New Relic agents. Optionally, attach this troubleshooting data to a support case. [Learn more](https://docs.newrelic.com/docs/using-new-relic/cross-product-functions/troubleshooting/new-relic-diagnostics)\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=PHP&entry.358368110=https://onenr.io/0ERzlZYPvQr) here and let us know how we can improve it for you.\n"
+			  "text": "![logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/ea7ba3802665e7c6866dc24609da4fefea0d6d60/quickstarts/php/php/logo.svg)"
 			}
 		  },
 		  {
-			"title": "Transaction Count (Use filter to get specific data)",
+			"title": "Application Names - Transaction (use filter to get specific data)",
 			"layout": {
 			  "column": 3,
 			  "row": 1,
-			  "width": 4,
-			  "height": 4
+			  "width": 3,
+			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -41,7 +41,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) WHERE (transactionType LIKE '%Web%') and ((tags.language LIKE '%php%') or (appName LIKE '%php%')) EXTRAPOLATE FACET appName"
+				  "query": "FROM Transaction SELECT count(*) FACET appName"
 				}
 			  ],
 			  "platformOptions": {
@@ -50,82 +50,42 @@
 			}
 		  },
 		  {
-			"title": "Failed Transactions",
+			"title": "Transaction Status (use filter to get specific data)",
 			"layout": {
-			  "column": 7,
+			  "column": 6,
 			  "row": 1,
-			  "width": 2,
-			  "height": 4
+			  "width": 5,
+			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.billboard"
+			  "id": "viz.pie"
 			},
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
 			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed transactions' where appName LIKE '%PHP%' or (tags.language LIKE '%php%') facet appName"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "thresholds": [
-				{
-				  "alertSeverity": "CRITICAL",
-				  "value": 1
-				},
-				{
-				  "alertSeverity": "WARNING",
-				  "value": 1
-				}
-			  ]
-			}
-		  },
-		  {
-			"title": "Error Rate of Web Transactions",
-			"layout": {
-			  "column": 9,
-			  "row": 1,
-			  "width": 2,
-			  "height": 4
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.billboard"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
+			  "legend": {
+				"enabled": true
 			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT count(apm.service.transaction.error.count) / count(apm.service.transaction.duration) as 'Error rate' FROM Metric WHERE (appName LIKE '%PHP%' or (tags.language LIKE '%php%')) AND ((transactionType LIKE '%Web%' AND transactionName LIKE '%WebTransaction/Uri%')) LIMIT MAX FACET appName"
+				  "query": "FROM Transaction SELECT count(*) FACET error"
 				}
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  },
-			  "thresholds": [
-				{
-				  "alertSeverity": "CRITICAL",
-				  "value": 1
-				}
-			  ]
+			  }
 			}
 		  },
 		  {
-			"title": "Success Rate",
+			"title": "Transaction Error Rate",
 			"layout": {
 			  "column": 11,
 			  "row": 1,
 			  "width": 2,
-			  "height": 4
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -138,7 +98,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT percentage(count(*), WHERE error is false) AS 'Success rate' where appName LIKE '%PHP%' or (tags.language LIKE '%php%') facet appName"
+				  "query": "FROM Transaction SELECT percentage(count(*), WHERE BOOLEAN(error) IS TRUE)"
 				}
 			  ],
 			  "platformOptions": {
@@ -147,11 +107,7 @@
 			  "thresholds": [
 				{
 				  "alertSeverity": "CRITICAL",
-				  "value": 1
-				},
-				{
-				  "alertSeverity": "WARNING",
-				  "value": 1
+				  "value": 0
 				}
 			  ]
 			}
@@ -160,24 +116,90 @@
 			"title": "",
 			"layout": {
 			  "column": 1,
-			  "row": 5,
-			  "width": 12,
-			  "height": 1
+			  "row": 3,
+			  "width": 2,
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
 			  "id": "viz.markdown"
 			},
 			"rawConfiguration": {
-			  "text": "# Application Monitoring\n\nLeverage on New Relic's APM (Application Performance Monitoring) capabilities by setting up custom dashboards, errors inbox, transaction tracing, and service maps."
+			  "text": "**About**\n\nInstrument your application with New Relic - [Add Data](https://one.newrelic.com/launcher/catalog-pack-details.launcher/?pane=eyJuZXJkbGV0SWQiOiJjYXRhbG9nLXBhY2stZGV0YWlscy5jYXRhbG9nLXBhY2stY29udGVudHMiLCJxdWlja3N0YXJ0SWQiOiI0NzVkZWM2OS0xMGM5LTRiYzYtODMxMi0zY2FhMjY2ZmIwMjgifQ==).\n\nUnable to find data in your dashboard? - [Troubleshoot here](\nhttps://docs.newrelic.com/docs/apm/agents/php-agent/troubleshooting/no-data-appears-php/)\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=PHP&entry.358368110=https://onenr.io/0ERzlZYPvQr) here and let us know how we can improve it for you.\n"
 			}
 		  },
 		  {
-			"title": "Error Rate of Web Transactions",
+			"title": "Failed Transactions",
 			"layout": {
-			  "column": 1,
-			  "row": 6,
-			  "width": 3,
+			  "column": 11,
+			  "row": 3,
+			  "width": 2,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Transaction SELECT count(*) as 'Transactions' WHERE Boolean(error) IS TRUE"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "thresholds": [
+				{
+				  "alertSeverity": "CRITICAL",
+				  "value": 0
+				}
+			  ]
+			}
+		  },
+		  {
+			"title": "Transaction Duration (Latest)",
+			"layout": {
+			  "column": 3,
+			  "row": 4,
+			  "width": 4,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.line"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Transaction SELECT latest(duration) TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "yAxisLeft": {
+				"zero": true
+			  }
+			}
+		  },
+		  {
+			"title": "Transaction Duration - Average and Percentile",
+			"layout": {
+			  "column": 7,
+			  "row": 4,
+			  "width": 4,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
@@ -194,7 +216,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT count(apm.service.transaction.error.count) / count(apm.service.transaction.duration) as 'Error rate' FROM Metric WHERE (appName LIKE '%PHP%') AND ((transactionType LIKE '%Web%' AND transactionName LIKE '%WebTransaction/Uri%')) LIMIT MAX FACET appName TIMESERIES AUTO "
+				  "query": "FROM Transaction SELECT average(duration), percentile(duration) TIMESERIES AUTO"
 				}
 			  ],
 			  "platformOptions": {
@@ -203,78 +225,12 @@
 			}
 		  },
 		  {
-			"title": "Apdex Score",
+			"title": "Successful Transactions",
 			"layout": {
-			  "column": 4,
-			  "row": 6,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT apdex(apm.service.apdex) as 'App server', apdex(apm.service.apdex.user) as 'End user' FROM Metric WHERE (appName LIKE '%PHP%') LIMIT MAX TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Web Transactions Time",
-			"layout": {
-			  "column": 8,
-			  "row": 6,
-			  "width": 3,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(apm.service.overview.web) * 1000 FROM Metric WHERE (appName LIKE '%PHP%') FACET `segmentName` LIMIT MAX TIMESERIES  AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Web Transactions Time",
-			"layout": {
-			  "column": 11,
-			  "row": 6,
+			  "column": 1,
+			  "row": 5,
 			  "width": 2,
-			  "height": 3
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -287,7 +243,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT average(apm.service.overview.web) * 1000 FROM Metric WHERE (appName LIKE '%PHP%') FACET `segmentName` LIMIT MAX"
+				  "query": "FROM Transaction SELECT count(*) AS 'Transactions' WHERE Boolean(error) IS FALSE"
 				}
 			  ],
 			  "platformOptions": {
@@ -301,78 +257,12 @@
 			}
 		  },
 		  {
-			"title": "Physical Memory Usage (%)",
+			"title": "Total Transactions",
 			"layout": {
-			  "column": 1,
-			  "row": 9,
-			  "width": 3,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(apm.service.memory.physical) as 'Memory usage' FROM Metric WHERE appName LIKE '%PHP%' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Throughput",
-			"layout": {
-			  "column": 4,
-			  "row": 9,
-			  "width": 3,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT rate(count(apm.service.transaction.duration), 1 minute) as 'Web throughput/min' FROM Metric WHERE (appName LIKE '%PHP%') AND (transactionType LIKE '%Web%') LIMIT MAX TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Throughput",
-			"layout": {
-			  "column": 7,
-			  "row": 9,
+			  "column": 11,
+			  "row": 5,
 			  "width": 2,
-			  "height": 3
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -385,7 +275,143 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT rate(count(apm.service.transaction.duration), 1 minute) as 'number of transactions/min' FROM Metric WHERE (appName LIKE '%PHP%') AND (transactionType LIKE '%Web%') LIMIT MAX"
+				  "query": "FROM Transaction SELECT count(*) as 'Transactions'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  }
+		]
+	  },
+	  {
+		"name": "Application Monitoring",
+		"description": null,
+		"widgets": [
+		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 1,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# Application Monitoring\n\nLeverage on New Relic's APM (Application Performance Monitoring) capabilities by setting up custom dashboards, errors inbox, transaction tracing, and service maps."
+			}
+		  },
+		  {
+			"title": "Application Names - Metric (use filter to get specific data)",
+			"layout": {
+			  "column": 1,
+			  "row": 2,
+			  "width": 3,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT count(*) FACET appName"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Web Throughput per Minute",
+			"layout": {
+			  "column": 4,
+			  "row": 2,
+			  "width": 7,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.line"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Transaction SELECT rate(count(duration), 1 minute) as 'Web Throughput/min' TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "yAxisLeft": {
+				"zero": true
+			  }
+			}
+		  },
+		  {
+			"title": "Application Response Time (seconds)",
+			"layout": {
+			  "column": 11,
+			  "row": 2,
+			  "width": 2,
+			  "height": 4
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT average(newrelic.goldenmetrics.apm.application.responseTimeMs)/1000 AS 'Seconds' WHERE metricName LIKE '%response%'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Transaction Types",
+			"layout": {
+			  "column": 1,
+			  "row": 6,
+			  "width": 3,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Transaction SELECT count(*) FACET transactionType"
 				}
 			  ],
 			  "platformOptions": {
@@ -396,10 +422,10 @@
 		  {
 			"title": "Transactions Overview",
 			"layout": {
-			  "column": 9,
-			  "row": 9,
-			  "width": 2,
-			  "height": 3
+			  "column": 4,
+			  "row": 6,
+			  "width": 9,
+			  "height": 2
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
@@ -412,155 +438,25 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) as 'Total transactions', average(duration) as 'Avg duration (s)', percentile(duration, 90) as 'Slowest 10% (s)', percentage(count(*), WHERE error is false) AS 'Success rate' where appName LIKE '%PHP%'"
+				  "query": "FROM Transaction SELECT count(*) as 'Total Transactions', average(duration) as 'Avg Duration (seconds)', percentile(duration, 90) as 'Slowest 10% (seconds)', percentage(count(*), WHERE BOOLEAN(error) is FALSE) AS 'Success Rate', percentage(count(*), WHERE BOOLEAN(error) is TRUE) AS 'Error Rate'"
 				}
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
 			  }
 			}
-		  },
-		  {
-			"title": "VM Overview",
-			"layout": {
-			  "column": 11,
-			  "row": 9,
-			  "width": 2,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.billboard"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric SELECT average(apm.service.cpu.usertime.utilization) * 100 as 'Average CPU utilization (%)', average(apm.service.memory.physical) as 'Average memory used (MB)' WHERE appName like '%PHP%'"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
+		  }
+		]
+	  },
+	  {
+		"name": "Infrastructure Monitoring",
+		"description": null,
+		"widgets": [
 		  {
 			"title": "",
 			"layout": {
 			  "column": 1,
-			  "row": 12,
-			  "width": 12,
-			  "height": 1
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.markdown"
-			},
-			"rawConfiguration": {
-			  "text": "# Database Monitoring\n\nUsing the New Relic PHP agent, you have the ability to understand database operations, which is the best indicator of performance.\n\n"
-			}
-		  },
-		  {
-			"title": "Top Databases by Throughput",
-			"layout": {
-			  "column": 1,
-			  "row": 13,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT rate(count(apm.service.datastore.operation.duration), 1 minute) FROM Metric WHERE (appName LIKE '%PHP%') FACET `datastoreType`, `operation`, `table` LIMIT 5 TIMESERIES AUTO"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "Top 5 Database Operations by Time Consumed",
-			"layout": {
-			  "column": 5,
-			  "row": 13,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT sum(apm.service.datastore.operation.duration * 1000) FROM Metric WHERE (appName LIKE '%PHP%') FACET `datastoreType`, `table`, `operation` LIMIT 5 TIMESERIES AUTO"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Top Databases by Query Time",
-			"layout": {
-			  "column": 9,
-			  "row": 13,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(apm.service.datastore.operation.duration * 1000) FROM Metric WHERE (appName LIKE \n'php_lighttpd') FACET `datastoreType`, `table`, `operation` LIMIT 5 TIMESERIES AUTO"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "",
-			"layout": {
-			  "column": 1,
-			  "row": 16,
+			  "row": 1,
 			  "width": 12,
 			  "height": 1
 			},
@@ -573,41 +469,38 @@
 			}
 		  },
 		  {
+			"title": "Application Names - Metric (use filter to get specific data)",
+			"layout": {
+			  "column": 1,
+			  "row": 2,
+			  "width": 4,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT count(*) FACET appName"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
 			"title": "Response Time by Host (sec)",
 			"layout": {
-			  "column": 1,
-			  "row": 17,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(apm.service.transaction.duration) as responseTime FROM Metric WHERE (appName LIKE '%php%') FACET `appName` LIMIT 20 TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "CPU Utilization by Host (%)",
-			"layout": {
 			  "column": 5,
-			  "row": 17,
-			  "width": 4,
+			  "row": 2,
+			  "width": 8,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
@@ -624,7 +517,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT rate(sum(apm.service.cpu.usertime.utilization), 1 second) * 100 as cpuUsage FROM Metric WHERE (appName LIKE '%PHP%') FACET `appName` LIMIT 20 TIMESERIES AUTO "
+				  "query": "SELECT average(apm.service.transaction.duration) as responseTime FROM Metric FACET `appName` LIMIT 20 TIMESERIES AUTO "
 				}
 			  ],
 			  "platformOptions": {
@@ -633,62 +526,16 @@
 			}
 		  },
 		  {
-			"title": "Memory Usage by Host",
-			"layout": {
-			  "column": 9,
-			  "row": 17,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(apm.service.memory.physical) * rate(count(apm.service.instance.count), 1 minute) / 1000 as memoryUsage FROM Metric WHERE (appName LIKE '%PHP%') LIMIT 20 FACET appName TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "",
+			"title": "Memory Usage (%)",
 			"layout": {
 			  "column": 1,
-			  "row": 20,
-			  "width": 12,
-			  "height": 1
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.markdown"
-			},
-			"rawConfiguration": {
-			  "text": "# Browser Monitoring\n\nWith the New Relic PHP agent, you'll acknowledge the browser related information."
-			}
-		  },
-		  {
-			"title": "Initial Page Load and Route Change",
-			"layout": {
-			  "column": 1,
-			  "row": 21,
+			  "row": 5,
 			  "width": 6,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.area"
+			  "id": "viz.line"
 			},
 			"rawConfiguration": {
 			  "facet": {
@@ -700,19 +547,22 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT percentile(duration, 50) FROM BrowserInteraction WHERE (appName LIKE '%php%') AND (`mobileOptimized` IS NULL) AND (category IN ('Initial page load', 'Route change')) FACET CASES (WHERE category = 'Initial page load' AS 'Initial page load (Window load + AJAX)', WHERE category = 'Route change' AS 'Route change') TIMESERIES auto"
+				  "query": "FROM Metric SELECT latest(host.memoryUsedPercent) AS 'Memory Used (%)', latest(host.memoryFreePercent) AS 'Memory Free (%)' TIMESERIES AUTO"
 				}
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
+			  },
+			  "yAxisLeft": {
+				"zero": true
 			  }
 			}
 		  },
 		  {
-			"title": "Window Load Time (sec)",
+			"title": "CPU Usage (%)",
 			"layout": {
 			  "column": 7,
-			  "row": 21,
+			  "row": 5,
 			  "width": 6,
 			  "height": 3
 			},
@@ -730,119 +580,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "SELECT average(windowLoad) AS 'Average', percentile(windowLoad, 95) AS 'Percentile', percentile(windowLoad, 50) AS 'Percentile' FROM PageViewTiming WHERE appName LIKE '%PHP%' and timingName LIKE '%windowLoad%' FACET appName TIMESERIES AUTO"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "",
-			"layout": {
-			  "column": 1,
-			  "row": 24,
-			  "width": 12,
-			  "height": 1
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.markdown"
-			},
-			"rawConfiguration": {
-			  "text": "# Supportability"
-			}
-		  },
-		  {
-			"title": "Total Usage of Instances",
-			"layout": {
-			  "column": 1,
-			  "row": 25,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Total Usage of Instances` FROM Metric WHERE metricTimesliceName LIKE '%Supportability/UsageTotal%' AND appName LIKE '%PHP%' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Instance Reported",
-			"layout": {
-			  "column": 5,
-			  "row": 25,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT count(newrelic.timeslice.value) AS `Instance Reported` FROM Metric WHERE metricTimesliceName LIKE '%Instance/Reporting%' AND `appName` LIKE '%PHP%' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "Count of Successful Execution",
-			"layout": {
-			  "column": 9,
-			  "row": 25,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Count of user executed` FROM Metric WHERE metricTimesliceName LIKE '%Supportability/execute/user/call_count%' AND `appName` LIKE '%PHP%' TIMESERIES AUTO"
+				  "query": "FROM Metric SELECT latest(host.cpuPercent) AS 'CPU Usage (%)', latest(host.cpuIdlePercent) AS 'CPU Idle (%)' TIMESERIES AUTO "
 				}
 			  ],
 			  "platformOptions": {
@@ -856,11 +594,407 @@
 		]
 	  },
 	  {
+		"name": "Database Monitoring",
+		"description": null,
+		"widgets": [
+		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 1,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# Database Monitoring\n\nUsing the New Relic PHP agent, you have the ability to understand database operations, which is the best indicator of performance.\n\n"
+			}
+		  },
+		  {
+			"title": "Application Names - Metric (use filter to get specific data)",
+			"layout": {
+			  "column": 1,
+			  "row": 2,
+			  "width": 3,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "colors": {
+				"seriesOverrides": [
+				  {
+					"color": "#cc5b0f"
+				  }
+				]
+			  },
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT count(*) FACET appName"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Table Names",
+			"layout": {
+			  "column": 4,
+			  "row": 2,
+			  "width": 3,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT average(apm.service.datastore.operation.duration * 1000) AS 'Average Operation Duration (seconds)' FACET table"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Top Database Operations",
+			"layout": {
+			  "column": 7,
+			  "row": 2,
+			  "width": 6,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.line"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT rate(count(apm.service.datastore.operation.duration), 1 minute) FACET datastoreType, table, operation TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "yAxisLeft": {
+				"zero": true
+			  }
+			}
+		  },
+		  {
+			"title": "Top Databases by Query Time",
+			"layout": {
+			  "column": 1,
+			  "row": 5,
+			  "width": 6,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "SELECT average(apm.service.datastore.operation.duration * 1000) FROM Metric FACET datastoreType, operation TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Top Running Databases",
+			"layout": {
+			  "column": 7,
+			  "row": 5,
+			  "width": 6,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.area"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT average(apm.service.datastore.operation.duration * 1000) FACET datastoreType TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  }
+		]
+	  },
+	  {
+		"name": "Browser Monitoring",
+		"description": null,
+		"widgets": [
+		  {
+			"title": "",
+			"layout": {
+			  "column": 1,
+			  "row": 1,
+			  "width": 12,
+			  "height": 1
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.markdown"
+			},
+			"rawConfiguration": {
+			  "text": "# Browser Monitoring\nUse the New Relic browser monitoring solution to get deep visibility and actionable insights into real users' experiences on the website."
+			}
+		  },
+		  {
+			"title": "Application Names - Metric (use filter to get specific data)",
+			"layout": {
+			  "column": 1,
+			  "row": 2,
+			  "width": 3,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT count(*) FACET appName"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Categories",
+			"layout": {
+			  "column": 4,
+			  "row": 2,
+			  "width": 3,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.bar"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM BrowserInteraction SELECT count(*) FACET category "
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Timing Names",
+			"layout": {
+			  "column": 7,
+			  "row": 2,
+			  "width": 6,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.pie"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM PageViewTiming SELECT count(*) FACET timingName"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Browser Interaction Duration",
+			"layout": {
+			  "column": 1,
+			  "row": 5,
+			  "width": 6,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.line"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "legend": {
+				"enabled": true
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM BrowserInteraction SELECT latest(duration), percentile(duration, 50) TIMESERIES AUTO"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  },
+			  "yAxisLeft": {
+				"zero": true
+			  }
+			}
+		  },
+		  {
+			"title": "Window Load Time (seconds)",
+			"layout": {
+			  "column": 7,
+			  "row": 5,
+			  "width": 2,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM PageViewTiming SELECT latest(windowLoad) AS 'Window Load (seconds)', average(windowLoad) AS 'Average Window load (seconds)'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "First Interaction (seconds)",
+			"layout": {
+			  "column": 9,
+			  "row": 5,
+			  "width": 2,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM PageViewTiming SELECT latest(firstInteraction) AS 'First Interaction (seconds)', average(firstInteraction) AS 'Average First Interaction (seconds)'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "First Paint (seconds)",
+			"layout": {
+			  "column": 11,
+			  "row": 5,
+			  "width": 2,
+			  "height": 3
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM PageViewTiming SELECT latest(firstPaint) AS 'First Paint (seconds)', average(firstPaint) AS 'Average First Paint (seconds)'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  }
+		]
+	  },
+	  {
 		"name": "Alerts & Errors",
 		"description": null,
 		"widgets": [
 		  {
-			"title": "Transaction Count (Use filter to get specific data)",
+			"title": "Application Names - Transaction (use filter to get specific data)",
 			"layout": {
 			  "column": 1,
 			  "row": 1,
@@ -878,7 +1012,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) WHERE (transactionType LIKE '%Web%') and ((tags.language LIKE '%php%') or (appName LIKE '%php%')) EXTRAPOLATE FACET appName"
+				  "query": "FROM Transaction SELECT count(*) FACET appName"
 				}
 			  ],
 			  "platformOptions": {
@@ -887,7 +1021,7 @@
 			}
 		  },
 		  {
-			"title": "Total Duration of Web Transaction",
+			"title": "Average Transaction Duration",
 			"layout": {
 			  "column": 4,
 			  "row": 1,
@@ -905,7 +1039,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction select average(duration) as 'Total Duration' where transactionType LIKE '%Web%'"
+				  "query": "FROM Transaction select average(duration) as 'Seconds'"
 				}
 			  ],
 			  "platformOptions": {
@@ -918,7 +1052,7 @@
 				},
 				{
 				  "alertSeverity": "WARNING",
-				  "value": 8
+				  "value": 5
 				}
 			  ]
 			}
@@ -942,7 +1076,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT percentage(count(*), where error is not false) as 'Error Rate' where transactionType LIKE '%Web%'"
+				  "query": "FROM Transaction SELECT percentage(count(*), WHERE BOOLEAN(error) IS TRUE)"
 				}
 			  ],
 			  "platformOptions": {
@@ -951,13 +1085,13 @@
 			  "thresholds": [
 				{
 				  "alertSeverity": "CRITICAL",
-				  "value": 0.05
+				  "value": 0
 				}
 			  ]
 			}
 		  },
 		  {
-			"title": "Throughput",
+			"title": "Web Throughput per Minute",
 			"layout": {
 			  "column": 10,
 			  "row": 1,
@@ -975,7 +1109,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Transaction SELECT count(*) as 'Throughput' where transactionType LIKE '%Web%'"
+				  "query": "FROM Transaction SELECT rate(count(duration), 1 minute) as 'Web Throughput/min' "
 				}
 			  ],
 			  "platformOptions": {
@@ -983,11 +1117,12 @@
 			  },
 			  "thresholds": [
 				{
-				  "alertSeverity": "CRITICAL",
-				  "value": 0
+				  "alertSeverity": "WARNING",
+				  "value": 10
 				},
 				{
-				  "value": 1
+				  "alertSeverity": "CRITICAL",
+				  "value": 20
 				}
 			  ]
 			}
