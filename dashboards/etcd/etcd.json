@@ -1,566 +1,513 @@
 {
-    "name": "Etcd Overview",
-    "description": "A dashboard for etcd based on Prometheus remote write metrics",
-    "pages": [
-      {
-        "name": "Overview",
-        "description": null,
-        "widgets": [
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "![New Relic logo](https://i.imgur.com/zQS8meU.png) \n- - -\n### Overview\n`etcd` is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.\n\n### About this Dashboard\n\nThis dashboard is based on standard `etcd` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `etcd` instances in the cluster.  \n\n**Note**:  if you're running a managed Kubernetes cluster (e.g. EKS, AKS, GKE), then the full set of `etcd` Prometheus metrics will not be available in these platforms. \n\n"
-            }
+  "name": "Etcd (Prometheus)",
+  "description": "A dashboard for etcd based on metrics sent to New Relic using Prometheus Agent or Prometheus server.",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 6
           },
-          {
-            "title": "Has Leader",
-            "layout": {
-              "column": 4,
-              "row": 1,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (average(etcd_server_has_leader) * cardinality(etcd_server_has_leader)) as 'Has Leader' FROM Metric where instrumentation.name = 'remote-write' facet instance SINCE 2 minutes ago until now"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": true
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
           },
-          {
-            "title": "Leader Changes Total",
-            "layout": {
-              "column": 6,
-              "row": 1,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT max(etcd_server_leader_changes_seen_total) as '' FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+          "rawConfiguration": {
+            "text": "![New Relic logo](https://i.imgur.com/zQS8meU.png) \n- - -\n### Overview\n`etcd` is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.\n\n### About this Dashboard\n\n* This dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/).\n* For information on the prerequisites for this dashboard, please visit [our documentation here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/etcd-integration).\n\n---\n**Note**:  if you're running a Kubernetes where the control plane is managed by the vendor (e.g. EKS, AKS, GKE), then the full set of `etcd` Prometheus metrics will not be available for these platforms.\n\n"
+          }
+        },
+        {
+          "title": "Leader Changes Total",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "title": "Failed Proposals Total",
-            "layout": {
-              "column": 8,
-              "row": 1,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT max(etcd_server_proposals_failed_total) as '' FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "title": "DB Size (MB)",
-            "layout": {
-              "column": 10,
-              "row": 1,
-              "width": 3,
-              "height": 3
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT ((average(etcd_debugging_mvcc_db_total_size_in_bytes) * cardinality(etcd_debugging_mvcc_db_total_size_in_bytes)) OR (average(etcd_mvcc_db_total_size_in_bytes) * cardinality(etcd_mvcc_db_total_size_in_bytes))) / 1000 / 1000  as 'DB Total Size (MB)' FROM Metric where instrumentation.name = 'remote-write' facet instance"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(etcd_server_leader_changes_seen_total) as '' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} )"
               }
-            }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "title": "Failed Proposals Total",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "title": "WAL Fsync Duration 95%ile (seconds)",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(etcd_disk_wal_fsync_duration_seconds_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "title": "Backend Commit Duration 95%ile  (seconds) ",
-            "layout": {
-              "column": 5,
-              "row": 4,
-              "width": 4,
-              "height": 3
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT histogrampercentile(etcd_disk_backend_commit_duration_seconds_bucket, (100 * 0.95)) FROM Metric  where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(etcd_server_proposals_failed_total) as '' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} )"
               }
-            }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "title": "DB Size (MB)",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 3
           },
-          {
-            "title": "Snapshot Save Duration (seconds)",
-            "layout": {
-              "column": 9,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_debugging_snap_save_total_duration_seconds_sum), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
           },
-          {
-            "title": "Server Proposals Applied (ops/sec)",
-            "layout": {
-              "column": 1,
-              "row": 7,
-              "width": 4,
-              "height": 3
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_server_proposals_applied_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(etcd_mvcc_db_total_size_in_bytes) * cardinality(etcd_mvcc_db_total_size_in_bytes)) / 1000 / 1000  as 'DB Total Size (MB)' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) facet prometheus_server, instance"
               }
-            }
-          },
-          {
-            "title": "Server Proposal Failure Rate (ops/sec)",
-            "layout": {
-              "column": 5,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_server_proposals_failed_total), 1 SECONDS) as 'Failures' FROM Metric where instrumentation.name = 'remote-write' facet instance SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Server Proposals Committed Rate (ops/sec)",
-            "layout": {
-              "column": 9,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_server_proposals_committed_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' facet instance SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "RPC Rate (ops/sec)",
-            "layout": {
-              "column": 1,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(grpc_server_started_total), 1 SECONDS) as 'Operations/sec' FROM Metric where instrumentation.name = 'remote-write' and (grpc_type = 'unary') and instrumentation.name = 'remote-write' facet instance SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "RPC Failed Rate (ops/sec)",
-            "layout": {
-              "column": 5,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(grpc_server_handled_total), 1 SECONDS) as 'Operations' FROM Metric where instrumentation.name = 'remote-write' and ((grpc_type = 'unary') AND NOT ((grpc_code = 'OK'))) facet instance SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Process Resident Memory (bytes)",
-            "layout": {
-              "column": 9,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.table"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [
-                {
-                  "name": "Memory Bytes",
-                  "type": "decimal"
-                }
-              ],
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT latest(process_resident_memory_bytes) as 'Memory Bytes' FROM Metric where instrumentation.name = 'remote-write' and (job RLIKE '.*etcd.*') SINCE 60 MINUTES AGO UNTIL NOW FACET job, instance LIMIT 100"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              }
-            }
-          },
-          {
-            "title": "Client Traffic Out (bytes)",
-            "layout": {
-              "column": 1,
-              "row": 13,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_network_client_grpc_sent_bytes_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Client Traffic In (bytes)",
-            "layout": {
-              "column": 4,
-              "row": 13,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_network_client_grpc_received_bytes_total), 1 SECONDS) as 'bytes' FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Network Peer Received (bytes)",
-            "layout": {
-              "column": 7,
-              "row": 13,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_network_peer_received_bytes_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Network Peer Sent (bytes)",
-            "layout": {
-              "column": 10,
-              "row": 13,
-              "width": 3,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(etcd_network_peer_sent_bytes_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' SINCE 60 MINUTES AGO UNTIL NOW FACET instance LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      }
-    ],
-    "variables": []
-  }
+        },
+        {
+          "title": "Etcd Server Info",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(latest(server_version), where metricName = 'etcd_server_version') as 'Etcd Server Version', if((max(etcd_server_has_leader) * cardinality(etcd_server_has_leader)) = 1, 'True', 'False') as 'Has Leader' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) facet prometheus_server SINCE 2 minutes ago until now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Process Resident Memory (MB)",
+          "layout": {
+            "column": 8,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(process_resident_memory_bytes) / 1e6 as 'Memory (MB)' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) and (app_kubernetes_io_name = 'etcd' or app_newrelic_io_name = 'etcd' or k8s_app = 'etcd' or job like '%etcd%' or instance like '%:2381') FACET prometheus_server, instance LIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "WAL Fsync Duration 95th%",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(etcd_disk_wal_fsync_duration_seconds_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Backend Commit Duration 95th%",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(etcd_disk_backend_commit_duration_seconds_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Snapshot Save Duration ",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_debugging_snap_save_total_duration_seconds_sum), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Server Proposals Applied/Failed/Committed",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_server_proposals_applied_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Applied') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_server_proposals_failed_total), 1 SECONDS) as 'Failures' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Failed') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_server_proposals_committed_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Committed') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Client Traffic Sent/Received",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_network_client_grpc_sent_bytes_total), 1 SECONDS) as 'Out' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Sent') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_network_client_grpc_received_bytes_total), 1 SECONDS) as 'bytes' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Received') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Network Peer Sent/Received",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_network_peer_sent_bytes_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(etcd_network_peer_received_bytes_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ' : Received') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "RPC Rate",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(grpc_server_started_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) and grpc_type = 'unary' FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "RPC Failed Rate",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(grpc_server_handled_total), 1 SECONDS) as 'Operations' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) and ((grpc_type = 'unary') AND NOT ((grpc_code = 'OK'))) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server)\n WHERE metricName LIKE 'etcd_%' since 1 week ago\n\n"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "from Metric select uniques(instance) where metricName like 'etcd_%' since 1 week ago"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
