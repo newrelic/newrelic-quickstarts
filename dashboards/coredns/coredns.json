@@ -1,0 +1,813 @@
+{
+  "name": "CoreDNS (Prometheus)",
+  "description": "A dashboard for CoreDNS based on metrics sent to New Relic using Prometheus Agent or Prometheus server.",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![CoreDNS Logo](https://i.imgur.com/2P3A2zF.png) \n\n### Overview\n[coreDNS](https://github.com/coredns/coredns) is a fast and flexible DNS server/forwarder. The key word here is *flexible*, with CoreDNS you are able to do what you want with your DNS data by utilizing plugins. If some functionality is not provided out of the box you can add it by [writing a plugin](https://coredns.io/explugins). CoreDNS is a [Cloud Native Computing Foundation](https://cncf.io) graduated project.\n- - -\n### About this Dashboard\n\n- For information on the prerequisites for this dashboard, please visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/core-dns-integration).\n- For more information on how to send Prometheus metrics to New Relic using Prometheus Agent or Prometheus Server, visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\n\n\n"
+          }
+        },
+        {
+          "title": "Build Info and Status",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM (\n\tSELECT \n\t\tlatest(version) as 'corednsversion',\n\t\tlatest(up) as 'corednsup',\n\t\tsum(coredns_panics_total) as 'corednspanics'\n\tFROM Metric\n\tWHERE metricName in ('coredns_build_info','up','coredns_panics_total')\n\t\tand instrumentation.name = 'remote-write'\n\t\tand (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns')\n\tfacet instance, prometheus_server, cluster_name limit max\n\t) \nSELECT sum(corednsup) as 'Instances Up', sum(corednspanics) as 'Panics' where prometheus_server IN ( {{ prometheus_server }} ) facet corednsversion as 'CoreDNS Version', prometheus_server as 'Prometheus Server' limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU Time (ms) by instance",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(process_cpu_seconds_total), 1 SECONDS) * 1000 FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) facet concat(prometheus_server,' - ', instance) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by instance",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) as 'Requests' FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance) LIMIT 100 timeseries"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request Duration (sec) 95th% by server/zone",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_duration_seconds_bucket, (95)) as '95%ile' FROM Metric where (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance,' : ',server, ',',zone) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Avg. Memory Usage (bytes) by instance",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(go_memstats_alloc_bytes) / 1000 / 1000 FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 60000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Requests",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Requests by instance",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , ', proto) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by type",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , type: ', type) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Request bytes 50th%/95th% by proto (udp)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'udp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.50)) FROM Metric where proto = 'udp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 50th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "udp:95%ile",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "udp:50%ile",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "DO bit requests by instance",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_do_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by zone",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_requests_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , zone: ', zone) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request bytes 50th%/95th% by proto (tcp)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.95)) as 'tcp:95%ile' FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_request_size_bytes_bucket, (100 * 0.50)) as 'tcp:50%ile' FROM Metric where instrumentation.name = 'remote-write' and proto = 'tcp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Metric",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "Metric",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responses",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Responses by instance",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_responses_total), 1 SECONDS) as 'Responses per second' from Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response size - 50th%/95th% by proto (udp)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'udp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.50)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'udp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 50th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "udp:95%ile",
+                  "unit": "BYTES"
+                },
+                {
+                  "seriesName": "udp:50%ile",
+                  "unit": "BYTES"
+                }
+              ],
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response size - 50th%/95th% by proto (tcp)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.95)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'tcp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT histogrampercentile(coredns_dns_response_size_bytes_bucket, (100 * 0.50)) FROM Metric where instrumentation.name = 'remote-write' where proto = 'tcp' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ' , 95th%') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Responses by rcode",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_responses_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ', rcode: ',rcode) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Responses/min by rcode",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_dns_responses_total), 1 SECONDS) * 60 as 'Responses' FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ', rcode: ',rcode) LIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Cache Hit %",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(coredns_cache_hits_total)/(sum(coredns_cache_misses_total) + sum(coredns_cache_hits_total)) * 100 as 'Cache Hit %' where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) FACET prometheus_server LIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache hit rate by type",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_cache_hits_total), 1 SECONDS) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server, ' - ', instance, ', type: ', type) LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Cache entries total",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(coredns_cache_entries) * cardinality(coredns_cache_entries)) FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ', type: ',type) LIMIT 100 TIMESERIES 300000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache misses",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(coredns_cache_misses_total), 1 SECONDS) as 'Cache misses per second' FROM Metric where instrumentation.name = 'remote-write' and (app_kubernetes_io_name = 'coredns' or app_newrelic_io_name = 'coredns' or k8s_app = 'kube-dns' or job = 'coredns') and prometheus_server IN ( {{ prometheus_server }} ) and instance IN ( {{ instance }} ) FACET concat(prometheus_server,' - ',instance, ', type: misses') LIMIT 100 TIMESERIES 300000 SLIDE BY 30000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "from Metric select uniques(prometheus_server) where instrumentation.name = 'remote-write' and metricName like 'coredns_%' since 1 week ago"
+      },
+      "title": "Prometheus Server",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "from Metric select uniques(instance) where metricName like 'coredns_%' since 1 week ago"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}

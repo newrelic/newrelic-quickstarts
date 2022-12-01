@@ -10,15 +10,35 @@
     - [Contributor license agreement](#contributor-license-agreement)
   - [Quickstart definitions](#quickstart-definitions)
     - [Quickstarts](#quickstarts)
+      - [Fields](#fields)
+      - [Style tips](#style-tips)
+      - [Quickstart description prose template](#quickstart-description-prose-template)
+      - [Quickstart usage](#quickstart-usage)
+      - [Authors](#authors)
+      - [Slug & title fields](#slug--title-fields)
+      - [Summary & descriptions](#summary--descriptions)
+      - [Documentation](#documentation)
+      - [Support Levels](#support-levels)
+      - [Icons](#icons)
+    - [Data Sources](#data-sources)
+    - [Keywords](#keywords)
     - [Dashboards](#dashboards)
+      - [Dashboard JSON Fields](#dashboard-json-fields)
+      - [Dashboard Permissions](#dashboard-permissions)
+      - [Dashboard name uniqueness](#dashboard-name-uniqueness)
+      - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
+      - [Alert condition fields](#alert-condition-fields)
     - [Install plans](#install-plans)
-    - [Data sources](#data-sources)
+      - [Install plan fields](#install-plan-fields)
+      - [Install fields](#install-fields)
+    - [Data sources](#data-sources-1)
+      - [Data source fields](#data-source-fields)
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
       - [Step-by-step guide to view Local Quickstart Preview](#step-by-step-guide-to-view-local-quickstart-preview)
-    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
   - [Support](#support)
+    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
     - [Feature requests](#feature-requests)
     - [Slack](#slack)
     - [Partnerships](#partnerships)
@@ -77,7 +97,7 @@ For more information about CLAs, please check out Alex Russell's excellent post,
 
 ### Quickstarts
 
-Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or Wordpress.
+Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or WordPress.
 
 They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, install plans, and data sources.
 
@@ -386,7 +406,8 @@ To convert an exported dashboard to the correct schema:
 
 1. Remove the `permissions` field
 2. Set every instance of `accountId` to `0`
-3. Set every instance of `linkedEntityGuids` to `null`
+3. Set every instance of `accountIds` (plural) to `[]`
+4. Set every instance of `linkedEntityGuids` to `null`
 
 We provide a handy script to do this for you:
 
@@ -411,6 +432,7 @@ exmaple-screenshot2.png
 | name        | yes       |         | The name of the dashboard, must be unique across all dashboards in the system. Name uniqueness will be checked at pull request time |
 | description | no        |         | A nice description of the dashboard, displayed in the catalogue                                                                     |
 | pages       | yes       |         | The main configuration for the dashboard, generated when exporting from New Relic                                                   |
+| variables   | no        |         | Variables for the dashboard                                                                                                         |
 
 #### Dashboard Permissions
 
