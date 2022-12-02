@@ -1,0 +1,722 @@
+{
+  "name": "Sybase - SAP ASE",
+  "description": null,
+  "pages": [
+    {
+      "name": "Sybase - SAP ASE",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![](https://www.sap.com/dam/application/shared/logos/sap-logo-svg.svg/sap-logo-svg.svg)  \nSAP Adaptive Server Enterprise (ASE) - Sybase Monitoring\n\n| Tables | | |\n| ---- | --- | --- |\n| monState | monNetworkIO | monDataCache |\n| monTempdbActivity | monStatementCache | monThread | \n| monProcessActivity | monProcessObject | monSysExecutionTime |\n| sysquerymetrics | syscachepoolinfo |  |"
+          }
+        },
+        {
+          "title": "State",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(connections) as 'Active Connections' FROM SYBASE WHERE query='SELECT * FROM monState'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network IO",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(bytessent)/10e8 as 'GB sent', latest(bytesreceived)/10e8 as 'GB received' FROM SYBASE WHERE query='SELECT * FROM monNetworkIO'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Temp db Activity",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(logicalreads) as 'TotalBuffersRead', latest(physicalreads) as 'BuffersReadFromDisk', latest(pagesread), latest(physicalwrites) as 'BuffersWrittenToDisk', latest(lockrequests), latest(lockwaits) FROM SYBASE WHERE query='SELECT * FROM monTempdbActivity'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Statement Cache",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT totalsizekb, usedsizekb, numstatements, numsearches, hitcount, numinserts, numremovals FROM SYBASE WHERE query='SELECT * FROM monStatementCache'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Sys Execution Time",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(executiontime)/10e9 as 'OperationExecutionTime', latest(executioncnt) as 'OperationExecutionCnt' FROM SYBASE WHERE query='SELECT * FROM monSysExecutionTime' FACET operationname"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Process Activity",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT application, transactions as 'CountProcessTransactions', tempdbobjects, tableaccesses, indexaccesses, locksheld, cputime, waittime, commits, rollbacks FROM SYBASE WHERE query='SELECT * FROM monProcessActivity'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Data Cache",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(cacheid), latest(bufferpools) as 'NumBufferPoolsInCache', latest(stalls), latest(status) as 'CacheStatus', latest(overhead) as 'CacheOverhead' FROM SYBASE WHERE query='SELECT * FROM monDataCache' FACET cachename"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Thread",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(state), latest(taskruns), latest(usertime)/10e9, latest(systemtime)/10e9, latest(threadid) FROM SYBASE WHERE query='SELECT * FROM monThread' FACET threadpoolname"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "ProcessObject",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(logicalreads), latest(physicalreads), latest(objecttype) FROM SYBASE WHERE query='SELECT * FROM monProcessObject' FACET dbname, objectName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Locks",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT lockstate, locktype, locklevel, pagelevel, rownumber, dbname as 'LockedDBName' FROM SYBASE WHERE query='SELECT * FROM monLocks'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "sysquerymetrics",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT qtext as 'QueryText', cnt as 'QCount', exec_avg as 'AvgExecutionTime', elap_avg as 'AvgElapsedTime', lio_avg as 'AvgLogicalIO', pio_avg as 'AvgPhysicalIO' FROM SYBASE WHERE query='SELECT * FROM sysquerymetrics'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "State",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monState",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query ='SELECT * FROM monState'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NetworkIO",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monNetworkIO",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query ='SELECT * FROM monNetworkIO'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "TempdbActivity",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monTempdbActivity",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query ='SELECT * FROM monTempdbActivity'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "sysquerymetrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "sysquerymetrics",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM sysquerymetrics'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "StatementCache",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monStatementCache",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monStatementCache'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "syscachepoolinfo",
+      "description": null,
+      "widgets": [
+        {
+          "title": "syscachepoolinfo",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM syscachepoolinfo'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locks",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monLocks",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monLocks'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DataCache",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monDataCache",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monDataCache'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SysExecutionTime",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monSysExecutionTime",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monSysExecutionTime'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProcessActivity",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monProcessActivity",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monProcessActivity'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProcessObject",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monProcessObject",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monProcessObject'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Thread",
+      "description": null,
+      "widgets": [
+        {
+          "title": "monThread",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 10
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM SYBASE WHERE query='SELECT * FROM monThread'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
