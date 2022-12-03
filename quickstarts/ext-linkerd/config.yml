@@ -1,0 +1,81 @@
+# Sets the URL name of the quickstart on public I/O (required)
+slug: ext-linkerd
+
+# Displayed in the UI (required)
+title: Linkerd
+# Long-form description of the quickstart (required)
+description: |
+  The Linkerd quickstart allows you to get visibility into the performance and available of your Linkerd service and dependencies. Use this quickstart together with the mock up integrations.
+  ## Linkerd quickstart highlights
+  The New Relic quickstart uses dashboards to proactively monitor your Linkerd services, like:
+  - number of Requests
+  - number of Responses
+  - Response Latancy
+  - Response Success Rate  
+  ## Monitoring Linkerd
+  This quickstart utilizes New Relic's ability to ingest Prometheus data (either from our OpenMetrics integration or via Prometheus remote write). See instructions for [sending Prometheus data to New Relic here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/).
+  ### How do I configure my integration to scrape Linkerd services metrics?
+  As part of default Linkerd instalation, a Prometheus instance is deploy with the basic configuration to capture the liinkerd metrics.
+  The approach to getting your Prometheus metrics into New Relic differs depending on which integration you use.
+  #### Prometheus Remote Write
+  When you are creating your New Relic Prometheus Remote_Write configuration, you MUST configure the data source name as "Linkerd_Prometheus", this is needed to match the rules to import the metrics to the entity.
+  You will have two options to place the remote write configuration described [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/install-configure-remote-write/set-your-prometheus-remote-write-integration/) to send the metrics to New Relic:
+  1- You can add the configuration obtained from the new relic remote write step, directly to the prometheus already deployed with linkerd services, as demostrated below:
+  remote_write:
+  - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=Linkerd_Prometheus
+    bearer_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  2- You can also get the metrics externally creating a service mapping to export the Linkerd metrics from the internal Prometheus installation, to an external Prometheus, by following the procedure in this link: https://linkerd.io/2.10/tasks/exporting-metrics/.
+    After you create the service mapping, you can add this to your external prometheus:
+  ```
+  remote_write:
+  - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=Linkerd_Prometheus
+    bearer_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ 
+  scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.  
+      - job_name: 'federate-linkerd'
+        scrape_interval: 1m
+        honor_labels: true
+        metrics_path: '/federate'
+        params:
+          'match[]':
+            - '{job="linkerd-proxy"}'
+            - '{job="linkerd-controller"}'
+        static_configs:
+          - targets:
+            - localhost:9090
+  ```  
+# Displayed in search results and recommendations. Summarizes a quickstarts functionality.
+summary: |
+  The Linkerd quickstart allows you to get visibility into the performance of your services.
+# Support level: New Relic | Verified | Community (required)
+level: Community
+
+# Authors of the quickstart (required)
+authors:
+  - Dani Turco @Kinect-Consulting
+  - Irvin Arias @Kinect-Consulting
+  - Omar Castillo @Kinect-Consulting
+  - David Perez @Kinect-Consulting
+
+# Keywords for filtering / searching criteria in the UI
+keywords:
+  - Linkerd
+  - Prometheus
+
+documentation:
+  - name: Linkerd installation docs
+    description: |
+      The Linkerd quickstart allows you to get visibility into the performance of your instances.
+    url: >-
+      https://linkerd.io/2.10/getting-started/
+installPlans:
+  - third-party-ext-linkerd
+# Allows us to construct reusable "install plans" and just use their ID in the quickstart config
+alertPolicies:
+  - ext-linkerd
+dashboards:
+  - ext-linkerd
+# Content / Design
+icon: logo.png
+website: https://linkerd.io
