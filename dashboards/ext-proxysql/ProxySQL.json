@@ -1,0 +1,418 @@
+{
+    "name": "ProxySQL",
+    "description": null,
+    "pages": [
+      {
+        "name": "ProxySQL",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![Logo](https://i.imgur.com/tQqeUSp.png)\n\n- - -\n### Overview\n`ProxySQL` is an open source high performance, high availability, database protocol aware proxy for MySQL.\n\n### About this Dashboard\n\nThis dashboard is based on standard `ProxySQL` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `ProxySQL` instances in the cluster."
+            }
+          },
+          {
+            "title": "Active Transactions",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": { 
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT (average(proxysql_active_transactions) * cardinality(proxysql_active_transactions)) as 'Active Transactions' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Frontend Usage",
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT ((latest(proxysql_client_connections_connected) / latest(proxysql_mysql_max_connections)) * 100) as 'Frontend Usage' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "PERCENTAGE"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Incoming Writes vs Entries Stored Overview",
+            "layout": {
+              "column": 3,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(proxysql_query_cache_count_set_total) * cardinality(proxysql_query_cache_count_set_total)) as 'Incoming Writes' WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(proxysql_query_cache_entries_total) * cardinality(proxysql_query_cache_entries_total)) as 'Entries Stored' WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') TIMESERIES AUTO "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Connection Overview",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT (average(proxysql_client_connections_connected) * cardinality(proxysql_client_connections_connected)) as 'Total Frontend Connections' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT (average(proxysql_connpool_conns) * cardinality(proxysql_connpool_conns)) as 'Total Backend Connections (in-use)' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') and status = 'used' TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT (average(proxysql_connpool_conns) * cardinality(proxysql_connpool_conns)) as 'Total Backend Connections (free)' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') and status = 'free' TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Frontend Connection Overview",
+            "layout": {
+              "column": 10,
+              "row": 4,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(proxysql_client_connections_non_idle) as 'In-Use' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "SELECT (latest(proxysql_client_connections_connected) - latest(proxysql_client_connections_non_idle)) as 'Idle' FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Cache Read Success %",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT percentage(sum(proxysql_query_cache_count_get_total), WHERE status = 'ok') or 0 as '' WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') Facet instance"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 100
+                }
+              ]
+            }
+          },
+          {
+            "title": "Slow Queries",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT (average(proxysql_slow_queries_total) * cardinality(proxysql_slow_queries_total)) as 'Slow Queries' WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Frontend Connections",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(proxysql_client_connections_connected) FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Backend Connections",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(proxysql_server_connections_connected) FROM Metric WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Error Counters",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_access_denied_wrong_password_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_access_denied_max_user_connections_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_access_denied_max_connections_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_max_connect_timeouts_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_backend_lagging_during_query_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                },
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT sum(proxysql_backend_offline_during_query_total) WHERE instrumentation.name = 'remote-write' and (app_kubernetes_io_name LIKE '%proxysql%' or app_newrelic_com_name LIKE '%proxysql%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
