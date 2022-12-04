@@ -1,0 +1,640 @@
+{
+  "name": "Envoy",
+  "description": null,
+  "pages": [
+    {
+      "name": "Envoy",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![](https://i.imgur.com/yDeWvjO.png)\n- - -\n### Overview\nEnvoy is an L7 proxy and communication bus designed for large modern service oriented architectures. \n\n### About this Dashboard\n\nThis dashboard is based on standard `Envoy` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `Envoy` instances."
+          }
+        },
+        {
+          "title": "Live Servers",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg envoy_server_live",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " FROM Metric SELECT (average(envoy_server_live) * cardinality(envoy_server_live)) as '' WHERE ((service RLIKE '()') OR service IS NULL) WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%')"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Avg Uptime Per Node",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "day",
+                "type": null
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_server_uptime)/60/60/24 as 'day' FROM Metric WHERE ((service RLIKE '()') OR service IS NULL) WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%')"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 2000
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 4000
+              }
+            ]
+          }
+        },
+        {
+          "title": "Allocated Memory",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "MB",
+                "type": null
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_server_memory_allocated)/1024/1024 * cardinality(envoy_server_memory_allocated)) as 'MB' FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') AND instrumentation.name='remote-write'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Unhealthy Clusters",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (latest(envoy_cluster_membership_healthy) - latest(envoy_cluster_membership_total)) as '' FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') AND instrumentation.name='remote-write'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cluster State",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM (from(from Metric SELECT (latest(envoy_cluster_membership_healthy) - latest(envoy_cluster_membership_total)) as 'result' ) select latest(result) facet cases(WHERE result = 0 as 'Ok', WHERE result != 0 as 'Not well')) select latest(cases) as ''"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Heap Size",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "MB",
+                "type": null
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_server_memory_heap_size)/1024/1024 * cardinality(envoy_server_memory_heap_size)) as 'MB' FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') AND instrumentation.name='remote-write'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Active Connections",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_cluster_upstream_cx_rx_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET tuple(envoy_cluster_name, instance) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Requests",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_cluster_upstream_rq_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT max TIMESERIES AUTO ) WHERE instrumentation.name='remote-write' FACET tuple(envoy_cluster_name, instance) LIMIT max TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Downstream Total Active Connections",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_http_downstream_cx_active) * cardinality(envoy_http_downstream_cx_active)) FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') facet instance  LIMIT 100 TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Downstream Total Active Requests",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_http_downstream_cx_active) * cardinality(envoy_http_downstream_cx_active)) FROM Metric WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET instance TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Upstream Network Traffic",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_cluster_upstream_cx_rx_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT MAX TIMESERIES) FACET tuple(envoy_cluster_name, instance) LIMIT MAX TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_cluster_upstream_cx_tx_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET tuple(envoy_cluster_name, instance) LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Downstream Network Traffic",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_http_downstream_cx_rx_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT MAX TIMESERIES) FACET instance LIMIT MAX TIMESERIES"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT irate(envoy_http_downstream_cx_tx_bytes_total, 1 SECONDS) AS `__result_0` FROM Metric WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET dimensions() LIMIT MAX TIMESERIES AUTO) FACET instance LIMIT MAX TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Downstream Members",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_cluster_membership_healthy) * cardinality(envoy_cluster_membership_healthy)) AS 'Healthy' FROM Metric WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') TIMESERIES"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (average(envoy_cluster_membership_total) * cardinality(envoy_cluster_membership_total)) as 'Total' FROM Metric WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total DNS Cares Resolve",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(envoy_dns_cares_resolve_total) WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET instance TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP API Return Code (Avg)",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '2XX' FROM Metric  WHERE envoy_response_code_class IN (2, '2') AND instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET instance TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '3XX' FROM Metric  WHERE envoy_response_code_class IN (3, '3') AND  instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET instance TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '4XX' FROM Metric  WHERE envoy_response_code_class IN (4, '4') AND instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET instance TIMESERIES AUTO"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT average(envoy_http_downstream_rq_xx) as '5XX' FROM Metric  WHERE envoy_response_code_class IN (5, '5') AND instrumentation.name='remote-write' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cluster States",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(envoy_cluster_membership_total) AS 'Total' WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET tuple(instance,'Total') TIMESERIES"
+              },
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(envoy_cluster_membership_healthy) AS 'Healthy' WHERE instrumentation.name='remote-write' AND (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') FACET tuple(instance,'Healthy') TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Envoy Latest Metrics",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(instance) WHERE (app_kubernetes_io_name LIKE '%envoy%' or app_newrelic_com_name LIKE '%envoy%') AND instrumentation.name='remote-write' FACET metricName, prometheus_server, job"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
