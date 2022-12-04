@@ -1,0 +1,283 @@
+{
+    "name": "Kong",
+    "description": null,
+    "pages": [
+      {
+        "name": "Kong",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "\n# ![Kong](https://i.imgur.com/ePHzi2Z.png)\n- - -\n### Overview\n`Kong Api Gateway` main usage:\n- Provide APIs as a product to internal and external teams to locate, access, and consume through the customizable Developer Portal.\n- Add functionality to APIs and services with a wide range of out-of-the-box plugins and boost developer efficiency.\n- Avoid configuration drift by enabling declarative configuration and remove manual coding tasks by integrating all service types into existing CI/CD pipelines.\n- Streamline developer onboarding process with Role-Based Access Control (RBAC). \n- Integrate with Kong Insomnia to accelerate development of REST, GraphQL, Kafka, and gRPC services, increase collaboration, and standardize processes across teams. \n\n### About this Dashboard\n\nThis dashboard is based on standard `Kong Api Gateway` Prometheus metrics ingested using Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  Most widgets utilize an `instance` facet to identify `Kong Api Gateway` instances in the cluster.  \n"
+            }
+          },
+          {
+            "title": "Datastore Status",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\nif(latest(kong_datastore_reachable[latest]) = 1, 'REACHABLE', 'UNREACHABLE')\nWHERE instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%')\nFACET instance"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Kong Memory Usage (%)",
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "width": 5,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT (latest(kong_memory_lua_shared_dict_bytes)/latest(kong_memory_lua_shared_dict_total_bytes))*100 FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') facet shared_dict LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Kong Worker Lua VM Usage By Node",
+            "layout": {
+              "column": 4,
+              "row": 3,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kong_memory_workers_lua_vms_bytes) FROM Metric WHERE instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') FACET instance TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "# of Nginx HTTP Connection State",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kong_nginx_http_current_connections) FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%')  FACET instance,state TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "# of Datastore Errors",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kong_db_entity_count_errors) FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') FACET instance TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "# of Nginx Errors Total",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT sum(kong_nginx_metric_errors_total) FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') FACET instance TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "VMs Memory Usage (Bytes)",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kong_memory_workers_lua_vms_bytes)  FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') facet instance TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "# of Enterprise License Errors",
+            "layout": {
+              "column": 7,
+              "row": 13,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "SELECT latest(kong_enterprise_license_errors) FROM Metric where instrumentation.name = 'remote-write' AND (app_kubernetes_io_name LIKE '%kong%' or app_newrelic_com_name LIKE '%kong%') FACET instance TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
