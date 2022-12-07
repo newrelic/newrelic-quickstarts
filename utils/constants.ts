@@ -17,7 +17,6 @@ export const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
 export const COMPONENT_PREFIX_REGEXP =
   /^(dashboards|alert-policies|install-plans|data-sources)\//;
 
-
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
  * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.
@@ -40,6 +39,13 @@ export const QUICKSTART_MUTATION = gql`
     ) {
       quickstart {
         id
+        metadata {
+          quickstartComponents {
+            ... on Nr1CatalogQuickstartDashboard {
+              id
+            }
+          }
+        }
       }
     }
   }
@@ -101,6 +107,35 @@ export const CATEGORIES_QUERY = gql`
         categories {
           terms
         }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_REQUIRED_DATA_SOURCES_QUERY = gql`
+  query DashboardRequiredDataSourcesQuery($id: ID!) {
+    actor {
+      nr1Catalog {
+        dashboardTemplate(id: $id) {
+          metadata {
+            requiredDataSources {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
+  mutation DashboardSetRequiredDataSourcesMutation(
+    $dataSourceIds: [ID!]! 
+    templateId: ID!
+  ) {
+    nr1CatalogSetRequiredDataSourcesForDashboardTemplate(dataSourceIds: $dataSourceIds, dashboardTemplateId: $templateId) {
+      dashboardTemplate {
+        id
       }
     }
   }
