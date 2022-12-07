@@ -11,6 +11,7 @@ interface DashboardConfig {
   name: string;
   description?: string;
   pages: any;
+  variables?: any;
 }
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
