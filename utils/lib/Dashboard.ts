@@ -5,7 +5,12 @@ import * as glob from 'glob';
 import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable';
 
 import Component from './Component';
-import { GITHUB_RAW_BASE_URL } from '../constants';
+import {
+  GITHUB_RAW_BASE_URL,
+  DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
+  DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+} from '../constants';
+import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
 interface DashboardConfig {
   name: string;
@@ -13,6 +18,37 @@ interface DashboardConfig {
   pages: any;
   variables?: any;
 }
+
+interface RequiredDataSources {
+  id: string;
+}
+
+type DashboardRequiredDataSourcesQueryResults = {
+  actor: {
+    nr1Catalog: {
+      dashboardTemplate: {
+        metadata: {
+          requiredDataSources: RequiredDataSources[];
+        };
+      };
+    };
+  };
+};
+
+type DashboardRequiredDataSourcesQueryVariables = {
+  id: string;
+};
+
+type DashboardSetRequiredDataSourcesMutationResults = {
+  dashboardTemplate: {
+    id: string;
+  };
+};
+
+type DashboardSetRequiredDataSourcesMutationVariables = {
+  templateId: string;
+  dataSourceIds: string[];
+};
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   /**
@@ -29,9 +65,9 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
         filePaths.length > 1
           ? `Dashboard at ${this.identifier} contains multiple configuration files.\n`
           : `Dashboard at ${this.identifier} does not exist. Please double check this location.\n`;
-      
-      console.error(errorMessage)
-      return ''
+
+      console.error(errorMessage);
+      return '';
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -104,6 +140,47 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return {
       url: `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${screenShotFileName}`,
     };
+  }
+
+  async getRequiredDataSources(templateId: string): Promise<string[]> {
+    const { data, errors } = await fetchNRGraphqlResults<
+      DashboardRequiredDataSourcesQueryVariables,
+      DashboardRequiredDataSourcesQueryResults
+    >({
+      queryString: DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
+      variables: { id: templateId },
+    });
+
+    if (errors) {
+      Promise.reject(`Query for dashboard template id failed`);
+    }
+
+    const dataSourceIds =
+      data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
+        ({ id }) => id
+      );
+
+    return dataSourceIds;
+  }
+
+  async submitSetRequiredDataSourcesMutation(
+    templateId: string,
+    newDataSourceIds: string[]
+  ) {
+    const currDataSourceIds = await this.getRequiredDataSources(templateId);
+    const dataSourceIds = [
+      ...new Set([...currDataSourceIds, ...newDataSourceIds]),
+    ];
+
+    const { data, errors } = await fetchNRGraphqlResults<
+      DashboardSetRequiredDataSourcesMutationVariables,
+      DashboardSetRequiredDataSourcesMutationResults
+    >({
+      queryString: DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      variables: { templateId, dataSourceIds },
+    });
+
+    return { data, errors };
   }
 
   /**
