@@ -1,6 +1,6 @@
 'use strict';
 
-import { validateDataSourceIds } from '../validate-quickstart-data-source';
+import { validateDataSourceIds } from '../validate-quickstart-data-sources';
 import Quickstart from '../lib/Quickstart';
 import DataSource from '../lib/DataSource';
 import * as githubHelpers from '../lib/github-api-helpers';
