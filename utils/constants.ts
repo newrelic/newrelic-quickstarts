@@ -40,7 +40,9 @@ export const QUICKSTART_MUTATION = gql`
       quickstart {
         id
         metadata {
+          dataSources
           quickstartComponents {
+            __typename
             ... on Nr1CatalogQuickstartDashboard {
               id
             }
