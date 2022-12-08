@@ -4,6 +4,7 @@ import { validateDataSourceIds } from '../validate-quickstart-data-sources';
 import Quickstart from '../lib/Quickstart';
 import DataSource from '../lib/DataSource';
 import * as githubHelpers from '../lib/github-api-helpers';
+import * as nrGraphQlHelpers from '../lib/nr-graphql-helpers';
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -12,6 +13,11 @@ jest.mock('../lib/github-api-helpers', () => ({
   ...jest.requireActual('../lib/github-api-helpers'),
   filterQuickstartConfigFiles: jest.fn(),
 }));
+
+jest.mock('../lib/nr-graphql-helpers.ts', () => ({
+  ...jest.requireActual('../lib/nr-graphql-helpers.ts'),
+  getCoreDataSourceIds: jest.fn(),
+})
 
 jest.mock('../lib/Quickstart');
 jest.mock('../lib/DataSource');
@@ -41,7 +47,11 @@ describe('Action: validate install plan id', () => {
     jest.resetAllMocks();
   });
 
-  test('succeeds with valid data source id', () => {
+  beforeEach(() => {
+    nrGraphQlHelpers.getCoreDataSourceIds.mockResolvedValueOnce(['node-js'])
+  })
+
+  test('succeeds with valid data source id', async () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
@@ -52,11 +62,11 @@ describe('Action: validate install plan id', () => {
       return { isValid: true };
     });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).not.toHaveBeenCalled();
   });
 
-  test(`succeeds when valid quickstart doesn't contain any data source ids`, () => {
+  test(`succeeds when valid quickstart doesn't contain any data source ids`, async () => {
     const files = mockGithubAPIFiles([validQuickstartWithoutDataSource]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
@@ -67,12 +77,30 @@ describe('Action: validate install plan id', () => {
       return { isValid: true };
     });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).not.toHaveBeenCalled();
     expect(DataSource).toHaveBeenCalledTimes(0);
   });
 
-  test('fails with invalid data source id', () => {
+  test('succeeds when valid quickstart contains a core data source id', async () => {
+    const files = mockGithubAPIFiles([validQuickstartWithoutDataSource]);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    
+    Quickstart.mockImplementation(() => {
+      return { config: { dataSourceIds: ['node-js'] } };
+    });
+    DataSource.mockImplementation(() => {
+      return { isValid: false };
+    });
+
+    
+    await validateDataSourceIds(files);
+    expect(global.console.error).not.toHaveBeenCalled();
+    expect(DataSource).toHaveBeenCalledTimes(0);
+
+  });
+
+  test('fails with invalid data source id', async () => {
     const files = mockGithubAPIFiles([invalidQuickstartFilename1]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
@@ -83,11 +111,11 @@ describe('Action: validate install plan id', () => {
       return { isValid: false };
     });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(4);
   });
 
-  test('fails with one invalid and one data source id for singular quickstart', () => {
+  test('fails with one invalid and one data source id for singular quickstart', async () => {
     const files = mockGithubAPIFiles([invalidQuickstartFilename2]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
@@ -100,11 +128,11 @@ describe('Action: validate install plan id', () => {
       return { isValid: false };
     });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(4);
   });
 
-  test('fails with mix of valid and invalid quickstart', () => {
+  test('fails with mix of valid and invalid quickstart', async () => {
     const files = mockGithubAPIFiles([
       invalidQuickstartFilename1,
       invalidQuickstartFilename2,
@@ -137,11 +165,11 @@ describe('Action: validate install plan id', () => {
         return { isValid: true };
       });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(5);
   });
 
-  test('does not fail for deleted quickstart', () => {
+  test('does not fail for deleted quickstart', async () => {
     const removedQuickstartFilename = 'fake-removed-quickstart/config.yml';
     const files = mockGithubAPIFiles([removedQuickstartFilename]);
     files[0].status = 'removed';
@@ -153,7 +181,7 @@ describe('Action: validate install plan id', () => {
       };
     });
 
-    validateDataSourceIds(files);
+    await validateDataSourceIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(0);
     expect(Quickstart).toHaveBeenCalledTimes(0);
   });
