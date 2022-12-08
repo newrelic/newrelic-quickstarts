@@ -124,6 +124,18 @@ export const translateMutationErrors = (
   }
 };
 
+export const translateNGErrors = (errors: ErrorOrNerdGraphError[]) => {
+  errors.forEach((error) => {
+    if ('extensions' in error && error.extensions.argumentPath) {
+      const errorPrefix = error.extensions.argumentPath.join('/');
+
+      console.error(`- ${errorPrefix}: ${error.message}`);
+    } else {
+      console.error(`- ${error.message}`);
+    }
+  });
+};
+
 type CategoryTermsNRGraphqlResults = {
   actor: {
     nr1Catalog: {
@@ -149,7 +161,6 @@ type CategoryTermsNRGraphqlResults = {
 export const getCategoryTermsFromKeywords = async (
   configKeywords: string[] | undefined = []
 ): Promise<string[] | undefined> => {
-
   const { data } = await fetchNRGraphqlResults<
     {},
     CategoryTermsNRGraphqlResults
@@ -160,10 +171,7 @@ export const getCategoryTermsFromKeywords = async (
 
   const { categories } = data.actor.nr1Catalog;
 
-  const allCategoryKeywords = categories.flatMap(
-    (category) => category.terms
-  );
-
+  const allCategoryKeywords = categories.flatMap((category) => category.terms);
 
   const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
     if (allCategoryKeywords && allCategoryKeywords.includes(keyword)) {
