@@ -142,7 +142,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     };
   }
 
-  async getRequiredDataSources(templateId: string): Promise<string[]> {
+  static async getRequiredDataSources(templateId: string): Promise<string[]> {
     const { data, errors } = await fetchNRGraphqlResults<
       DashboardRequiredDataSourcesQueryVariables,
       DashboardRequiredDataSourcesQueryResults
@@ -163,7 +163,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return dataSourceIds;
   }
 
-  async submitSetRequiredDataSourcesMutation(
+  static async submitSetRequiredDataSourcesMutation(
     templateId: string,
     newDataSourceIds: string[]
   ) {
