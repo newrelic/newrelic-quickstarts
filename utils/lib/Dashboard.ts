@@ -145,6 +145,11 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     };
   }
 
+  /**
+   * Static method of data sources associated
+   * with dashboard template id
+   * @returns - object with ids and NGerrors
+   */
   static async getRequiredDataSources(
     templateId: string
   ): Promise<{ ids: string[]; errors?: ErrorOrNerdGraphError[] }> {
@@ -168,6 +173,11 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return { ids: ids ?? [], errors };
   }
 
+  /**
+   * Associates data source ids to a dashboard using
+   * dashboard template id through mutation
+   * @returns - result from mutation and errors
+   */
   static async submitSetRequiredDataSourcesMutation(
     templateId: string,
     newDataSourceIds: string[]

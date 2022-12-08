@@ -83,7 +83,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 };
 
 /**
- * Handle errors from GraphQL request
+ * Handle errors from GraphQL request for quickstart mutation
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
  * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
@@ -124,6 +124,11 @@ export const translateMutationErrors = (
   }
 };
 
+/**
+ * Handle errors from GraphQL request
+ * @param {Object[]} errors  - An array of any errors found
+ * @returns {void}
+ */
 export const translateNGErrors = (errors: ErrorOrNerdGraphError[]) => {
   errors.forEach((error) => {
     if ('extensions' in error && error.extensions.argumentPath) {
