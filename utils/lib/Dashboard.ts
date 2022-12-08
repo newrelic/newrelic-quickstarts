@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable';
+import type { NerdGraphError } from '../types/nerdgraph';
 
 import Component from './Component';
 import {
@@ -10,7 +11,7 @@ import {
   DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
   DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../constants';
-import { fetchNRGraphqlResults } from './nr-graphql-helpers';
+import { fetchNRGraphqlResults, translateNGErrors } from './nr-graphql-helpers';
 
 interface DashboardConfig {
   name: string;
@@ -22,6 +23,8 @@ interface DashboardConfig {
 interface RequiredDataSources {
   id: string;
 }
+
+type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 type DashboardRequiredDataSourcesQueryResults = {
   actor: {
@@ -142,7 +145,9 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     };
   }
 
-  static async getRequiredDataSources(templateId: string): Promise<string[]> {
+  static async getRequiredDataSources(
+    templateId: string
+  ): Promise<{ ids: string[]; errors?: ErrorOrNerdGraphError[] }> {
     const { data, errors } = await fetchNRGraphqlResults<
       DashboardRequiredDataSourcesQueryVariables,
       DashboardRequiredDataSourcesQueryResults
@@ -155,19 +160,25 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       Promise.reject(`Query for dashboard template id failed`);
     }
 
-    const dataSourceIds =
+    const ids =
       data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
         ({ id }) => id
       );
 
-    return dataSourceIds;
+    return { ids: ids ?? [], errors };
   }
 
   static async submitSetRequiredDataSourcesMutation(
     templateId: string,
     newDataSourceIds: string[]
   ) {
-    const currDataSourceIds = await this.getRequiredDataSources(templateId);
+    const { ids: currDataSourceIds, errors: queryErrors } =
+      await this.getRequiredDataSources(templateId);
+
+    if (queryErrors) {
+      return { errors: queryErrors };
+    }
+
     const dataSourceIds = [
       ...new Set([...currDataSourceIds, ...newDataSourceIds]),
     ];
