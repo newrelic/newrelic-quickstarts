@@ -4,7 +4,7 @@ import type {
   NerdGraphResponseWithLocalErrors,
 } from '../types/nerdgraph';
 
-import { CATEGORIES_QUERY } from '../constants';
+import { CATEGORIES_QUERY, CORE_DATA_SOURCES_QUERY } from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
 
@@ -174,6 +174,30 @@ export const getCategoryTermsFromKeywords = async (
 
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
 };
+
+type CoreDataSourceSearchResults = {
+  actor: {
+    nr1Catalog: {
+      results: {
+        id: string;
+      }[];
+    };
+  };
+};
+
+export const getCoreDataSourceIds = async (): Promise<string[]> => {
+  const { data } = await fetchNRGraphqlResults<{}, CoreDataSourceSearchResults>(
+    { queryString: CORE_DATA_SOURCES_QUERY, variables: {} }
+  );
+
+  const { results } = data.actor.nr1Catalog;
+
+  const coreDataSourceIds = results.reduce<string[]>((acc, result) => {
+    return [...acc, result.id];
+  }, []);
+
+  return coreDataSourceIds;
+}
 
 /**
  * Breaks an array up into parts, the last part may have less elements
