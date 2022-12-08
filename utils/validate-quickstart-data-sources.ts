@@ -12,22 +12,25 @@ import Quickstart from './lib/Quickstart';
 import DataSource from './lib/DataSource';
 import { passedProcessArguments } from './lib/helpers';
 
-export const validateDataSourceIds = (
-  githubFiles: GithubAPIPullRequestFile[],
-  coreDataSourceIds: string[]
+export const validateDataSourceIds = async (
+  githubFiles: GithubAPIPullRequestFile[]
 ) => {
+  const coreDataSourceIds = await getCoreDataSourceIds();
   const quickstartsWithInvalidDataSources = filterQuickstartConfigFiles(
     githubFiles
   )
+    // filter out removed files
     .filter(isNotRemoved)
+    // map all filenames to quickstarts
     .map(({ filename }) => new Quickstart(filename))
+    // map each quickstart that has an invalid data source id
     .map((quickstart) => {
       const invalidIds =
         quickstart.config.dataSourceIds?.filter((dataSourceId) => {
           // dataSourceId does not exist and is not a core data source
           return (
-            !new DataSource(dataSourceId).isValid &&
-            !coreDataSourceIds.includes(dataSourceId)
+            !coreDataSourceIds.includes(dataSourceId) &&
+            !new DataSource(dataSourceId).isValid
           );
         }) ?? [];
       return {
@@ -35,6 +38,7 @@ export const validateDataSourceIds = (
         invalidDataSourceIds: invalidIds,
       };
     })
+    // filter out empty values
     .filter((q) => q.invalidDataSourceIds.length > 0);
 
   if (quickstartsWithInvalidDataSources.length > 0) {
@@ -67,9 +71,8 @@ const main = async () => {
   }
 
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken)
-  const coreDataSourceIds = await getCoreDataSourceIds();
 
-  validateDataSourceIds(filterOutTestFiles(files), coreDataSourceIds);
+  await validateDataSourceIds(filterOutTestFiles(files));
 }
 
 if (require.main === module) {
