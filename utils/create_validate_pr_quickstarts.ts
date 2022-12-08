@@ -3,7 +3,11 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
+import {
+  translateMutationErrors,
+  chunk,
+  translateNGErrors,
+} from './lib/nr-graphql-helpers';
 
 import Quickstart, {
   QuickstartMutationResponse,
@@ -64,12 +68,21 @@ const setDashboardRequiredDataSourcesFromQuickstart = async (
 
   const dataSourceIds = quickstart.dataSources.map(({ id }) => id);
 
-  const results = Promise.all(
-    dashboardIds.map((dashboardId) => {
-      return Dashboard.submitSetRequiredDataSourcesMutation(
+  const results = await Promise.all(
+    dashboardIds.map(async (dashboardId) => {
+      const result = await Dashboard.submitSetRequiredDataSourcesMutation(
         dashboardId,
         dataSourceIds
       );
+
+      if (result.errors) {
+        console.error(
+          `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
+            dataSourceIds
+          )}`
+        );
+        translateNGErrors(result.errors);
+      }
     })
   );
 
@@ -180,7 +193,7 @@ const main = async () => {
   }
 
   if (!isDryRun) {
-    const setDashboardRequiredDataSourcesResults = Promise.all(
+    const setDashboardRequiredDataSourcesResults = await Promise.all(
       quickstartsResults.map((quickstartResult) => {
         return setDashboardRequiredDataSourcesFromQuickstart(
           quickstartResult.data.quickstart
