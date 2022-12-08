@@ -178,9 +178,11 @@ export const getCategoryTermsFromKeywords = async (
 type CoreDataSourceSearchResults = {
   actor: {
     nr1Catalog: {
-      results: {
-        id: string;
-      }[];
+      search: {
+        results: {
+          id: string;
+        }[];
+      };
     };
   };
 };
@@ -190,11 +192,11 @@ export const getCoreDataSourceIds = async (): Promise<string[]> => {
     { queryString: CORE_DATA_SOURCES_QUERY, variables: {} }
   );
 
-  const { results } = data.actor.nr1Catalog;
+  const {
+    search: { results },
+  } = data.actor.nr1Catalog;
 
-  const coreDataSourceIds = results.reduce<string[]>((acc, result) => {
-    return [...acc, result.id];
-  }, []);
+  const coreDataSourceIds = results.flatMap((result) => result.id);
 
   return coreDataSourceIds;
 }
