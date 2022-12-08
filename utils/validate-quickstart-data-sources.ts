@@ -6,27 +6,36 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 
+import { getCoreDataSourceIds } from './lib/nr-graphql-helpers';
+
 import Quickstart from './lib/Quickstart';
 import DataSource from './lib/DataSource';
 import { passedProcessArguments } from './lib/helpers';
 
 export const validateDataSourceIds = (
-  githubFiles: GithubAPIPullRequestFile[]
+  githubFiles: GithubAPIPullRequestFile[],
+  coreDataSourceIds: string[]
 ) => {
   const quickstartsWithInvalidDataSources = filterQuickstartConfigFiles(
     githubFiles
   )
     .filter(isNotRemoved)
     .map(({ filename }) => new Quickstart(filename))
-    .map((quickstart)=> {
-      const invalidIds = quickstart.config.dataSourceIds?.filter((dataSourceId)=> {
-        return !new DataSource(dataSourceId).isValid;
-      }) ?? []
+    .map((quickstart) => {
+      const invalidIds =
+        quickstart.config.dataSourceIds?.filter((dataSourceId) => {
+          // dataSourceId does not exist and is not a core data source
+          return (
+            !new DataSource(dataSourceId).isValid &&
+            !coreDataSourceIds.includes(dataSourceId)
+          );
+        }) ?? [];
       return {
         quickstart,
         invalidDataSourceIds: invalidIds,
-      }
-    }).filter((q) => q.invalidDataSourceIds.length > 0);
+      };
+    })
+    .filter((q) => q.invalidDataSourceIds.length > 0);
 
   if (quickstartsWithInvalidDataSources.length > 0) {
     console.error(
@@ -46,7 +55,6 @@ export const validateDataSourceIds = (
       process.exit(1);
     }
   }
-
 };
 
 const main = async () => {
@@ -59,8 +67,9 @@ const main = async () => {
   }
 
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken)
+  const coreDataSourceIds = await getCoreDataSourceIds();
 
-  validateDataSourceIds(filterOutTestFiles(files));
+  validateDataSourceIds(filterOutTestFiles(files), coreDataSourceIds);
 }
 
 if (require.main === module) {
