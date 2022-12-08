@@ -5,7 +5,11 @@ import {
 } from './lib/github-api-helpers';
 import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
-import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
+import Quickstart, {
+  QuickstartMutationResponse,
+  QuickstartComponentTypename,
+} from './lib/Quickstart';
+import Dashboard from './lib/Dashboard';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import {
   prop,
@@ -44,19 +48,47 @@ export const countAndOutputErrors = (
     return all + remainingErrors.length;
   }, 0);
 
+const setDashboardRequiredDataSourcesFromQuickstart = async (
+  quickstart: QuickstartMutationResponse['quickstart']
+) => {
+  const dashboardIds = quickstart.metadata.quickstartComponents.reduce(
+    (acc: string[], component) => {
+      if (component.__typename === QuickstartComponentTypename.Dashboard) {
+        return [...acc, component.id];
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  const dataSourceIds = quickstart.dataSources.map(({ id }) => id);
+
+  const results = Promise.all(
+    dashboardIds.map((dashboardId) => {
+      return Dashboard.submitSetRequiredDataSourcesMutation(
+        dashboardId,
+        dataSourceIds
+      );
+    })
+  );
+
+  return results;
+};
+
 export const createValidateQuickstarts = async (
   ghUrl?: string,
   ghToken?: string,
   isDryRun = false
-): Promise<boolean> => {
+): Promise<{ hasFailed: boolean; results: ResponseWithErrors[] }> => {
   if (!ghToken) {
     console.error('GITHUB_TOKEN is not defined.');
-    return false;
+    return { hasFailed: false, results: [] };
   }
 
   if (!ghUrl) {
     console.error('Github PR URL is not defined.');
-    return false;
+    return { hasFailed: false, results: [] };
   }
 
   // Get all files from PR
@@ -126,24 +158,35 @@ export const createValidateQuickstarts = async (
 
   const hasFailed = errorCount > 0 || quickstartErrors.length > 0;
 
-  return hasFailed;
+  return { hasFailed, results };
 };
 
 const main = async () => {
   const [ghUrl, isDryRun] = passedProcessArguments();
   const ghToken = process.env.GITHUB_TOKEN;
   const dryRun = isDryRun === 'true';
-  const hasFailed = await createValidateQuickstarts(ghUrl, ghToken, dryRun);
+  const { hasFailed: hasQuickstartsFailed, results: quickstartsResults } =
+    await createValidateQuickstarts(ghUrl, ghToken, dryRun);
 
   // Record event in New Relic
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
     : CUSTOM_EVENT.UPDATE_QUICKSTARTS;
 
-  await recordNerdGraphResponse(hasFailed, event);
+  await recordNerdGraphResponse(hasQuickstartsFailed, event);
 
-  if (hasFailed) {
+  if (hasQuickstartsFailed) {
     process.exit(1);
+  }
+
+  if (!isDryRun) {
+    const setDashboardRequiredDataSourcesResults = Promise.all(
+      quickstartsResults.map((quickstartResult) => {
+        return setDashboardRequiredDataSourcesFromQuickstart(
+          quickstartResult.data.quickstart
+        );
+      })
+    );
   }
 };
 
