@@ -50,6 +50,14 @@ describe('dashboard-helper', () => {
     test('does not find accountId equal to zero', () => {
       expect(checkLine(`"accountId": 0`)).toHaveLength(0);
     });
+
+    test('finds accountIds', () => {
+      expect(checkLine(`"accountIds": [ 0 ]`)).toHaveLength(1);
+    })
+
+    test('does not find accountIds equal to []', () => {
+      expect(checkLine(`"accountIds": []`)).toHaveLength(0);
+    })
   });
 
   describe('createWarningComment', () => {
