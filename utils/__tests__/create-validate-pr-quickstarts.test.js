@@ -85,7 +85,10 @@ describe('create-validate-pr-quickstarts', () => {
       return { isValid: true };
     });
 
-    const hasErrored = await createValidateQuickstarts('url', 'token');
+    const { hasFailed: hasErrored } = await createValidateQuickstarts(
+      'url',
+      'token'
+    );
     expect(hasErrored).toBe(false);
   });
 
@@ -110,7 +113,10 @@ describe('create-validate-pr-quickstarts', () => {
       return { isValid: true };
     });
 
-    const hasErrored = await createValidateQuickstarts('url', 'token');
+    const { hasFailed: hasErrored } = await createValidateQuickstarts(
+      'url',
+      'token'
+    );
     expect(hasErrored).toBe(true);
   });
 
@@ -135,7 +141,10 @@ describe('create-validate-pr-quickstarts', () => {
       return { isValid: true };
     });
 
-    const hasErrored = await createValidateQuickstarts('url', 'token');
+    const { hasFailed: hasErrored } = await createValidateQuickstarts(
+      'url',
+      'token'
+    );
     expect(hasErrored).toBe(false);
   });
 
@@ -145,7 +154,10 @@ describe('create-validate-pr-quickstarts', () => {
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
 
-    const hasErrored = await createValidateQuickstarts('url', 'token');
+    const { hasFailed: hasErrored } = await createValidateQuickstarts(
+      'url',
+      'token'
+    );
     expect(hasErrored).toBe(false);
   });
 });
