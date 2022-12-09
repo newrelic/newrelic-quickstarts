@@ -16,10 +16,10 @@ const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
-export const buildRequestBody = ({
+export const buildRequestBody = <T>({
   queryString,
   variables,
-}: NerdGraphRequest): string =>
+}: NerdGraphRequest<T>): string =>
   JSON.stringify({
     ...(queryString && { query: queryString }),
     ...(variables && { variables }),
@@ -51,7 +51,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
     .exponential();
 
   try {
-    const body = buildRequestBody(queryBody);
+    const body = buildRequestBody<Variables>(queryBody);
 
     const res = await retry.execute(() =>
       fetch(NR_API_URL, {

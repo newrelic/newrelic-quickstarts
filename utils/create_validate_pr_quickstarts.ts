@@ -52,7 +52,7 @@ export const countAndOutputErrors = (
     return all + remainingErrors.length;
   }, 0);
 
-const setDashboardRequiredDataSourcesFromQuickstart = async (
+const setDashboardRequiredDataSources = async (
   quickstart: QuickstartMutationResponse['quickstart']
 ) => {
   const dashboardIds = quickstart.metadata.quickstartComponents.reduce(
@@ -68,7 +68,7 @@ const setDashboardRequiredDataSourcesFromQuickstart = async (
 
   const dataSourceIds = quickstart.dataSources.map(({ id }) => id);
 
-  const results = await Promise.allSettled(
+  const results = await Promise.all(
     dashboardIds.map(async (dashboardId) => {
       const result = await Dashboard.submitSetRequiredDataSourcesMutation(
         dashboardId,
@@ -76,16 +76,12 @@ const setDashboardRequiredDataSourcesFromQuickstart = async (
       );
 
       if (result.errors) {
-        const error = new Error(
+        console.error(
           `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
             dataSourceIds
           )}`
         );
-
-        console.error(error.message);
         translateNGErrors(result.errors);
-
-        return Promise.reject(error);
       }
 
       return result;
@@ -201,7 +197,7 @@ const main = async () => {
   if (!isDryRun) {
     const setDashboardRequiredDataSourcesResults = await Promise.all(
       quickstartsResults.map((quickstartResult) => {
-        return setDashboardRequiredDataSourcesFromQuickstart(
+        return setDashboardRequiredDataSources(
           quickstartResult.data.quickstart
         );
       })
@@ -209,7 +205,9 @@ const main = async () => {
 
     const hadDashboardRequiredDataSourcesError =
       setDashboardRequiredDataSourcesResults.some((dashboardsResults) => {
-        return dashboardsResults.some((result) => result.status === 'rejected');
+        return dashboardsResults.some(
+          (result) => result?.errors && result.errors.length > 0
+        );
       });
 
     recordNerdGraphResponse(
