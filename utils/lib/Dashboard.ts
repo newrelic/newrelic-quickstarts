@@ -161,10 +161,6 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       variables: { id: templateId },
     });
 
-    if (errors) {
-      Promise.reject(`Query for dashboard template id failed`);
-    }
-
     const ids =
       data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
         ({ id }) => id
