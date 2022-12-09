@@ -163,7 +163,7 @@ installPlans:
 
 # References to data sources by file path, this references a data source located at `data-sources/example-data-source`
 # For more information on data source definitions, see the section below.
-dataSources:
+dataSourceIds:
   - example-data-source
 ```
 
@@ -195,7 +195,7 @@ icon.png
 | dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
 | alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
 | installPlans  | no        |                                                                   | A list of install plans, at least one is required to allow this quickstart to be installed                 |
-| dataSources   | no        |                                                                   | A list of data sources                                                                                     |
+| dataSourceIds | no        |                                                                   | A list of data sources Ids                                                                                     |
 
 #### Style tips
 
