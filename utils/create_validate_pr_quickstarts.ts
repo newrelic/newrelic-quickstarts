@@ -68,7 +68,7 @@ const setDashboardRequiredDataSourcesFromQuickstart = async (
 
   const dataSourceIds = quickstart.dataSources.map(({ id }) => id);
 
-  const results = await Promise.all(
+  const results = await Promise.allSettled(
     dashboardIds.map(async (dashboardId) => {
       const result = await Dashboard.submitSetRequiredDataSourcesMutation(
         dashboardId,
@@ -76,13 +76,19 @@ const setDashboardRequiredDataSourcesFromQuickstart = async (
       );
 
       if (result.errors) {
-        console.error(
+        const error = new Error(
           `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
             dataSourceIds
           )}`
         );
+
+        console.error(error.message);
         translateNGErrors(result.errors);
+
+        return Promise.reject(error);
       }
+
+      return result;
     })
   );
 
@@ -200,6 +206,20 @@ const main = async () => {
         );
       })
     );
+
+    const hadDashboardRequiredDataSourcesError =
+      setDashboardRequiredDataSourcesResults.some((dashboardsResults) => {
+        return dashboardsResults.some((result) => result.status === 'rejected');
+      });
+
+    recordNerdGraphResponse(
+      hadDashboardRequiredDataSourcesError,
+      CUSTOM_EVENT.SET_DASHBOARD_REQUIRED_DATASOURCES
+    );
+
+    if (hadDashboardRequiredDataSourcesError) {
+      process.exit(1);
+    }
   }
 };
 

@@ -19,6 +19,8 @@ export enum CUSTOM_EVENT {
   VALIDATE_INSTALL_PLANS = 'ValidateInstallPlans',
   /** Event name which corresponds to tracking the submission or update of install plans. */
   UPDATE_INSTALL_PLANS = 'UpdateInstallPlans',
+  /** Event name which corresponds to tracking the setting of dashboard required data sources. */
+  SET_DASHBOARD_REQUIRED_DATASOURCES = 'SetDashboardRequiredDataSources',
 }
 
 /**
