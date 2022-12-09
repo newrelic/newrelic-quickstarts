@@ -6,7 +6,7 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 
-import { getCoreDataSourceIds } from './lib/nr-graphql-helpers';
+import { getPublishedDataSourceIds } from './lib/nr-graphql-helpers';
 
 import Quickstart from './lib/Quickstart';
 import DataSource from './lib/DataSource';
@@ -15,7 +15,7 @@ import { passedProcessArguments } from './lib/helpers';
 export const validateDataSourceIds = async (
   githubFiles: GithubAPIPullRequestFile[]
 ) => {
-  const coreDataSourceIds = await getCoreDataSourceIds();
+  const coreDataSourceIds = await getPublishedDataSourceIds();
   const quickstartsWithInvalidDataSources = filterQuickstartConfigFiles(
     githubFiles
   )

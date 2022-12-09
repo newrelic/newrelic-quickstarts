@@ -187,7 +187,7 @@ type CoreDataSourceSearchResults = {
   };
 };
 
-export const getCoreDataSourceIds = async (): Promise<string[]> => {
+export const getPublishedDataSourceIds = async (): Promise<string[]> => {
   const { data } = await fetchNRGraphqlResults<{}, CoreDataSourceSearchResults>(
     { queryString: CORE_DATA_SOURCES_QUERY, variables: {} }
   );

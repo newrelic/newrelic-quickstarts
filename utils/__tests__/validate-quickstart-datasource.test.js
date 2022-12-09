@@ -16,7 +16,7 @@ jest.mock('../lib/github-api-helpers', () => ({
 
 jest.mock('../lib/nr-graphql-helpers.ts', () => ({
   ...jest.requireActual('../lib/nr-graphql-helpers.ts'),
-  getCoreDataSourceIds: jest.fn(),
+  getPublishedDataSourceIds: jest.fn(),
 })
 
 jest.mock('../lib/Quickstart');
@@ -48,7 +48,7 @@ describe('Action: validate install plan id', () => {
   });
 
   beforeEach(() => {
-    nrGraphQlHelpers.getCoreDataSourceIds.mockResolvedValueOnce(['node-js'])
+    nrGraphQlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce(['node-js'])
   })
 
   test('succeeds with valid data source id', async () => {
