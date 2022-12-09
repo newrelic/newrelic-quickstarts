@@ -115,7 +115,7 @@ describe('Action: validate data source id', () => {
 
     nrGraphQlHelpers
       .getPublishedDataSourceIds
-      .mockResolvedValueOnce({erros: [new Error('fake error')]})
+      .mockResolvedValueOnce({errors: [new Error('fake error')]})
     
     Quickstart.mockImplementation(() => {
       return { config: { dataSourceIds: ['node-js'] } };
