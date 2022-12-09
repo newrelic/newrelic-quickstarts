@@ -187,19 +187,26 @@ type CoreDataSourceSearchResults = {
   };
 };
 
-export const getPublishedDataSourceIds = async (): Promise<string[]> => {
-  const { data } = await fetchNRGraphqlResults<{}, CoreDataSourceSearchResults>(
-    { queryString: CORE_DATA_SOURCES_QUERY, variables: {} }
-  );
+type GetPublishedDataSourceIdsResponse = {
+  coreDataSourceIds: string[];
+  errors?: (NerdGraphError | Error)[];
+};
 
-  const {
-    search: { results },
-  } = data.actor.nr1Catalog;
+export const getPublishedDataSourceIds =
+  async (): Promise<GetPublishedDataSourceIdsResponse> => {
+    const { data, errors } = await fetchNRGraphqlResults<
+      {},
+      CoreDataSourceSearchResults
+    >({ queryString: CORE_DATA_SOURCES_QUERY, variables: {} });
 
-  const coreDataSourceIds = results.flatMap((result) => result.id);
+    const {
+      search: { results },
+    } = data.actor.nr1Catalog;
 
-  return coreDataSourceIds;
-}
+    const coreDataSourceIds = results.flatMap((result) => result.id);
+
+    return { coreDataSourceIds, errors };
+  };
 
 /**
  * Breaks an array up into parts, the last part may have less elements

@@ -15,7 +15,20 @@ import { passedProcessArguments } from './lib/helpers';
 export const validateDataSourceIds = async (
   githubFiles: GithubAPIPullRequestFile[]
 ) => {
-  const coreDataSourceIds = await getPublishedDataSourceIds();
+  const { coreDataSourceIds, errors } = await getPublishedDataSourceIds();
+
+  if (errors) {
+    console.error('Error fetching published data sources')
+    errors.forEach(error => {
+      console.error(error.message)
+    })
+    if (require.main === module) {
+      process.exit(1);
+    }
+    return
+  }
+
+
   const quickstartsWithInvalidDataSources = filterQuickstartConfigFiles(
     githubFiles
   )
