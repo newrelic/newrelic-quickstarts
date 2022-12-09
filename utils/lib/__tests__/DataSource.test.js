@@ -24,10 +24,10 @@ const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 describe('DataSource', () => {
   describe('constructor', () => {
     test('Creates valid DataSource', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       expect(source.isValid).toBe(true);
       expect(source.config).toBeDefined();
-      expect(source.config.id).toBe('test-data-source');
+      expect(source.identifier).toBe('mock-data-source-1');
     });
 
     test('Creates invalid DataSource when file does not exist', () => {
@@ -42,7 +42,7 @@ describe('DataSource', () => {
 
   describe('getConfigFilePath', () => {
     test('Creates valid configPath', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       expect(source.configPath).toEqual(
         'data-sources/mock-data-source-1/config.yml'
       );
@@ -59,7 +59,7 @@ describe('DataSource', () => {
     });
 
     test('Fails to create valid config path, basePath is invalid', () => {
-      const source = new DataSource('mock-data-source-1', __dirname);
+      const source = new DataSource('test-data-source', __dirname);
       expect(source.configPath).toEqual('');
       expect(source.isValid).toBe(false);
     });
@@ -77,17 +77,8 @@ describe('DataSource', () => {
       expect(source.getConfigContent()).not.toBeDefined();
     });
 
-    test('returns undefined if there is an error when reading from the filesystem', () => {
-      fs.readFileSync.mockImplementationOnce(() => {
-        throw new Error('test');
-      });
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
-      expect(source.isValid).toBe(false);
-      expect(console.log).toHaveBeenCalledTimes(1);
-    });
-
     test('returns config for datasource', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const config = source.getConfigContent();
       expect(config).toBeDefined();
       expect(config.id).toEqual('test-data-source');
@@ -98,7 +89,7 @@ describe('DataSource', () => {
 
   describe('_getComponentMutationVariables', () => {
     test('returned string values are trimmed for whitespace', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       source.config.displayName = 'Blah      ';
       source.config.description = '     test test';
       source.config.keywords = ['   test   '];
@@ -111,19 +102,19 @@ describe('DataSource', () => {
     });
 
     test('dryRun flag is passed to mutation variables', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const mutationVar = source._getComponentMutationVariables(false);
       expect(mutationVar.dryRun).toBe(false);
     });
 
     test('dryRun flag defaults to true', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const mutationVar = source._getComponentMutationVariables();
       expect(mutationVar.dryRun).toBe(true);
     });
 
     test('returned values match datasource configuration', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const mutationVar = source._getComponentMutationVariables();
 
       expect(mutationVar.id).toEqual('test-data-source');
@@ -159,14 +150,14 @@ describe('DataSource', () => {
   });
   describe('_parseInstall', () => {
     test('properly parses install', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const install = source._parseInstall();
 
       expect(install.primary).toBeDefined();
       expect(install.fallback).toBeDefined();
     });
     test('properly parses install without fallback', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const install = source._parseInstall();
       delete install.fallback;
 
@@ -176,7 +167,7 @@ describe('DataSource', () => {
   });
   describe('_getIconUrl', () => {
     test('returns correct url', () => {
-      const source = new DataSource('mock-data-source-1', MOCK_FILES_BASEPATH);
+      const source = new DataSource('test-data-source', MOCK_FILES_BASEPATH);
       const iconUrl = source._getIconUrl();
 
       expect(iconUrl).toEqual(
