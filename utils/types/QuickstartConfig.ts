@@ -32,7 +32,7 @@ export interface QuickstartConfig {
   level: QuickstartConfigSupportLevel;
   alertPolicies?: string[];
   dashboards?: string[];
-  dataSources?: string[];
+  dataSourceIds?: string[];
 }
 
 export type QuickstartConfigSupportLevel =
