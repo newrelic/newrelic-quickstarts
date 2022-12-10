@@ -4,7 +4,11 @@ import type {
   NerdGraphResponseWithLocalErrors,
 } from '../types/nerdgraph';
 
-import { CATEGORIES_QUERY, CORE_DATA_SOURCES_QUERY } from '../constants';
+import {
+  CATEGORIES_QUERY,
+  CORE_DATA_SOURCES_QUERY,
+  QUICKSTART_COMPONENTS_IDS_QUERY,
+} from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
 
@@ -220,6 +224,83 @@ export const getPublishedDataSourceIds =
 
     return { coreDataSourceIds, errors };
   };
+
+// Lets put these types in own file in util/types
+
+export enum QuickstartComponentTypename {
+  Dashboard = 'Nr1CatalogQuickstartDashboard',
+}
+
+interface QuickstartDataSource {
+  id: string;
+}
+
+interface QuickstartComponent {
+  __typename: QuickstartComponentTypename;
+  id: string;
+}
+
+interface QuickstartQueryResponseMetadata {
+  dataSources: QuickstartDataSource[];
+  quickstartComponents: QuickstartComponent[];
+}
+
+interface Quickstart {
+  metadata: QuickstartQueryResponseMetadata;
+}
+
+type QuickstartComponentsIdsResponse = {
+  actor: {
+    nr1Catalog: {
+      quickstart: Quickstart;
+    };
+  };
+};
+
+type ComponentIdsMap = {
+  dataSourceIds: string[];
+  dashboardIds: string[];
+};
+
+type GetPublishedComponentsResult = {
+  componentIdsMap: ComponentIdsMap;
+  errors?: (NerdGraphError | Error)[];
+};
+
+export const getPublishedComponentIds = async (
+  quickstartId: string
+): Promise<GetPublishedComponentsResult> => {
+  const { data, errors } = await fetchNRGraphqlResults<
+    { id: string },
+    QuickstartComponentsIdsResponse
+  >({
+    queryString: QUICKSTART_COMPONENTS_IDS_QUERY,
+    variables: { id: quickstartId },
+  });
+
+  const {
+    metadata: { dataSources, quickstartComponents },
+  } = data?.actor?.nr1Catalog?.quickstart;
+
+  const dataSourceIds = dataSources.map((dataSource) => dataSource.id);
+  const dashboardIds = quickstartComponents.reduce<string[]>(
+    (acc, component) => {
+      if (component.__typename === QuickstartComponentTypename.Dashboard) {
+        return [...acc, component.id];
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  const componentIdsMap = {
+    dataSourceIds,
+    dashboardIds,
+  };
+
+  return { componentIdsMap, errors };
+};
 
 /**
  * Breaks an array up into parts, the last part may have less elements

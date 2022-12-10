@@ -23,28 +23,9 @@ import type {
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
 
-export enum QuickstartComponentTypename {
-  Dashboard = 'Nr1CatalogQuickstartDashboard',
-}
-
-interface QuickstartDataSource {
-  id: string;
-}
-
-interface QuickstartComponent {
-  __typename: QuickstartComponentTypename;
-  id: string;
-}
-
-interface QuickstartMutationResponseMetadata {
-  quickstartComponents: QuickstartComponent[];
-}
-
 export interface QuickstartMutationResponse {
   quickstart: {
     id: string;
-    dataSources: QuickstartDataSource[];
-    metadata: QuickstartMutationResponseMetadata;
   };
 }
 

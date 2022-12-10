@@ -39,15 +39,6 @@ export const QUICKSTART_MUTATION = gql`
     ) {
       quickstart {
         id
-        metadata {
-          dataSources
-          quickstartComponents {
-            __typename
-            ... on Nr1CatalogQuickstartDashboard {
-              id
-            }
-          }
-        }
       }
     }
   }
@@ -103,21 +94,41 @@ export const DATA_SOURCE_MUTATION = gql`
 `;
 
 export const CORE_DATA_SOURCES_QUERY = gql`
-{
-  actor {
-    nr1Catalog {
-      search(filter: {types: DATA_SOURCE}) {
-        results {
-          ... on Nr1CatalogDataSource {
-            id
+  {
+    actor {
+      nr1Catalog {
+        search(filter: { types: DATA_SOURCE }) {
+          results {
+            ... on Nr1CatalogDataSource {
+              id
+            }
           }
         }
       }
     }
   }
-}
+`;
 
-`
+export const QUICKSTART_COMPONENTS_IDS_QUERY = gql`
+  query QuickstartComponentsIdsQuery($id: ID!) {
+    actor {
+      nr1Catalog {
+        quickstart(id: $id){
+          metadata {
+            dataSources {
+              id
+            }
+            quickstartComponents {
+              __typename
+            ... on Nr1CatalogQuickstartDashboard {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const CATEGORIES_QUERY = gql`
   {
