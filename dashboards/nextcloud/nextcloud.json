@@ -23,16 +23,16 @@
 			}
 		  },
 		  {
-			"title": "Uptime (seconds)",
+			"title": "Day to Day Active Users",
 			"layout": {
 			  "column": 3,
 			  "row": 1,
-			  "width": 4,
+			  "width": 6,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.area"
+			  "id": "viz.line"
 			},
 			"rawConfiguration": {
 			  "facet": {
@@ -44,38 +44,14 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(nextcloud_up)/1000 AS 'Uptime' TIMESERIES AUTO "
+				  "query": "FROM Metric SELECT latest(nextcloud_active_users_daily_total) FACET dateOf(timestamp) TIMESERIES AUTO"
 				}
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "Apps Overview",
-			"layout": {
-			  "column": 7,
-			  "row": 1,
-			  "width": 2,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.billboard"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
 			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(nextcloud_apps_installed_total) As 'Number of Installation', latest(nextcloud_apps_updates_available_total) As 'Number of Updates Available'"
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
+			  "yAxisLeft": {
+				"zero": true
 			  }
 			}
 		  },
@@ -150,7 +126,7 @@
 			}
 		  },
 		  {
-			"title": "Number of Files",
+			"title": "Number of Files Served",
 			"layout": {
 			  "column": 3,
 			  "row": 4,
@@ -229,6 +205,87 @@
 				"ignoreTimeRange": false
 			  }
 			}
+		  },
+		  {
+			"title": "Configured Maximum Upload Size (megabytes)",
+			"layout": {
+			  "column": 1,
+			  "row": 6,
+			  "width": 3,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT latest(nextcloud_php_upload_max_size_bytes) / 1e+6 As ''"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Free Disk Space (megabytes)",
+			"layout": {
+			  "column": 4,
+			  "row": 6,
+			  "width": 3,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT latest(nextcloud_free_space_bytes) / 1e+6 As ''"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
+		  },
+		  {
+			"title": "Apps Overview",
+			"layout": {
+			  "column": 7,
+			  "row": 6,
+			  "width": 6,
+			  "height": 2
+			},
+			"linkedEntityGuids": null,
+			"visualization": {
+			  "id": "viz.billboard"
+			},
+			"rawConfiguration": {
+			  "facet": {
+				"showOtherSeries": false
+			  },
+			  "nrqlQueries": [
+				{
+				  "accountId": 0,
+				  "query": "FROM Metric SELECT latest(nextcloud_apps_installed_total) As 'Number of Installation', latest(nextcloud_apps_updates_available_total) As 'Number of Updates Available'"
+				}
+			  ],
+			  "platformOptions": {
+				"ignoreTimeRange": false
+			  }
+			}
 		  }
 		]
 	  },
@@ -249,11 +306,11 @@
 			  "id": "viz.markdown"
 			},
 			"rawConfiguration": {
-			  "text": "# Memory Usage\n\nBy installing the New Relic Infrastructure agent, integrating Prometheus open metrics, and configuring the Nextcloud exporter, you can track memory usage and improve performance."
+			  "text": "# Memory Usage\n\nBy installing the New Relic Infrastructure agent, integrating Prometheus open metrics, and configuring the Nextcloud exporter, you can track memory usage."
 			}
 		  },
 		  {
-			"title": "Heap Memory Allocated/In Use (megabytes)",
+			"title": "Virtual Memory (megabytes)",
 			"layout": {
 			  "column": 1,
 			  "row": 2,
@@ -274,7 +331,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric select latest(go_memstats_heap_alloc_bytes)/1e+6 As 'Allocated (megabytes)', latest(go_memstats_heap_inuse_bytes)/1e+6  As 'In Use (megabytes)'TIMESERIES AUTO "
+				  "query": "FROM Metric SELECT latest(process_virtual_memory_bytes)/1e+6 AS 'Process Virtual Memory',latest(process_virtual_memory_max_bytes)/1e+6 AS 'Process Virtual Maximum Memory' TIMESERIES AUTO "
 				}
 			  ],
 			  "platformOptions": {
@@ -286,157 +343,52 @@
 			}
 		  },
 		  {
-			"title": "Heap Memory Available (megabytes)",
+			"title": "Heap Memory (megabytes)",
 			"layout": {
 			  "column": 5,
 			  "row": 2,
-			  "width": 4,
+			  "width": 6,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.line"
+			  "id": "viz.billboard"
 			},
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
 			  },
-			  "legend": {
-				"enabled": true
-			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric select latest(go_memstats_heap_idle_bytes)/1e+6 As 'Idle (megabytes)', latest(go_memstats_heap_released_bytes)/1e+6 As 'Released (megabytes)' TIMESERIES AUTO "
+				  "query": "FROM Metric select latest(go_memstats_heap_alloc_bytes)/1e+6 As 'Allocated (megabytes)', latest(go_memstats_heap_inuse_bytes)/1e+6  As 'In Use (megabytes)', latest(go_memstats_heap_idle_bytes)/1e+6 As 'Idle (megabytes)', latest(go_memstats_heap_released_bytes)/1e+6 As 'Released (megabytes)'"
 				}
 			  ],
 			  "platformOptions": {
 				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
 			  }
 			}
 		  },
 		  {
-			"title": "Virtual Memory Processed (megabytes)",
+			"title": "Configured PHP Memory Limit (megabytes)",
 			"layout": {
-			  "column": 9,
+			  "column": 11,
 			  "row": 2,
-			  "width": 4,
+			  "width": 2,
 			  "height": 3
 			},
 			"linkedEntityGuids": null,
 			"visualization": {
-			  "id": "viz.line"
+			  "id": "viz.billboard"
 			},
 			"rawConfiguration": {
 			  "facet": {
 				"showOtherSeries": false
 			  },
-			  "legend": {
-				"enabled": true
-			  },
 			  "nrqlQueries": [
 				{
 				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(process_virtual_memory_bytes)/1e+6 AS 'Process Virtual Memory (megabytes)',latest(process_virtual_memory_max_bytes)/1e+6 AS 'Process Virtual Memory Max (megabytes)' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "PHP Maximum Upload Size (megabytes)",
-			"layout": {
-			  "column": 1,
-			  "row": 5,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.area"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(nextcloud_php_upload_max_size_bytes)/1e+6 As 'PHP Maximum Upload Size (megabytes)' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  }
-			}
-		  },
-		  {
-			"title": "PHP Memory Limit (megabytes)",
-			"layout": {
-			  "column": 5,
-			  "row": 5,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.line"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(nextcloud_php_memory_limit_bytes)/1e+6 As 'PHP Memory Limit (megabytes)' TIMESERIES AUTO "
-				}
-			  ],
-			  "platformOptions": {
-				"ignoreTimeRange": false
-			  },
-			  "yAxisLeft": {
-				"zero": true
-			  }
-			}
-		  },
-		  {
-			"title": "Free Disk Space (megabytes)",
-			"layout": {
-			  "column": 9,
-			  "row": 5,
-			  "width": 4,
-			  "height": 3
-			},
-			"linkedEntityGuids": null,
-			"visualization": {
-			  "id": "viz.stacked-bar"
-			},
-			"rawConfiguration": {
-			  "facet": {
-				"showOtherSeries": false
-			  },
-			  "legend": {
-				"enabled": true
-			  },
-			  "nrqlQueries": [
-				{
-				  "accountId": 0,
-				  "query": "FROM Metric SELECT latest(nextcloud_free_space_bytes)/1e+6 As 'Free Disk Space (megabytes)' TIMESERIES AUTO "
+				  "query": "FROM Metric SELECT latest(nextcloud_php_memory_limit_bytes)/1e+6 As ''"
 				}
 			  ],
 			  "platformOptions": {
@@ -514,12 +466,12 @@
 			  },
 			  "thresholds": [
 				{
-				  "alertSeverity": "CRITICAL",
-				  "value": 3
+				  "alertSeverity": "WARNING",
+				  "value": 1
 				},
 				{
-				  "alertSeverity": "WARNING",
-				  "value": 0
+				  "alertSeverity": "CRITICAL",
+				  "value": 4
 				}
 			  ]
 			}
