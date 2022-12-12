@@ -3,17 +3,9 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import {
-  translateMutationErrors,
-  chunk,
-  translateNGErrors,
-} from './lib/nr-graphql-helpers';
+import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
-import Quickstart, {
-  QuickstartMutationResponse,
-  QuickstartComponentTypename,
-} from './lib/Quickstart';
-import Dashboard from './lib/Dashboard';
+import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import {
   prop,
@@ -52,58 +44,19 @@ export const countAndOutputErrors = (
     return all + remainingErrors.length;
   }, 0);
 
-const setDashboardRequiredDataSources = async (
-  quickstart: QuickstartMutationResponse['quickstart']
-) => {
-  const dashboardIds = quickstart.metadata.quickstartComponents.reduce(
-    (acc: string[], component) => {
-      if (component.__typename === QuickstartComponentTypename.Dashboard) {
-        return [...acc, component.id];
-      }
-
-      return acc;
-    },
-    []
-  );
-
-  const dataSourceIds = quickstart.dataSources.map(({ id }) => id);
-
-  const results = await Promise.all(
-    dashboardIds.map(async (dashboardId) => {
-      const result = await Dashboard.submitSetRequiredDataSourcesMutation(
-        dashboardId,
-        dataSourceIds
-      );
-
-      if (result.errors) {
-        console.error(
-          `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
-            dataSourceIds
-          )}`
-        );
-        translateNGErrors(result.errors);
-      }
-
-      return result;
-    })
-  );
-
-  return results;
-};
-
 export const createValidateQuickstarts = async (
   ghUrl?: string,
   ghToken?: string,
   isDryRun = false
-): Promise<{ hasFailed: boolean; results: ResponseWithErrors[] }> => {
+): Promise<boolean> => {
   if (!ghToken) {
     console.error('GITHUB_TOKEN is not defined.');
-    return { hasFailed: false, results: [] };
+    return false;
   }
 
   if (!ghUrl) {
     console.error('Github PR URL is not defined.');
-    return { hasFailed: false, results: [] };
+    return false;
   }
 
   // Get all files from PR
@@ -173,51 +126,24 @@ export const createValidateQuickstarts = async (
 
   const hasFailed = errorCount > 0 || quickstartErrors.length > 0;
 
-  return { hasFailed, results };
+  return hasFailed;
 };
 
 const main = async () => {
   const [ghUrl, isDryRun] = passedProcessArguments();
   const ghToken = process.env.GITHUB_TOKEN;
   const dryRun = isDryRun === 'true';
-  const { hasFailed: hasQuickstartsFailed, results: quickstartsResults } =
-    await createValidateQuickstarts(ghUrl, ghToken, dryRun);
+  const hasFailed = await createValidateQuickstarts(ghUrl, ghToken, dryRun);
 
   // Record event in New Relic
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_QUICKSTARTS
     : CUSTOM_EVENT.UPDATE_QUICKSTARTS;
 
-  await recordNerdGraphResponse(hasQuickstartsFailed, event);
+  await recordNerdGraphResponse(hasFailed, event);
 
-  if (hasQuickstartsFailed) {
+  if (hasFailed) {
     process.exit(1);
-  }
-
-  if (!isDryRun) {
-    const setDashboardRequiredDataSourcesResults = await Promise.all(
-      quickstartsResults.map((quickstartResult) => {
-        return setDashboardRequiredDataSources(
-          quickstartResult.data.quickstart
-        );
-      })
-    );
-
-    const hadDashboardRequiredDataSourcesError =
-      setDashboardRequiredDataSourcesResults.some((dashboardsResults) => {
-        return dashboardsResults.some(
-          (result) => result?.errors && result.errors.length > 0
-        );
-      });
-
-    recordNerdGraphResponse(
-      hadDashboardRequiredDataSourcesError,
-      CUSTOM_EVENT.SET_DASHBOARD_REQUIRED_DATASOURCES
-    );
-
-    if (hadDashboardRequiredDataSourcesError) {
-      process.exit(1);
-    }
   }
 };
 

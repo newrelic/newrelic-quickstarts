@@ -257,19 +257,19 @@ type QuickstartComponentsIdsResponse = {
   };
 };
 
-type ComponentIdsMap = {
+export type ComponentIdsMap = {
   dataSourceIds: string[];
   dashboardIds: string[];
 };
 
-type GetPublishedComponentsResult = {
+export type GetPublishedComponentIdsResult = {
   componentIdsMap: ComponentIdsMap;
   errors?: (NerdGraphError | Error)[];
 };
 
 export const getPublishedComponentIds = async (
   quickstartId: string
-): Promise<GetPublishedComponentsResult> => {
+): Promise<GetPublishedComponentIdsResult> => {
   const { data, errors } = await fetchNRGraphqlResults<
     { id: string },
     QuickstartComponentsIdsResponse
