@@ -6,7 +6,6 @@ import {
 import {
   translateNGErrors,
   getPublishedComponentIds,
-  GetPublishedComponentIdsResult,
 } from './lib/nr-graphql-helpers';
 import Quickstart from './lib/Quickstart';
 import Dashboard from './lib/Dashboard';
@@ -77,11 +76,28 @@ const setDashboardsRequiredDataSources = async (
   return results;
 };
 
-const setAllDashboardsRequiredDataSources = async (
-  quickstartComponentIdsResults: GetPublishedComponentIdsResult[]
-) => {
+export const setAllDashboardsRequiredDataSources = async (
+  ghUrl: string,
+  ghToken: string | undefined
+): Promise<boolean> => {
+  const { hasFailed: hasQuickstartIdsFailed, results: quickstartIds } =
+    await getQuickstartIds(ghUrl, ghToken);
+
+  if (hasQuickstartIdsFailed) {
+    return hasQuickstartIdsFailed;
+  }
+
+  const {
+    hasFailed: hasComponentIdsFailed,
+    results: quickstartsComponentIdsResults,
+  } = await getPublishedQuickstartsComponentIds(quickstartIds);
+
+  if (hasComponentIdsFailed) {
+    return hasComponentIdsFailed;
+  }
+
   const results = await Promise.all(
-    quickstartComponentIdsResults.map(
+    quickstartsComponentIdsResults.map(
       ({ componentIdsMap: { dashboardIds, dataSourceIds } }) => {
         return setDashboardsRequiredDataSources(dashboardIds, dataSourceIds);
       }
@@ -94,42 +110,23 @@ const setAllDashboardsRequiredDataSources = async (
     )
   );
 
-  return { hasFailed, results };
-};
-
-const reportJobStatus = (hadFailure: boolean) => {
-  recordNerdGraphResponse(
-    hadFailure,
-    CUSTOM_EVENT.SET_DASHBOARD_REQUIRED_DATASOURCES
-  );
-
-  if (hadFailure) {
-    process.exit(1);
-  }
+  return hasFailed;
 };
 
 const main = async () => {
   const [ghUrl] = passedProcessArguments();
   const ghToken = process.env.GITHUB_TOKEN;
 
-  const { hasFailed: hasQuickstartIdsFailed, results: quickstartIds } =
-    await getQuickstartIds(ghUrl, ghToken);
+  const hasFailed = await setAllDashboardsRequiredDataSources(ghUrl, ghToken);
 
-  if (hasQuickstartIdsFailed) {
-    reportJobStatus(hasQuickstartIdsFailed);
+  recordNerdGraphResponse(
+    hasFailed,
+    CUSTOM_EVENT.SET_DASHBOARD_REQUIRED_DATASOURCES
+  );
+
+  if (hasFailed) {
+    process.exit(1);
   }
-
-  const { hasFailed: hasComponentIdsFailed, results: quickstartsComponentIds } =
-    await getPublishedQuickstartsComponentIds(quickstartIds);
-
-  if (hasComponentIdsFailed) {
-    reportJobStatus(hasComponentIdsFailed);
-  }
-
-  const { hasFailed: hasDashboardsRequiredDataSourcesFailed } =
-    await setAllDashboardsRequiredDataSources(quickstartsComponentIds);
-
-  reportJobStatus(hasDashboardsRequiredDataSourcesFailed);
 };
 
 /**
