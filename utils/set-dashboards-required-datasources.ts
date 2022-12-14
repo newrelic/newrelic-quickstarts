@@ -49,34 +49,27 @@ const getPublishedQuickstartsComponentIds = async (ids: string[]) => {
   return { hasFailed, results };
 };
 
-const setDashboardsRequiredDataSources = async (
-  dashboardIds: string[],
+const setDashboardRequiredDataSources = async (
+  dashboardId: string,
   dataSourceIds: string[]
 ) => {
-  const results = await Promise.all(
-    dashboardIds.map(async (dashboardId) => {
-      const result = await Dashboard.submitSetRequiredDataSourcesMutation(
-        dashboardId,
-        dataSourceIds
-      );
-
-      if (result.errors) {
-        console.error(
-          `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
-            dataSourceIds
-          )}`
-        );
-        translateNGErrors(result.errors);
-      }
-
-      return result;
-    })
+  const result = await Dashboard.submitSetRequiredDataSourcesMutation(
+    dashboardId,
+    dataSourceIds
   );
 
-  return results;
+  if (result.errors) {
+    console.error(
+      `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
+        dataSourceIds
+      )}`
+    );
+    translateNGErrors(result.errors);
+  }
+  return result;
 };
 
-export const setAllDashboardsRequiredDataSources = async (
+export const setDashboardsRequiredDataSources = async (
   ghUrl: string,
   ghToken: string | undefined
 ): Promise<boolean> => {
@@ -96,18 +89,30 @@ export const setAllDashboardsRequiredDataSources = async (
     return hasComponentIdsFailed;
   }
 
+  const dashboardIdsToDataSourceIds = quickstartsComponentIdsResults.reduce<
+    Record<string, string[]>
+  >((acc, { componentIdsMap: { dashboardIds, dataSourceIds } }) => {
+    if (dashboardIds.length > 0 && dataSourceIds.length > 0) {
+      dashboardIds.forEach((dashboardId) => {
+        acc[dashboardId] = [
+          ...new Set([...(acc[dashboardId] ?? []), ...dataSourceIds]),
+        ];
+      });
+    }
+
+    return acc;
+  }, {});
+
   const results = await Promise.all(
-    quickstartsComponentIdsResults.map(
-      ({ componentIdsMap: { dashboardIds, dataSourceIds } }) => {
-        return setDashboardsRequiredDataSources(dashboardIds, dataSourceIds);
+    Object.entries(dashboardIdsToDataSourceIds).map(
+      ([dashboardId, dataSourceIds]) => {
+        return setDashboardRequiredDataSources(dashboardId, dataSourceIds);
       }
     )
   );
 
-  const hasFailed = results.some((quickstartResults) =>
-    quickstartResults.some(
-      (result) => result?.errors && result.errors.length > 0
-    )
+  const hasFailed = results.some(
+    (result) => result?.errors && result.errors.length > 0
   );
 
   return hasFailed;
@@ -117,7 +122,7 @@ const main = async () => {
   const [ghUrl] = passedProcessArguments();
   const ghToken = process.env.GITHUB_TOKEN;
 
-  const hasFailed = await setAllDashboardsRequiredDataSources(ghUrl, ghToken);
+  const hasFailed = await setDashboardsRequiredDataSources(ghUrl, ghToken);
 
   recordNerdGraphResponse(
     hasFailed,

@@ -2,7 +2,7 @@
 
 import Dashboard from '../lib/Dashboard';
 import * as githubHelpers from '../lib/github-api-helpers';
-import { setAllDashboardsRequiredDataSources } from '../set-dashboards-required-datasources';
+import { setDashboardsRequiredDataSources } from '../set-dashboards-required-datasources';
 
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
@@ -44,10 +44,7 @@ describe('set-dashboards-required-datasources', () => {
       submitSetRequiredDataSources: () => Promise.resolve({});
     });
 
-    const hasErrored = await setAllDashboardsRequiredDataSources(
-      'url',
-      'token'
-    );
+    const hasErrored = await setDashboardsRequiredDataSources('url', 'token');
     expect(hasErrored).toBe(false);
   });
 });
