@@ -43,8 +43,10 @@ type DashboardRequiredDataSourcesQueryVariables = {
 };
 
 type DashboardSetRequiredDataSourcesMutationResults = {
-  dashboardTemplate: {
-    id: string;
+  nr1CatalogSetRequiredDataSourcesForDashboardTemplate: {
+    dashboardTemplate: {
+      id: string;
+    };
   };
 };
 
