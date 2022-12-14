@@ -1,772 +1,1804 @@
 {
-    "name": "Cloudflare Logs",
-    "description": null,
-    "pages": [
-      {
-        "name": "Overview",
-        "description": null,
-        "widgets": [
-          {
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "",
-            "rawConfiguration": {
-              "text": "##   Cloudflare Network Logs\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
-            },
-            "linkedEntityGuids": null
+  "name": "Cloudflare Logs",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Total Number of Requests",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'reqs' WHERE ClientRequestSource = 'eyeball' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Traffic",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(CacheResponseBytes)/(1024*1024) as 'MiB' WHERE ClientRequestSource ='eyeball' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Cached Traffic",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(CacheResponseBytes)/(1024*1024) as 'MiB' WHERE ClientRequestSource ='eyeball' AND CacheCacheStatus ='hit' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 9,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Cache Hit Rate",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT percentage(sum(CacheResponseBytes) ,WHERE CacheCacheStatus ='hit' AND ClientRequestSource = 'eyeball') as 'Cache %' Since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 11,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Recent Threats",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'threats' WHERE WAFProfile IN ('low','med','high') SINCE 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.area"
-            },
-            "layout": {
-              "column": 1,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Request Count over time",
-            "rawConfiguration": {
-              "legend": {
-                "enabled": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(ClientRequestMethod) WHERE ClientRequestSource = 'eyeball' TIMESERIES DAY since 1 month ago"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.line"
-            },
-            "layout": {
-              "column": 5,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Recent Bandwidth",
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(EdgeResponseBytes)/(1024*1024) as 'Bandwidth in MiB' WHERE ClientRequestSource = 'eyeball' TIMESERIES 1 day since 1 month ago COMPARE WITH 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.stacked-bar"
-            },
-            "layout": {
-              "column": 9,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Cache Bandwidth comparison",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT sum(CacheResponseBytes)/(1024*1024) as 'MiB' FACET cases(where ClientRequestSource = 'eyeball' AND CacheCacheStatus = 'hit' as 'Cached',WHERE ClientRequestSource = 'eyeball' AND CacheCacheStatus != 'hit' as 'Uncached') TIMESERIES since 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "layout": {
-              "column": 1,
-              "row": 6,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Requests by country",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) WHERE ClientCountry IS NOT NULL AND ClientRequestSource = 'eyeball' FACET ClientCountry SINCE 1 month ago"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.stacked-bar"
-            },
-            "layout": {
-              "column": 5,
-              "row": 6,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Requests by HTTP Status",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) where ClientRequestSource = 'eyeball' FACET EdgeResponseStatus TIMESERIES since 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.stacked-bar"
-            },
-            "layout": {
-              "column": 9,
-              "row": 6,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Requests by Zone",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) where ClientRequestSource = 'eyeball' FACET ZoneName TIMESERIES since 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            },
-            "linkedEntityGuids": null
+          "rawConfiguration": {
+            "text": "##   [Cloudflare Overview](https://developers.cloudflare.com/logs/reference/log-fields/zone/http_requests/)\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
           }
-        ]
-      },
-      {
-        "name": "Security",
-        "description": null,
-        "widgets": [
-          {
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "",
-            "rawConfiguration": {
-              "text": "##   Cloudflare Security Overview\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
-            },
-            "linkedEntityGuids": null
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "Recent Threats",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'threats' WHERE WAFProfile IN ('low','med','high') SINCE 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "% of threats with WAF Action taken",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT percentage(count(*), WHERE WAFAction NOT IN ('unknown','')) WHERE WAFProfile IN('low','med','high')"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "height": 2,
-              "width": 5
-            },
-            "title": "Threats by country",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) WHERE ClientCountry IS NOT NULL AND ClientRequestSource = 'eyeball' AND WAFProfile IN ('low','med','high') FACET ClientCountry SINCE 1 month ago"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.line"
-            },
-            "layout": {
-              "column": 1,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "",
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT Count(*) as 'Threats' WHERE WAFProfile IN ('low','med','high') TIMESERIES 1 day Since 1 week ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE CacheCacheStatus='hit') AS 'Cache Hit Ratio' WHERE (CacheCacheStatus='hit' OR CacheCacheStatus='miss') since 1 hour ago COMPARE with 1 hour ago\n"
               }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.table"
-            },
-            "layout": {
-              "column": 5,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Real-Time Threat Table",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "facet": {
-                "showOtherSeries": false
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
               },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT ClientCountry,WAFProfile,WAFRuleID,WAFRuleMessage, WAFAction, timestamp WHERE WAFProfile IN ('low','med','high') SINCE 1 week ago"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "layout": {
-              "column": 9,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Top Threat IP Address'",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'threats detected' WHERE WAFProfile IN ('low','med','high') FACET ClientIP"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
+              }
+            ]
           }
-        ]
-      },
-      {
-        "name": "Performance",
-        "description": null,
-        "widgets": [
-          {
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "height": 3,
-              "width": 3
-            },
-            "title": "",
-            "rawConfiguration": {
-              "text": "##   Cloudflare Network Performance\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
-            },
-            "linkedEntityGuids": null
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 4,
-              "row": 1,
-              "height": 3,
-              "width": 3
-            },
-            "title": "Total Number of Requests",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'reqs' WHERE ClientRequestSource = 'eyeball' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "height": 3,
-              "width": 3
-            },
-            "title": "Cached Requests Count",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'reqs' WHERE ClientRequestSource = 'eyeball' AND CacheCacheStatus = 'hit' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 10,
-              "row": 1,
-              "height": 3,
-              "width": 3
-            },
-            "title": "Uncached Requests Count",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'reqs' WHERE ClientRequestSource = 'eyeball' AND CacheCacheStatus != 'hit' since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.line"
-            },
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "height": 3,
-              "width": 6
-            },
-            "title": "Cached vs. Uncached over time",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) FACET cases(WHERE CacheCacheStatus = 'hit' as 'Cached',WHERE CacheCacheStatus != 'hit' as 'Uncached') TIMESERIES 1 day Since 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE EdgeResponseStatus >= 200 and EdgeResponseStatus < 400) AS 'Success Rate (2xx,3xx)' WHERE EdgeResponseStatus IS NOT NULL since 1 hour ago compare with 1 hour ago\n"
               }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.line"
-            },
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "height": 3,
-              "width": 6
-            },
-            "title": "Total vs. Origin Requests",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.9
               },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) FACET cases(WHERE OriginResponseStatus > 0 as 'Origin Requests', WHERE EdgeResponseStatus > 0 as 'Total Requests') TIMESERIES 1 day SINCE 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.8
               }
-            },
-            "linkedEntityGuids": null
+            ]
           }
-        ]
-      },
-      {
-        "name": "Reliability",
-        "description": null,
-        "widgets": [
-          {
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "",
-            "rawConfiguration": {
-              "text": "##   Cloudflare Network Performance\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
-            },
-            "linkedEntityGuids": null
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 3,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "5xx Errors (Edge)",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'Errors' WHERE EdgeResponseStatus >= 500 since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "visualization": {
-              "id": "viz.billboard"
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "4xx Errors (Edge)",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'Errors' WHERE EdgeResponseStatus >= 400 AND EdgeResponseStatus < 500 since 1 month ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "height": 2,
-              "width": 2
-            },
-            "title": "3xx Errors (Edge)",
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'Errors' WHERE EdgeResponseStatus >= 300 AND EdgeResponseStatus <400 since 1 week ago"
-                }
-              ],
-              "thresholds": []
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "layout": {
-              "column": 1,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Errors by Status Code",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'Errors' WHERE EdgeResponseStatus != 200 AND EdgeResponseStatus IS NOT NULL FACET cases(WHERE EdgeResponseStatus > 200 AND EdgeResponseStatus < 300 as '2xx', WHERE EdgeResponseStatus >= 300 AND EdgeResponseStatus < 400 as '3xx', WHERE EdgeResponseStatus >= 400 AND EdgeResponseStatus < 500 as '4xx', WHERE EdgeResponseStatus >= 500 as '5xx') SINCE 1 month ago"
-                }
-              ]
-            },
-            "linkedEntityGuids": null
-          },
-          {
-            "visualization": {
-              "id": "viz.line"
-            },
-            "layout": {
-              "column": 5,
-              "row": 3,
-              "height": 3,
-              "width": 4
-            },
-            "title": "Edge Response Status over time",
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Log SELECT count(*) as 'Errors' WHERE EdgeResponseStatus != 200 AND EdgeResponseStatus IS NOT NULL FACET cases(WHERE EdgeResponseStatus > 200 AND EdgeResponseStatus < 300 as '2xx', WHERE EdgeResponseStatus >= 300 AND EdgeResponseStatus < 400 as '3xx', WHERE EdgeResponseStatus >= 400 AND EdgeResponseStatus < 500 as '4xx', WHERE EdgeResponseStatus >= 500 as '5xx') TIMESERIES 1 day SINCE 1 month ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE EdgeResponseStatus >= 400 and EdgeResponseStatus <= 499) AS 'Error Rate (4xx)' WHERE EdgeResponseStatus IS NOT NULL SINCE 1 hour ago compare with 1 hour ago"
               }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
           }
-        ]
-      }
-    ]
-  }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE EdgeResponseStatus >= 500 and EdgeResponseStatus <= 599) AS 'Error Rate (5xx)' WHERE EdgeResponseStatus IS NOT NULL SINCE 1 hour ago compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
+          }
+        },
+        {
+          "title": "Cache Hit/Miss (over time)",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE (CacheCacheStatus = 'hit' OR CacheCacheStatus = 'miss') AND CacheCacheStatus IS NOT NULL FACET CacheCacheStatus TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) where ClientRequestSource = 'eyeball' FACET EdgeResponseStatus "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE ClientRequestSource = 'eyeball' since 1 month ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests (over time)",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Total Requests' WHERE ClientRequestSource = 'eyeball' TIMESERIES Since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache Response Result Type NOT Hit OR Miss",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE ClientRequestSource = 'eyeball' AND CacheCacheStatus != 'hit' AND CacheCacheStatus != 'miss' FACET CacheCacheStatus TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by HTTP Status (over time)",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) where ClientRequestSource = 'eyeball' FACET EdgeResponseStatus TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Bandwidth (over time)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT sum(CacheResponseBytes)/(1024*1024) as 'MiB' FACET cases(where ClientRequestSource = 'eyeball' AND CacheCacheStatus = 'hit' as 'Cached (MB)',WHERE ClientRequestSource = 'eyeball' AND CacheCacheStatus != 'hit' as 'Uncached (MB)') TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cache Response Result",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET CacheCacheStatus since 1 hour ago WHERE CacheCacheStatus IS NOT NULL"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Status Code Distribution (range)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*)  WHERE EdgeResponseStatus IS NOT NULL FACET cases(WHERE EdgeResponseStatus > 199 AND EdgeResponseStatus < 300 as '2xx', WHERE EdgeResponseStatus >= 300 AND EdgeResponseStatus < 400 as '3xx', WHERE EdgeResponseStatus >= 400 AND EdgeResponseStatus < 500 as '4xx', WHERE EdgeResponseStatus >= 500 as '5xx') SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latest Logs",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT ClientIP AS 'Client IP', ClientDeviceType AS 'Device', ClientRequestMethod AS 'Method', ClientRequestURI AS 'URI', EdgeColoCode AS 'Edge', EdgeServerIP AS 'Edge IP', CacheCacheStatus AS 'Cache Status', EdgeResponseStatus AS 'Edge Response', EdgeResponseBytes AS 'Edge Respone bytes', EdgeResponseContentType AS 'Content Type', OriginResponseStatus AS 'Origin Response', OriginIP  WHERE CacheCacheStatus IS NOT NULL "
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Information",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "##   [Cloudflare Client Information](https://developers.cloudflare.com/logs/reference/log-fields/zone/http_requests/)\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
+          }
+        },
+        {
+          "title": "Request by Edge Location",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET EdgeColoCode WHERE EdgeColoCode IS NOT NULL  SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Request by ClientIP",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET ClientIP"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Request by Country",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET ClientCountry WHERE ClientCountry IS NOT NULL"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Request by Edge Location (over time)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET EdgeColoCode TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request by ClientIP (over time)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET ClientIP timeseries since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (2xx,3xx)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE EdgeResponseStatus>199 AND EdgeResponseStatus<400  FACET string(EdgeResponseStatus) AS 'Status', ClientRequestURI AS 'URI' LIMIT 10 SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Status Code (4xx,5xx)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE EdgeResponseStatus>399 AND CacheResponseStatus<600  FACET string(EdgeResponseStatus) AS 'Status', ClientRequestURI AS 'URI' LIMIT 10 SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 URI by Cache Miss",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE CacheCacheStatus='miss' FACET CacheCacheStatus AS 'Result Type', ClientRequestURI AS 'URI'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (2xx,3xx) (over time)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE EdgeResponseStatus>199 AND EdgeResponseStatus<400  FACET string(EdgeResponseStatus) AS 'Status', ClientRequestURI AS 'URI' TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Status Code (4xx,5xx) (over time)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE EdgeResponseStatus>399 AND CacheResponseStatus<600  FACET string(EdgeResponseStatus) AS 'Status', ClientRequestURI AS 'URI' TIMESERIES SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "URI by Cache Miss (over time)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE CacheCacheStatus='miss' FACET ClientRequestURI AS 'URI' TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Client Port",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE ClientSrcPort IS NOT NULL FACET ClientSrcPort"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Protocol/Version",
+          "layout": {
+            "column": 4,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE ClientRequestProtocol IS NOT NULL FACET ClientRequestProtocol "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by HTTP Method",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE ClientRequestMethod IS NOT NULL FACET ClientRequestMethod "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by Referer",
+          "layout": {
+            "column": 10,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET ClientRequestReferer AS 'Referer' SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests by User Agent",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET ClientRequestUserAgent SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Performance",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "##   [Cloudflare Performance](https://developers.cloudflare.com/logs/reference/log-fields/zone/http_requests/)\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE OriginResponseStatus >= 400 and OriginResponseStatus <= 499) AS 'Origin Error Rate (4xx)' WHERE OriginResponseStatus IS NOT NULL SINCE 1 hour ago compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.1
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.05
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count (*), WHERE OriginResponseStatus >= 500 and OriginResponseStatus <= 599) AS 'Origin Error Rate (5xx)' WHERE OriginResponseStatus IS NOT NULL SINCE 1 hour ago compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.05
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.02
+              }
+            ]
+          }
+        },
+        {
+          "title": "Origin Response Status Code (over time)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) where OriginResponseStatus!=0 AND OriginResponseStatus IS NOT NULL FACET OriginResponseStatus  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "EdgeTimeToFirstByteMs (Range)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE EdgeServerIP IS NOT NULL FACET cases(WHERE numeric(EdgeTimeToFirstByteMs) <= 10 as '<10ms',WHERE numeric(EdgeTimeToFirstByteMs) > 10 and numeric(EdgeTimeToFirstByteMs) <= 50 as '10-50ms',WHERE numeric(EdgeTimeToFirstByteMs) >50 as '>50ms') TIMESERIES  since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginResponseDurationMs (Range)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET cases(WHERE numeric(OriginResponseDurationMs) <= 10 as '<10ms',WHERE numeric(OriginResponseDurationMs) > 10 and numeric(OriginResponseDurationMs) <= 50 as '10-50ms',WHERE numeric(OriginResponseDurationMs) >50 as '>50ms') TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginResponseDurationMs (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginResponseDurationMs) AS 'Average', percentile(OriginResponseDurationMs,90) AS 'Percentile'  WHERE OriginIP IS NOT NULL TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "EdgeTimeToFirstByteMs (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(EdgeTimeToFirstByteMs) AS 'Average', percentile(EdgeTimeToFirstByteMs,90) AS 'Percentile'  WHERE EdgeServerIP IS NOT NULL TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "OriginRequestHeaderSendDurationMs (Range)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET cases(WHERE numeric(OriginRequestHeaderSendDurationMs) <= 5 as '<5ms',WHERE numeric(OriginRequestHeaderSendDurationMs) > 5 and numeric(OriginRequestHeaderSendDurationMs) <= 10 as '5-10ms',WHERE numeric(OriginRequestHeaderSendDurationMs) >10 as '>10ms') TIMESERIES  since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginRequestHeaderSendDurationMs (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginRequestHeaderSendDurationMs) AS 'Average', percentile(OriginRequestHeaderSendDurationMs,90) AS 'Percentile' WHERE OriginIP IS NOT NULL FACET OriginIP TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "EdgeTimeToFirstByteMs (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(EdgeTimeToFirstByteMs) AS 'Average', percentile(EdgeTimeToFirstByteMs,90) AS 'Percentile' WHERE EdgeServerIP IS NOT NULL FACET EdgeServerIP TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "OriginTCPHandshakeDurationMs (Range)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET cases(WHERE numeric(OriginTCPHandshakeDurationMs) <= 10 as '<10ms',WHERE numeric(OriginTCPHandshakeDurationMs) > 10 and numeric(OriginTCPHandshakeDurationMs) <= 50 as '10-50ms',WHERE numeric(OriginTCPHandshakeDurationMs) >50 as '>50ms') TIMESERIES  since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginTCPHandshakeDurationMs (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginTCPHandshakeDurationMs) AS 'Average', percentile(OriginTCPHandshakeDurationMs,90) AS 'Percentile' WHERE OriginIP IS NOT NULL  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "EdgeResponseCompressionRatio (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(EdgeResponseCompressionRatio) AS 'Average', percentile(EdgeResponseCompressionRatio,90) AS 'Percentile' WHERE EdgeServerIP IS NOT NULL  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "OriginTLSHandshakeDurationMs (Range)",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET cases(WHERE numeric(OriginTLSHandshakeDurationMs) <= 5 as '<5ms',WHERE numeric(OriginTLSHandshakeDurationMs) > 5 and numeric(OriginTLSHandshakeDurationMs) <= 10 as '5-10ms',WHERE numeric(OriginTLSHandshakeDurationMs) >10 as '>10ms') TIMESERIES  since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginTLSHandshakeDurationMs (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginTLSHandshakeDurationMs) AS 'Average', percentile(OriginTLSHandshakeDurationMs,90) AS 'Percentile' WHERE OriginIP IS NOT NULL TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "OriginResponseDurationMs by URI  (Avg/90th)",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginResponseDurationMs) AS 'Average', percentile(OriginResponseDurationMs,90) AS 'Percentile' WHERE OriginIP IS NOT NULL FACET ClientRequestPath TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "OriginDNSResponseTimeMs (Range)",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET cases(WHERE numeric(OriginDNSResponseTimeMs) <= 10 as '<10ms',WHERE numeric(OriginDNSResponseTimeMs) > 10 and numeric(OriginDNSResponseTimeMs) <= 50 as '10-50ms',WHERE numeric(OriginDNSResponseTimeMs) >50 as '>50ms') TIMESERIES  since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "OriginDNSResponseTimeMs (Avg/90th)",
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT average(OriginDNSResponseTimeMs) AS 'Average', percentile(OriginDNSResponseTimeMs,90) AS 'Percentile' WHERE OriginIP IS NOT NULL  TIMESERIES since 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "##   [Cloudflare Security](https://developers.cloudflare.com/logs/reference/log-fields/zone/http_requests/)\n![Cloudflare](https://www.kindpng.com/picc/m/121-1215341_cloudflare-logo-png-transparent-png.png)"
+          }
+        },
+        {
+          "title": "Recent Threats",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'threats' WHERE WAFProfile IN ('low','med','high') SINCE 1 day ago COMPARE WITH 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "% of threats with WAF Action taken",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT percentage(count(*), WHERE WAFAction NOT IN ('unknown','')) WHERE WAFProfile IN('low','med','high') since 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Threats by WAF Profile (over time)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT Count(*) as 'Threats' WHERE WAFProfile IN ('low','med','high') FACET WAFProfile TIMESERIES  Since 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Threats by country",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) WHERE ClientCountry IS NOT NULL AND ClientRequestSource = 'eyeball' AND WAFProfile IN ('low','med','high') FACET ClientCountry SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top Threats by IP Address",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) as 'Total' WHERE WAFProfile IN ('low','med','high') FACET ClientIP since 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Real-Time Threat Table",
+          "layout": {
+            "column": 6,
+            "row": 3,
+            "width": 7,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT ClientCountry,WAFProfile,WAFRuleID,WAFRuleMessage, WAFAction, timestamp WHERE WAFProfile IN ('low','med','high') SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Count by Threat",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT count(*) FACET WAFRuleMessage, WAFProfile, WAFRuleID, WAFAction, ClientCountry WHERE WAFProfile IN ('low','med','high') SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
