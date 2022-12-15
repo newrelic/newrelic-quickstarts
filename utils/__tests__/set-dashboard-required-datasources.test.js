@@ -80,13 +80,16 @@ describe('set-dashboards-required-datasources', () => {
       { errors: [mockError] }
     );
 
+    const mockDataSourceId = 'test-data-source';
+    const mockDashboardId = 'mock-dashboard-1';
+
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
     nrGraphQlHelpers.getPublishedComponentIds.mockReturnValueOnce({
       componentIdsMap: {
-        dataSourceIds: ['test-data-source'],
-        dashboardIds: ['mock-dashboard-1'],
+        dataSourceIds: [mockDataSourceId],
+        dashboardIds: [mockDashboardId],
       },
     });
 
@@ -96,5 +99,12 @@ describe('set-dashboards-required-datasources', () => {
 
     const hasErrored = await setDashboardsRequiredDataSources('url', 'token');
     expect(hasErrored).toBe(true);
+    expect(console.error).toHaveBeenCalledWith(
+      `Failed to associate dashboard with id ${mockDashboardId} to ${JSON.stringify(
+        [mockDataSourceId]
+      )}`
+    );
+
+    expect(console.error).toHaveBeenCalledWith(`- ${mockError.message}`);
   });
 });
