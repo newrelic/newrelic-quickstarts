@@ -8,6 +8,7 @@ import {
   DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
   DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../../constants';
+import { nil } from 'ajv';
 
 // TODO: maybe there is an easier way to mock a single function on this library
 jest.mock('fs', () => {
@@ -166,7 +167,9 @@ describe('Dashboard', () => {
             nr1Catalog: {
               dashboardTemplate: {
                 metadata: {
-                  requiredDataSources: mockExistingDataSourceIds,
+                  requiredDataSources: mockExistingDataSourceIds.map((id) => ({
+                    id: id,
+                  })),
                 },
               },
             },
@@ -205,7 +208,57 @@ describe('Dashboard', () => {
         mockNewDataSourceIds
       );
 
-      expect(result).toBe(mockMutationResponse);
+      expect(result).toStrictEqual(mockMutationResponse);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: {
+          templateId: mockTemplateId,
+          dataSourceIds: [
+            'mock-data-source-1',
+            'mock-data-source-2',
+            'mock-data-source-3',
+          ],
+        },
+        queryString: DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      });
+    });
+
+    test('returns an error if getting existing data sources fails', async () => {
+      const mockTemplateId = 'mock-template-id';
+
+      const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+      const mockError = new Error('Something went wrong');
+
+      const dashboardQueryResponse = {
+        data: null,
+        errors: [mockError],
+      };
+
+      const mockMutationResponse = {
+        errors: [mockError],
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === DASHBOARD_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(dashboardQueryResponse);
+          }
+
+          if (queryString === DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION) {
+            return Promise.resolve(mockMutationResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const result = await Dashboard.submitSetRequiredDataSourcesMutation(
+        mockTemplateId,
+        mockNewDataSourceIds
+      );
+
+      expect(result).toStrictEqual(mockMutationResponse);
     });
   });
 });
