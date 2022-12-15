@@ -415,12 +415,18 @@
 						"facet": {
 							"showOtherSeries": false
 						},
+						"legend": {
+							"enabled": true
+						},
 						"nrqlQueries": [
 							{
 								"accountId": 0,
 								"query": "SELECT count(*) FROM Transaction WHERE (transactionType = 'Web') SINCE last week EXTRAPOLATE FACET name"
 							}
-						]
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
 					}
 				},
 				{
@@ -457,20 +463,20 @@
 					},
 					"linkedEntityGuids": null,
 					"visualization": {
-						"id": "dc5b694f-9125-4c64-8e4e-c52e604c8088.stacked-bar-chart"
+						"id": "viz.table"
 					},
 					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT max(duration) FROM Transaction WHERE (transactionType = 'Web') SINCE 1 week ago LIMIT 5 EXTRAPOLATE FACET name"
+								"query": "SELECT max(duration) FROM Transaction WHERE (transactionType = 'Web') SINCE last week EXTRAPOLATE FACET name limit 5"
 							}
 						],
-						"other": {
-							"visible": false
-						},
-						"yAxis": {
-							"label": "Seconds"
+						"platformOptions": {
+							"ignoreTimeRange": false
 						}
 					}
 				},
@@ -718,7 +724,7 @@
 					"layout": {
 						"column": 1,
 						"row": 2,
-						"width": 4,
+						"width": 3,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -746,7 +752,7 @@
 				{
 					"title": "Memory Usage (%)",
 					"layout": {
-						"column": 5,
+						"column": 4,
 						"row": 2,
 						"width": 4,
 						"height": 3
@@ -776,9 +782,9 @@
 				{
 					"title": "Storage Usage (%)",
 					"layout": {
-						"column": 9,
+						"column": 8,
 						"row": 2,
-						"width": 4,
+						"width": 3,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -803,6 +809,34 @@
 						},
 						"yAxisLeft": {
 							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Disk Usage",
+					"layout": {
+						"column": 11,
+						"row": 2,
+						"width": 2,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+
+						"nrqlQueries": [
+							{
+								"accountId": 0,
+								"query": "SELECT latest(host.disk.usedPercent) as 'Used %' FROM Metric FACET device LIMIT MAX"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
 						}
 					}
 				},
@@ -837,28 +871,26 @@
 					}
 				},
 				{
-					"title": "Top 100 Processes Running",
+					"title": "Top 20 Processes Running",
 					"layout": {
 						"column": 4,
 						"row": 5,
-						"width": 3,
+						"width": 5,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
 					"visualization": {
-						"id": "viz.pie"
+						"id": "viz.table"
 					},
 					"rawConfiguration": {
 						"facet": {
-							"showOtherSeries": true
+							"showOtherSeries": false
 						},
-						"legend": {
-							"enabled": true
-						},
+
 						"nrqlQueries": [
 							{
 								"accountId": 0,
-								"query": "SELECT latest(host.process.cpuPercent) as 'CPU %', latest(host.process.threadCount) as 'Threads' FROM Metric FACET processId, processDisplayName ORDER BY cpuPercent asc LIMIT 100"
+								"query": "SELECT latest(host.process.cpuPercent) as 'CPU %', latest(host.process.threadCount) as 'Threads' FROM Metric FACET processId, processDisplayName ORDER BY cpuPercent asc LIMIT 20"
 							}
 						],
 						"platformOptions": {
@@ -869,9 +901,9 @@
 				{
 					"title": "Load Average",
 					"layout": {
-						"column": 7,
+						"column": 9,
 						"row": 5,
-						"width": 3,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -889,33 +921,6 @@
 							{
 								"accountId": 0,
 								"query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric TIMESERIES auto"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Disk Usage",
-					"layout": {
-						"column": 10,
-						"row": 5,
-						"width": 3,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountId": 0,
-								"query": "SELECT latest(host.disk.usedPercent) as 'Used %' FROM Metric FACET device LIMIT MAX"
 							}
 						],
 						"platformOptions": {
