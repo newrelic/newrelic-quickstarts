@@ -30,7 +30,7 @@ export const buildRequestBody = <T>({
   });
 
 // TODO: It would be nice to do this without these weird unions. Let's separate the handling of Javascript errors and nerdgraph errors.
-type ErrorOrNerdGraphError = Error | NerdGraphError;
+export type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 /**
  * Send NR GraphQL request

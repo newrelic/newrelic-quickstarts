@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable';
-import type { NerdGraphError } from '../types/nerdgraph';
+import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
 import Component from './Component';
 import {
@@ -11,7 +11,10 @@ import {
   DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
   DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../constants';
-import { fetchNRGraphqlResults, translateNGErrors } from './nr-graphql-helpers';
+import {
+  fetchNRGraphqlResults,
+  ErrorOrNerdGraphError,
+} from './nr-graphql-helpers';
 
 interface DashboardConfig {
   name: string;
@@ -23,8 +26,6 @@ interface DashboardConfig {
 interface RequiredDataSources {
   id: string;
 }
-
-type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 type DashboardRequiredDataSourcesQueryResults = {
   actor: {
@@ -42,7 +43,7 @@ type DashboardRequiredDataSourcesQueryVariables = {
   id: string;
 };
 
-type DashboardSetRequiredDataSourcesMutationResults = {
+export type DashboardSetRequiredDataSourcesMutationResults = {
   nr1CatalogSetRequiredDataSourcesForDashboardTemplate: {
     dashboardTemplate: {
       id: string;
@@ -54,6 +55,10 @@ type DashboardSetRequiredDataSourcesMutationVariables = {
   templateId: string;
   dataSourceIds: string[];
 };
+
+export type SubmitSetRequiredDataSourcesMutationResult =
+  | NerdGraphResponseWithLocalErrors<DashboardSetRequiredDataSourcesMutationResults>
+  | { errors: ErrorOrNerdGraphError[] };
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   /**
@@ -179,7 +184,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   static async submitSetRequiredDataSourcesMutation(
     templateId: string,
     newDataSourceIds: string[]
-  ) {
+  ): Promise<SubmitSetRequiredDataSourcesMutationResult> {
     const { ids: currDataSourceIds, errors: queryErrors } =
       await this.getRequiredDataSources(templateId);
 
@@ -191,7 +196,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       ...new Set([...currDataSourceIds, ...newDataSourceIds]),
     ];
 
-    const { data, errors } = await fetchNRGraphqlResults<
+    const result = await fetchNRGraphqlResults<
       DashboardSetRequiredDataSourcesMutationVariables,
       DashboardSetRequiredDataSourcesMutationResults
     >({
@@ -199,7 +204,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       variables: { templateId, dataSourceIds },
     });
 
-    return { data, errors };
+    return result;
   }
 
   /**

@@ -6,9 +6,13 @@ import {
 import {
   translateNGErrors,
   getPublishedComponentIds,
+  chunk,
+  GetPublishedComponentIdsResult,
 } from './lib/nr-graphql-helpers';
 import Quickstart from './lib/Quickstart';
-import Dashboard from './lib/Dashboard';
+import Dashboard, {
+  SubmitSetRequiredDataSourcesMutationResult,
+} from './lib/Dashboard';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import { passedProcessArguments } from './lib/helpers';
 
@@ -47,6 +51,25 @@ const getPublishedQuickstartsComponentIds = async (ids: string[]) => {
   );
 
   return { hasFailed, results };
+};
+
+const dashboardsToDataSourcesFromQuickstartComponents = (
+  quickstartsComponents: GetPublishedComponentIdsResult[]
+) => {
+  return quickstartsComponents.reduce<Record<string, string[]>>(
+    (acc, { componentIdsMap: { dashboardIds, dataSourceIds } }) => {
+      if (dashboardIds.length > 0 && dataSourceIds.length > 0) {
+        dashboardIds.forEach((dashboardId) => {
+          acc[dashboardId] = [
+            ...new Set([...(acc[dashboardId] ?? []), ...dataSourceIds]),
+          ];
+        });
+      }
+
+      return acc;
+    },
+    {}
+  );
 };
 
 const setDashboardRequiredDataSources = async (
@@ -89,27 +112,22 @@ export const setDashboardsRequiredDataSources = async (
     return hasComponentIdsFailed;
   }
 
-  const dashboardIdsToDataSourceIds = quickstartsComponentIdsResults.reduce<
-    Record<string, string[]>
-  >((acc, { componentIdsMap: { dashboardIds, dataSourceIds } }) => {
-    if (dashboardIds.length > 0 && dataSourceIds.length > 0) {
-      dashboardIds.forEach((dashboardId) => {
-        acc[dashboardId] = [
-          ...new Set([...(acc[dashboardId] ?? []), ...dataSourceIds]),
-        ];
-      });
-    }
+  const dashboardIdsToDataSourceIds =
+    dashboardsToDataSourcesFromQuickstartComponents(
+      quickstartsComponentIdsResults
+    );
 
-    return acc;
-  }, {});
+  let results: SubmitSetRequiredDataSourcesMutationResult[] = [];
 
-  const results = await Promise.all(
-    Object.entries(dashboardIdsToDataSourceIds).map(
-      ([dashboardId, dataSourceIds]) => {
+  for (const c of chunk(Object.entries(dashboardIdsToDataSourceIds), 5)) {
+    const result = await Promise.all(
+      c.map(([dashboardId, dataSourceIds]) => {
         return setDashboardRequiredDataSources(dashboardId, dataSourceIds);
-      }
-    )
-  );
+      })
+    );
+
+    results = [...results, ...result];
+  }
 
   const hasFailed = results.some(
     (result) => result?.errors && result.errors.length > 0
