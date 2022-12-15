@@ -21,6 +21,8 @@ export enum CUSTOM_EVENT {
   UPDATE_INSTALL_PLANS = 'UpdateInstallPlans',
   /** Event name which corresponds to tracking the setting of dashboard required data sources. */
   SET_DASHBOARD_REQUIRED_DATASOURCES = 'SetDashboardRequiredDataSources',
+  /** Event name which corresponds to tracking the setting of alert policy required data sources. */
+  SET_ALERT_POLICY_REQUIRED_DATASOURCES = 'SetAlertPolicyRequiredDataSources'
 }
 
 /**
