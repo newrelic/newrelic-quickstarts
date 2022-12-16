@@ -171,9 +171,9 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     const ids =
       data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
         ({ id }) => id
-      );
+      ) ?? [];
 
-    return { ids: ids ?? [], errors };
+    return { ids, errors };
   }
 
   /**

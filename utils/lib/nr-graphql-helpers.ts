@@ -5,6 +5,11 @@ import type {
 } from '../types/nerdgraph';
 
 import {
+  QuickstartComponentsIdsResponse,
+  QuickstartComponentTypename,
+} from '../types/QuickstartComponentsIds';
+
+import {
   CATEGORIES_QUERY,
   CORE_DATA_SOURCES_QUERY,
   QUICKSTART_COMPONENTS_IDS_QUERY,
@@ -224,38 +229,6 @@ export const getPublishedDataSourceIds =
 
     return { coreDataSourceIds, errors };
   };
-
-// Lets put these types in own file in util/types
-
-export enum QuickstartComponentTypename {
-  Dashboard = 'Nr1CatalogQuickstartDashboard',
-}
-
-interface QuickstartDataSource {
-  id: string;
-}
-
-interface QuickstartComponent {
-  __typename: QuickstartComponentTypename;
-  id: string;
-}
-
-interface QuickstartQueryResponseMetadata {
-  dataSources: QuickstartDataSource[];
-  quickstartComponents: QuickstartComponent[];
-}
-
-interface Quickstart {
-  metadata: QuickstartQueryResponseMetadata;
-}
-
-type QuickstartComponentsIdsResponse = {
-  actor: {
-    nr1Catalog: {
-      quickstart: Quickstart;
-    };
-  };
-};
 
 export type ComponentIdsMap = {
   dataSourceIds: string[];

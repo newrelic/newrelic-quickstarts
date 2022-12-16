@@ -8,7 +8,6 @@ import {
   DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
   DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../../constants';
-import { nil } from 'ajv';
 
 // TODO: maybe there is an easier way to mock a single function on this library
 jest.mock('fs', () => {
