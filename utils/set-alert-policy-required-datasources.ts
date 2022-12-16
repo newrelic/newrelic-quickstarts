@@ -6,6 +6,7 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 import Quickstart from './lib/Quickstart';
+import Alert from './lib/Alert'
 
 const getQuickstartNames = async (ghUrl?: string,
   ghToken?: string) : Promise<{hasFailed: boolean, results: string[]}>=> {
@@ -30,6 +31,12 @@ const getQuickstartNames = async (ghUrl?: string,
 
 const setAlertPolicyRequiredDataSources = async(ghUrl: string, ghToken: string | undefined) => {
   const { hasFailed: hasQuickstartNamesFailed, results: quickstartNames} = await getQuickstartNames(ghUrl, ghToken)
+
+  if (hasQuickstartNamesFailed) {
+    return hasQuickstartNamesFailed
+  }
+
+  const alertPoliciesWithCurrentDataSources = quickstartNames.map((quickstart) => Alert.getAlertPolicyRequiredDataSources(quickstart))
 
 
   //Temporary to allow for pushing

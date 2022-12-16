@@ -119,7 +119,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
    /**
    * Static method of data sources associated
    * with dashboard template id
-   * @returns - object with alert policy ids and NGerrors
+   * @returns - object with alert policy ids, required data sources and NGerrors
    */
   static async getAlertPolicyRequiredDataSources(alertName: string): Promise<{ids: AlertPolicyDataSources[], errors?: ErrorOrNerdGraphError[]}> {
     const { data, errors } = await fetchNRGraphqlResults<AlertPolicyRequiredDataSourcesQueryVariables, AlertPolicyRequiredDataSourcesQueryResults>({

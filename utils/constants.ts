@@ -177,7 +177,6 @@ export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
       nr1Catalog {
         search(filter: {types: [ALERT_POLICY_TEMPLATE]}, query: $query: ) {
           results {
-            __typename
             ... on Nr1CatalogAlertPolicyTemplate {
               id
               metadata {
