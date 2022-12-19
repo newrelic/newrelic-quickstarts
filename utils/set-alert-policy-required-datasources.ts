@@ -30,6 +30,7 @@ const getQuickstartNames = async (ghUrl?: string,
 }
 
 const setAlertPolicyRequiredDataSources = async(ghUrl: string, ghToken: string | undefined) => {
+  // Need to return dataSources along with the names 
   const { hasFailed: hasQuickstartNamesFailed, results: quickstartNames} = await getQuickstartNames(ghUrl, ghToken)
 
   if (hasQuickstartNamesFailed) {
@@ -37,6 +38,10 @@ const setAlertPolicyRequiredDataSources = async(ghUrl: string, ghToken: string |
   }
 
   const alertPoliciesWithCurrentDataSources = quickstartNames.map((quickstart) => Alert.getAlertPolicyRequiredDataSources(quickstart))
+
+  //alertPoliciesWithCurrentDataSources = [{id: 'alert-policy-id', dataSources: ['datasource1']}, {id: 'alert-policy-id-2', dataSources: ['dataSource2']}]
+
+  //On submission merge required data sources lists for each alert policy 
 
 
   //Temporary to allow for pushing
@@ -58,4 +63,13 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+};
+
+/**
+ * This allows us to check if the script was invoked directly from the command line, i.e 'node create_validate_pr_quickstarts.js', or if it was imported.
+ * This would be true if this was used in one of our GitHub workflows, but false when imported for use in a test.
+ * See here: https://nodejs.org/docs/latest/api/modules.html#modules_accessing_the_main_module
+ */
+ if (require.main === module) {
+  main();
 }
