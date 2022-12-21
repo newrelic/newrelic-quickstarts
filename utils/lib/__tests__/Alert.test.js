@@ -314,6 +314,10 @@ describe('Alert', () => {
       const alertPolicy = await Alert.getAlertPolicyRequiredDataSources(mockQuickstart)
 
       expect(alertPolicy).toStrictEqual(mockUpdatedAlertPolicy)
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: { query: `${mockQuickstart.name} alert policy`},
+        queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY
+      })
 
     })
     test('returns result with data and no errors when successful', async () => {
@@ -351,6 +355,13 @@ describe('Alert', () => {
     )
 
     expect(result).toStrictEqual(mockMutationResponse)
+    expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+      variables: {
+        templateId: mockTemplateId, 
+        dataSourceIds:  mockNewDataSourceIds 
+      },
+      queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION
+    })
     })
 
     // test('returns an error if getting existing data sources fails'){
