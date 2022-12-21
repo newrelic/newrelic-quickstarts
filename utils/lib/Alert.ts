@@ -145,7 +145,6 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     
     
     return  {id: result.id, dataSourceIds: [...new Set([...currDataSourceIds, ...quickstart.dataSourceIds])]}
-  
   }) 
 
   return {alertPolicy: alertPoliciesWithUpdatedDataSources[0], errors}
@@ -157,8 +156,8 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       AlertPolicySetRequiredDataSourcesMutationResults
     >({
       queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
-      variables: {templateId, dataSourceIds}
-    })
+      variables: { templateId, dataSourceIds },
+    });
 
     return result
   }

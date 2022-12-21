@@ -1,8 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import * as nrGraphqlHelpers from '../nr-graphql-helpers';
 
 import Alert from '../Alert';
-import { GITHUB_REPO_BASE_URL } from '../../constants';
+import { GITHUB_REPO_BASE_URL, ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY, ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION, DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION } from '../../constants';
 
 // TODO: maybe there is an easier way to mock a single function on this library
 jest.mock('fs', () => {
@@ -13,6 +14,15 @@ jest.mock('fs', () => {
     __esModule: true,
     ...originalModule,
     readFileSync: jest.fn().mockImplementation(originalModule.readFileSync),
+  };
+});
+
+jest.mock('../nr-graphql-helpers', () => {
+  const originalModule = jest.requireActual('../nr-graphql-helpers');
+  return {
+    __esModule: true,
+    ...originalModule,
+    fetchNRGraphqlResults: jest.fn(),
   };
 });
 
@@ -245,4 +255,110 @@ describe('Alert', () => {
     });
     
   });
+
+  describe('SubmitSetAlertPolicyRequiredDataSourcesMutation', () => {
+    test ('successfully fetches alert policies when given a quickstart name', async () => {
+      const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+
+      const mockQuickstart = {
+        name: 'mock-quickstart-name',
+        dataSourceIds:  mockNewDataSourceIds
+      }
+
+      const mockTemplateId = 'mock-template-id'
+
+      const alertPolicyQueryResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: [{
+                  id: mockTemplateId,
+                  metadata: {
+                    requiredDataSources: [{
+                      id: 'mock-data-source-1'
+                    }, {
+                      id: 'mock-data-source-2'
+                    }]
+                  }
+                }]
+              }
+            }
+          }
+        }
+      }
+
+      const mockUpdatedAlertPolicy = {
+        alertPolicy: {
+          id: mockTemplateId,
+          dataSourceIds: [
+          'mock-data-source-1',
+          'mock-data-source-2',
+          'mock-data-source-3',
+          ]
+        },
+        errors: undefined
+      }
+    
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(({queryString}) => {
+
+        if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+          return Promise.resolve(alertPolicyQueryResponse)
+        }
+  
+        throw new Error(
+          `Could not mock response for queryString: ${queryString}`
+        )
+      })
+
+      const alertPolicy = await Alert.getAlertPolicyRequiredDataSources(mockQuickstart)
+
+      expect(alertPolicy).toStrictEqual(mockUpdatedAlertPolicy)
+
+    })
+    test('returns result with data and no errors when successful', async () => {
+
+      const mockTemplateId = 'mock-template-id'
+      const mockNewDataSourceIds = ['mock-data-source-1', 
+      'mock-data-source-2', 'mock-data-source-3'];
+
+    const mockMutationResponse = {
+      data: {
+        nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate: {
+          alertPolicyTemplate: {
+            id: mockTemplateId
+          }
+        }
+      }
+    }
+
+    nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(({queryString}) => {
+
+      if (queryString === ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION) {
+        return Promise.resolve(mockMutationResponse)
+      }
+
+      throw new Error(
+        `Could not mock response for queryString: ${queryString}`
+      )
+    })
+
+  
+    
+    const result = await Alert.submitSetRequiredDataSourcesMutation(
+      mockTemplateId,
+      mockNewDataSourceIds
+    )
+
+    expect(result).toStrictEqual(mockMutationResponse)
+    })
+
+    // test('returns an error if getting existing data sources fails'){
+    //   const mockQuickStartName = 'mock-quickstart'
+
+    //   const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+    //   const mockError = new Error('Something went wrong');
+
+    // }
+  })
 });
