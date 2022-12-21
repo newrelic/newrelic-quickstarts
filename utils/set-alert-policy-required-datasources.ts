@@ -6,10 +6,16 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 import Quickstart from './lib/Quickstart';
-import Alert from './lib/Alert'
+import Alert, { AlertPolicyDataSource } from './lib/Alert'
+import { chunk } from './lib/nr-graphql-helpers';
 
-const getQuickstartNames = async (ghUrl?: string,
-  ghToken?: string) : Promise<{hasFailed: boolean, results: string[]}>=> {
+type QuickstartResults = {
+  name: string,
+  dataSourceIds: string[] 
+}
+
+const getQuickstartNameAndDataSources = async (ghUrl?: string,
+  ghToken?: string) : Promise<{hasFailed: boolean, results: QuickstartResults[]}>=> {
     if (!ghToken) {
       console.error('GITHUB_TOKEN is not defined.');
       return { hasFailed: true, results: [] };
@@ -24,36 +30,59 @@ const getQuickstartNames = async (ghUrl?: string,
 
     const quickstartNames = filterQuickstartConfigFiles(files)
       .filter(isNotRemoved)
-      .map(({ filename }) => new Quickstart(filename).config.title);
+      .map(({ filename }) => {const quickstart = new Quickstart(filename)
+      return {name: quickstart.config.title, dataSourceIds: quickstart.config.dataSourceIds ?? []}
+      });
 
     return {hasFailed: false, results: quickstartNames}
 }
 
-const setAlertPolicyRequiredDataSources = async(ghUrl: string, ghToken: string | undefined) => {
+const setAlertPoliciesRequiredDataSources = async(ghUrl: string, ghToken: string | undefined): Promise<boolean> => {
   // Need to return dataSources along with the names 
-  const { hasFailed: hasQuickstartNamesFailed, results: quickstartNames} = await getQuickstartNames(ghUrl, ghToken)
+  const { hasFailed: hasQuickstartNamesFailed, results: quickstartNamesAndDataSources} = await getQuickstartNameAndDataSources(ghUrl, ghToken)
 
   if (hasQuickstartNamesFailed) {
     return hasQuickstartNamesFailed
   }
 
-  const alertPoliciesWithCurrentDataSources = quickstartNames.map((quickstart) => Alert.getAlertPolicyRequiredDataSources(quickstart))
 
-  //alertPoliciesWithCurrentDataSources = [{id: 'alert-policy-id', dataSources: ['datasource1']}, {id: 'alert-policy-id-2', dataSources: ['dataSource2']}]
+  const results = await Promise.all(quickstartNamesAndDataSources.map(async(quickstart) => { 
+    
+    const alertPolicy = await Alert.getAlertPolicyRequiredDataSources(quickstart)
 
-  //On submission merge required data sources lists for each alert policy 
+    // check for error 
+    if(alertPolicy.errors) {
+      console.error(`Failed to get alert policy for quickstart ${quickstart.name}`)
 
+      return {errors: alertPolicy.errors}
+    }
+    
+    const {id: templateId, dataSourceIds } = alertPolicy.alertPolicy
 
-  //Temporary to allow for pushing
-  const hasFailed = false;
-  return hasFailed
+    const result = await Alert.submitSetRequiredDataSourcesMutation(templateId, dataSourceIds)
+
+    if(result.errors) {
+      console.error(`Failed to update alert policy ${templateId} for quickstart ${quickstart.name}`)
+
+    }
+
+    return result
+  })
+  )
+
+  const hasFailed = results.some(
+    (result) => result?.errors && result.errors.length > 0
+  );
+
+  return hasFailed;
 }
+
 
 const main = async () => {
   const [ghUrl] = passedProcessArguments();
   const ghToken = process.env.GITHUB_TOKEN;
 
-  const hasFailed = await setAlertPolicyRequiredDataSources(ghUrl, ghToken);
+  const hasFailed = await setAlertPoliciesRequiredDataSources(ghUrl, ghToken);
 
   recordNerdGraphResponse(
     hasFailed,

@@ -192,3 +192,15 @@ export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
     }
   }
 `
+export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
+  mutation AlertPolicySetRequiredDataSourcesMutation(
+    $dataSourceIds: [ID!]!
+    $templateId: ID!
+  ){
+    nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate(alertPolicyTemplateId: $templateId, dataSourceIds: $dataSourceIds) {
+      alertPolicyTemplate {
+       id
+      }
+    }
+  }
+`

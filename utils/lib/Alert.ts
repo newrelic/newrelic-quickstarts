@@ -16,7 +16,7 @@ import {
   ErrorOrNerdGraphError,
 } from './nr-graphql-helpers';
 
-import {ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY} from '../constants'
+import { ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY, ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION } from '../constants'
 
 interface RequiredDataSources {
   id: string;
@@ -42,10 +42,23 @@ type AlertPolicyRequiredDataSourcesQueryVariables = {
   query: string;
 }
 
-interface AlertPolicyDataSources{
+export interface AlertPolicyDataSource{
   id: string,
-  requiredDataSources: string[]
+  dataSourceIds: string[]
 }
+
+type AlertPolicySetRequiredDataSourcesMutationVariables = {
+  templateId: string;
+  dataSourceIds: string[]
+}
+
+export type AlertPolicySetRequiredDataSourcesMutationResults = {
+  nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate: {
+    alertPolicyTemplate: {
+      id: string;
+    };
+  };
+};
 class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   /**
    * Returns the **directory** for the alert policy
@@ -121,16 +134,36 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
    * with dashboard template id
    * @returns - object with alert policy ids, required data sources and NGerrors
    */
-  static async getAlertPolicyRequiredDataSources(alertName: string): Promise<{ids: AlertPolicyDataSources[], errors?: ErrorOrNerdGraphError[]}> {
+  static async getAlertPolicyRequiredDataSources(quickstart: {name: string, dataSourceIds: string[]}): Promise<{alertPolicy: AlertPolicyDataSource, errors?: ErrorOrNerdGraphError[]}> {
     const { data, errors } = await fetchNRGraphqlResults<AlertPolicyRequiredDataSourcesQueryVariables, AlertPolicyRequiredDataSourcesQueryResults>({
     queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
-    variables: { query: `${alertName} alert policy`},
+    variables: { query: `${quickstart.name} alert policy`},
   });
 
-  const alertPoliciesWithDataSources = data?.actor?.nr1Catalog?.search?.results?.map((result: AlertPolicy) => ({id: result.id, requiredDataSources: result.metadata.requiredDataSources.map((dataSource) => (dataSource.id))})) 
+  const alertPoliciesWithUpdatedDataSources = data?.actor?.nr1Catalog?.search?.results?.map((result: AlertPolicy) => {
+    const currDataSourceIds = result.metadata.requiredDataSources.map((dataSource) => dataSource.id)
+    
+    
+    return  {id: result.id, dataSourceIds: [...new Set([...currDataSourceIds, ...quickstart.dataSourceIds])]}
+  
+  }) 
 
-  return {ids: alertPoliciesWithDataSources, errors}
+  return {alertPolicy: alertPoliciesWithUpdatedDataSources[0], errors}
   }
-}
+
+  static async submitSetRequiredDataSourcesMutation  (templateId: string, dataSourceIds: string[]) {
+    const result = await fetchNRGraphqlResults<
+      AlertPolicySetRequiredDataSourcesMutationVariables,
+      AlertPolicySetRequiredDataSourcesMutationResults
+    >({
+      queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      variables: {templateId, dataSourceIds}
+    })
+
+    return result
+  }
+  }
+
+  
 
 export default Alert;
