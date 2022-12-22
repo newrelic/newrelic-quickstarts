@@ -1,85 +1,50 @@
 {
-  "name": "Delphix Dashboard",
-  "description": "Sample dashboard to monitor usage statistics of the Delphix DevOps Data Platform, such as known dSources, inactive VDBs, and total data capacity.",
+  "name": "Delphix Platform Dashboard",
+  "description": "Sample dashboard detailing Delphix Platform usage.",
   "pages": [
     {
-      "name": "Delphix Dashboard",
-      "description": null,
+      "name": "VDB Summary Dashboard",
+      "description": "Sample dashboard focused on Delphix Platform's VDB usage and storage consumption.",
       "widgets": [
         {
-          "visualization": {
-            "id": "viz.table"
-          },
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "height": 3,
-            "width": 4
+            "width": 4,
+            "height": 3
           },
-          "title": "dSource List",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
           "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT * FROM `Delphix dsources` SINCE 30 MINUTES AGO LIMIT 100"
+                "query": "SELECT uniqueCount(name) as `Total VDBs` from `Delphix vdbs` SINCE 5 minutes ago"
               }
-            ]
-          },
-          "linkedEntityGuids": null
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
         },
         {
-          "visualization": {
-            "id": "viz.line"
-          },
+          "title": "Availability of VDBs",
           "layout": {
             "column": 5,
             "row": 1,
-            "height": 3,
-            "width": 4
+            "width": 8,
+            "height": 3
           },
-          "title": "Inactive VDBs",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT count(*) FROM `Delphix vdbs` FACET status SINCE 30 MINUTES AGO TIMESERIES"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "height": 3,
-            "width": 4
-          },
-          "title": "Average VDB Size",
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(size) FROM `Delphix vdbs` FACET name SINCE 30 MINUTES AGO"
-              }
-            ]
-          },
-          "linkedEntityGuids": null
-        },
-        {
+          "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.line"
           },
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "height": 3,
-            "width": 4
-          },
-          "title": "Continuous Data Storage Capacity",
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
@@ -90,26 +55,29 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT MAX(data_storage_capacity)-MIN(data_storage_used)  FROM `Delphix engines` SINCE 7 DAYS AGO TIMESERIES facet name"
+                "query": "SELECT uniqueCount(name) from `Delphix vdbs` facet status SINCE 30 minutes AGO TIMESERIES"
               }
             ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
             "yAxisLeft": {
-              "zero": true
+              "zero": false
             }
-          },
-          "linkedEntityGuids": null
+          }
         },
         {
-          "visualization": {
-            "id": "viz.line"
-          },
+          "title": "VDB Size Chart",
           "layout": {
-            "column": 5,
+            "column": 1,
             "row": 4,
-            "height": 3,
-            "width": 4
+            "width": 4,
+            "height": 3
           },
-          "title": "VDB Availability",
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": true
@@ -120,16 +88,103 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (count(*)/24)*100    FROM `Delphix vdbs` SINCE 7 DAYS AGO TIMESERIES facet group_name,name,engine_id"
+                "query": "SELECT average(size) FROM `Delphix vdbs` FACET name SINCE 30 MINUTES AGO"
               }
             ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "VDB Database Type Counts",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(name)  from `Delphix vdbs` FACET database_type\r\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Delphix Continuous Data Engine Capacity (Gb)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (MAX(data_storage_capacity)-MIN(data_storage_used))/1073741824  FROM `Delphix engines` SINCE 7 DAYS AGO TIMESERIES facet name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
             "yAxisLeft": {
               "zero": false
             }
+          }
+        },
+        {
+          "title": "Complete VDB List",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 8,
+            "height": 3
           },
-          "linkedEntityGuids": null
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT * FROM `Delphix vdbs` SINCE 5 MINUTES AGO LIMIT 1000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
         }
       ]
     }
-  ]
+  ],
+  "variables": []
 }
