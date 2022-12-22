@@ -162,6 +162,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
         hasFailed,
         CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED
       );
+
       return { alertPolicy: null, errors: [error] };
     }
 
