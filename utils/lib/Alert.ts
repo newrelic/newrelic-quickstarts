@@ -29,7 +29,7 @@ interface RequiredDataSources {
 }
 interface AlertPolicy {
   id: string;
-  metadata: {
+  metadata?: {
     requiredDataSources: RequiredDataSources[];
   };
 }
@@ -187,9 +187,10 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
     const alertPoliciesWithUpdatedDataSources = results.map(
       (result: AlertPolicy) => {
-        const currDataSourceIds = result.metadata.requiredDataSources.map(
-          (dataSource) => dataSource.id
-        );
+        const currDataSourceIds =
+          result?.metadata?.requiredDataSources.map(
+            (dataSource) => dataSource.id
+          ) ?? [];
 
         return {
           id: result.id,
