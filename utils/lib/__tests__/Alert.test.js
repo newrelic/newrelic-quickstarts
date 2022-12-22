@@ -483,8 +483,48 @@ describe('Alert', () => {
         dataSourceIds: newDataSourceIds,
       };
 
+      const mockTemplateId = 'mock-template-id';
+
       const errorMessage = new Error(
-        `Multiple Quickstart data sources detected for quickstart ${mockQuickstart.name}, must update manually`
+        `Multiple Quickstart data sources detected for Quickstart: ${mockQuickstart.name} with AlertPolicy: ${mockTemplateId} must update manually`
+      );
+
+      const alertPolicyQueryResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: [
+                  {
+                    id: mockTemplateId,
+                    metadata: {
+                      requiredDataSources: [
+                        {
+                          id: 'mock-data-source-1',
+                        },
+                        {
+                          id: 'mock-data-source-2',
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(alertPolicyQueryResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
       );
 
       const error = await Alert.getAlertPolicyRequiredDataSources(

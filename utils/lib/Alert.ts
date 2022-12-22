@@ -152,20 +152,6 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     | { alertPolicy: AlertPolicyDataSource }
     | { alertPolicy: null; errors: ErrorOrNerdGraphError[] }
   > {
-    const hasFailed = quickstart.dataSourceIds.length > 1;
-
-    if (hasFailed) {
-      const error = new Error(
-        `Multiple Quickstart data sources detected for quickstart ${quickstart.name}, must update manually`
-      );
-      recordNerdGraphResponse(
-        hasFailed,
-        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED
-      );
-
-      return { alertPolicy: null, errors: [error] };
-    }
-
     const { data, errors } = await fetchNRGraphqlResults<
       AlertPolicyRequiredDataSourcesQueryVariables,
       AlertPolicyRequiredDataSourcesQueryResults
@@ -183,6 +169,20 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     if (results === undefined || results.length === 0) {
       const error = new Error(
         `No alert policy for quickstart ${quickstart.name} exists`
+      );
+
+      return { alertPolicy: null, errors: [error] };
+    }
+
+    const hasFailed = quickstart.dataSourceIds.length > 1;
+
+    if (hasFailed) {
+      const error = new Error(
+        `Multiple Quickstart data sources detected for Quickstart: ${quickstart.name} with AlertPolicy: ${results[0].id} must update manually`
+      );
+      recordNerdGraphResponse(
+        hasFailed,
+        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED
       );
 
       return { alertPolicy: null, errors: [error] };
