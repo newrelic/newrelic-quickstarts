@@ -256,8 +256,8 @@ describe('Alert', () => {
     
   });
 
-  describe('SubmitSetAlertPolicyRequiredDataSourcesMutation', () => {
-    test ('successfully fetches alert policies when given a quickstart name', async () => {
+  describe('SubmitSetAlertPolicyRequiredDataSourcesMutation and GetAlertPolicy from quickstart name', () => {
+    test ('Successfully fetches alert policies when given a quickstart name', async () => {
       const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
 
       const mockQuickstart = {
@@ -319,7 +319,7 @@ describe('Alert', () => {
       })
 
     })
-    test('returns result with data and no errors when successful', async () => {
+    test('Returns result with data and no errors when successful', async () => {
 
       const mockTemplateId = 'mock-template-id'
       const mockNewDataSourceIds = ['mock-data-source-1', 
@@ -363,7 +363,7 @@ describe('Alert', () => {
     })
     })
 
-    test('returns an error if getting existing data sources fails', async () => {
+    test('Returns an error if getting existing data sources fails', async () => {
       const mockQuickStartName = 'mock-quickstart'
 
       const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
@@ -397,9 +397,13 @@ describe('Alert', () => {
       const result = await Alert.getAlertPolicyRequiredDataSources(mockQuickStart)
 
       expect(result).toStrictEqual(expectedResponse)
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: { query: `${mockQuickStart.name} alert policy`},
+        queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY
+      })
     })
 
-    test('responds with an error if an empty array is returned as the result when fetching an alert policy', async() => {
+    test('Responds with an error if an empty array is returned as the result when fetching an alert policy', async() => {
       const mockQuickStartName = 'mock-quickstart'
 
       const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
@@ -444,6 +448,48 @@ describe('Alert', () => {
         const result = await Alert.getAlertPolicyRequiredDataSources(mockQuickStart)
 
         expect(result).toStrictEqual(expectedResponse)
+        expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+          variables: { query: `${mockQuickStart.name} alert policy`},
+          queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY
+        })
+    })
+
+    test('Returns an error if submitting required data sources for alert policy fails', async() => {
+      
+      const mockTemplateId = 'mock-template-id'
+      const mockNewDataSourceIds = ['mock-data-source-1', 
+      'mock-data-source-2', 'mock-data-source-3'];
+
+      const error = new Error('Something went wrong!')
+      const mutationErrorResponse = {
+        errors: [error]
+      }
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(({queryString}) => {
+
+        if (queryString === ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION) {
+          return Promise.resolve(mutationErrorResponse)
+        }
+  
+        throw new Error(
+          `Could not mock response for queryString: ${queryString}`
+        )
+      })
+
+      const result = await Alert.submitSetRequiredDataSourcesMutation(
+        mockTemplateId,
+        mockNewDataSourceIds
+      )
+
+
+      expect(result).toStrictEqual(mutationErrorResponse)
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: {
+          templateId: mockTemplateId, 
+          dataSourceIds:  mockNewDataSourceIds 
+        },
+        queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION
+      })
     })
   })
 });
