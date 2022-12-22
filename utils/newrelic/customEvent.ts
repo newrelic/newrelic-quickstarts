@@ -22,7 +22,9 @@ export enum CUSTOM_EVENT {
   /** Event name which corresponds to tracking the setting of dashboard required data sources. */
   SET_DASHBOARD_REQUIRED_DATASOURCES = 'SetDashboardRequiredDataSources',
   /** Event name which corresponds to tracking the setting of alert policy required data sources. */
-  SET_ALERT_POLICY_REQUIRED_DATASOURCES = 'SetAlertPolicyRequiredDataSources'
+  SET_ALERT_POLICY_REQUIRED_DATASOURCES = 'SetAlertPolicyRequiredDataSources',
+  /** Event name which corresponds to multiple data sources in a quickstart which prevents assigning them to an alert policy or dashboard template */
+  MULTIPLE_DATA_SOURCES_DETECTED = 'MultipleDataSourcesDetected',
 }
 
 /**

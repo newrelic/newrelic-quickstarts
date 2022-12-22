@@ -22,6 +22,8 @@ import {
   ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../constants';
 
+import { CUSTOM_EVENT, recordNerdGraphResponse } from '../newrelic/customEvent';
+
 interface RequiredDataSources {
   id: string;
 }
@@ -150,6 +152,17 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     | { alertPolicy: AlertPolicyDataSource }
     | { alertPolicy: null; errors: ErrorOrNerdGraphError[] }
   > {
+    const hasFailed = quickstart.dataSourceIds.length > 1;
+    if (hasFailed) {
+      const error = new Error(
+        `Multiple Quickstart data sources detected for quickstart ${quickstart.name}, must update manually`
+      );
+      recordNerdGraphResponse(
+        hasFailed,
+        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED
+      );
+      return { alertPolicy: null, errors: [error] };
+    }
     const { data, errors } = await fetchNRGraphqlResults<
       AlertPolicyRequiredDataSourcesQueryVariables,
       AlertPolicyRequiredDataSourcesQueryResults

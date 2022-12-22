@@ -262,7 +262,7 @@ describe('Alert', () => {
 
   describe('SubmitSetAlertPolicyRequiredDataSourcesMutation and GetAlertPolicy from quickstart name', () => {
     test('Successfully fetches alert policies when given a quickstart name', async () => {
-      const newDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+      const newDataSourceIds = ['mock-data-source-3'];
 
       const mockQuickstart = {
         name: 'mock-quickstart-name',
@@ -330,6 +330,7 @@ describe('Alert', () => {
         queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
       });
     });
+
     test('Returns result with data and no errors when successful', async () => {
       const mockTemplateId = 'mock-template-id';
       const newDataSourceIds = [
@@ -378,7 +379,7 @@ describe('Alert', () => {
     test('Returns an error if getting existing data sources fails', async () => {
       const mockQuickstartName = 'mock-quickstart';
 
-      const newDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+      const newDataSourceIds = ['mock-data-source-1'];
 
       const mockQuickstart = {
         name: mockQuickstartName,
@@ -421,7 +422,7 @@ describe('Alert', () => {
     test('Responds with an error if an empty array is returned as the result when fetching an alert policy', async () => {
       const mockQuickstartName = 'mock-quickstart';
 
-      const newDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+      const newDataSourceIds = ['mock-data-source-1'];
 
       const mockQuickstart = {
         name: mockQuickstartName,
@@ -469,6 +470,30 @@ describe('Alert', () => {
       expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
         variables: { query: `${mockQuickstart.name} alert policy` },
         queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+      });
+    });
+
+    test('Returns an error if a quickstart has multiple data sources', async () => {
+      const mockQuickstartName = 'mock-quickstart';
+
+      const newDataSourceIds = ['mock-data-source-1', `mock-data-source-2`];
+
+      const mockQuickstart = {
+        name: mockQuickstartName,
+        dataSourceIds: newDataSourceIds,
+      };
+
+      const errorMessage = new Error(
+        `Multiple Quickstart data sources detected for quickstart ${mockQuickstart.name}, must update manually`
+      );
+
+      const error = await Alert.getAlertPolicyRequiredDataSources(
+        mockQuickstart
+      );
+
+      expect(error).toStrictEqual({
+        alertPolicy: null,
+        errors: [errorMessage],
       });
     });
 
