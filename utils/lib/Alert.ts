@@ -172,7 +172,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       return { alertPolicy: null, errors: [error] };
     }
 
-    const alertPoliciesWithUpdatedDataSources = results?.map(
+    const alertPoliciesWithUpdatedDataSources = results.map(
       (result: AlertPolicy) => {
         const currDataSourceIds = result.metadata.requiredDataSources.map(
           (dataSource) => dataSource.id
