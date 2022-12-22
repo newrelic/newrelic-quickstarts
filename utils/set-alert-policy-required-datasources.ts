@@ -49,9 +49,8 @@ const setAlertPoliciesRequiredDataSources = async(ghUrl: string, ghToken: string
   const results = await Promise.all(quickstartNamesAndDataSources.map(async(quickstart) => { 
     
     const alertPolicy = await Alert.getAlertPolicyRequiredDataSources(quickstart)
-
-    // check for error 
-    if(alertPolicy.errors) {
+    
+    if (alertPolicy.alertPolicy === null) {
       console.error(`Failed to get alert policy for quickstart ${quickstart.name}`)
 
       return {errors: alertPolicy.errors}

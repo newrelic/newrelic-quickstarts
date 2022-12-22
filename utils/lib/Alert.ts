@@ -129,27 +129,42 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       };
     });
   }
+  
    /**
-   * Static method of data sources associated
-   * with dashboard template id
+   * Static method that gets the alert policy associated with a quickstart and it's current data sources
    * @returns - object with alert policy ids, required data sources and NGerrors
    */
-  static async getAlertPolicyRequiredDataSources(quickstart: {name: string, dataSourceIds: string[]}): Promise<{alertPolicy: AlertPolicyDataSource, errors?: ErrorOrNerdGraphError[]}> {
+  static async getAlertPolicyRequiredDataSources(quickstart: {name: string, dataSourceIds: string[]}): Promise<{alertPolicy: AlertPolicyDataSource} | {alertPolicy: null, errors: ErrorOrNerdGraphError[]}> {
     const { data, errors } = await fetchNRGraphqlResults<AlertPolicyRequiredDataSourcesQueryVariables, AlertPolicyRequiredDataSourcesQueryResults>({
     queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
     variables: { query: `${quickstart.name} alert policy`},
   });
+  const results = data?.actor?.nr1Catalog?.search?.results
 
-  const alertPoliciesWithUpdatedDataSources = data?.actor?.nr1Catalog?.search?.results?.map((result: AlertPolicy) => {
+  if (errors) {
+    return { alertPolicy: null, errors }
+  }
+
+  if (results === undefined || results.length === 0) {
+    const error = new Error(`No alert policy for quickstart ${quickstart.name} exists`)
+
+    return {alertPolicy: null, errors: [error]}
+  }
+
+  const alertPoliciesWithUpdatedDataSources = results?.map((result: AlertPolicy) => {
     const currDataSourceIds = result.metadata.requiredDataSources.map((dataSource) => dataSource.id)
     
     
     return  {id: result.id, dataSourceIds: [...new Set([...currDataSourceIds, ...quickstart.dataSourceIds])]}
   }) 
 
-  return {alertPolicy: alertPoliciesWithUpdatedDataSources[0], errors}
+  return {alertPolicy: alertPoliciesWithUpdatedDataSources[0]}
   }
 
+  /**
+   * Static method of mutating alert policy with updated required data sources
+   * @returns - Object with the alert policy template id or errors
+   */
   static async submitSetRequiredDataSourcesMutation  (templateId: string, dataSourceIds: string[]) {
     const result = await fetchNRGraphqlResults<
       AlertPolicySetRequiredDataSourcesMutationVariables,
