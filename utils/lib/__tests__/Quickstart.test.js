@@ -54,9 +54,10 @@ describe('Quickstart', () => {
   });
 
   describe('getComponents', () => {
+
     afterAll(() => {
       jest.resetAllMocks();
-    });
+    })
 
     test('Returns empty array when there are no components', () => {
       const qs = new Quickstart(
@@ -92,15 +93,17 @@ describe('Quickstart', () => {
       expect(components).toBeDefined();
       expect(qs.isValid).toBe(true);
 
-      // all components are invalid
-      qs.components.forEach((component) => {
-        expect(component.isValid).toBe(false);
-      });
 
-      qs.validate();
+      // all components are invalid
+      qs.components.forEach(component => {
+        expect(component.isValid).toBe(false)
+      })
+
+      qs.validate()
 
       expect(qs.isValid).toBe(false);
-    });
+
+    })
   });
 
   describe('getMutationVariables', () => {
