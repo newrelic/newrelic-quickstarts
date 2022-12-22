@@ -297,7 +297,6 @@ describe('Alert', () => {
           'mock-data-source-3',
           ]
         },
-        errors: undefined
       }
     
       nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(({queryString}) => {
@@ -364,12 +363,87 @@ describe('Alert', () => {
     })
     })
 
-    // test('returns an error if getting existing data sources fails'){
-    //   const mockQuickStartName = 'mock-quickstart'
+    test('returns an error if getting existing data sources fails', async () => {
+      const mockQuickStartName = 'mock-quickstart'
 
-    //   const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
-    //   const mockError = new Error('Something went wrong');
+      const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
 
-    // }
+      const mockQuickStart = {
+        name: mockQuickStartName,
+        dataSourceIds:  mockNewDataSourceIds
+      }
+      const mockError = new Error('Something went wrong');
+
+      const mockErrorResponse = {
+        errors: [mockError]
+      }
+
+      const expectedResponse = {
+        alertPolicy: null,
+        errors: [mockError]
+      }
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(mockErrorResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        });
+
+      const result = await Alert.getAlertPolicyRequiredDataSources(mockQuickStart)
+
+      expect(result).toStrictEqual(expectedResponse)
+    })
+
+    test('responds with an error if an empty array is returned as the result when fetching an alert policy', async() => {
+      const mockQuickStartName = 'mock-quickstart'
+
+      const mockNewDataSourceIds = ['mock-data-source-1', 'mock-data-source-3'];
+
+      const mockQuickStart = {
+        name: mockQuickStartName,
+        dataSourceIds:  mockNewDataSourceIds
+        
+      }
+
+      const mockEmptyArrayResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: []
+              }
+            }
+          }
+        }
+      }
+
+      const emptyArrayError = new Error(`No alert policy for quickstart ${mockQuickStart.name} exists`)
+
+      const expectedResponse = {
+        alertPolicy: null,
+        errors: [emptyArrayError]
+      }
+
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(mockEmptyArrayResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        });
+
+        const result = await Alert.getAlertPolicyRequiredDataSources(mockQuickStart)
+
+        expect(result).toStrictEqual(expectedResponse)
+    })
   })
 });
