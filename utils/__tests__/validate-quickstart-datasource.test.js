@@ -19,8 +19,8 @@ jest.mock('../lib/nr-graphql-helpers.ts', () => ({
   getPublishedDataSourceIds: jest.fn(),
 })
 
-jest.mock('../lib/Quickstart');
-jest.mock('../lib/DataSource');
+jest.mock('../lib/Quickstart')
+jest.mock('../lib/DataSource')
 
 const validQuickstartFilename = 'quickstarts/mock-quickstart-2/config.yml';
 const invalidQuickstartFilename1 = 'quickstarts/mock-quickstart-1/config.yml';

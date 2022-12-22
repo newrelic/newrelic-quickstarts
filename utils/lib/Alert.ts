@@ -10,13 +10,17 @@ import type {
   QuickstartAlertInput,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfigAlert } from '../types/QuickstartConfig';
+import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
 import {
   fetchNRGraphqlResults,
   ErrorOrNerdGraphError,
 } from './nr-graphql-helpers';
 
-import { ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY, ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION } from '../constants'
+import {
+  ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+  ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
+} from '../constants';
 
 interface RequiredDataSources {
   id: string;
@@ -24,33 +28,33 @@ interface RequiredDataSources {
 interface AlertPolicy {
   id: string;
   metadata: {
-    requiredDataSources: RequiredDataSources[]
-  }
+    requiredDataSources: RequiredDataSources[];
+  };
 }
 
 type AlertPolicyRequiredDataSourcesQueryResults = {
   actor: {
     nr1Catalog: {
       search: {
-        results: AlertPolicy[]
-      }
-    }
-  }
-}
+        results: AlertPolicy[];
+      };
+    };
+  };
+};
 
 type AlertPolicyRequiredDataSourcesQueryVariables = {
   query: string;
-}
+};
 
-export interface AlertPolicyDataSource{
-  id: string,
-  dataSourceIds: string[]
+export interface AlertPolicyDataSource {
+  id: string;
+  dataSourceIds: string[];
 }
 
 type AlertPolicySetRequiredDataSourcesMutationVariables = {
   templateId: string;
-  dataSourceIds: string[]
-}
+  dataSourceIds: string[];
+};
 
 export type AlertPolicySetRequiredDataSourcesMutationResults = {
   nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate: {
@@ -59,6 +63,11 @@ export type AlertPolicySetRequiredDataSourcesMutationResults = {
     };
   };
 };
+
+export type SubmitSetRequiredDataSourcesMutationResult =
+  | NerdGraphResponseWithLocalErrors<AlertPolicySetRequiredDataSourcesMutationResults>
+  | { errors: ErrorOrNerdGraphError[] };
+
 class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   /**
    * Returns the **directory** for the alert policy
@@ -114,7 +123,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       console.error(
         `Alert is invalid.\nPlease check if the path at ${this.identifier} exists.`
       );
-      return []
+      return [];
     }
 
     return this.config.map((condition) => {
@@ -129,43 +138,66 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       };
     });
   }
-  
-   /**
+
+  /**
    * Static method that gets the alert policy associated with a quickstart and it's current data sources
    * @returns - object with alert policy ids, required data sources and NGerrors
    */
-  static async getAlertPolicyRequiredDataSources(quickstart: {name: string, dataSourceIds: string[]}): Promise<{alertPolicy: AlertPolicyDataSource} | {alertPolicy: null, errors: ErrorOrNerdGraphError[]}> {
-    const { data, errors } = await fetchNRGraphqlResults<AlertPolicyRequiredDataSourcesQueryVariables, AlertPolicyRequiredDataSourcesQueryResults>({
-    queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
-    variables: { query: `${quickstart.name} alert policy`},
-  });
-  const results = data?.actor?.nr1Catalog?.search?.results
+  static async getAlertPolicyRequiredDataSources(quickstart: {
+    name: string;
+    dataSourceIds: string[];
+  }): Promise<
+    | { alertPolicy: AlertPolicyDataSource }
+    | { alertPolicy: null; errors: ErrorOrNerdGraphError[] }
+  > {
+    const { data, errors } = await fetchNRGraphqlResults<
+      AlertPolicyRequiredDataSourcesQueryVariables,
+      AlertPolicyRequiredDataSourcesQueryResults
+    >({
+      queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+      variables: { query: `${quickstart.name} alert policy` },
+    });
 
-  if (errors) {
-    return { alertPolicy: null, errors }
-  }
+    const results = data?.actor?.nr1Catalog?.search?.results;
 
-  if (results === undefined || results.length === 0) {
-    const error = new Error(`No alert policy for quickstart ${quickstart.name} exists`)
+    if (errors) {
+      return { alertPolicy: null, errors };
+    }
 
-    return {alertPolicy: null, errors: [error]}
-  }
+    if (results === undefined || results.length === 0) {
+      const error = new Error(
+        `No alert policy for quickstart ${quickstart.name} exists`
+      );
 
-  const alertPoliciesWithUpdatedDataSources = results?.map((result: AlertPolicy) => {
-    const currDataSourceIds = result.metadata.requiredDataSources.map((dataSource) => dataSource.id)
-    
-    
-    return  {id: result.id, dataSourceIds: [...new Set([...currDataSourceIds, ...quickstart.dataSourceIds])]}
-  }) 
+      return { alertPolicy: null, errors: [error] };
+    }
 
-  return {alertPolicy: alertPoliciesWithUpdatedDataSources[0]}
+    const alertPoliciesWithUpdatedDataSources = results?.map(
+      (result: AlertPolicy) => {
+        const currDataSourceIds = result.metadata.requiredDataSources.map(
+          (dataSource) => dataSource.id
+        );
+
+        return {
+          id: result.id,
+          dataSourceIds: [
+            ...new Set([...currDataSourceIds, ...quickstart.dataSourceIds]),
+          ],
+        };
+      }
+    );
+
+    return { alertPolicy: alertPoliciesWithUpdatedDataSources[0] };
   }
 
   /**
    * Static method of mutating alert policy with updated required data sources
    * @returns - Object with the alert policy template id or errors
    */
-  static async submitSetRequiredDataSourcesMutation  (templateId: string, dataSourceIds: string[]) {
+  static async submitSetRequiredDataSourcesMutation(
+    templateId: string,
+    dataSourceIds: string[]
+  ) {
     const result = await fetchNRGraphqlResults<
       AlertPolicySetRequiredDataSourcesMutationVariables,
       AlertPolicySetRequiredDataSourcesMutationResults
@@ -174,10 +206,8 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       variables: { templateId, dataSourceIds },
     });
 
-    return result
+    return result;
   }
-  }
-
-  
+}
 
 export default Alert;
