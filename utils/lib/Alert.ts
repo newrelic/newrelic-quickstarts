@@ -141,7 +141,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
   /**
    * Static method that gets the alert policy associated with a quickstart and it's current data sources
-   * @returns - object with alert policy ids, required data sources and NGerrors
+   * @returns - object with alert policy ids, required data sources and NG errors
    */
   static async getAlertPolicyRequiredDataSources(quickstart: {
     name: string;
