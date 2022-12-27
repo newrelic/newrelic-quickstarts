@@ -161,6 +161,29 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     });
 
     const results = data?.actor?.nr1Catalog?.search?.results;
+    const hasFailed = quickstart.dataSourceIds.length > 1;
+
+    if (hasFailed) {
+      let errors: ErrorOrNerdGraphError[] = [];
+      if (results === undefined || results.length === 0) {
+        const error = new Error(
+          `No alert policy for quickstart ${quickstart.name} exists`
+        );
+        errors = [error];
+      }
+
+      const error = new Error(
+        `Multiple Quickstart data sources detected for Quickstart: ${quickstart.name} with AlertPolicy: ${results[0].id} must update manually`
+      );
+
+      recordNerdGraphResponse(
+        hasFailed,
+        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED,
+        quickstart.name
+      );
+
+      return { alertPolicy: null, errors: [...errors, error] };
+    }
 
     if (errors) {
       return { alertPolicy: null, errors };
@@ -169,21 +192,6 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     if (results === undefined || results.length === 0) {
       const error = new Error(
         `No alert policy for quickstart ${quickstart.name} exists`
-      );
-
-      return { alertPolicy: null, errors: [error] };
-    }
-
-    const hasFailed = quickstart.dataSourceIds.length > 1;
-
-    if (hasFailed) {
-      const error = new Error(
-        `Multiple Quickstart data sources detected for Quickstart: ${quickstart.name} with AlertPolicy: ${results[0].id} must update manually`
-      );
-      recordNerdGraphResponse(
-        hasFailed,
-        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED,
-        quickstart.name
       );
 
       return { alertPolicy: null, errors: [error] };
