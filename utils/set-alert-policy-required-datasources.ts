@@ -106,7 +106,7 @@ const main = async () => {
 
   const hasFailed = await setAlertPoliciesRequiredDataSources(ghUrl, ghToken);
 
-  recordNerdGraphResponse(
+  await recordNerdGraphResponse(
     hasFailed,
     CUSTOM_EVENT.SET_ALERT_POLICY_REQUIRED_DATASOURCES
   );
