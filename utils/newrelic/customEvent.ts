@@ -99,9 +99,10 @@ export const track = async (
  */
 export const recordNerdGraphResponse = async (
   hasFailed: boolean,
-  event: CUSTOM_EVENT
+  event: CUSTOM_EVENT,
+  quickstartName?: string
 ) => {
   const status = hasFailed ? 'failed' : 'success';
 
-  await track(event, { status });
+  await track(event, { status, quickstartName });
 };

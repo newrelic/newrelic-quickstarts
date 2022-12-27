@@ -182,7 +182,8 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       );
       recordNerdGraphResponse(
         hasFailed,
-        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED
+        CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED,
+        quickstart.name
       );
 
       return { alertPolicy: null, errors: [error] };
