@@ -103,6 +103,9 @@ export const recordNerdGraphResponse = async (
   quickstartName?: string
 ) => {
   const status = hasFailed ? 'failed' : 'success';
-
-  await track(event, { status, quickstartName });
+  if (quickstartName) {
+    await track(event, { status, quickstartName });
+  } else {
+    await track(event, { status });
+  }
 };
