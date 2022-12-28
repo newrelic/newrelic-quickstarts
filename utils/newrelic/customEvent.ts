@@ -21,6 +21,10 @@ export enum CUSTOM_EVENT {
   UPDATE_INSTALL_PLANS = 'UpdateInstallPlans',
   /** Event name which corresponds to tracking the setting of dashboard required data sources. */
   SET_DASHBOARD_REQUIRED_DATASOURCES = 'SetDashboardRequiredDataSources',
+  /** Event name which corresponds to tracking the setting of alert policy required data sources. */
+  SET_ALERT_POLICY_REQUIRED_DATASOURCES = 'SetAlertPolicyRequiredDataSources',
+  /** Event name which corresponds to multiple data sources in a quickstart which prevents assigning them to an alert policy or dashboard template */
+  MULTIPLE_DATA_SOURCES_DETECTED = 'MultipleDataSourcesDetected',
 }
 
 /**
@@ -95,9 +99,13 @@ export const track = async (
  */
 export const recordNerdGraphResponse = async (
   hasFailed: boolean,
-  event: CUSTOM_EVENT
+  event: CUSTOM_EVENT,
+  quickstartName?: string
 ) => {
   const status = hasFailed ? 'failed' : 'success';
-
-  await track(event, { status });
+  if (quickstartName) {
+    await track(event, { status, quickstartName });
+  } else {
+    await track(event, { status });
+  }
 };

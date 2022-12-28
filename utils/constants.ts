@@ -170,3 +170,37 @@ export const DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
     }
   }
 `;
+
+export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
+  query AlertPolicyRequiredDataSources($query: String) {
+    actor {
+      nr1Catalog {
+        search(filter: {types: [ALERT_POLICY_TEMPLATE]}, query: $query: ) {
+          results {
+            ... on Nr1CatalogAlertPolicyTemplate {
+              id
+              metadata {
+                requiredDataSources {
+                  id
+                }
+                displayName
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
+export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
+  mutation AlertPolicySetRequiredDataSourcesMutation(
+    $dataSourceIds: [ID!]!
+    $templateId: ID!
+  ) {
+    nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate(alertPolicyTemplateId: $templateId, dataSourceIds: $dataSourceIds) {
+      alertPolicyTemplate {
+       id
+      }
+    }
+  }
+`
