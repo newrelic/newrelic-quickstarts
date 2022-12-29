@@ -94,6 +94,23 @@ export const DATA_SOURCE_MUTATION = gql`
   }
 `;
 
+export const CORE_DATA_SOURCES_QUERY = gql`
+{
+  actor {
+    nr1Catalog {
+      search(filter: {types: DATA_SOURCE}) {
+        results {
+          ... on Nr1CatalogDataSource {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+`
+
 export const CATEGORIES_QUERY = gql`
   {
     actor {
