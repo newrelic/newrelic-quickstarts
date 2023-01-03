@@ -132,6 +132,7 @@ describe('Quickstart', () => {
           keywords: ['list', 'of', 'searchable', 'keywords'],
           categoryTerms: undefined,
           installPlanStepIds: ['mock-install-1'],
+          dataSourceIds: ['test-data-source'],
           icon: `${GITHUB_RAW_BASE_URL}/quickstarts/mock-quickstart-1/logo.png`,
           sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1`,
           documentation: [
