@@ -37,6 +37,9 @@ const mockGithubAPIFiles = (filenames) =>
 const validQuickstartFilename =
   'utils/mock_files/quickstarts/mock-quickstart-2/config.yml';
 
+const quickstartWithMultipleDataSourcesFilename =
+  'utils/mock_files/quickstarts/mock-quickstart-3/config.yml';
+
 const mockSubmitSetRequiredDataSourcesResult = {
   data: {
     nr1CatalogSetRequiredDataSourcesForDashboardTemplate: {
@@ -106,5 +109,23 @@ describe('set-dashboards-required-datasources', () => {
     );
 
     expect(console.error).toHaveBeenCalledWith(`- ${mockError.message}`);
+  });
+
+  test('succeeds but skips quickstart if there are multiple datasources', async () => {
+    const files = mockGithubAPIFiles([
+      quickstartWithMultipleDataSourcesFilename,
+    ]);
+    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+
+    jest.spyOn(Dashboard, 'submitSetRequiredDataSourcesMutation');
+
+    const hasErrored = await setDashboardsRequiredDataSources('url', 'token');
+    expect(hasErrored).toBe(false);
+    expect(console.error).toHaveBeenCalledWith(
+      `Multiple Quickstart data sources detected for Quickstart: Template Quickstart, Dashboards must be updated manually`
+    );
+
+    expect(Dashboard.submitSetRequiredDataSourcesMutation).not.toBeCalled();
   });
 });

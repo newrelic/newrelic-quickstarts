@@ -32,9 +32,30 @@ const getQuickstartIds = async (
 
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
 
-  const quickstartIds = filterQuickstartConfigFiles(files)
+  const filteredQuickstarts = filterQuickstartConfigFiles(files)
     .filter(isNotRemoved)
-    .map(({ filename }) => new Quickstart(filename).config.id);
+    .reduce<Quickstart[]>((acc, { filename }) => {
+      const quickstart = new Quickstart(filename);
+      const { dataSourceIds = [] } = quickstart.config;
+
+      if (dataSourceIds.length > 1) {
+        console.error(
+          `Multiple Quickstart data sources detected for Quickstart: ${quickstart.config.title}, Dashboards must be updated manually`
+        );
+
+        recordNerdGraphResponse(
+          true,
+          CUSTOM_EVENT.MULTIPLE_DATA_SOURCES_DETECTED,
+          quickstart.config.title
+        );
+
+        return acc;
+      }
+
+      return [...acc, quickstart];
+    }, []);
+
+  const quickstartIds = filteredQuickstarts.map(({ config }) => config.id);
 
   return { hasFailed: false, results: quickstartIds };
 };
