@@ -1,0 +1,23 @@
+name: Uplink Interface Down Violation
+
+description: |+
+  This alert will trigger when a router or switch interface with the word "uplink" in the description reports as being down.  You can change the NRQL to filter to other naming conventions.
+  
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(count(*), where if_OperStatus = 'down' and if_Alias like '%uplink%') FACET device_name, if_interface_name, if_Alias WHERE metricName = 'kentik.snmp.if_OperStatus' AND entity.type in ('ROUTER','SWITCH')"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
+
+signal:
+  aggregationWindow: 300

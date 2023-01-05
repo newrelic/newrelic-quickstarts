@@ -1,0 +1,19 @@
+name: Network Synthetic Loss Percent
+
+description: |+
+  This alert will trigger when a Kentik network synthetic test has average loss above 5 % for 600 seconds.  This is an indication of a very unreliable network path.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.synth.lost) * 100 as 'Loss Percent' WHERE metricName = 'kentik.synth.lost' FACET test_name, agent_name"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 5
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
