@@ -1,0 +1,25 @@
+name: Ktranslate Container Loss of Signal Violation
+
+description: |+
+  This alert will trigger when a Kentik ktranslate container has stopped sending data completely.  This can happen due to network outages, leaving the container stopped, or other failures.
+  
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT count(*) FACET host AS 'Docker Host', svc AS 'Container Service'"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: EQUALS
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
+
+expiration:
+  closeViolationsOnExpiration: false
+  openViolationOnExpiration: true
+  expirationDuration: 300
