@@ -35,13 +35,23 @@ const getQuickstartNameAndDataSources = async (
 
   const quickstartNames = filterQuickstartConfigFiles(files)
     .filter(isNotRemoved)
-    .map(({ filename }) => {
-      const quickstart = new Quickstart(filename);
-      return {
-        name: quickstart.config.title,
-        dataSourceIds: quickstart.config.dataSourceIds ?? [],
-      };
-    });
+    .reduce<{ name: string; dataSourceIds: string[] }[]>(
+      (acc, { filename }) => {
+        const quickstart = new Quickstart(filename);
+        if (quickstart?.config?.dataSourceIds?.length == 0) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            name: quickstart.config.title,
+            dataSourceIds: quickstart.config.dataSourceIds ?? [],
+          },
+        ];
+      },
+      []
+    );
 
   return { hasFailed: false, results: quickstartNames };
 };
