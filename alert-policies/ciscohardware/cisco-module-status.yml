@@ -1,0 +1,19 @@
+name: Cisco Module Status
+
+description: |+
+  This alert will trigger when a Cisco field replaceable module is not "ok" for 300 seconds. This typically indicates that there is a physical problem that requires investigation or replacement.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(uniqueCount(Index), WHERE cefcModuleOperStatus NOT IN ('ok')) * 100 / uniqueCount(Index) as 'Abnormal Status' FACET device_name, entity_name WHERE cefcModuleOperStatus IS NOT NULL AND cefcModuleAdminStatus = 'enabled'"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
