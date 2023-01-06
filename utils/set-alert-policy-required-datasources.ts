@@ -6,7 +6,10 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 import Quickstart from './lib/Quickstart';
-import Alert, { SubmitSetRequiredDataSourcesMutationResult } from './lib/Alert';
+import Alert, {
+  AlertPolicySetRequiredDataSourcesMutationResults,
+  SubmitSetRequiredDataSourcesMutationResult,
+} from './lib/Alert';
 import { chunk } from './lib/nr-graphql-helpers';
 
 type QuickstartResult = {
@@ -69,6 +72,7 @@ const setAlertPoliciesRequiredDataSources = async (
           console.error(
             `Failed to get alert policy for quickstart ${quickstart.name}`
           );
+          alertPolicy.errors.forEach(({ message }) => console.error(message));
 
           return { errors: alertPolicy.errors };
         }
