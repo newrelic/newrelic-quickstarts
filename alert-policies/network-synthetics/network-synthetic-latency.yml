@@ -1,0 +1,19 @@
+name: Network Synthetic Latency
+
+description: |+
+  This alert will trigger when a Kentik network synthetic test has average latency above 1000 ms for 600 seconds.  This is an indication of a very slow network path.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.synth.avg_rtt) / 1000 as 'milliseconds' WHERE metricName = 'kentik.synth.avg_rtt' FACET test_name, agent_name"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 1000
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
