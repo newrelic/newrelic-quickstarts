@@ -1,0 +1,482 @@
+{
+  "name": "Synthetics Optimization Dashboard",
+  "description": "This dashboard aims to help you understand whether you are over your Synthetics usage limits, and if so, how can you identify the right monitors and checks to optimise",
+  "pages": [
+    {
+      "name": "Sample Charts",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![New Relic logo](https://newrelic.com/sites/default/files/2022-05/MediaAsset_Tiles_RGB_POS_VERT.svg \"new relic logo\")\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 5,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Synthetics Optimization Dashboard\n---\nYour organization’s pricing edition (Free, Standard, Pro, or Enterprise) determines the number of non-ping synthetic checks available to you each month.  Ping monitors will remain free and unlimited. Only non-ping monitor checks will consume your check bundle and result in additional billing.\n\nA synthetic check is an individual execution of a synthetic monitor. When a monitor runs from one location, it counts as one check, so you can also think of a synthetics check as a synthetics job, or a job execution.\n\nPlease reference [this doc](https://docs.newrelic.com/docs/synthetics/synthetic-monitoring/using-monitors/monitor-limits/) to check how many non-ping synthetic checks are available to you each month."
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## How to use this dashboard\n1) Import this dashboard into the account you would like to optimize your Synthetic checks.  If you are in a parent/child account hierarchy, then be sure to import this into your parent account so you can observe your parent and all child accounts.\n2) Follow the walkthrough below to help you understand whether you are over your limits, and if so, how can you identify the right monitors to optimize. \n\n### ** Please NOTE ** - All queries in this dashboard use the NrDailyUsage Event which refreshes once daily.  Do not expect monitor configuration changes to be reflected immediately."
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 1. - 📏 🕒 Determine Current Usage →\n---\nYour first step will be to understand your current usage. We have a number of available NRQL queries to help with this - those are [documented here](https://docs.newrelic.com/docs/accounts/accounts-billing/new-relic-one-pricing-billing/usage-queries-alerts/#synthetics-usage).  The charts to the right and the first row below will help you to see your recent month by month history of Synthetics usage and the charts in the row immediately below show some trends about Synthetics usage and specific monitor types.\n\nNow that you know how many monitors you have been running, it’s important to understand how many checks are within your contracted bundle. The table below outlines the bundled allowance based on your organization's pricing edition: \n\n| Pricing Edition | Number of Free Non-Ping Checks |\n| --- | --- |\n| *Free New Relic Accounts* | 500 non-ping checks |\n| *Standard New Relic Accounts* | 10 Thousand non-ping checks |\n| *Pro New Relic Accounts* | 1 Million non-ping checks |\n| *Enterprise New Relic Accounts* | 10 Million non-ping checks |\n\nIf the results of your NRQL exploration show you that you are running more checks than your contracted bundle allowance, then you will need to start optimizing your Synthetics estate. If that is the case, then move on to the next steps below.\n"
+          }
+        },
+        {
+          "title": "Number of Non-Ping Synthetic Checks",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Total Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 6 months ago FACET monthOf(timestamp)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Number of Non-Ping Synthetic Checks Per Account",
+          "layout": {
+            "column": 10,
+            "row": 3,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Total Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 6 months ago FACET monthOf(timestamp) as 'Month', consumingAccountName as 'Account Name' LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Trend of Non-Ping Checks",
+          "layout": {
+            "column": 2,
+            "row": 7,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Synthetic Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE this month COMPARE WITH 2 months ago where type != 'Ping'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Trend of Non-Ping Checks Over Time",
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Synthetic Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE this month COMPARE WITH 2 months ago where type != 'Ping' TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Trend of Non-Ping Checks Over Time by Type",
+          "layout": {
+            "column": 8,
+            "row": 7,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Synthetic Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' FACET syntheticsTypeLabel SINCE this month COMPARE WITH 2 months ago where type != 'Ping' TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Trend of Non-Ping Checks by Type",
+          "layout": {
+            "column": 2,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Synthetic Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE this month COMPARE WITH 2 months ago where type != 'Ping' FACET syntheticsTypeLabel"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 2. - 💡 ⚙️ Synthetics Optimization Options\n---\nTo begin the optimization process, let's first understand what optimization options we have.  The below list are some methods that can be used to optimize your Synthetics estate.  Decide what method(s) you would like to use and jump to that step to start optimizing!\n\n> - [X] `Go To Step 3 to ` → **Disable out of date monitors**\n> - [X] `Go To Step 4 to ` → **Reduce check frequencies**\n> - [X] `Go To Step 5 to ` → **Adjust monitor types** - \n> - [X] `Go To Step 6 to ` → **Use Monitor Downtimes**\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 3. - 🚫 ⌛️ Disable Out of Date Monitors →\n---\nIn many cases, monitors can get set up once and forgotten about, this leads to a huge amount of monitors running, but in a constantly failing state. Perhaps the endpoint being interacted with has changed, while the Synthetics monitor hasn’t, and so it’s testing for behaviour that will never succeed. These monitors are out of date, and can be turned off. These monitors are consuming your check allowance and providing no benefit. \n\nIdentify monitors with the highest failure percentage using the charts to the right →\n"
+          }
+        },
+        {
+          "title": "Highest Failing Monitors",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) / (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount))) * 100 AS 'Failure Percentage' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 1 month ago FACET consumingAccountName as 'Account Name', syntheticsMonitorName as 'Monitor Name' LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 4. - 🔻 ✅ Reduce Check Count →\n---\nNot all monitors need to run at a high frequency or from a large number of locations. If you have ping monitors handling the uptime checks for your endpoints, then your more complex monitor types can often take a step back, run less frequently, and still provide you with the same valuable information about your services, and their functionality. \n\nStart by identifying the monitors consuming the most synthetic checks per month, how often they are running, and monitors using the highest number of test locations using the charts to the right and below. →\n\nFind each of these monitors in the synthetics UI and check both the period (frequency) and number of locations assigned. Very few non-ping monitors need to run every 1 minute or from more than 3 test locations. All non-ping monitor configurations using a 1 minute frequency should be evaluated to determine if that frequency can be adjusted while still meeting your monitoring requirements. Research and adjust your configurations accordingly.\n"
+          }
+        },
+        {
+          "title": "Number of Non-Ping Synthetic Checks",
+          "layout": {
+            "column": 5,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Total Checks' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 1 month ago FACET consumingAccountName as 'Account Name', syntheticsMonitorName as 'Monitor Name' LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Non-Ping Synthetic Checks Per Min (last 24 hours)",
+          "layout": {
+            "column": 9,
+            "row": 17,
+            "width": 4,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) / 1440 AS 'Checks Per Min' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 1 day ago FACET consumingAccountName as 'Account Name', syntheticsMonitorName as 'Monitor Name' LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Synthetic Checks Locations",
+          "layout": {
+            "column": 2,
+            "row": 20,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(syntheticsLocationLabel) as 'Number of Locations' FROM NrDailyUsage WHERE syntheticsTypeLabel != 'Ping' SINCE 1 month ago FACET consumingAccountName as 'Account Name', syntheticsMonitorName LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "High Frequency Simple Browser Checks",
+          "layout": {
+            "column": 5,
+            "row": 23,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(syntheticsFailedCheckCount) + sum(syntheticsSuccessCheckCount)) AS 'Total Checks', uniqueCount(syntheticsLocationLabel) as 'Number of Locations' FROM NrDailyUsage WHERE syntheticsTypeLabel = 'Simple Browser' SINCE 6 months ago FACET consumingAccountName as 'Account Name', syntheticsTypeLabel as 'Monitor Type', syntheticsMonitorName as 'Monitor Name' LIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 26,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 5. - 💡 ⚙️ Adjust Monitor Types\n---\nPing monitors are not limited, so it’s worthwhile to review your synthetics estate for any non-ping monitor that is solely validating endpoint uptime. These can be removed in favour of ping monitors, and given their unlimited nature, you can have those running at high frequency (1 minute) and from multiple locations.\n\nIn some cases a high frequency simple browser monitor can be replaced by a high frequency ping monitor combined with a lower frequency simple browser monitor while still providing the same benefits.\n\nSee if any of the higher frequency Simple Browser checks in the table to the right can be combined with a ping monitor.\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 26,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " "
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 29,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Step 6. - 🖥 ⏸ Monitor Downtime\n---\nMonitor downtime windows can be used to prevent synthetic check execution during known maintenance periods or other times where monitor execution is not needed. This can be useful if a subset of your applications do not need to be monitored 24/7. While this will not reduce the number of scheduled checks used in the monitor create or edit flows, this will reduce the number of executed checks."
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
