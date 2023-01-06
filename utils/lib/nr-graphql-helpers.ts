@@ -4,7 +4,16 @@ import type {
   NerdGraphResponseWithLocalErrors,
 } from '../types/nerdgraph';
 
-import { CATEGORIES_QUERY, CORE_DATA_SOURCES_QUERY } from '../constants';
+import {
+  QuickstartComponentsIdsResponse,
+  QuickstartComponentTypename,
+} from '../types/QuickstartComponentsIds';
+
+import {
+  CATEGORIES_QUERY,
+  CORE_DATA_SOURCES_QUERY,
+  QUICKSTART_COMPONENTS_IDS_QUERY,
+} from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
 
@@ -26,7 +35,7 @@ export const buildRequestBody = <T>({
   });
 
 // TODO: It would be nice to do this without these weird unions. Let's separate the handling of Javascript errors and nerdgraph errors.
-type ErrorOrNerdGraphError = Error | NerdGraphError;
+export type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 /**
  * Send NR GraphQL request
@@ -83,7 +92,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 };
 
 /**
- * Handle errors from GraphQL request
+ * Handle errors from GraphQL request for quickstart mutation
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
  * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
@@ -122,6 +131,23 @@ export const translateMutationErrors = (
       }
     });
   }
+};
+
+/**
+ * Handle errors from GraphQL request
+ * @param {Object[]} errors  - An array of any errors found
+ * @returns {void}
+ */
+export const translateNGErrors = (errors: ErrorOrNerdGraphError[]) => {
+  errors.forEach((error) => {
+    if ('extensions' in error && error.extensions.argumentPath) {
+      const errorPrefix = error.extensions.argumentPath.join('/');
+
+      console.error(`- ${errorPrefix}: ${error.message}`);
+    } else {
+      console.error(`- ${error.message}`);
+    }
+  });
 };
 
 type CategoryTermsNRGraphqlResults = {
@@ -203,6 +229,51 @@ export const getPublishedDataSourceIds =
 
     return { coreDataSourceIds, errors };
   };
+
+export type ComponentIdsMap = {
+  dataSourceIds: string[];
+  dashboardIds: string[];
+};
+
+export type GetPublishedComponentIdsResult = {
+  componentIdsMap: ComponentIdsMap;
+  errors?: (NerdGraphError | Error)[];
+};
+
+export const getPublishedComponentIds = async (
+  quickstartId: string
+): Promise<GetPublishedComponentIdsResult> => {
+  const { data, errors } = await fetchNRGraphqlResults<
+    { id: string },
+    QuickstartComponentsIdsResponse
+  >({
+    queryString: QUICKSTART_COMPONENTS_IDS_QUERY,
+    variables: { id: quickstartId },
+  });
+
+  const {
+    metadata: { dataSources, quickstartComponents },
+  } = data?.actor?.nr1Catalog?.quickstart;
+
+  const dataSourceIds = dataSources.map((dataSource) => dataSource.id);
+  const dashboardIds = quickstartComponents.reduce<string[]>(
+    (acc, component) => {
+      if (component.__typename === QuickstartComponentTypename.Dashboard) {
+        return [...acc, component.id];
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  const componentIdsMap = {
+    dataSourceIds,
+    dashboardIds,
+  };
+
+  return { componentIdsMap, errors };
+};
 
 /**
  * Breaks an array up into parts, the last part may have less elements
