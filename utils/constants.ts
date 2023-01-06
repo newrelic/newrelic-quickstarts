@@ -113,15 +113,16 @@ export const QUICKSTART_COMPONENTS_IDS_QUERY = gql`
   query QuickstartComponentsIdsQuery($id: ID!) {
     actor {
       nr1Catalog {
-        quickstart(id: $id){
+        quickstart(id: $id) {
           metadata {
             dataSources {
               id
             }
             quickstartComponents {
               __typename
-            ... on Nr1CatalogQuickstartDashboard {
-              id
+              ... on Nr1CatalogQuickstartDashboard {
+                id
+              }
             }
           }
         }
@@ -175,7 +176,7 @@ export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
   query AlertPolicyRequiredDataSources($query: String) {
     actor {
       nr1Catalog {
-        search(filter: {types: [ALERT_POLICY_TEMPLATE]}, query: $query: ) {
+        search(filter: { types: [ALERT_POLICY_TEMPLATE] }, query: $query) {
           results {
             ... on Nr1CatalogAlertPolicyTemplate {
               id
@@ -191,16 +192,20 @@ export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
       }
     }
   }
-`
+`;
 export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
   mutation AlertPolicySetRequiredDataSourcesMutation(
     $dataSourceIds: [ID!]!
     $templateId: ID!
   ) {
-    nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate(alertPolicyTemplateId: $templateId, dataSourceIds: $dataSourceIds) {
+    nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate(
+      alertPolicyTemplateId: $templateId
+      dataSourceIds: $dataSourceIds
+    ) {
       alertPolicyTemplate {
-       id
+        id
       }
     }
   }
-`
+`;
+
