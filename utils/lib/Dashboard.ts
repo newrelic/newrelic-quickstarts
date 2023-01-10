@@ -3,9 +3,18 @@ import * as path from 'path';
 import * as glob from 'glob';
 
 import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariable';
+import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
 import Component from './Component';
-import { GITHUB_RAW_BASE_URL } from '../constants';
+import {
+  GITHUB_RAW_BASE_URL,
+  DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
+  DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+} from '../constants';
+import {
+  fetchNRGraphqlResults,
+  ErrorOrNerdGraphError,
+} from './nr-graphql-helpers';
 
 interface DashboardConfig {
   name: string;
@@ -13,6 +22,43 @@ interface DashboardConfig {
   pages: any;
   variables?: any;
 }
+
+interface RequiredDataSources {
+  id: string;
+}
+
+type DashboardRequiredDataSourcesQueryResults = {
+  actor: {
+    nr1Catalog: {
+      dashboardTemplate: {
+        metadata: {
+          requiredDataSources: RequiredDataSources[];
+        };
+      };
+    };
+  };
+};
+
+type DashboardRequiredDataSourcesQueryVariables = {
+  id: string;
+};
+
+export type DashboardSetRequiredDataSourcesMutationResults = {
+  nr1CatalogSetRequiredDataSourcesForDashboardTemplate: {
+    dashboardTemplate: {
+      id: string;
+    };
+  };
+};
+
+type DashboardSetRequiredDataSourcesMutationVariables = {
+  templateId: string;
+  dataSourceIds: string[];
+};
+
+export type SubmitSetRequiredDataSourcesMutationResult =
+  | NerdGraphResponseWithLocalErrors<DashboardSetRequiredDataSourcesMutationResults>
+  | { errors: ErrorOrNerdGraphError[] };
 
 class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   /**
@@ -29,9 +75,9 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
         filePaths.length > 1
           ? `Dashboard at ${this.identifier} contains multiple configuration files.\n`
           : `Dashboard at ${this.identifier} does not exist. Please double check this location.\n`;
-      
-      console.error(errorMessage)
-      return ''
+
+      console.error(errorMessage);
+      return '';
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -104,6 +150,61 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     return {
       url: `${GITHUB_RAW_BASE_URL}/${splitConfigPath}/${screenShotFileName}`,
     };
+  }
+
+  /**
+   * Static method of data sources associated
+   * with dashboard template id
+   * @returns - object with ids and NGerrors
+   */
+  static async getRequiredDataSources(
+    templateId: string
+  ): Promise<{ ids: string[]; errors?: ErrorOrNerdGraphError[] }> {
+    const { data, errors } = await fetchNRGraphqlResults<
+      DashboardRequiredDataSourcesQueryVariables,
+      DashboardRequiredDataSourcesQueryResults
+    >({
+      queryString: DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
+      variables: { id: templateId },
+    });
+
+    const ids =
+      data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
+        ({ id }) => id
+      ) ?? [];
+
+    return { ids, errors };
+  }
+
+  /**
+   * Associates data source ids to a dashboard using
+   * dashboard template id through mutation
+   * @returns - result from mutation and errors
+   */
+  static async submitSetRequiredDataSourcesMutation(
+    templateId: string,
+    newDataSourceIds: string[]
+  ): Promise<SubmitSetRequiredDataSourcesMutationResult> {
+    const { ids: currDataSourceIds, errors: queryErrors } =
+      await this.getRequiredDataSources(templateId);
+
+    if (queryErrors) {
+      return { errors: queryErrors };
+    }
+
+    const dataSourceIds = [
+      ...new Set([...currDataSourceIds, ...newDataSourceIds]),
+    ];
+
+    const result = await fetchNRGraphqlResults<
+      DashboardSetRequiredDataSourcesMutationVariables,
+      DashboardSetRequiredDataSourcesMutationResults
+    >({
+      queryString: DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      variables: { templateId, dataSourceIds },
+    });
+
+    return result;
   }
 
   /**
