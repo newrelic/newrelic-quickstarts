@@ -447,7 +447,7 @@ describe('Alert', () => {
 
       const expectedResponse = {
         alertPolicy: null,
-        errors: [emptyArrayError],
+        errors: [],
       };
 
       nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
@@ -533,7 +533,7 @@ describe('Alert', () => {
 
       expect(error).toStrictEqual({
         alertPolicy: null,
-        errors: [errorMessage],
+        errors: [],
       });
     });
 
