@@ -1,0 +1,23 @@
+name: Average Memory % Used Violation
+
+description: |+
+  This alert will trigger when a router or switch has more than 90% memory utilization.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.snmp.MemoryUtilization) FACET device_name WHERE metricName = 'kentik.snmp.MemoryUtilization' AND entity.type in ('ROUTER','SWITCH')"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 90
+    thresholdDuration: 900
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
+
+signal:
+  aggregationWindow: 300
