@@ -1,0 +1,20 @@
+name: BGP Neighbor Idle
+
+description: |+
+  This alert will trigger when the specified BGP neighbor is "Idle" for 300 seconds.  You will need to edit the NRQL condition to specify which relationship(s) you want the alert to target.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(count(*), where bgpPeerState = 'idle') * 100 / count(*) as 'IdlePercent' WHERE metricName = 'kentik.snmp.bgpPeerState' FACET device_name, neighbor_ip where neighbor_ip in ('x.x.x.x')"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

@@ -1,5 +1,5 @@
 {
-  "name": "GCP Cloud Spanner V2",
+  "name": "GCP Cloud Spanner",
   "description": null,
   "pages": [
     {
@@ -192,7 +192,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -223,9 +223,9 @@
         {
           "title": "Top lock wait seconds",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -242,7 +242,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_lock_stats_top_lock_wait_seconds) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+                "query": "FROM Metric SELECT sum(database_spanner_lock_stats_top_lock_wait_seconds) WHERE instrumentation.source = 'gcpspanner' FACET row_range_start_key SINCE 60 minutes ago TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -254,12 +254,12 @@
           }
         },
         {
-          "title": "Top lock wait seconds (table)",
+          "title": "Top locks",
           "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -272,7 +272,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT database_spanner_lock_stats_top_lock_wait_seconds, database WHERE instrumentation.source = 'gcpspanner' AND database_spanner_lock_stats_top_lock_wait_seconds IS NOT NULL SINCE 60 minutes ago"
+                "query": "FROM Metric SELECT sum(database_spanner_lock_stats_top_lock_wait_seconds) AS 'Lock wait (sum)' WHERE instrumentation.source = 'gcpspanner' SINCE 60 minutes ago FACET row_range_start_key, sample_lock_requests AS 'sample lock columns'"
               }
             ],
             "platformOptions": {
@@ -689,7 +689,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_query_stats_total_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
+                "query": "FROM Metric SELECT latest(database_spanner_query_stats_total_execution_count) WHERE instrumentation.source = 'gcpspanner' FACET database TIMESERIES SINCE 60 minutes ago"
               }
             ],
             "platformOptions": {
@@ -1175,6 +1175,33 @@
             },
             "yAxisLeft": {
               "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top Queries",
+          "layout": {
+            "column": 1,
+            "row": 27,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_query_stats_top_avg_cpu_seconds) AS 'Average CPU usage', average(database_spanner_query_stats_top_avg_latency_seconds) AS 'Average Latency', average(database_spanner_query_stats_top_avg_rows_scanned) AS 'Average rows scanned', sum(database_spanner_query_stats_top_execution_count) AS 'Total execution count' WHERE instrumentation.source = 'gcpspanner' SINCE 60 minutes ago FACET project_id AS project, instance_id AS instance, database, query_text_fingerprint, query_text"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
         }
@@ -1684,7 +1711,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_txn_stats_total_commit_attempt_count) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
+                "query": "FROM Metric SELECT latest(database_spanner_txn_stats_total_commit_attempt_count) WHERE instrumentation.source = 'gcpspanner' FACET database SINCE 60 minutes ago TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -2036,35 +2063,29 @@
           }
         },
         {
-          "title": "Commit retry count",
+          "title": "Top Transactions",
           "layout": {
-            "column": 9,
-            "row": 18,
-            "width": 4,
-            "height": 3
+            "column": 1,
+            "row": 21,
+            "width": 12,
+            "height": 5
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT sum(database_spanner_txn_stats_top_commit_retry_count) WHERE instrumentation.source = 'gcpspanner' FACET fingerprint SINCE 60 minutes ago TIMESERIES"
+                "query": "FROM Metric SELECT average(database_spanner_txn_stats_top_avg_total_latency_seconds) AS 'Average latency', average(database_spanner_txn_stats_top_avg_commit_latency_seconds) AS 'Average Commit latency', sum(database_spanner_txn_stats_top_commit_attempt_count) AS 'Total commit attempt', sum(database_spanner_txn_stats_top_commit_abort_count) AS 'Total commit abort count', sum(database_spanner_txn_stats_top_commit_retry_count) AS 'Total commit retry count', sum(database_spanner_txn_stats_top_commit_failed_precondition_count) AS 'Total commit failed precondition count', average(database_spanner_txn_stats_top_avg_participants) AS 'Average participants', average(database_spanner_txn_stats_top_avg_bytes) AS 'Average bytes' WHERE instrumentation.source = 'gcpspanner' SINCE 60 minutes ago FACET project_id AS project, instance_id AS instance, database, fingerprint, transaction_tag, read_columns as 'Table columns read', write_constructive_columns AS 'table columns written'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
@@ -2565,6 +2586,33 @@
             },
             "yAxisLeft": {
               "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top Reads",
+          "layout": {
+            "column": 1,
+            "row": 21,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(database_spanner_read_stats_top_avg_cpu_seconds) AS 'Average CPU usage', sum(database_spanner_read_stats_top_execution_count) AS 'Total Execution count' WHERE instrumentation.source = 'gcpspanner' SINCE 60 minutes ago FACET project_id AS project, instance_id AS instance, database, fingerprint, read_columns"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
         }

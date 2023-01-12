@@ -1,0 +1,19 @@
+name: Cisco Temperature Status
+
+description: |+
+  This alert will trigger when a Cisco temperature sesnor status is not "normal" for 300 seconds. This typically indicates that there is a physical problem that requires investigation or replacement.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(uniqueCount(Index), WHERE temp_state NOT IN ('normal')) * 100 / uniqueCount(Index) as 'Abnormal Status' FACET device_name, temp_descr WHERE temp_state IS NOT NULL"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
