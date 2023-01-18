@@ -1,9 +1,10 @@
 {
-  "name": "Harbor Prometheus",
+  "name": "Harbor (Prometheus)",
   "description": null,
+  "permissions": "PRIVATE",
   "pages": [
     {
-      "name": "Harbor Prometheus",
+      "name": "Harbor (Prometheus)",
       "description": null,
       "widgets": [
         {
@@ -12,23 +13,50 @@
             "column": 1,
             "row": 1,
             "width": 3,
-            "height": 4
+            "height": 5
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![Harbor Logo](https://cncf-branding.netlify.app/img/projects/harbor/horizontal/color/harbor-horizontal-color.png)\n--\n### Overview\n`harbor` registry is an enterprise-class registry server that stores and distributes container images. Harbor extends the open source Docker Distribution by adding the functionalities usually required by an enterprise, such as security, identity, and management. As an enterprise private registry, Harbor offers enhanced performance and security.\n\n### About this dashboard\n\nThis dashboard uses `harbor` metrics emitted by Prometheus [remote write](https://newrelic.com/instant-observability/prometheus-remote-write/7dbd7355-c380-4211-bd32-fed9a65351af).  "
+            "text": "![Harbor Logo](https://cncf-branding.netlify.app/img/projects/harbor/horizontal/color/harbor-horizontal-color.png)\n--\n### Overview\n[Harbor](https://goharbor.io/) is an open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted. Harbor, a CNCF Graduated project, delivers compliance, performance, and interoperability to help you consistently and securely manage artifacts across cloud native compute platforms like Kubernetes and Docker.\n- - -\n### About this Dashboard\n- For information on the prerequisites for this dashboard, please visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/integrations-list-intro/).\n- For more information on how to send Prometheus metrics to New Relic using Prometheus Agent or Prometheus Server, visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)"
           }
         },
         {
-          "title": "Service Health",
+          "title": "Harbor Details",
           "layout": {
             "column": 4,
             "row": 1,
-            "width": 3,
-            "height": 4
+            "width": 9,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  latest(auth_mode),\n  latest(harbor_version),\n  latest(self_registration)\nFACET instance\nWHERE metricName = 'harbor_system_info'\nAND instance IN ( {{ harbor_instance }} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Current Health per Instance",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 9,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -41,7 +69,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(harbor_up) FROM Metric FACET component SINCE 30 minutes ago "
+                "query": "FROM Metric SELECT\n  if(latest(harbor_health) = 0, 'Down', 'Up')\nFACET instance\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -50,11 +78,144 @@
           }
         },
         {
-          "title": "Traffic (http requests)",
+          "title": "Current Health per Instance-Service",
           "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 3,
+            "column": 1,
+            "row": 6,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  if(latest(harbor_up) = 0, 'Down', 'Up')\nFACET concat(instance, ' - ', component)\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# HTTP Request Details"
+          }
+        },
+        {
+          "title": "Total Requests in Flight per Instance",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  average(harbor_core_http_inflight_requests)\nFACET instance\nWHERE instance IN ( {{ harbor_instance }} )\nAND harbor_core_http_inflight_requests[count] IS NOT NULL\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Latency (sec) by Operation",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  average(harbor_core_http_request_duration_seconds)\nFACET concat(instance, ' - ', operation)\nWHERE quantile = '0.5'\nAND instance IN ( {{ harbor_instance }} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Requests by Method",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  sum(harbor_core_http_request_total)\nFACET concat(instance, ' - ', method)\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Requests by Response Code",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 6,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -71,7 +232,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(harbor_core_http_request_total) FROM Metric FACET operation SINCE 60 MINUTES AGO UNTIL now TIMESERIES 5 minutes"
+                "query": "FROM Metric SELECT\n  sum(harbor_core_http_request_total)\nFACET concat(instance, ' - ', code)\nTIMESERIES"
               }
             ],
             "platformOptions": {
@@ -80,16 +241,16 @@
           }
         },
         {
-          "title": "Latency (average http response time)",
+          "title": "4xx/5xx Error Rate (per minute)",
           "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
+            "column": 7,
+            "row": 15,
+            "width": 6,
             "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -101,37 +262,53 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(harbor_core_http_request_duration_seconds) FROM Metric SINCE 24 hours ago TIMESERIES UNTIL now"
+                "query": "FROM Metric SELECT\n  rate(sum(harbor_core_http_request_total), 1 MINUTE)\nFACET concat(instance, ' - ', if(code RLIKE r'4.*', '4xx', '5xx'))\nWHERE code RLIKE r'4.*|5.*'\nTIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
         {
-          "title": "Repositories in use",
+          "title": "",
           "layout": {
             "column": 1,
-            "row": 5,
-            "width": 4,
-            "height": 4
+            "row": 19,
+            "width": 12,
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.pie"
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Project Details"
+          }
+        },
+        {
+          "title": "Project Details",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
+              "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(harbor_project_repo_total) FROM Metric FACET project_name SINCE 24 hours ago LIMIT 10 "
+                "query": "FROM Metric SELECT\n  latest(harbor_project_member_total) AS 'Total Members',\n  latest(harbor_project_repo_total) AS 'Total Repos'\nFACET concat(instance, ' - ', project_name) AS 'Project'\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -140,11 +317,75 @@
           }
         },
         {
-          "title": "Project quota consumption (%)",
+          "title": "Top 20 - Project Byte Quota Utilization %",
           "layout": {
             "column": 5,
-            "row": 5,
-            "width": 4,
+            "row": 20,
+            "width": 8,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  round((max(harbor_project_quota_usage_byte) / max(harbor_project_quota_byte)) * 100, .01)\nFACET concat(instance, ' - ', project_name)\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 80
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 90
+              }
+            ]
+          }
+        },
+        {
+          "title": "Project Count by Privacy",
+          "layout": {
+            "column": 1,
+            "row": 25,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  latest(harbor_project_total)\nFACET concat(instance, ' - ', if(public = 'true', 'Public', 'Private'))\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Images Pulled per Project",
+          "layout": {
+            "column": 3,
+            "row": 25,
+            "width": 10,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -154,8 +395,7 @@
           "rawConfiguration": {
             "dataFormatters": [
               {
-                "name": "Utilization",
-                "precision": 1,
+                "name": "Max harbor_artifact_pulled",
                 "type": "decimal"
               }
             ],
@@ -165,30 +405,69 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (latest(harbor_project_quota_usage_byte)/1073741824)/(latest(harbor_project_quota_byte)/1073741824) * 100 as Utilization FROM Metric FACET project_name ORDER BY Utilization LIMIT 10 SINCE 1 hours ago UNTIL now"
+                "query": "FROM Metric SELECT\n max(harbor_artifact_pulled)\nFACET concat(instance, ' - ', project_name)\nWHERE instance IN ( {{ harbor_instance }} )\nCOMPARE WITH 1 DAY AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 20 - Artifacts per Project and Type",
+          "layout": {
+            "column": 1,
+            "row": 29,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(harbor_project_artifact_total)\nFACET instance, project_name, artifact_type\nWHERE instance IN ( {{ harbor_instance }} )\nTIMESERIES LIMIT 20"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "thresholds": [
-              {
-                "alertSeverity": "WARNING",
-                "value": 50
-              },
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 85
-              }
-            ]
+            "yAxisLeft": {
+              "zero": true
+            }
           }
         },
         {
-          "title": "In-flight requests",
+          "title": "",
           "layout": {
-            "column": 9,
-            "row": 5,
-            "width": 4,
+            "column": 1,
+            "row": 33,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Task Details"
+          }
+        },
+        {
+          "title": "Average Tasks per Type in Queue",
+          "layout": {
+            "column": 1,
+            "row": 34,
+            "width": 12,
             "height": 4
           },
           "linkedEntityGuids": null,
@@ -205,7 +484,94 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(harbor_core_http_inflight_requests) FROM Metric SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "FROM Metric SELECT\n  average(harbor_task_queue_size)\nFACET concat(instance, ' - ', type)\nWHERE instance IN ( {{ harbor_instance }} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Task Queue Latency per Type",
+          "layout": {
+            "column": 1,
+            "row": 38,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  average(harbor_task_queue_latency)\nFACET concat(instance, ' - ', type)\nWHERE instance IN ( {{ harbor_instance }} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            }
+          }
+        },
+        {
+          "title": "Currently Scheduled Tasks per Instance",
+          "layout": {
+            "column": 1,
+            "row": 42,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  latest(harbor_task_scheduled_total)\nFACET instance\nWHERE harbor_task_scheduled_total[count] IS NOT NULL\nAND instance IN ( {{ harbor_instance }} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Concurrent Tasks per Pool",
+          "layout": {
+            "column": 5,
+            "row": 42,
+            "width": 8,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  average(harbor_task_concurrency) AS 'Concurrent Tasks'\nFACET concat(instance, ' - ', pool) AS 'Pool', type\nWHERE instance IN ( {{ harbor_instance }} )\nLIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -216,5 +582,35 @@
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "harbor_instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        },
+        {
+          "value": {
+            "string": "harbor-harbor-core:8001"
+          }
+        },
+        {
+          "value": {
+            "string": "harbor-harbor-exporter:8001"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE metricName LIKE 'harbor_%' AND instrumentation.name = 'remote-write' SINCE 1 WEEK AGO"
+      },
+      "title": "Instance",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }
