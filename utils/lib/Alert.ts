@@ -163,16 +163,18 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     const results = data?.actor?.nr1Catalog?.search?.results;
     const hasFailed = quickstart.dataSourceIds.length > 1;
 
-    if (hasFailed) {
-      let errors: ErrorOrNerdGraphError[] = [];
-      if (results === undefined || results.length === 0) {
-        const error = new Error(
-          `No alert policy for quickstart ${quickstart.name} exists`
-        );
-        errors = [error];
-      }
+    if (errors && errors.length > 0) {
+      return { alertPolicy: null, errors };
+    }
 
-      const error = new Error(
+    if (results === undefined || results.length === 0) {
+      console.log(`No alert policy for quickstart ${quickstart.name} exists`);
+
+      return { alertPolicy: null, errors: [] };
+    }
+
+    if (hasFailed) {
+      console.log(
         `Multiple Quickstart data sources detected for Quickstart: ${quickstart.name} with AlertPolicy: ${results[0].id} must update manually`
       );
 
@@ -182,19 +184,7 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
         quickstart.name
       );
 
-      return { alertPolicy: null, errors: [...errors, error] };
-    }
-
-    if (errors) {
-      return { alertPolicy: null, errors };
-    }
-
-    if (results === undefined || results.length === 0) {
-      const error = new Error(
-        `No alert policy for quickstart ${quickstart.name} exists`
-      );
-
-      return { alertPolicy: null, errors: [error] };
+      return { alertPolicy: null, errors: [] };
     }
 
     const alertPoliciesWithUpdatedDataSources = results.map(
