@@ -4,7 +4,16 @@ import type {
   NerdGraphResponseWithLocalErrors,
 } from '../types/nerdgraph';
 
-import { CATEGORIES_QUERY } from '../constants';
+import {
+  QuickstartComponentsIdsResponse,
+  QuickstartComponentTypename,
+} from '../types/QuickstartComponentsIds';
+
+import {
+  CATEGORIES_QUERY,
+  CORE_DATA_SOURCES_QUERY,
+  QUICKSTART_COMPONENTS_IDS_QUERY,
+} from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
 
@@ -16,17 +25,17 @@ const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
  * @param {{queryString, variables}} queryBody - query string and corresponding variables for request
  * @returns {String} returns the body for the request as string
  */
-export const buildRequestBody = ({
+export const buildRequestBody = <T>({
   queryString,
   variables,
-}: NerdGraphRequest): string =>
+}: NerdGraphRequest<T>): string =>
   JSON.stringify({
     ...(queryString && { query: queryString }),
     ...(variables && { variables }),
   });
 
 // TODO: It would be nice to do this without these weird unions. Let's separate the handling of Javascript errors and nerdgraph errors.
-type ErrorOrNerdGraphError = Error | NerdGraphError;
+export type ErrorOrNerdGraphError = Error | NerdGraphError;
 
 /**
  * Send NR GraphQL request
@@ -51,7 +60,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
     .exponential();
 
   try {
-    const body = buildRequestBody(queryBody);
+    const body = buildRequestBody<Variables>(queryBody);
 
     const res = await retry.execute(() =>
       fetch(NR_API_URL, {
@@ -83,7 +92,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 };
 
 /**
- * Handle errors from GraphQL request
+ * Handle errors from GraphQL request for quickstart mutation
  * @param {Object[]} errors  - An array of any errors found
  * @param {String} filePath  - The path related to the validation error
  * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
@@ -124,6 +133,23 @@ export const translateMutationErrors = (
   }
 };
 
+/**
+ * Handle errors from GraphQL request
+ * @param {Object[]} errors  - An array of any errors found
+ * @returns {void}
+ */
+export const translateNGErrors = (errors: ErrorOrNerdGraphError[]) => {
+  errors.forEach((error) => {
+    if ('extensions' in error && error.extensions.argumentPath) {
+      const errorPrefix = error.extensions.argumentPath.join('/');
+
+      console.error(`- ${errorPrefix}: ${error.message}`);
+    } else {
+      console.error(`- ${error.message}`);
+    }
+  });
+};
+
 type CategoryTermsNRGraphqlResults = {
   actor: {
     nr1Catalog: {
@@ -149,7 +175,6 @@ type CategoryTermsNRGraphqlResults = {
 export const getCategoryTermsFromKeywords = async (
   configKeywords: string[] | undefined = []
 ): Promise<string[] | undefined> => {
-
   const { data } = await fetchNRGraphqlResults<
     {},
     CategoryTermsNRGraphqlResults
@@ -160,10 +185,7 @@ export const getCategoryTermsFromKeywords = async (
 
   const { categories } = data.actor.nr1Catalog;
 
-  const allCategoryKeywords = categories.flatMap(
-    (category) => category.terms
-  );
-
+  const allCategoryKeywords = categories.flatMap((category) => category.terms);
 
   const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
     if (allCategoryKeywords && allCategoryKeywords.includes(keyword)) {
@@ -173,6 +195,84 @@ export const getCategoryTermsFromKeywords = async (
   }, []);
 
   return categoryKeywords.length > 0 ? categoryKeywords : undefined;
+};
+
+type CoreDataSourceSearchResults = {
+  actor: {
+    nr1Catalog: {
+      search: {
+        results: {
+          id: string;
+        }[];
+      };
+    };
+  };
+};
+
+type GetPublishedDataSourceIdsResponse = {
+  coreDataSourceIds: string[];
+  errors?: (NerdGraphError | Error)[];
+};
+
+export const getPublishedDataSourceIds =
+  async (): Promise<GetPublishedDataSourceIdsResponse> => {
+    const { data, errors } = await fetchNRGraphqlResults<
+      {},
+      CoreDataSourceSearchResults
+    >({ queryString: CORE_DATA_SOURCES_QUERY, variables: {} });
+
+    const {
+      search: { results },
+    } = data.actor.nr1Catalog;
+
+    const coreDataSourceIds = results.flatMap((result) => result.id);
+
+    return { coreDataSourceIds, errors };
+  };
+
+export type ComponentIdsMap = {
+  dataSourceIds: string[];
+  dashboardIds: string[];
+};
+
+export type GetPublishedComponentIdsResult = {
+  componentIdsMap: ComponentIdsMap;
+  errors?: (NerdGraphError | Error)[];
+};
+
+export const getPublishedComponentIds = async (
+  quickstartId: string
+): Promise<GetPublishedComponentIdsResult> => {
+  const { data, errors } = await fetchNRGraphqlResults<
+    { id: string },
+    QuickstartComponentsIdsResponse
+  >({
+    queryString: QUICKSTART_COMPONENTS_IDS_QUERY,
+    variables: { id: quickstartId },
+  });
+
+  const {
+    metadata: { dataSources, quickstartComponents },
+  } = data?.actor?.nr1Catalog?.quickstart;
+
+  const dataSourceIds = dataSources.map((dataSource) => dataSource.id);
+  const dashboardIds = quickstartComponents.reduce<string[]>(
+    (acc, component) => {
+      if (component.__typename === QuickstartComponentTypename.Dashboard) {
+        return [...acc, component.id];
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  const componentIdsMap = {
+    dataSourceIds,
+    dashboardIds,
+  };
+
+  return { componentIdsMap, errors };
 };
 
 /**
