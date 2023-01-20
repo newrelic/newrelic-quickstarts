@@ -1,10 +1,10 @@
-name: Apdex Score
+name: Errors and Failures
 
 description: |+
-  This alert is triggered when the Apdex score is below 0.5 for 5 minutes
+  This alert is triggered when the errors and failures are higher than 1 for 5 minutes
 type: STATIC
 nrql:
-  query: "SELECT apdex(duration, t: 0.5) FROM Transaction WHERE appName like '%'"
+  query: "SELECT count(*) FROM MobileRequestError FACET errorType"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -13,9 +13,9 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: BELOW
+    operator: ABOVE
     # Value that triggers a violation
-    threshold: 0.5
+    threshold: 1
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -24,4 +24,3 @@ terms:
 # Duration after which a violation automatically closes
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
 violationTimeLimitSeconds: 86400
-
