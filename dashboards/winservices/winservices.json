@@ -1,0 +1,583 @@
+{
+  "name": "Windows Services - Dashboard",
+  "description": "Get an overview of the windows services running on the monitored hosts",
+  "pages": [
+    {
+      "name": "Windows Services - Overview",
+      "description": "Windows Services data by host, state, start_mode, name, and display name",
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![logo](https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg)\n\n## Windows Services\nNew Relic's Windows services integration collects data about the services running on your Microsoft Windows hosts and sends it to our platform. \n  \nYou can check the state and start mode of each service, find out which hosts are running a service, set up alerts for services, and more.\n\nOur integration is bundled with the Windows infrastructure agent. If you're monitoring Windows hosts on New Relic, you only need to enable the integration to get Windows services data into our platform.\n\nRead more in the [docs](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/windows-services-integration/)"
+          }
+        },
+        {
+          "title": "Hosts",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(hostname) AS 'Hosts' where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})   and metricName = 'windows_service_state' compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Services",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(entity.guid) AS 'Services' where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state' compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Service per state",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM (FROM Metric select latest(state) AS 'state' where hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state'  facet entity.guid limit max) FACET state"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Hosts"
+          }
+        },
+        {
+          "title": "Services running per host",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "\n\nSELECT count(*) FROM (FROM Metric select latest(state) AS 'state' where hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state'  facet hostname, entity.guid limit max) where state='running' FACET hostname "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Services running per host",
+          "layout": {
+            "column": 4,
+            "row": 5,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(service_name)  where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}}) and metricName = 'windows_service_state' and state='running' facet hostname TIMESERIES auto limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Services stopped per host",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM (FROM Metric select latest(state) AS 'state' where hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state'  facet hostname, entity.guid limit max) where state='stopped' FACET hostname "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Services stopped per host",
+          "layout": {
+            "column": 4,
+            "row": 8,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(service_name)  where hostname IN ({{hostname}}) and metricName = 'windows_service_state'  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}}) and state='stopped' TIMESERIES auto facet hostname limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Services paused per host",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) FROM (FROM Metric select latest(state) AS 'state' where hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state'  facet hostname, entity.guid limit max) where state='paused' FACET hostname "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Services paused per host",
+          "layout": {
+            "column": 4,
+            "row": 11,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(service_name)  where hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName = 'windows_service_state' and state='paused' TIMESERIES auto FACET hostname limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Services"
+          }
+        },
+        {
+          "title": "Services",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 7,
+            "height": 8
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(substring(display_name,0,40)) AS 'Display Name', latest(state), latest(start_mode) WHERE hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}})  and metricName='windows_service_state'   FACET hostname AS 'Host Name', service_name  limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Stopped last 5 minutes",
+          "layout": {
+            "column": 8,
+            "row": 15,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(display_name) WHERE hostname IN ({{hostname}}) and metricName='windows_service_state' and state='stopped' and entity.guid IN (select uniques(entity.guid,10000) from Metric where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}})  and start_mode IN ({{start}}) and  metricName='windows_service_state' and state in ('running','paused') SINCE 1 HOUR AGO UNTIL 5 MINUTES AGO limit max) FACET hostname, service_name  since 5 minutes ago limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Started last 5 minutes",
+          "layout": {
+            "column": 8,
+            "row": 19,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(display_name) WHERE hostname IN ({{hostname}}) and metricName='windows_service_state' and state='started' and entity.guid IN (select uniques(entity.guid,10000) from Metric where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}})   and start_mode IN ({{start}}) and  metricName='windows_service_state' and state != 'started' SINCE 1 HOUR AGO UNTIL 5 MINUTES AGO limit max) FACET hostname, service_name  since 5 minutes ago limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Per service account",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 3,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(entity.guid)   where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}}) and metricName = 'windows_service_state' and run_as IS NOT NULL FACET cases(\n  WHERE run_as IN ('LocalSystem','localSystem') AS 'LocalSystem', \n  WHERE run_as IN ('NT AUTHORITY\\\\LocalService', 'NT Authority\\\\LocalService') AS 'NT AUTHORITY\\\\LocalService',\n  WHERE run_as IN ('NT AUTHORITY\\\\NetworkService', 'NT Authority\\\\NetworkService') AS 'NT AUTHORITY\\\\NetworkService',\n  WHERE run_as = '' AS 'No account found'\n) OR run_as AS 'Service Account' limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Start Mode",
+          "layout": {
+            "column": 4,
+            "row": 23,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniqueCount(service_name) where hostname IN ({{hostname}})  and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and state IN ({{state}})  and start_mode IN ({{start}}) and  metricName = 'windows_service_state'  facet start_mode  limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "State different from  running, stopped or paused",
+          "layout": {
+            "column": 8,
+            "row": 23,
+            "width": 5,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " select hostname, display_name, service_name, state   FROM (select latest(state) as 'state' FROM Metric WHERE  hostname IN ({{hostname}}) and service_name IN ({{service_name}}) and display_name IN ({{display_name}}) and start_mode IN ({{start}}) and metricName = 'windows_service_state'  FACET hostname, display_name, service_name limit max)  where  state != 'running' and state !='stopped' and state !='paused' limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "hostname",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric select uniques(hostname)where metricName = 'windows_service_state' since 24hours ago LIMIT MAX"
+      },
+      "title": "Host",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "service_name",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(service_name) FROM Metric WHERE metricName = 'windows_service_state' since 24 hours ago LIMIT MAX"
+      },
+      "title": "Service name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "display_name",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(display_name) FROM Metric WHERE metricName = 'windows_service_state' since 24 hours ago LIMIT MAX"
+      },
+      "title": "Display name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "state",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(state) FROM Metric WHERE metricName = 'windows_service_state' since 24 hours ago LIMIT MAX"
+      },
+      "title": "State",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "start",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(start_mode) FROM Metric WHERE metricName = 'windows_service_state' since 24 hours ago LIMIT MAX"
+      },
+      "title": "Start Mode",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
