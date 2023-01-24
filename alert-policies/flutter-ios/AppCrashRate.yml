@@ -1,16 +1,16 @@
 # Name of the alert
-name: Used Memory
+name: App Crash Rate
 
 # Description and details
 description: |+
-  This alert is triggered when the application used memory is above 200 MB for at least 5 mins.
+  This alert is triggered when the application crash rate is above 20% for at least 5 mins.
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
 
-  query: "SELECT latest(memUsageMb) FROM Mobile"
+  query: "SELECT percentage(uniqueCount(sessionId), WHERE category = 'Crash') as `Crash rate` FROM MobileSession, MobileCrash WHERE crashFingerprint NOT IN ()"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -21,7 +21,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 200
+    threshold: 20
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -30,7 +30,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 100
+    threshold: 10
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -39,4 +39,3 @@ terms:
 # Duration after which a violation automatically closes
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
 violationTimeLimitSeconds: 86400
-
