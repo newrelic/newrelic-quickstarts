@@ -1,16 +1,16 @@
 # Name of the alert
-name: Application Error Rate
+name: App Crash Rate
 
 # Description and details
 description: |+
-  This alert is triggered when the application error rate are higher than 2 for 5 minutes.
+  This alert is triggered when the application crash rate is above 20% for at least 5 mins.
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
 
-  query: "SELECT average(newrelic.timeslice.value) as value FROM Metric FACET `version` WITH METRIC_FORMAT 'Mobile/OSGroup/{osGroup}/Version/{version}/ErrorRate'"
+  query: "SELECT percentage(uniqueCount(sessionId), WHERE category = 'Crash') as `Crash rate` FROM MobileSession, MobileCrash WHERE crashFingerprint NOT IN ()"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -21,7 +21,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 2
+    threshold: 20
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -30,7 +30,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 1
+    threshold: 10
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
