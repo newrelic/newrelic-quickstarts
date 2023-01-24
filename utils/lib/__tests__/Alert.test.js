@@ -1,8 +1,14 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import * as nrGraphqlHelpers from '../nr-graphql-helpers';
 
 import Alert from '../Alert';
-import { GITHUB_REPO_BASE_URL } from '../../constants';
+import {
+  GITHUB_REPO_BASE_URL,
+  ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+  ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
+  DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
+} from '../../constants';
 
 // TODO: maybe there is an easier way to mock a single function on this library
 jest.mock('fs', () => {
@@ -16,6 +22,15 @@ jest.mock('fs', () => {
   };
 });
 
+jest.mock('../nr-graphql-helpers', () => {
+  const originalModule = jest.requireActual('../nr-graphql-helpers');
+  return {
+    __esModule: true,
+    ...originalModule,
+    fetchNRGraphqlResults: jest.fn(),
+  };
+});
+
 jest.spyOn(global.console, 'log').mockImplementation(() => {});
 
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
@@ -23,7 +38,7 @@ const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 describe('Alert', () => {
   afterAll(() => {
     jest.resetAllMocks();
-  }) 
+  });
 
   describe('constructor', () => {
     test('Creates valid Alert', () => {
@@ -33,7 +48,7 @@ describe('Alert', () => {
     });
 
     test('Creates invalid Alert when file does not exist', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {})
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const alert = new Alert('mock-alert-infinity', MOCK_FILES_BASEPATH);
       expect(alert.isValid).toBe(false);
       expect(alert.config).not.toBeDefined();
@@ -49,7 +64,7 @@ describe('Alert', () => {
     });
 
     test('Fails to create valid config path when alert policy does not exist', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {})
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const alert = new Alert('mock-alert-infinity', MOCK_FILES_BASEPATH);
       expect(alert.configPath).toEqual('');
       expect(alert.isValid).toBe(false);
@@ -57,7 +72,7 @@ describe('Alert', () => {
     });
 
     test('Fails to create valid config path basePath is invalid', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {})
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
       const alert = new Alert('mock-alert-infinity', __dirname);
       expect(alert.configPath).toEqual('');
       expect(alert.isValid).toBe(false);
@@ -243,6 +258,323 @@ describe('Alert', () => {
       );
       expect(mutationVar[1].rawConfiguration).toEqual(mockPolicyErrorJson);
     });
-    
+  });
+
+  describe('SubmitSetAlertPolicyRequiredDataSourcesMutation and GetAlertPolicy from quickstart name', () => {
+    test('Successfully fetches alert policies when given a quickstart name', async () => {
+      const newDataSourceIds = ['mock-data-source-3'];
+
+      const mockQuickstart = {
+        name: 'mock-quickstart-name',
+        dataSourceIds: newDataSourceIds,
+      };
+
+      const mockTemplateId = 'mock-template-id';
+
+      const alertPolicyQueryResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: [
+                  {
+                    id: mockTemplateId,
+                    metadata: {
+                      requiredDataSources: [
+                        {
+                          id: 'mock-data-source-1',
+                        },
+                        {
+                          id: 'mock-data-source-2',
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const mockUpdatedAlertPolicy = {
+        alertPolicy: {
+          id: mockTemplateId,
+          dataSourceIds: [
+            'mock-data-source-1',
+            'mock-data-source-2',
+            'mock-data-source-3',
+          ],
+        },
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(alertPolicyQueryResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const alertPolicy = await Alert.getAlertPolicyRequiredDataSources(
+        mockQuickstart
+      );
+
+      expect(alertPolicy).toStrictEqual(mockUpdatedAlertPolicy);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: { query: `${mockQuickstart.name} alert policy` },
+        queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+      });
+    });
+
+    test('Returns result with data and no errors when successful', async () => {
+      const mockTemplateId = 'mock-template-id';
+      const newDataSourceIds = [
+        'mock-data-source-1',
+        'mock-data-source-2',
+        'mock-data-source-3',
+      ];
+
+      const mockMutationResponse = {
+        data: {
+          nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate: {
+            alertPolicyTemplate: {
+              id: mockTemplateId,
+            },
+          },
+        },
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION) {
+            return Promise.resolve(mockMutationResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const result = await Alert.submitSetRequiredDataSourcesMutation(
+        mockTemplateId,
+        newDataSourceIds
+      );
+
+      expect(result).toStrictEqual(mockMutationResponse);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: {
+          templateId: mockTemplateId,
+          dataSourceIds: newDataSourceIds,
+        },
+        queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      });
+    });
+
+    test('Returns an error if getting existing data sources fails', async () => {
+      const mockQuickstartName = 'mock-quickstart';
+
+      const newDataSourceIds = ['mock-data-source-1'];
+
+      const mockQuickstart = {
+        name: mockQuickstartName,
+        dataSourceIds: newDataSourceIds,
+      };
+      const mockError = new Error('Something went wrong');
+
+      const mockErrorResponse = {
+        errors: [mockError],
+      };
+
+      const expectedResponse = {
+        alertPolicy: null,
+        errors: [mockError],
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(mockErrorResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const result = await Alert.getAlertPolicyRequiredDataSources(
+        mockQuickstart
+      );
+
+      expect(result).toStrictEqual(expectedResponse);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: { query: `${mockQuickstart.name} alert policy` },
+        queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+      });
+    });
+
+    test('Responds with an error if an empty array is returned as the result when fetching an alert policy', async () => {
+      const mockQuickstartName = 'mock-quickstart';
+
+      const newDataSourceIds = ['mock-data-source-1'];
+
+      const mockQuickstart = {
+        name: mockQuickstartName,
+        dataSourceIds: newDataSourceIds,
+      };
+
+      const mockEmptyArrayResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: [],
+              },
+            },
+          },
+        },
+      };
+
+      const emptyArrayError = new Error(
+        `No alert policy for quickstart ${mockQuickstart.name} exists`
+      );
+
+      const expectedResponse = {
+        alertPolicy: null,
+        errors: [],
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(mockEmptyArrayResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const result = await Alert.getAlertPolicyRequiredDataSources(
+        mockQuickstart
+      );
+
+      expect(result).toStrictEqual(expectedResponse);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: { query: `${mockQuickstart.name} alert policy` },
+        queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
+      });
+    });
+
+    test('Returns an error if a quickstart has multiple data sources', async () => {
+      const mockQuickstartName = 'mock-quickstart';
+
+      const newDataSourceIds = ['mock-data-source-1', `mock-data-source-2`];
+
+      const mockQuickstart = {
+        name: mockQuickstartName,
+        dataSourceIds: newDataSourceIds,
+      };
+
+      const mockTemplateId = 'mock-template-id';
+
+      const errorMessage = new Error(
+        `Multiple Quickstart data sources detected for Quickstart: ${mockQuickstart.name} with AlertPolicy: ${mockTemplateId} must update manually`
+      );
+
+      const alertPolicyQueryResponse = {
+        data: {
+          actor: {
+            nr1Catalog: {
+              search: {
+                results: [
+                  {
+                    id: mockTemplateId,
+                    metadata: {
+                      requiredDataSources: [
+                        {
+                          id: 'mock-data-source-1',
+                        },
+                        {
+                          id: 'mock-data-source-2',
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY) {
+            return Promise.resolve(alertPolicyQueryResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const error = await Alert.getAlertPolicyRequiredDataSources(
+        mockQuickstart
+      );
+
+      expect(error).toStrictEqual({
+        alertPolicy: null,
+        errors: [],
+      });
+    });
+
+    test('Returns an error if submitting required data sources for alert policy fails', async () => {
+      const mockTemplateId = 'mock-template-id';
+      const newDataSourceIds = [
+        'mock-data-source-1',
+        'mock-data-source-2',
+        'mock-data-source-3',
+      ];
+
+      const error = new Error('Something went wrong!');
+      const mutationErrorResponse = {
+        errors: [error],
+      };
+
+      nrGraphqlHelpers.fetchNRGraphqlResults.mockImplementation(
+        ({ queryString }) => {
+          if (queryString === ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION) {
+            return Promise.resolve(mutationErrorResponse);
+          }
+
+          throw new Error(
+            `Could not mock response for queryString: ${queryString}`
+          );
+        }
+      );
+
+      const result = await Alert.submitSetRequiredDataSourcesMutation(
+        mockTemplateId,
+        newDataSourceIds
+      );
+
+      expect(result).toStrictEqual(mutationErrorResponse);
+      expect(nrGraphqlHelpers.fetchNRGraphqlResults).toHaveBeenLastCalledWith({
+        variables: {
+          templateId: mockTemplateId,
+          dataSourceIds: newDataSourceIds,
+        },
+        queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
+      });
+    });
   });
 });

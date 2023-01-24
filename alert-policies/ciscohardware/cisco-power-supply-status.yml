@@ -1,0 +1,19 @@
+name: Cisco Power Supply Status
+
+description: |+
+  This alert will trigger when a Cisco power supply is either "critical" or "shutdown" for 300 seconds. This typically indicates that there is a physical problem that requires investigation or replacement.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(uniqueCount(Index), WHERE power_supply_state IN ('shutdown', 'critical')) * 100 / uniqueCount(Index) as 'Abnormal Status' FACET device_name, entity_name WHERE power_supply_state IS NOT NULL"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

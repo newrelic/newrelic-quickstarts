@@ -1,0 +1,20 @@
+name: Ktranslate Container Input Queue Length Violation
+
+description: |+
+  This alert will trigger when a Kentik ktranslate container has an excessive input queue length. This number should be close to zero over time. If it is not that is an indication that the container does not have enough resources to keep up with the incoming data.  You may need to scale horizontally or vertically to address these needs.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.ktranslate.chf.kkc.inputq_len) AS 'inputq_len' WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat' FACET host, svc"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 5
+    thresholdDuration: 900
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
