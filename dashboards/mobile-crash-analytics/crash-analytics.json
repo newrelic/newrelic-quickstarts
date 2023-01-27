@@ -919,8 +919,8 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 12,
-            "height": 7
+            "width": 8,
+            "height": 6
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -933,7 +933,34 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT appBuild, appName, crashException, crashLocation, lastInteraction, interactionHistory   from Mobile WHERE category = 'Crash' since 1 week ago "
+                "query": "SELECT appVersion, appName, crashException, lastInteraction, interactionHistory   from Mobile WHERE category = 'Crash' since 1 week ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Weekly crash by CrashMessage",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from MobileCrash SELECT count(*) facet crashMessage since 1 week ago "
               }
             ],
             "platformOptions": {
@@ -945,9 +972,9 @@
           "title": "Crash Analysis Goto URLs",
           "layout": {
             "column": 1,
-            "row": 8,
-            "width": 12,
-            "height": 8
+            "row": 7,
+            "width": 8,
+            "height": 5
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -962,6 +989,231 @@
               {
                 "accountId": 0,
                 "query": "SELECT device, appName, concat('https://one.newrelic.com/nr1-core/mobile-redirectors/mobile-crash-analysis/', entityGuid, '?duration=604800000&state=', crashFingerprint) as 'URLs', crashException from Mobile WHERE category = 'Crash' since 7 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Weekly crash by CrashLocation",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM MobileCrash SELECT count(*) WHERE appName like '%' FACET crashLocation SINCE 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "HTTP Data",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Failed HTTP Requests",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError since 1 week ago limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Status code Graph",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError where errorType = 'HTTPError' facet statusCode since 1 week ago TIMESERIES Auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Errors by Request Path",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError where errorType = 'HTTPError' facet requestPath "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Errors Raw Data",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT requestMethod, requestDomain, requestPath, networkError from MobileRequestError where networkError is not null and networkError not like 'Cancelled' since 1 week ago Limit 15"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network failures on AppVersion",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError where errorType = 'NetworkFailure' and networkError not like 'cancelled' facet appVersion since 1 week ago "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network failures on Apps",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError where errorType = 'NetworkFailure' and networkError not like 'cancelled' facet appName "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network Failure with Network Error Type",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*) from MobileRequestError where networkError is not null and networkError not like 'Cancelled' facet networkError since 1 week ago Limit 15"
               }
             ],
             "platformOptions": {
@@ -988,7 +1240,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Hola! नमस्ते! Hello! やあ! ![New Relic logo](https://newrelic.com/static-assets/images/icons/avatar-newrelic.png)\nUse this to further **enhance** your dashboard experience\n\nAdd **hyper link** to the New Relic's Crash Analysis Page as follows: \n\n- Mobile Application > Error > Crash analysis  > Copy permalink\n-  Edit **Crash Statistics** widget under **Crashlytics** page on dashboard and add text like `Please find the link for -> [Crash Analysis Page](Paste the permalink)`\n\nThis will automatically create the hyperlink for **Crash analysis** page in your dashbaord like below: \n\n- You can navigate within the platform by [adding links like this](https://one.newrelic.com/dashboards)\n\n---\n### Filtering data for specific entities 📊 \nFor applying **Filters** on below data which enables a filtered view for dashboard specific to your entities, currently you need\nto provide the dashboard GUID to facet link a widget to the this dashboard. \n\nThis can only be accomplished via a two stage apply -\nafter enabling the dashboard and then updating it with the known GUID. Enable it as follows-> \n\nEnable `Filter the current dashboard` under `Facet Linking` by editing the widget\n\n"
+            "text": "# Hola! नमस्ते! Hello! やあ! ![New Relic logo](https://newrelic.com/static-assets/images/icons/avatar-newrelic.png)\nUse this to further **enhance** your dashboard experience\n\nAdd **hyper link** to the New Relic's Crash Analysis Page as follows: \n\n- Mobile Application > Error > Crash analysis  > Copy permalink\n-  Edit **Crash Statistics** widget under **Crash Report** page on dashboard and add text like `Please find the link for -> [Crash Analysis Page](Paste the permalink)`\n\nThis will automatically create the hyperlink for **Crash analysis** page in your dashboard like below: \n\n- You can navigate within the platform by [adding links like this](https://one.newrelic.com/dashboards)\n\n---\n### Filtering data for specific entities 📊 \nFor applying **Filters** on below data which enables a filtered view for dashboard specific to your entities, currently you need\nto provide the dashboard GUID to facet link a widget to the this dashboard. \n\nThis can only be accomplished via a two stage apply -\nafter enabling the dashboard and then updating it with the known GUID. Enable it as follows-> \n\nEnable `Filter the current dashboard` under `Facet Linking` by editing the widget\n\n"
           }
         }
       ]
