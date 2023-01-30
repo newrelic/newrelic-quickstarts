@@ -23,7 +23,7 @@ interface DataSourceConfigLinkDirective {
   };
 }
 
-interface DataSourceConfigNerdletDirective {
+export interface DataSourceConfigNerdletDirective {
   nerdlet: {
     nerdletId: string;
     nerdletState: Record<string, string>;
