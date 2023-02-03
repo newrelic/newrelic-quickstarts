@@ -1,0 +1,214 @@
+{
+    "name": "Change Tracking Overview - APM",
+    "description": null,
+    "pages": [
+      {
+        "name": "Change Tracking Overview - APM",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![New Relic logo](https://newrelic.com/themes/custom/erno/assets/mediakit/new_relic_logo_horizontal.svg)\n## This dashboard shows a high level overview of the APM Services with [Change Tracking Markers](https://docs.newrelic.com/docs/change-tracking/change-tracking-introduction/) in your account; along with their Response Time, Throughput, and Error Rate golden signals, and latest Apdex score.\n\n### Use the `Entities` template variable at the top to quickly filter results to specific entities."
+            }
+          },
+          {
+            "title": "Deployment Velocity (per Day)",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Deployment SELECT\n  rate(uniqueCount(deploymentId), 1 DAY)\nFACET entity.name\nWHERE entity.name IN ( {{entity_name}} )\nSINCE 1 WEEK AGO\nTIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Response Time (ms)",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\n  average(apm.service.transaction.duration * 1000) AS 'Response time'\nFACET appName\nWHERE appName IN ( {{entity_name}} )\nSINCE 1 WEEK AGO TIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Apdex Score",
+            "layout": {
+              "column": 7,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\n  apdex(apm.service.apdex) AS 'App Server',\n  apdex(apm.service.apdex.user) AS 'End User'\nFACET appName\nWHERE appName IN ( {{entity_name}} )\nSINCE 1 WEEK AGO TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Throughput",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\n  rate(count(apm.service.transaction.duration), 1 minute) AS 'Throughput'\nFACET appName\nWHERE appName IN ( {{entity_name}} )\nSINCE 1 WEEK AGO TIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Error rate",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT\n  count(apm.service.error.count) / count(apm.service.transaction.duration) AS 'Errors'\nFACET appName\nWHERE appName IN ( {{entity_name}} )\nSINCE 1 WEEK AGO TIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "entity_name",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM Deployment SELECT uniques(entity.name) SINCE 1 MONTH AGO LIMIT MAX"
+        },
+        "title": "Entities",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
