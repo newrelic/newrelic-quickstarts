@@ -199,7 +199,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniqueCount(concat(name,':', project,':', prometheus_server)) as 'Statuses' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server in ({{ prometheus_server }}) and NOT ((health_status = '')) and health_status in ({{ health_status }}) facet health_status LIMIT max"
+                "query": "from (SELECT latest(health_status) as 'healthstatus' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server in ({{ prometheus_server }}) and NOT ((health_status = '')) and health_status in ({{ health_status }}) facet (concat(name, ':', project, ':', prometheus_server)) LIMIT max) select count(healthstatus) facet healthstatus"
               }
             ],
             "platformOptions": {
@@ -302,7 +302,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (uniqueCount(concat(name,':',project,':',prometheus_server)) as 'Statuses') FROM Metric where instrumentation.name = 'remote-write' and metricName = 'argocd_app_info' and prometheus_server in ({{ prometheus_server }}) and NOT ((health_status = '')) and namespace in ({{ namespace }}) and dest_server in ({{ cluster }}) and sync_status in ({{ sync_status }}) FACET sync_status LIMIT max"
+                "query": "from (SELECT latest(sync_status) as 'syncstatus' FROM Metric where instrumentation.name = 'remote-write' and prometheus_server in ({{ prometheus_server }}) and NOT ((sync_status = '')) and sync_status in ({{ sync_status }}) facet (concat(name, ':', project, ':', prometheus_server)) LIMIT max) select count(syncstatus) facet syncstatus"
               }
             ],
             "platformOptions": {
