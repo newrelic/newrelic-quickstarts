@@ -2,7 +2,7 @@
 
 A concise description of the changes being introduced. Please review the pre-merge checklist section to validate this pull request is ready for review and merge. **If it is not ready, please mark the pull request as a draft.**
 
-*The owners of this repo are not experts in the subject matter of the quickstarts. We review for the quickstart to be functional and pose no security risks. If you require reviews on the content of the quickstarts, please seek out a subject matter expert. If you are not an internal NR contributor, we can do our best to connect you with a content reviewer.*
+*The owners of this repo are not experts in the subject matter of the quickstarts. We review for the quickstart to be functional and for security risks. If you are seeking feedback on the content of the quickstart, please seek out a subject matter expert. If you are not an internal NR contributor, we can do our best to connect you with a content reviewer.*
 
 <!-- DON'T DELETE THIS SECTION BELOW IF SUBMITTING A NEW QUICKSTART -->
 ## Pre merge checklist
