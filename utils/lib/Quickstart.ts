@@ -58,6 +58,10 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   },
 ];
 
+export interface QuickstartContext {
+  coreDataSourceIds: string[];
+}
+
 class Quickstart {
   public components: Components[];
   public identifier: string; // Local path to the component. Ex: python/flask
@@ -65,16 +69,19 @@ class Quickstart {
   public config: QuickstartConfig;
   public isValid = true;
   public basePath: string;
+  private context: QuickstartContext;
 
   constructor(
     identifier: string,
-    basePath: string = path.join(__dirname, '..', '..')
+    basePath: string = path.join(__dirname, '..', '..'),
+    context: QuickstartContext = { coreDataSourceIds: [] }
   ) {
     this.identifier = identifier;
     this.basePath = basePath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
     this.components = this.getComponents();
+    this.context = context;
   }
 
   /**
@@ -117,7 +124,11 @@ class Quickstart {
 
       return (
         componentConfig?.flatMap(
-          (name: string) => new componentType.ctor(name, this.basePath)
+          (name: string) =>
+            new componentType.ctor(name, {
+              basePath: this.basePath,
+              ...this.context,
+            })
         ) ?? []
       );
     });

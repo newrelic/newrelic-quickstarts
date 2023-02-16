@@ -3,7 +3,7 @@ import * as glob from 'glob';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-import Component from './Component';
+import Component, { ComponentContext } from './Component';
 import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
@@ -29,6 +29,12 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   getConfigFilePath() {
     const id = this.identifier;
+
+    const isCoreDataSource = this.context?.coreDataSourceIds.includes(id);
+
+    if (isCoreDataSource) {
+      return id;
+    }
 
     // iterate through all data sources and read the contents of each file
     const allDataSources = getAllDataSourceFiles(this.basePath).map((p) => ({
@@ -184,7 +190,7 @@ class DataSource extends Component<DataSourceConfig, string> {
 
 const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
-): string[] => 
+): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
 
 export default DataSource;
