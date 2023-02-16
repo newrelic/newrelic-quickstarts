@@ -96,7 +96,7 @@ For more information about CLAs, please check out Alex Russell's excellent post,
 
 Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or WordPress.
 
-They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, install plans, and data sources.
+They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, and data sources.
 
 ```yaml
 # quickstarts/example-category/example-quickstart/config.yml
@@ -159,7 +159,7 @@ dataSourceIds:
   - example-data-source
 ```
 
-_Note:_ For a quickstart to be "installable" through New Relic, it must have an install plan.
+_Note:_ For a quickstart to be "installable" through New Relic, it must have a data source.
 
 An example quickstart directory looks like this:
 
@@ -278,7 +278,7 @@ summary: |
 
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
-- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+- Every quick start that should be "installable" needs a `documentation URL` and an `data source` configuration if you want to use the guided install flow.
 - Use the proper YAML formatting `|` for the URL description
 - Use the proper YAML formatting `>-` for documentation URL references.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
