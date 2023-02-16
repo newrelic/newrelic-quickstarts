@@ -17,7 +17,7 @@ export const validateDataSourceIds = async (
 ) => {
   const { coreDataSourceIds, errors } = await getPublishedDataSourceIds();
 
-  if (errors) {
+  if (errors && errors.length > 0) {
     console.error('Error fetching published data sources')
     errors.forEach(error => {
       console.error(error.message)
