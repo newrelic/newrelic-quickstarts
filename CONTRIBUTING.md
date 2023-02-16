@@ -29,9 +29,6 @@
       - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
       - [Alert condition fields](#alert-condition-fields)
-    - [Install plans](#install-plans)
-      - [Install plan fields](#install-plan-fields)
-      - [Install fields](#install-fields)
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
   - [Quickstart Preview](#quickstart-preview)
@@ -156,11 +153,6 @@ alertPolicies:
   - example-alert-policy
   - another-example-alert-policy
 
-# References to install plan IDs (**NOTE**: Not the file path)
-# The Ordering of installPlans is important as it sets the order of installation.
-installPlans:
-  - example-install-plan-id
-
 # References to data sources by file path, this references a data source located at `data-sources/example-data-source`
 # For more information on data source definitions, see the section below.
 dataSourceIds:
@@ -194,8 +186,7 @@ icon.png
 | icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                         |
 | dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
 | alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
-| installPlans  | no        |                                                                   | A list of install plans, at least one is required to allow this quickstart to be installed                 |
-| dataSourceIds | no        |                                                                   | A list of data sources Ids                                                                                     |
+| dataSourceIds | no        |                                                                   | A list of data sources Ids                                                                                 |
 
 #### Style tips
 
@@ -341,7 +332,7 @@ documentation:
 
 ### Data Sources
 
-Data sources are optional. When adding a data source the following format should be used. Each entry in the list is the path to a data source under the [data-sources](./data-sources) directory. Example: for `argocd` located at `data-sources/argocd/config.yml`, you would add the `argocd` part to your list of data sources.
+When adding a data source the following format should be used. Each entry in the list is the path to a data source under the [data-sources](./data-sources) directory. Example: for `argocd` located at `data-sources/argocd/config.yml`, you would add the `argocd` part to your list of data sources.
 
 ```yml
 dataSources:
@@ -551,109 +542,6 @@ example-alert-condition2.yml
 | description | no        |         | A description for the alert                         |
 
 For documentation on the rest of the alert condition fields, please review the [Introduction to alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/introduction-alerts)
-
-### Install plans
-
-Install plans define how to get data into New Relic. They are located under the `install/` directory and can be nested. Example: `install/third-party/netlify/install.yml`.
-
-```yaml
-# in install/example/install.yml
-
-# Defined by the author, must be unique
-id: example-install-1
-
-# A human readable name
-name: Example Install Plan
-
-# Used as a heading during the install process
-title: Example Install Plan
-
-description: |
-  A short description of what this plan does
-
-target:
-  # type can be agent | integration | on_host_integration | unknown
-  type: agent
-  # destination can be application | cloud | host | kubernetes | unknown
-  destination: host
-  # os can be darwin | linux | windows
-  os:
-    - linux
-    - windows
-
-install:
-  mode: targetedInstall
-  destination:
-    recipeName: test-install-installer
-
-fallback:
-  mode: link
-  destination:
-    url: https://docs.newrelic.com/docs/infrastructure/install-infrastructure-agent/linux-installation/install-infrastructure-monitoring-agent-linux/#manual-install
-```
-
-An example install plan directory looks like this:
-
-```bash
-# in install/example-install directory
-install.yml
-```
-
-#### Install plan fields
-
-| field               | required? | default | description                                                                                                                                                                                                                               |
-| ------------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                  | yes       |         | User defined id for the install plan, must be unique                                                                                                                                                                                      |
-| name                | yes       |         | The human-readable name for the install plan                                                                                                                                                                                              |
-| title               | yes       |         | Used as the heading for this step in the install process                                                                                                                                                                                  |
-| description         | yes       |         | A short form description of the install plan                                                                                                                                                                                              |
-| target              | yes       |         | Context about where the install will occur                                                                                                                                                                                                |
-| target.type         | yes       |         | The type of installation. Options are one of `agent`, `integration`, `on_host_integration`, or `unknown`                                                                                                                                  |
-| target.destination  | yes       |         | The location of the installation. Options are one of `application`, `cloud`, `host`, `kubernetes`, or `unknown`                                                                                                                           |
-| target.os           | yes       |         | The operating system of the installation target. Options are one of `darwin`, `linux`, or `windows`                                                                                                                                       |
-| install             | yes       |         | The primary installation method. See [Install fields](#install-fields) for examples on how to use the `destination` field                                                                                                                 |
-| install.mode        | yes       |         | The type of installation. Options are one of `link`, `nerdlet`, or `targetedInstall`                                                                                                                                                      |
-| install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, options are `recipeName` for the `targetedInstall` mode, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode |
-| fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                                                                         |
-
-#### Install fields
-
-- `targetedInstall`
-
-  - Uses the New Relic CLI to install instrumentation
-  - Example:
-
-  ```yaml
-  install:
-    mode: targetedInstall
-    destination:
-      recipeName: fake-install-recipe
-  ```
-
-- `nerdlet`
-
-  - Directs the user to a nerdlet to finish installing instrumentation
-  - Example:
-
-  ```yaml
-  install:
-    mode: nerdlet
-    destination:
-      nerdletId: some-nerdlet.id
-      nerdletState:
-        optionalKey: optional-value
-      requiresAccount: true
-  ```
-
-- `link`
-  - Directs the user to a documentation link to finish installing instrumentation
-  - Example:
-  ```yaml
-  install:
-    mode: link
-    destination:
-      url: https://docs.newrelic.com
-  ```
 
 ### Data sources
 
