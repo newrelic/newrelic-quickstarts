@@ -1,11 +1,11 @@
-name: Application Degraded
+name: Jobs Pending
 
 description: |+
-  This alert is triggered when the Application is degraded.
+  This alert is triggered when the jobs pending is higher than 5 within 5 minutes.
 
 type: STATIC
 nrql:
-  query: "SELECT count(argocd_app_info) FROM Metric WHERE health_status ='Degraded' AND instrumentation.name = 'remote-write'"
+  query: "FROM Metric SELECT latest(awx_pending_jobs_total) AS 'Jobs Pending'"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -16,12 +16,21 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 0
+    threshold: 5
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 3
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 600
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
 # Duration after which a violation automatically closes
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
-violationTimeLimitSeconds: 86400
+violationTimeLimitSeconds: 2592000
