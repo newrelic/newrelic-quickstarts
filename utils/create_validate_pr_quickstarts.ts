@@ -3,7 +3,7 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
+import { translateMutationErrors, chunk, getPublishedDataSourceIds } from './lib/nr-graphql-helpers';
 
 import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
@@ -62,6 +62,22 @@ export const createValidateQuickstarts = async (
   // Get all files from PR
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
 
+  const { coreDataSourceIds, errors } = await getPublishedDataSourceIds();
+
+  if (errors && errors.length) {
+    console.error(
+      'quickstart validate received an error fetching published data source ids'
+    );
+
+    errors.forEach((error) => {
+      console.error(error)
+    })
+
+    return false;
+  }
+
+  const quickstartContext = { coreDataSourceIds }
+
   // Get all quickstart mutation variables
   const quickstarts = filterOutTestFiles(files)
     .filter(isNotRemoved)
@@ -73,10 +89,17 @@ export const createValidateQuickstarts = async (
     )
     .flatMap((filePath) => {
       if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
-        return new Quickstart(filePath);
+        return new Quickstart(
+          filePath,
+          undefined,
+          quickstartContext
+        );
       }
 
-      return getRelatedQuickstarts(getComponentLocalPath(filePath));
+      return getRelatedQuickstarts(
+        getComponentLocalPath(filePath),
+        quickstartContext
+      );
     })
     // Remove any duplicate quickstarts
     .reduce<Quickstart[]>((acc, quickstart) => {
