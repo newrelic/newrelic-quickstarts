@@ -24,11 +24,26 @@ export interface DataSourceMutationResponse {
 }
 
 class DataSource extends Component<DataSourceConfig, string> {
+  private isCoreDataSource: boolean = false;
+
+  constructor(
+    identifier: string,
+    basePath: string = path.join(__dirname, '..', '..'),
+    coreDataSourceIds?: string[]
+  ) {
+    super(identifier, basePath)
+    this.isCoreDataSource = coreDataSourceIds?.includes(identifier) ?? false;
+  }
+
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
   getConfigFilePath() {
     const id = this.identifier;
+
+    if (this.isCoreDataSource) {
+      return id;
+    }
 
     // iterate through all data sources and read the contents of each file
     const allDataSources = getAllDataSourceFiles(this.basePath).map((p) => ({
@@ -70,6 +85,11 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   getConfigContent() {
+    
+    if (this.isCoreDataSource) {
+      return { id: this.identifier } as DataSourceConfig
+    }
+
     return this._getYamlConfigContent();
   }
 

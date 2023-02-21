@@ -58,6 +58,10 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   },
 ];
 
+export interface QuickstartContext {
+  coreDataSourceIds?: string[];
+}
+
 class Quickstart {
   public components: Components[];
   public identifier: string; // Local path to the component. Ex: python/flask
@@ -65,13 +69,16 @@ class Quickstart {
   public config: QuickstartConfig;
   public isValid = true;
   public basePath: string;
+  public context: QuickstartContext;
 
   constructor(
     identifier: string,
-    basePath: string = path.join(__dirname, '..', '..')
+    basePath: string = path.join(__dirname, '..', '..'),
+    context: QuickstartContext = {} 
   ) {
     this.identifier = identifier;
     this.basePath = basePath;
+    this.context = context;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
     this.components = this.getComponents();
@@ -117,7 +124,12 @@ class Quickstart {
 
       return (
         componentConfig?.flatMap(
-          (name: string) => new componentType.ctor(name, this.basePath)
+          (name: string) =>
+            new componentType.ctor(
+              name,
+              this.basePath,
+              this.context?.coreDataSourceIds
+            )
         ) ?? []
       );
     });
@@ -244,8 +256,9 @@ class Quickstart {
     if (invalidComponents.length) {
       console.error('The following components are not valid:');
 
-      for (const { identifier: localPath } of invalidComponents) {
-        console.error(`\t ${localPath}`);
+      for (const invalidComponent of invalidComponents) {
+        console.log(invalidComponent)
+        console.error(`\t ${invalidComponent}`);
       }
 
       this.isValid = false;
@@ -256,7 +269,7 @@ class Quickstart {
    * Static method that returns a list of every quickstarts
    * @returns - A list of all quickstarts
    */
-  static getAll(basePath?: string): Quickstart[] {
+  static getAll(basePath?: string, context?: QuickstartContext ): Quickstart[] {
     const quickstartRoot = basePath ?? path.join(__dirname, '..', '..');
     return glob
       .sync(
@@ -265,7 +278,7 @@ class Quickstart {
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
       .map(
         (localPath) =>
-          new Quickstart(`quickstarts/${localPath}`, quickstartRoot)
+          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, context)
       );
   }
 }

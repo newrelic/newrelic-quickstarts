@@ -1,5 +1,6 @@
 import * as path from 'path';
 import Quickstart from './Quickstart';
+import type { QuickstartContext } from './Quickstart';
 import { COMPONENT_PREFIX_REGEXP } from '../constants';
 
 /**
@@ -27,9 +28,10 @@ export const prop =
  * @returns quickstarts that use the passed in component
  */
 export const getRelatedQuickstarts = (
-  localComponentPath: string
+  localComponentPath: string,
+  context: QuickstartContext
 ): Quickstart[] =>
-  Quickstart.getAll().filter((q) =>
+  Quickstart.getAll(undefined, context).filter((q) =>
     q.components.some((c) => c.identifier === localComponentPath)
   );
 
