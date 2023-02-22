@@ -8,6 +8,7 @@ import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
+import type {QuickstartContext} from './Quickstart';
 import type {
   DataSourceConfig,
   DataSourceConfigInstallDirective,
@@ -23,22 +24,25 @@ export interface DataSourceMutationResponse {
   };
 }
 
+interface DataSourceContext extends QuickstartContext {}
+
 class DataSource extends Component<DataSourceConfig, string> {
   private isCoreDataSource: boolean = false;
 
   constructor(
     identifier: string,
     basePath: string = path.join(__dirname, '..', '..'),
-    coreDataSourceIds?: string[]
+    context: DataSourceContext = {}
   ) {
-    super(identifier, basePath)
+    super(identifier, basePath);
+    const coreDataSourceIds = context?.coreDataSourceIds ?? []
     this.isCoreDataSource = coreDataSourceIds?.includes(identifier) ?? false;
 
     // The `super()` constructor gets called prior to `this.isCoreDataSource`
     // is defined. Due to this, the instance of a data source will
     // initially be marked as `invalid`.
     if (this.isCoreDataSource) {
-      this.identifier = identifier
+      this.identifier = identifier;
       this.isValid = true;
 
       // Now that isCoreDataSource is defined, we want to construct our config
@@ -96,9 +100,8 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   getConfigContent() {
-    
     if (this.isCoreDataSource) {
-      return { id: this.identifier } as DataSourceConfig
+      return { id: this.identifier } as DataSourceConfig;
     }
 
     return this._getYamlConfigContent();

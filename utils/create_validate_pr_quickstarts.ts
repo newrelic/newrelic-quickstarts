@@ -91,7 +91,7 @@ export const createValidateQuickstarts = async (
       if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
         return new Quickstart(
           filePath,
-          undefined,
+          undefined, // Note: We are ignoring the `basePath` argument here
           quickstartContext
         );
       }
@@ -113,7 +113,6 @@ export const createValidateQuickstarts = async (
   const invalidQuickstarts = quickstarts
     .map((qs) => {
       qs.validate();
-      console.log(qs)
       return !qs.isValid ? qs : undefined;
     })
     .filter(Boolean);

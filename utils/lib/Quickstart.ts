@@ -128,7 +128,7 @@ class Quickstart {
             new componentType.ctor(
               name,
               this.basePath,
-              this.context?.coreDataSourceIds
+              this.context,
             )
         ) ?? []
       );

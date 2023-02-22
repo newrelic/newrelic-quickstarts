@@ -31,16 +31,18 @@ describe('DataSource', () => {
     });
 
     test('Creates valid CORE DataSource', () => {
-      const source = new DataSource('nodejs', MOCK_FILES_BASEPATH, ['nodejs']);
+      const source = new DataSource('nodejs', MOCK_FILES_BASEPATH, {
+        coreDataSourceIds: ['nodejs'],
+      });
       expect(source.isValid).toBe(true);
       expect(source.config).toBeDefined();
       expect(source.identifier).toBe('nodejs');
     });
 
     test('Creates invalid CORE DataSource when identifier is invalid', () => {
-      const source = new DataSource('not-an-id', MOCK_FILES_BASEPATH, [
-        'nodejs',
-      ]);
+      const source = new DataSource('not-an-id', MOCK_FILES_BASEPATH, {
+        coreDataSourceIds: ['nodejs'],
+      });
       expect(source.isValid).toBe(false);
       expect(source.config).not.toBeDefined();
     });
