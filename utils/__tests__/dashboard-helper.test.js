@@ -53,11 +53,11 @@ describe('dashboard-helper', () => {
 
     test('finds accountIds', () => {
       expect(checkLine(`"accountIds": [ 0 ]`)).toHaveLength(1);
-    })
+    });
 
     test('does not find accountIds equal to []', () => {
       expect(checkLine(`"accountIds": []`)).toHaveLength(0);
-    })
+    });
   });
 
   describe('createWarningComment', () => {

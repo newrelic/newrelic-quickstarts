@@ -17,7 +17,7 @@ jest.mock('../lib/github-api-helpers', () => ({
 jest.mock('../lib/nr-graphql-helpers.ts', () => ({
   ...jest.requireActual('../lib/nr-graphql-helpers.ts'),
   getPublishedDataSourceIds: jest.fn(),
-})
+}))
 
 jest.mock('../lib/Quickstart');
 jest.mock('../lib/DataSource');
