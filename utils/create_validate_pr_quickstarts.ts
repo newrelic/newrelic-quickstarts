@@ -113,12 +113,17 @@ export const createValidateQuickstarts = async (
   const invalidQuickstarts = quickstarts
     .map((qs) => {
       qs.validate();
+      console.log(qs)
       return !qs.isValid ? qs : undefined;
     })
     .filter(Boolean);
 
   if (invalidQuickstarts.length > 0) {
-    process.exit(1);
+    if (require.main === module) {
+      process.exit(1);
+    }
+
+    return true;
   }
 
   // Submit all of the mutations in chunks of 5
