@@ -174,9 +174,8 @@ describe('create-validate-pr-quickstarts', () => {
     expect(hasErrored).toBe(false);
   });
 
-  test(`invalidates quickstart if core data source doesn't exist`, async () => {
+  test(`fails workflow if core data source doesn't exist`, async () => {
     const files = mockGithubAPIFiles([validQuickstartFilenameWithCoreDataSource]);
-    files[0].status = 'removed';
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
     nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
@@ -185,17 +184,30 @@ describe('create-validate-pr-quickstarts', () => {
     });
 
     const hasErrored = await createValidateQuickstarts('url', 'token');
-    expect(hasErrored).toBe(false);
+    expect(hasErrored).toBe(true);
   })
 
-  test('does not invalidate quickstart if core data source exists', async () => {
+  test('validates quickstart if core data source exists', async () => {
     const files = mockGithubAPIFiles([validQuickstartFilenameWithCoreDataSource]);
-    files[0].status = 'removed';
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
     nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
-      coreDataSourceIds: ['node-js'],
+      coreDataSourceIds: ['nodejs'],
       errors: [] 
+    });
+
+    Quickstart.mockImplementation(() => {
+      return {
+        config: {
+          dataSourceIds: ['nodejs'],
+        },
+        isValid: true,
+        validate: jest.fn().mockImplementation(() => true),
+        submitMutation: jest.fn().mockResolvedValueOnce({
+          data: {},
+          errors: [],
+        }),
+      };
     });
 
     const hasErrored = await createValidateQuickstarts('url', 'token');
