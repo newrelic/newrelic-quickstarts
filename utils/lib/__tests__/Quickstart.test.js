@@ -191,7 +191,7 @@ describe('Quickstart', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
 
-      expect(quickstarts).toHaveLength(8);
+      expect(quickstarts).toHaveLength(9);
     });
 
     test('Handles no quickstarts in directory', () => {
