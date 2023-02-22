@@ -33,6 +33,17 @@ class DataSource extends Component<DataSourceConfig, string> {
   ) {
     super(identifier, basePath)
     this.isCoreDataSource = coreDataSourceIds?.includes(identifier) ?? false;
+
+    // The `super()` constructor gets called prior to `this.isCoreDataSource`
+    // is defined. Due to this, the instance of a data source will
+    // initially be marked as `invalid`.
+    if (this.isCoreDataSource) {
+      this.identifier = identifier
+      this.isValid = true;
+
+      // Now that isCoreDataSource is defined, we want to construct our config
+      this.config = this.getConfigContent();
+    }
   }
 
   /**
