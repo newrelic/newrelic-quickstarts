@@ -257,7 +257,6 @@ class Quickstart {
       console.error('The following components are not valid:');
 
       for (const invalidComponent of invalidComponents) {
-        console.log(invalidComponent)
         console.error(`\t ${invalidComponent}`);
       }
 

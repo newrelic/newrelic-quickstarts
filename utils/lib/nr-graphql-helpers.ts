@@ -221,9 +221,7 @@ export const getPublishedDataSourceIds =
       CoreDataSourceSearchResults
     >({ queryString: CORE_DATA_SOURCES_QUERY, variables: {} });
 
-    const {
-      search: { results },
-    } = data.actor.nr1Catalog;
+    const results = data?.actor?.nr1Catalog?.search?.results ?? [];
 
     const coreDataSourceIds = results.flatMap((result) => result.id);
 

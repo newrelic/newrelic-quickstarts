@@ -5,6 +5,7 @@ import { createValidateQuickstarts } from '../create_validate_pr_quickstarts';
 import Quickstart from '../lib/Quickstart';
 import InstallPlan from '../lib/InstallPlan';
 import * as githubHelpers from '../lib/github-api-helpers';
+import * as nrGraphqlHelpers from '../lib/nr-graphql-helpers';
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
@@ -15,10 +16,17 @@ jest.mock('../lib/github-api-helpers', () => ({
   fetchPaginatedGHResults: jest.fn(),
 }));
 
+jest.mock('../lib/nr-graphql-helpers', () => ({
+  ...jest.requireActual('../lib/nr-graphql-helpers'),
+  getPublishedDataSourceIds: jest.fn(),
+}))
+
 jest.mock('../lib/Quickstart');
 jest.mock('../lib/InstallPlan');
 
 const validQuickstartFilename = 'quickstarts/mock-quickstart-2/config.yml';
+const validQuickstartFilenameWithCoreDataSource =
+  'quickstarts/mock-quickstart-9/config.yml';
 
 const mockNGQuickstartErr = (data) => ({
   data,
@@ -67,6 +75,10 @@ describe('create-validate-pr-quickstarts', () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: [],
+      errors: [] 
+    });
 
     Quickstart.mockImplementation(() => {
       return {
@@ -93,6 +105,11 @@ describe('create-validate-pr-quickstarts', () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: [],
+      errors: [] 
+    });
+    
 
     Quickstart.mockImplementation(() => {
       return {
@@ -118,6 +135,10 @@ describe('create-validate-pr-quickstarts', () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: [],
+      errors: [] 
+    });
 
     Quickstart.mockImplementation(() => {
       return {
@@ -144,8 +165,41 @@ describe('create-validate-pr-quickstarts', () => {
     files[0].status = 'removed';
     githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: [],
+      errors: [] 
+    });
 
     const hasErrored = await createValidateQuickstarts('url', 'token');
     expect(hasErrored).toBe(false);
   });
+
+  test(`invalidates quickstart if core data source doesn't exist`, async () => {
+    const files = mockGithubAPIFiles([validQuickstartFilenameWithCoreDataSource]);
+    files[0].status = 'removed';
+    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: [],
+      errors: [] 
+    });
+
+    const hasErrored = await createValidateQuickstarts('url', 'token');
+    expect(hasErrored).toBe(false);
+  })
+
+  test('does not invalidate quickstart if core data source exists', async () => {
+    const files = mockGithubAPIFiles([validQuickstartFilenameWithCoreDataSource]);
+    files[0].status = 'removed';
+    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
+    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
+    nrGraphqlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: ['node-js'],
+      errors: [] 
+    });
+
+    const hasErrored = await createValidateQuickstarts('url', 'token');
+    expect(hasErrored).toBe(false);
+
+  })
 });
