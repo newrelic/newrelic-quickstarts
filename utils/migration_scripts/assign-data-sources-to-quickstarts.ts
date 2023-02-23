@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import * as path from 'path';
 
 import Quickstart from '../lib/Quickstart';
 import DataSource, { getAllDataSourceFiles } from '../lib/DataSource';
@@ -91,7 +92,6 @@ interface PublishedDataSourceSearchResults {
 }
 
 const getAllPublishedDataSources = async () => {
-  const [csvPath] = passedProcessArguments();
   const { data, errors } = await fetchNRGraphqlResults<
     {},
     PublishedDataSourceSearchResults
@@ -107,22 +107,79 @@ const getAllPublishedDataSources = async () => {
   return { results, errors };
 };
 
-// const getAllCommunityDataSources = () => {
-//   return getAllDataSourceFiles().map((p) => ({
-//     filePath: p,
-//     content: yaml.load(fs.readFileSync(p).toString('utf-8')),
-//   }));
-// };
+const parseCSV = (csvString: string) => {
+  const csvRows = csvString.split('\r\n');
+
+  return csvRows.reduce((acc: Record<string, string>, row: string, idx) => {
+    if (idx === 0) {
+      return acc;
+    }
+
+    const rowValues = row.split(',');
+    const nextAcc = { ...acc, [rowValues[0]]: rowValues[1] };
+
+    return nextAcc;
+  }, {});
+};
+
+const NOT_DATASOURCE_IDS = ['TO_BE_CREATED', 'MANUAL'];
 
 const main = async () => {
+  const [csvRelativePath] = passedProcessArguments();
   const quickstarts = Quickstart.getAll();
-  const publishedDataSources = await getAllPublishedDataSources(); // Switch to own full data source query
+  //const publishedDataSources = await getAllPublishedDataSources(); // Switch to own full data source query
 
-  console.log(publishedDataSources);
-  // Get CSV that matches installplans to datasources
-  // Process csv to data structure
-  // Use for map of installPlan Ids to data sources
-  // Iterate over quickstarts and find matching data source
+  const fullCSVPath = path.resolve(__dirname, csvRelativePath);
+
+  const csvString = fs.readFileSync(fullCSVPath, { encoding: 'utf-8' });
+  const installPlansToDataSources = parseCSV(csvString);
+
+  const installPlanIdsWithoutDataSource = [];
+
+  quickstarts.forEach((quickstart) => {
+    const installPlanIds = quickstart.config.installPlans ?? [];
+    const existingDataSourceIds = quickstart.config.dataSourceIds ?? [];
+
+    if (installPlanIds.length === 0) {
+      return;
+    }
+
+    const newDataSourceIds = installPlanIds.reduce(
+      (acc: string[], installPlanId) => {
+        const dataSourceId: string =
+          installPlansToDataSources[installPlanId] ?? undefined;
+
+        if (dataSourceId === undefined) {
+          installPlanIdsWithoutDataSource.push(installPlanId);
+          return acc;
+        }
+
+        if (NOT_DATASOURCE_IDS.includes(dataSourceId)) {
+          return acc;
+        }
+
+        return [...acc, dataSourceId];
+      },
+      []
+    );
+
+    const nextDataSourceIds = [
+      ...new Set([...existingDataSourceIds, ...newDataSourceIds]),
+    ];
+
+    if (nextDataSourceIds.length === 0) {
+      return;
+    }
+
+    const qsYaml = yaml.load(
+      fs.readFileSync(quickstart.configPath, { encoding: 'utf-8' })
+    ) as Record<string, any>;
+
+    qsYaml['dataSourceIds'] = nextDataSourceIds;
+
+    console.log(qsYaml);
+    //yml.dump write qs config
+  });
 };
 
 main();
