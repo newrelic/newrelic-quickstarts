@@ -31,7 +31,7 @@ const main = async () => {
   const csvString = fs.readFileSync(fullCSVPath, { encoding: 'utf-8' });
   const installPlansToDataSources = parseCSV(csvString);
 
-  const installPlanIdsWithoutDataSource = [];
+  const installPlanIdsWithoutDataSource: string[] = [];
 
   quickstarts.forEach((quickstart) => {
     const installPlanIds = quickstart.config.installPlans ?? [];
@@ -83,11 +83,17 @@ const main = async () => {
        TODO: Ordering dataSourceIds after installPlans, 
              or ordering the whole yaml, or neither?
     */
-    fs.writeFileSync(
-      path.resolve(quickstart.basePath, quickstart.identifier),
-      yaml.dump(qsYaml, yamlOptions)
-    );
+    // fs.writeFileSync(
+    //   path.resolve(quickstart.basePath, quickstart.identifier),
+    //   yaml.dump(qsYaml, yamlOptions)
+    // );
   });
+
+  console.log('Data source assignment to quickstarts complete.');
+  console.log(
+    `Install plan ids without a datasource: ${installPlanIdsWithoutDataSource.length}`,
+    installPlanIdsWithoutDataSource
+  );
 };
 
 main();
