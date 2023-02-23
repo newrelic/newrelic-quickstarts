@@ -16,8 +16,8 @@ jest.mock('fs', () => {
   };
 });
 
-// jest.spyOn(global.console, 'log').mockImplementation(() => {});
-// jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
+jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
