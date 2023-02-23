@@ -83,10 +83,10 @@ const main = async () => {
        TODO: Ordering dataSourceIds after installPlans, 
              or ordering the whole yaml, or neither?
     */
-    // fs.writeFileSync(
-    //   path.resolve(quickstart.basePath, quickstart.identifier),
-    //   yaml.dump(qsYaml, yamlOptions)
-    // );
+    fs.writeFileSync(
+      path.resolve(quickstart.basePath, quickstart.identifier),
+      yaml.dump(qsYaml, yamlOptions)
+    );
   });
 
   console.log('Data source assignment to quickstarts complete.');
