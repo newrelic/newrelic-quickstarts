@@ -46,8 +46,13 @@ class DataSource extends Component<DataSourceConfig, string> {
       this.identifier = identifier;
       this.isValid = true;
 
-      // Now that isCoreDataSource is defined, we want to construct our config
-      this.config = this.getConfigContent();
+      // Since we know this is a CORE data source,
+      // when a quickstart submits a mutation, it relys on the
+      // data source component to supply the 'ID' of the data source.
+
+      // The data source doesn't live in this repository, so we can
+      // give supply the mutation variables what it wants (the data source ID)
+      this.config = { id: this.identifier } as DataSourceConfig;
     }
   }
 
@@ -56,10 +61,6 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   getConfigFilePath() {
     const id = this.identifier;
-
-    if (this.isCoreDataSource) {
-      return id;
-    }
 
     // iterate through all data sources and read the contents of each file
     const allDataSources = getAllDataSourceFiles(this.basePath).map((p) => ({
@@ -101,10 +102,6 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   getConfigContent() {
-    if (this.isCoreDataSource) {
-      return { id: this.identifier } as DataSourceConfig;
-    }
-
     return this._getYamlConfigContent();
   }
 
