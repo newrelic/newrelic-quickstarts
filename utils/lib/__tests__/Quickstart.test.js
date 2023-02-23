@@ -186,13 +186,13 @@ describe('Quickstart', () => {
 
   describe('getAll', () => {
     test('Returns all quickstarts in directory', () => {
-      const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
+      const quickstarts = Quickstart.getAll({ basePath: MOCK_FILES_BASEPATH });
 
       expect(quickstarts).toHaveLength(9);
     });
 
     test('Handles no quickstarts in directory', () => {
-      const quickstarts = Quickstart.getAll('fake-dir');
+      const quickstarts = Quickstart.getAll({ basePath: 'fake-dir' });
 
       expect(quickstarts).toHaveLength(0);
     });

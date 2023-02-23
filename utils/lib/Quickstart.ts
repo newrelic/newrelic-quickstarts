@@ -16,6 +16,7 @@ import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,
 } from './nr-graphql-helpers';
+import type { DataSourceContext } from './DataSource';
 import type {
   QuickstartMutationVariable,
   QuickstartMetaData,
@@ -58,9 +59,7 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   },
 ];
 
-export interface QuickstartContext {
-  coreDataSourceIds?: string[];
-}
+export interface QuickstartContext extends DataSourceContext {}
 
 class Quickstart {
   public components: Components[];
@@ -74,7 +73,7 @@ class Quickstart {
   constructor(
     identifier: string,
     basePath: string = path.join(__dirname, '..', '..'),
-    context: QuickstartContext = {} 
+    context: QuickstartContext = {}
   ) {
     this.identifier = identifier;
     this.basePath = basePath;
@@ -125,11 +124,7 @@ class Quickstart {
       return (
         componentConfig?.flatMap(
           (name: string) =>
-            new componentType.ctor(
-              name,
-              this.basePath,
-              this.context,
-            )
+            new componentType.ctor(name, this.basePath, this.context)
         ) ?? []
       );
     });
@@ -268,9 +263,12 @@ class Quickstart {
    * Static method that returns a list of every quickstarts
    * @returns - A list of all quickstarts
    */
-  static getAll(basePath?: string, context?: QuickstartContext ): Quickstart[] {
-    const quickstartRoot = basePath ?? path.join(__dirname, '..', '..');
-    const quickstartContext = context ?? {};
+  static getAll(options?: {
+    basePath?: string;
+    context?: QuickstartContext;
+  }): Quickstart[] {
+    const quickstartRoot = options?.basePath ?? path.join(__dirname, '..', '..');
+    const context = options?.context ?? {};
     return glob
       .sync(
         path.join(quickstartRoot, 'quickstarts', '**', 'config.+(yml|yaml)')
@@ -278,7 +276,7 @@ class Quickstart {
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
       .map(
         (localPath) =>
-          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, quickstartContext)
+          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, context)
       );
   }
 }

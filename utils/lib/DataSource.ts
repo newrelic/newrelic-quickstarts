@@ -8,7 +8,6 @@ import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
-import type {QuickstartContext} from './Quickstart';
 import type {
   DataSourceConfig,
   DataSourceConfigInstallDirective,
@@ -24,7 +23,9 @@ export interface DataSourceMutationResponse {
   };
 }
 
-interface DataSourceContext extends QuickstartContext {}
+export interface DataSourceContext {
+  coreDataSourceIds?: string[];
+}
 
 class DataSource extends Component<DataSourceConfig, string> {
   private isCoreDataSource: boolean = false;
