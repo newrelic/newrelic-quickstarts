@@ -31,7 +31,7 @@ export const getRelatedQuickstarts = (
   localComponentPath: string,
   context?: QuickstartContext
 ): Quickstart[] =>
-  Quickstart.getAll(undefined, context ?? {}).filter((q) =>
+  Quickstart.getAll(undefined, context).filter((q) =>
     q.components.some((c) => c.identifier === localComponentPath)
   );
 

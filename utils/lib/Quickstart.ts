@@ -270,6 +270,7 @@ class Quickstart {
    */
   static getAll(basePath?: string, context?: QuickstartContext ): Quickstart[] {
     const quickstartRoot = basePath ?? path.join(__dirname, '..', '..');
+    const quickstartContext = context ?? {};
     return glob
       .sync(
         path.join(quickstartRoot, 'quickstarts', '**', 'config.+(yml|yaml)')
@@ -277,7 +278,7 @@ class Quickstart {
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
       .map(
         (localPath) =>
-          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, context)
+          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, quickstartContext)
       );
   }
 }
