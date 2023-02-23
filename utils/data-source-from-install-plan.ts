@@ -3,12 +3,16 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import InstallPlan from './lib/InstallPlan';
+import Quickstart from './lib/Quickstart';
 
 import type {
   DataSourceConfig,
   DataSourceConfigInstallDirective,
 } from './types/DataSourceConfig';
 import type { InstallPlanInstall } from './types/InstallPlanConfig';
+
+// Get all the quickstarts for icon lookup
+const ALL_QUICKSTARTS = Quickstart.getAll();
 
 /**
  * Maps the configuration for an install plan directive to the format needed
@@ -50,6 +54,19 @@ const ipInstallToDsInstall = ({
   }
 };
 
+/**
+ * Given the title for an _install plan_ this will attempt to find a matching
+ * _quickstart_ and return it's icon. May return `undefined` if no matching
+ * quickstart is found.
+ */
+const getIconFromQuickstart = (title: string): string | undefined => {
+  const quickstart = ALL_QUICKSTARTS.find((qs) => qs.config.title === title);
+
+  // TODO: this icon is probably a relative path, we should pass back an
+  // absolute path
+  return quickstart?.config.icon;
+};
+
 const createDataSourceConfig = ({ config }: InstallPlan): DataSourceConfig => {
   const dsConfig: DataSourceConfig = {
     id: config.id,
@@ -65,6 +82,13 @@ const createDataSourceConfig = ({ config }: InstallPlan): DataSourceConfig => {
       primary: ipInstallToDsInstall(config.install)!,
     },
   };
+
+  // Attempt to find an icon for the data source by trying to find quickstarts
+  // with the same name as the install plan.
+  const icon = getIconFromQuickstart(config.title);
+  if (icon) {
+    dsConfig.icon = icon;
+  }
 
   // NOTE: it's possible for an install plan to _not_ have a fallback.
   if (config.fallback) {
@@ -115,6 +139,12 @@ const main = () => {
     // create a new directory in the data-sources directory
     const dirpath = path.resolve(__dirname, '../data-sources/', config.id);
     fs.mkdirSync(dirpath);
+
+    if (config.icon) {
+      const quickstartIconPath = config.icon;
+      config.icon = 'logo.png';
+      // TODO: copy the quickstartIconPath to the directory above
+    }
 
     // create a new config file
     const filePath = path.resolve(dirpath, 'config.yml');
