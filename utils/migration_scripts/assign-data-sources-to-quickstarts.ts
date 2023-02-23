@@ -74,8 +74,19 @@ const main = async () => {
 
     qsYaml['dataSourceIds'] = nextDataSourceIds;
 
-    console.log(qsYaml);
-    //yml.dump write qs config
+    const yamlOptions = {
+      lineWidth: -1, // Unlimited
+    };
+
+    /* 
+       TODO: Look into how to preserve comments 
+       TODO: Ordering dataSourceIds after installPlans, 
+             or ordering the whole yaml, or neither?
+    */
+    fs.writeFileSync(
+      path.resolve(quickstart.basePath, quickstart.identifier),
+      yaml.dump(qsYaml, yamlOptions)
+    );
   });
 };
 
