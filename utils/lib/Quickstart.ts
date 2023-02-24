@@ -51,24 +51,24 @@ enum ConfigKey {
 interface ConfigToMutationMap {
   configKey: ConfigKey;
   mutationKey: string;
-  ctor: ComponentType;
+  constructor: ComponentType;
 };
 
 const ConfigToMutation: ConfigToMutationMap[] = [
   {
     configKey: ConfigKey.AlertPolicies,
     mutationKey: 'alertConditions',
-    ctor: Alert,
+    constructor: Alert,
   },
   {
     configKey: ConfigKey.Dashboards,
     mutationKey: 'dashboards',
-    ctor: Dashboard,
+    constructor: Dashboard,
   },
   {
     configKey: ConfigKey.DataSource,
     mutationKey: 'dataSourceIds',
-    ctor: DataSource,
+    constructor: DataSource,
   },
 ];
 
@@ -100,7 +100,7 @@ class Quickstart {
 
   /**
    * Returns the file path from the top level of component
-   * @returns - filepath from top level directory.
+   * @returns - filepath from top level direconstructory.
    */
   getConfigFilePath() {
     return path.join(this.basePath, this.identifier);
@@ -146,7 +146,7 @@ class Quickstart {
               return [];
             }
 
-            return new componentType.ctor(name, this.basePath)
+            return new componentType.constructor(name, this.basePath)
           }
         ) ?? []
       );
@@ -245,7 +245,7 @@ class Quickstart {
   private _addComponents(metadata: QuickstartMetaData) {
     return ConfigToMutation.reduce((vars, type) => {
       const componentsOfType = this.components.filter(
-        (c) => c instanceof type.ctor
+        (c) => c instanceof type.constructor
       );
 
       // if we don't have anything for this component type, just return the variables
