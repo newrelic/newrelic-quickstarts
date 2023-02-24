@@ -2,9 +2,6 @@ import * as path from 'path';
 import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
-import DataSource from '../DataSource';
-import Component from '../Component';
-
 
 nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
 
@@ -79,7 +76,7 @@ describe('Quickstart', () => {
       const components = qs.getComponents();
 
       expect(components).toBeDefined();
-      expect(components).toHaveLength(3);
+      expect(components).toHaveLength(2);
     });
 
     test('Ensure quickstart is invalid from invalid components', () => {
@@ -102,39 +99,6 @@ describe('Quickstart', () => {
       qs.validate();
 
       expect(qs.isValid).toBe(false);
-    });
-
-    test('does not contain a Data Source component with a core data source id', () => {
-      const qs = new Quickstart(
-        'quickstarts/mock-quickstart-9/config.yml',
-        MOCK_FILES_BASEPATH,
-        { coreDataSourceIds: ['nodejs'] }
-      );
-
-      const components = qs.getComponents();
-      expect(components).toHaveLength(2);
-      expect(components.map(component => component.config.id)).not.toEqual('nodejs')
-    });
-
-    test('contains a data source component with a community data source and not a core data source', () => {
-      const qs = new Quickstart(
-        'quickstarts/mock-quickstart-10/config.yml',
-        MOCK_FILES_BASEPATH,
-        { coreDataSourceIds: ['nodejs'] }
-      );
-
-      const components = qs.getComponents();
-      const communityDataSource = components.find(
-        (component) => component.config.id === 'test-data-source'
-      );
-
-      // mock quickstart has 1 alert, 1 dashboard, 1 community data source, 1 core data source
-      expect(components).toHaveLength(3);
-      expect(communityDataSource).toBeDefined();
-      expect(communityDataSource.isValid).toBe(true);
-      expect(components.map((component) => component.config.id)).not.toEqual(
-        'nodejs'
-      );
     });
   });
 
@@ -217,18 +181,18 @@ describe('Quickstart', () => {
       qs.validate();
 
       expect(qs.isValid).toBe(false);
-    });
+    })
   });
 
   describe('getAll', () => {
     test('Returns all quickstarts in directory', () => {
-      const quickstarts = Quickstart.getAll({ basePath: MOCK_FILES_BASEPATH });
+      const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
 
       expect(quickstarts).toHaveLength(10);
     });
 
     test('Handles no quickstarts in directory', () => {
-      const quickstarts = Quickstart.getAll({ basePath: 'fake-dir' });
+      const quickstarts = Quickstart.getAll('fake-dir' );
 
       expect(quickstarts).toHaveLength(0);
     });

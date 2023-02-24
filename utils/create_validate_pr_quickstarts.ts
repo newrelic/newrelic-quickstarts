@@ -75,22 +75,6 @@ export const createValidateQuickstarts = async (
   // Get all files from PR
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
 
-  const { coreDataSourceIds, errors } = await getPublishedDataSourceIds();
-
-  if (errors && errors.length) {
-    console.error(
-      'quickstart validate received an error fetching published data source ids'
-    );
-
-    errors.forEach((error) => {
-      console.error(error)
-    })
-
-    return false;
-  }
-
-  const quickstartContext = { coreDataSourceIds }
-
   // Get all quickstart mutation variables
   const quickstarts = filterOutTestFiles(files)
     .filter(isNotRemoved)
@@ -102,17 +86,10 @@ export const createValidateQuickstarts = async (
     )
     .flatMap((filePath) => {
       if (QUICKSTART_CONFIG_REGEXP.test(filePath)) {
-        return new Quickstart(
-          filePath,
-          undefined, // Note: We are ignoring the `basePath` argument here
-          quickstartContext
-        );
+        return new Quickstart(filePath);
       }
 
-      return getRelatedQuickstarts(
-        getComponentLocalPath(filePath),
-        quickstartContext
-      );
+      return getRelatedQuickstarts(getComponentLocalPath(filePath));
     })
     // Remove any duplicate quickstarts
     .reduce<Quickstart[]>((acc, quickstart) => {

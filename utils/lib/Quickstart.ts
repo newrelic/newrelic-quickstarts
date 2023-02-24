@@ -65,16 +65,7 @@ const ConfigToMutation: ConfigToMutationMap[] = [
     mutationKey: 'dashboards',
     constructor: Dashboard,
   },
-  {
-    configKey: ConfigKey.DataSource,
-    mutationKey: 'dataSourceIds',
-    constructor: DataSource,
-  },
 ];
-
-export interface QuickstartContext {
-  coreDataSourceIds?: string[];
-}
 
 class Quickstart {
   public components: Components[];
@@ -83,16 +74,13 @@ class Quickstart {
   public config: QuickstartConfig;
   public isValid = true;
   public basePath: string;
-  public context: QuickstartContext;
 
   constructor(
     identifier: string,
-    basePath: string = path.join(__dirname, '..', '..'),
-    context: QuickstartContext = {}
+    basePath: string = path.join(__dirname, '..', '..')
   ) {
     this.identifier = identifier;
     this.basePath = basePath;
-    this.context = context;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
     this.components = this.getComponents();
@@ -136,18 +124,9 @@ class Quickstart {
         componentType.configKey as keyof QuickstartConfig
       ] as string[]; // its gonna be an array of something :smile:
 
-      const isDataSource = componentType.configKey === ConfigKey.DataSource
-
       return (
         componentConfig?.flatMap(
-          (name: string) => {
-            const isCoreDataSource = this.context?.coreDataSourceIds?.includes(name)
-            if (isDataSource && isCoreDataSource){
-              return [];
-            }
-
-            return new componentType.constructor(name, this.basePath)
-          }
+          (name: string) => new componentType.constructor(name, this.basePath)
         ) ?? []
       );
     });
@@ -286,12 +265,8 @@ class Quickstart {
    * Static method that returns a list of every quickstarts
    * @returns - A list of all quickstarts
    */
-  static getAll(options?: {
-    basePath?: string;
-    context?: QuickstartContext;
-  }): Quickstart[] {
-    const quickstartRoot = options?.basePath ?? path.join(__dirname, '..', '..');
-    const context = options?.context ?? {};
+  static getAll(basePath?: string): Quickstart[] {
+    const quickstartRoot = basePath ?? path.join(__dirname, '..', '..');
     return glob
       .sync(
         path.join(quickstartRoot, 'quickstarts', '**', 'config.+(yml|yaml)')
@@ -299,7 +274,7 @@ class Quickstart {
       .map((quickstartPath) => quickstartPath.split('/quickstarts/').pop()!)
       .map(
         (localPath) =>
-          new Quickstart(`quickstarts/${localPath}`, quickstartRoot, context)
+          new Quickstart(`quickstarts/${localPath}`, quickstartRoot)
       );
   }
 }
