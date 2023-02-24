@@ -29,10 +29,11 @@
       - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
       - [Alert condition fields](#alert-condition-fields)
+    - [Install Plans (DEPRECATED)](#install-plans-deprecated)
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
       - [Data source install modes](#data-source-install-modes)
-    - [Install Plans (deprecated)](#install-plans-deprecated)
+
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
       - [Step-by-step guide to view Local Quickstart Preview](#step-by-step-guide-to-view-local-quickstart-preview)
@@ -545,6 +546,32 @@ example-alert-condition2.yml
 
 For documentation on the rest of the alert condition fields, please review the [Introduction to alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/introduction-alerts)
 
+### Install plans **(DEPRECATED)**
+
+Install plans are now deprecated in favor of using data sources. To learn about data sources and their fields, view the [data sources section](#data-sources) below. If you are migrating from install plans to data sources, the following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
+
+| Install plan field  | Data souce field    |
+| -------------------   | ------------------- |
+| id                  |  id                 |
+| name                | displayName         |
+| description        | description         |
+| install             | install             |
+| install.mode        | install.mode †        |
+| install.destination | install.destination |
+| fallback            | fallback            |
+
+† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+
+_Example of targeted install:_
+
+```yaml
+install:
+  mode: targetedInstall
+  destination:
+    recipeName: fake-install-recipe
+```
+
+
 ### Data sources
 
 Data sources represent a _single_ type of instrumentation, such as an agent, attributes on a transaction, a cloud provider integration, a third-party integration, etc.
@@ -638,31 +665,6 @@ icon.png
       url: https://docs.newrelic.com
   ```
 
-
-### Install plans **(deprecated)**
-
-Install plans are now deprecated in favor of using data sources. The following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
-
-| Install plan field  | Data souce field    |
-| -------------------   | ------------------- |
-| id                  |  id                 |
-| name                | displayName         |
-| description        | description         |
-| install             | install             |
-| install.mode        | install.mode †        |
-| install.destination | install.destination |
-| fallback            | fallback            |
-
-† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources [here](#data-sources). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
-
-_Example of targeted install:_
-
-```yaml
-install:
-  mode: targetedInstall
-  destination:
-    recipeName: fake-install-recipe
-```
 
 
 ## Quickstart Preview
