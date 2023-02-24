@@ -4,6 +4,7 @@ import * as yaml from 'js-yaml';
 
 import InstallPlan from './lib/InstallPlan';
 import Quickstart from './lib/Quickstart';
+import { passedProcessArguments } from './lib/helpers';
 
 import type {
   DataSourceConfig,
@@ -60,11 +61,25 @@ const ipInstallToDsInstall = ({
  * quickstart is found.
  */
 const getIconFromQuickstart = (title: string): string | undefined => {
-  const quickstart = ALL_QUICKSTARTS.find((qs) => qs.config.title === title);
+  const quickstart = ALL_QUICKSTARTS.find(
+    (qs) => qs.config.title.toLowerCase() === title.toLowerCase()
+  );
 
-  // TODO: this icon is probably a relative path, we should pass back an
-  // absolute path
-  return quickstart?.config.icon;
+  let icon = quickstart?.config.icon;
+
+  if (quickstart) {
+    /*
+      identifier is returning /config.yml so currently this is 
+      replacing the last part of the path with /${quickstart.config.icon}
+      Might be a better way to do this
+    */
+    icon = path.join(
+      quickstart.basePath,
+      quickstart?.identifier.replace(/\/[^\/]*$/, `/${quickstart.config.icon}`)
+    );
+  }
+
+  return icon;
 };
 
 const createDataSourceConfig = ({ config }: InstallPlan): DataSourceConfig => {
@@ -98,27 +113,36 @@ const createDataSourceConfig = ({ config }: InstallPlan): DataSourceConfig => {
   return dsConfig;
 };
 
+/*
+ * The sheet we've been preparing for the scripts has a row with data source id, and
+ * if its needing to be created it has TO_BE_CREATED.  We are using a csv of the sheet
+ * and just filtering the rows by TO_BE_CREATED and mapping to just the install plan id
+ */
+const getToBeCreatedIdsFromCsv = (csvPath: string): string[] => {
+  const fullCSVPath = path.resolve(__dirname, csvPath);
+  const csvString = fs.readFileSync(fullCSVPath, { encoding: 'utf-8' });
+
+  const csvRows = csvString.split('\r\n');
+
+  return csvRows
+    .filter((row) => row.includes('TO_BE_CREATED'))
+    .map((newDS) => newDS.split(',')[0]);
+};
+
 /**
  * Helper script that will take an input in the form of a list of install plan
  * IDs and will create files for new _data sources_ based on those install
  * plans.
  */
 const main = () => {
-  // TODO: get input (list of InstallPlan Ids) from CSV
-  const ids = [
-    'third-party-full-story',
-    'gatsby-build-newrelic',
-    'gcp-infrastructure-monitoring',
-    'third-party-github-for-codestream',
-    'third-party-gitlab-integration',
-    'third-party-gcp-pubsub',
-    'cloud-spanner',
-    'third-party-grafana-dashboard-migration',
-    'third-party-grafana-prometheus-integration',
-  ];
+  /**
+   * Script expects a relative path to the csv containing install
+   * plan ids and associated data source ids that need to be created
+   */
+  const [csvRelativePath] = passedProcessArguments();
 
+  const ids = getToBeCreatedIdsFromCsv(csvRelativePath);
   const plans = ids.map((id) => new InstallPlan(id));
-
   // filter out the install plans that use a targetedInstall as the primary
   // install directive.
   const { validPlans, targetedPlans } = plans.reduce<{
@@ -142,15 +166,26 @@ const main = () => {
 
     if (config.icon) {
       const quickstartIconPath = config.icon;
-      config.icon = 'logo.png';
-      // TODO: copy the quickstartIconPath to the directory above
+      config.icon = quickstartIconPath.split('/').pop();
+
+      fs.copyFile(
+        quickstartIconPath,
+        path.join(dirpath, `/${config.icon}`),
+        (err) => {
+          if (err) {
+            console.error('Could not copy icon: ', err);
+          }
+        }
+      );
     }
 
     // create a new config file
     const filePath = path.resolve(dirpath, 'config.yml');
+    const yamlOptions = {
+      lineWidth: -1,
+    };
 
-    // TODO: adjust yaml.DumpOptions to match our YAML styles
-    const fileContent = yaml.dump(config);
+    const fileContent = yaml.dump(config, yamlOptions);
     fs.writeFileSync(filePath, fileContent, { encoding: 'utf8' });
   }
 
