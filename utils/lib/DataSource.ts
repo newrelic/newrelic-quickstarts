@@ -182,7 +182,7 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 }
 
-export const getAllDataSourceFiles = (
+const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
 ): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
