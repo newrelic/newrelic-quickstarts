@@ -3,6 +3,7 @@ import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
 import DataSource from '../DataSource';
+import Component from '../Component';
 
 
 nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
@@ -103,10 +104,7 @@ describe('Quickstart', () => {
       expect(qs.isValid).toBe(false);
     });
 
-    test('does not call DataSource constructor on core data source id', () => {
-      const DataSourceMock = jest
-        .spyOn(DataSource.prototype, 'constructor')
-
+    test('does not contain a Data Source component with a core data source id', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-9/config.yml',
         MOCK_FILES_BASEPATH,
@@ -115,13 +113,10 @@ describe('Quickstart', () => {
 
       const components = qs.getComponents();
       expect(components).toHaveLength(2);
-      expect(DataSourceMock).not.toHaveBeenCalled();
+      expect(components.map(component => component.config.id)).not.toEqual('nodejs')
     });
 
-    test.only('calls DataSource constructor once with 1 community and 1 core data source id', () => {
-      const DataSourceSpy = jest
-        .spyOn(DataSource.prototype, 'constructor')
-
+    test('contains a data source component with a community data source and not a core data source', () => {
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-10/config.yml',
         MOCK_FILES_BASEPATH,
@@ -129,11 +124,17 @@ describe('Quickstart', () => {
       );
 
       const components = qs.getComponents();
+      const communityDataSource = components.find(
+        (component) => component.config.id === 'test-data-source'
+      );
 
-      // mock quickstart has 1 alert, 1 dashboard, 2 data source ids
+      // mock quickstart has 1 alert, 1 dashboard, 1 community data source, 1 core data source
       expect(components).toHaveLength(3);
-      expect(DataSourceSpy).toHaveBeenCalled()
-      
+      expect(communityDataSource).toBeDefined();
+      expect(communityDataSource.isValid).toBe(true);
+      expect(components.map((component) => component.config.id)).not.toEqual(
+        'nodejs'
+      );
     });
   });
 
