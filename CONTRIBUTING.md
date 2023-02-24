@@ -21,7 +21,6 @@
       - [Support Levels](#support-levels)
       - [Icons](#icons)
     - [Data Sources](#data-sources)
-    - [Install Plans (deprecated)](#install-plans-deprecated)
     - [Keywords](#keywords)
     - [Dashboards](#dashboards)
       - [Dashboard JSON Fields](#dashboard-json-fields)
@@ -32,6 +31,8 @@
       - [Alert condition fields](#alert-condition-fields)
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
+      - [Data source install modes](#data-source-install-modes)
+    - [Install Plans (deprecated)](#install-plans-deprecated)
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
       - [Step-by-step guide to view Local Quickstart Preview](#step-by-step-guide-to-view-local-quickstart-preview)
@@ -637,48 +638,31 @@ icon.png
       url: https://docs.newrelic.com
   ```
 
-To add a targeted install to a data source, you can use the `nerdlet` mode with the `nerdletId` set to PUT THING HERE and the `nerdletState` containing `type` `os` and `destination`.
+
+### Install plans **(deprecated)**
+
+Install plans are now deprecated in favor of using data sources. The following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
+
+| Install plan field  | Data souce field    |
+| -------------------   | ------------------- |
+| id                  |  id                 |
+| name                | displayName         |
+| description        | description         |
+| install             | install             |
+| install.mode        | install.mode †        |
+| install.destination | install.destination |
+| fallback            | fallback            |
+
+† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources [here](#data-sources). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+
+_Example of targeted install:_
 
 ```yaml
 install:
-  mode: nerdlet
+  mode: targetedInstall
   destination:
-    nerdletId: some-nerdlet.id
-    nerdletState:
-      type: integration
-      destination: host
-      os: 
-        - linux
-    requiresAccount: true
+    recipeName: fake-install-recipe
 ```
-
-
-### *Install plans (deprecated)*
-
-Install plans are now deprecated in favor of using data sources. The following install plan fields have an equivalent data source field.  
-
-| _Install plan field_  | Data souce field    |
-| -------------------   | ------------------- |
-| _id_                  |  id                 |
-| _name_                | displayName         |
-| _description_         | description         |
-| _install_             | install             |
-| _install.mode_        | install.mode        |
-| _install.destination_ | install.destination |
-| _fallback_            | fallback            |
-
-
-The following fields are not available on data sources. You can create targeted installs using `nerdlet` for `install.mode` on data sources. Read more under data source install modes.
-
-| _Install plan field (deprecated)_ | Notes |
-| ------------------- |  ----------------- |
-| _title_               |  The name of the data source will be used instead of a title.        |
-| _target_              |  You can use `nerdlet` for `install.mode` to add a targeted install. Read more [here](#data-source-install-modes). |
-| _target.type_         |  You can set the `type` as a field in `install.destination.nerdletState`  Read more [here](#data-source-install-modes). |
-| _target.destination_  |  You can set the `destination` as a field in `install.destination.nerdletState` Read more [here](#data-source-install-modes). |
-| _target.os_           |  You can set the `os` as a field in `install.destination.nerdletState` Read more [here](#data-source-install-modes). |
-
-
 
 
 ## Quickstart Preview
