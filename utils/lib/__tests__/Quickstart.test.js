@@ -155,7 +155,6 @@ describe('Quickstart', () => {
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
-
   });
 
   describe('validate', () => {
@@ -181,7 +180,7 @@ describe('Quickstart', () => {
       qs.validate();
 
       expect(qs.isValid).toBe(false);
-    })
+    });
   });
 
   describe('getAll', () => {
@@ -192,7 +191,7 @@ describe('Quickstart', () => {
     });
 
     test('Handles no quickstarts in directory', () => {
-      const quickstarts = Quickstart.getAll('fake-dir' );
+      const quickstarts = Quickstart.getAll('fake-dir');
 
       expect(quickstarts).toHaveLength(0);
     });
