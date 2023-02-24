@@ -74,15 +74,33 @@ const main = async () => {
 
     qsYaml['dataSourceIds'] = nextDataSourceIds;
 
+    // Get positions of top level keys and move dataSourceIds to be adjacent to installPlans fields
+    // This gets used in the sortKeys option for the yaml dump
+    const yamlKeys = Object.keys(qsYaml);
+    yamlKeys.splice(yamlKeys.indexOf('dataSourceIds'), 1);
+    yamlKeys.splice(yamlKeys.indexOf('installPlans') + 1, 0, 'dataSourceIds');
+
     const yamlOptions = {
       lineWidth: -1, // Unlimited
+      sortKeys: (a: string, b: string) => {
+        const aIdx = yamlKeys.indexOf(a);
+        const bIdx = yamlKeys.indexOf(b);
+
+        // Incase we encounter a non-top level key, preserve the order
+        if (aIdx === -1 || bIdx === -1) {
+          return 0;
+        }
+
+        if (aIdx < bIdx) {
+          return -1;
+        } else if (aIdx > bIdx) {
+          return 1;
+        } else {
+          return 0;
+        }
+      },
     };
 
-    /* 
-       TODO: Look into how to preserve comments 
-       TODO: Ordering dataSourceIds after installPlans, 
-             or ordering the whole yaml, or neither?
-    */
     fs.writeFileSync(
       path.resolve(quickstart.basePath, quickstart.identifier),
       yaml.dump(qsYaml, yamlOptions)
