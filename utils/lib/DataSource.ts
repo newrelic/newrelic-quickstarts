@@ -23,39 +23,7 @@ export interface DataSourceMutationResponse {
   };
 }
 
-export interface DataSourceContext {
-  coreDataSourceIds?: string[];
-}
-
 class DataSource extends Component<DataSourceConfig, string> {
-  private isCoreDataSource: boolean = false;
-
-  constructor(
-    identifier: string,
-    basePath: string = path.join(__dirname, '..', '..'),
-    context: DataSourceContext = {}
-  ) {
-    super(identifier, basePath);
-    const coreDataSourceIds = context?.coreDataSourceIds ?? []
-    this.isCoreDataSource = coreDataSourceIds?.includes(identifier) ?? false;
-
-    // The `super()` constructor gets called prior to `this.isCoreDataSource`
-    // is defined. Due to this, the instance of a data source will
-    // initially be marked as `invalid`.
-    if (this.isCoreDataSource) {
-      this.identifier = identifier;
-      this.isValid = true;
-
-      // Since we know this is a CORE data source,
-      // when a quickstart submits a mutation, it relys on the
-      // data source component to supply the 'ID' of the data source.
-
-      // The data source doesn't live in this repository, so we can
-      // give supply the mutation variables what it wants (the data source ID)
-      this.config = { id: this.identifier } as DataSourceConfig;
-    }
-  }
-
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
