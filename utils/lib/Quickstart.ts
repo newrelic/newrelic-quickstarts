@@ -274,8 +274,8 @@ class Quickstart {
     if (invalidComponents.length) {
       console.error('The following components are not valid:');
 
-      for (const invalidComponent of invalidComponents) {
-        console.error(`\t ${invalidComponent}`);
+      for (const { identifier: localPath } of invalidComponents) {
+        console.error(`\t ${localPath}`);
       }
 
       this.isValid = false;
