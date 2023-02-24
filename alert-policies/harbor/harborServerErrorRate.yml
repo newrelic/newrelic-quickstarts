@@ -1,0 +1,42 @@
+# Name of the alert
+name: Harbor Server Error Rate
+
+# Description and details
+description: |+
+  This alert will trigger when the rate of 5xx responses from HTTP requests in Harbor exceeds 25 for 5 minutes.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT (filter(sum(harbor_core_http_request_total), WHERE code LIKE '5%')/sum(harbor_core_http_request_total))*100 FACET instance"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE 
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 25
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+# Loss of Signal Settings
+expiration:
+  closeViolationsOnExpiration: false
+  openViolationOnExpiration: false
+
+# Advanced Signal Settings
+signal:
+  aggregationDelay: 120
+  aggregationMethod: EVENT_FLOW
+  aggregationTimer: null
+  aggregationWindow: 60
+  fillOption: NONE
+  fillValue: null
+  slideBy: null
+
+# Duration after which a violation automatically closes
+violationTimeLimitSeconds: 259200
