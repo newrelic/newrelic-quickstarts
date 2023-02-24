@@ -156,13 +156,13 @@ alertPolicies:
   - example-alert-policy
   - another-example-alert-policy
 
-# References to data sources by file path, this references a data source located at `data-sources/example-data-source`
+# References to data sources by their id. These can be either CORE or a COMMUNITY data source. 
 # For more information on data source definitions, see the section below.
 dataSourceIds:
   - example-data-source
 ```
 
-_Note:_ For a quickstart to be "installable" through New Relic, it must have a data source.
+_Note:_ For a quickstart to be "installable" through New Relic, it must have a data source. The data source ids can either refer
 
 An example quickstart directory looks like this:
 
@@ -189,7 +189,7 @@ icon.png
 | icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                         |
 | dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
 | alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
-| dataSourceIds | no        |                                                                   | A list of data sources Ids                                                                                 |
+| dataSourceIds | no        |                                                                   | A list of data sources ids.                                                                                 |
 
 #### Style tips
 
@@ -333,12 +333,16 @@ documentation:
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
 
-### Data Sources
+### Data Source Ids
 
-When adding a data source the following format should be used. Each entry in the list is the path to a data source under the [data-sources](./data-sources) directory. Example: for `argocd` located at `data-sources/argocd/config.yml`, you would add the `argocd` part to your list of data sources.
+When adding a data source the following format should be used. Data source ids can either refer to a CORE data source or a COMMUNITY data source. 
+
+For a list of the available CORE data sources, you can use NerdGraph for to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
+
+COMMUNITY data sources are defined under the [data-sources](./data-sources) directory. COMMUNITY data sources should be referred to the path in that directory.  COMMUNITY data source ids should be the id defined under the `config.yml` for that data source. Example: for the data source located at `data-sources/argocd/config.yml`, you would use the `id` defined in that yaml, which is `argocd`.
 
 ```yml
-dataSources:
+dataSourceIds:
   - argocd
   - postman
 ```
