@@ -43,7 +43,6 @@ type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
 enum ConfigKey {
-  DataSource = 'dataSourceIds',
   AlertPolicies = 'alertPolicies',
   Dashboards = 'dashboards', 
 };
