@@ -21,6 +21,7 @@
       - [Support Levels](#support-levels)
       - [Icons](#icons)
     - [Data Sources](#data-sources)
+    - [Install Plans (deprecated)](#install-plans-deprecated)
     - [Keywords](#keywords)
     - [Dashboards](#dashboards)
       - [Dashboard JSON Fields](#dashboard-json-fields)
@@ -546,7 +547,9 @@ For documentation on the rest of the alert condition fields, please review the [
 ### Data sources
 
 Data sources represent a _single_ type of instrumentation, such as an agent, attributes on a transaction, a cloud provider integration, a third-party integration, etc.
-They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository.
+They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository. 
+
+To see the available CORE data sources, you can use NerdGraph for to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
 
 COMMUNITY data sources live in the `data-sources/` directory and _CANNOT_ be nested. Example: `data-sources/example/config.yml`
 
@@ -603,10 +606,80 @@ icon.png
 | icon                | yes       |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                                                                   |
 | keywords            | no        |         | A list of keywords for searching and filtering the catalogue                                                                                                                              |
 | categoryTerms       | no        |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under                                                             |
-| install             | yes       |         | The primary installation method. See [Install fields](#install-fields) for examples on how to use the `destination` field. _Note_: Data sources do not support the `targetedInstall` mode |
+| install             | yes       |         | The primary installation method. See [Install modes](#data-source-install-modes) for examples on how to use the `destination` field. |
 | install.mode        | yes       |         | The type of installation. Options are one of `link` or `nerdlet`                                                                                                                          |
 | install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode          |
 | fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                         |
+
+#### Data source install modes 
+- `nerdlet`
+
+  - Directs the user to a nerdlet to finish installing instrumentation
+  - Example:
+
+  ```yaml
+  install:
+    mode: nerdlet
+    destination:
+      nerdletId: some-nerdlet.id
+      nerdletState:
+        optionalKey: optional-value
+      requiresAccount: true
+  ```
+
+- `link`
+  - Directs the user to a documentation link to finish installing instrumentation
+  - Example:
+  ```yaml
+  install:
+    mode: link
+    destination:
+      url: https://docs.newrelic.com
+  ```
+
+To add a targeted install to a data source, you can use the `nerdlet` mode with the `nerdletId` set to PUT THING HERE and the `nerdletState` containing `type` `os` and `destination`.
+
+```yaml
+install:
+  mode: nerdlet
+  destination:
+    nerdletId: some-nerdlet.id
+    nerdletState:
+      type: integration
+      destination: host
+      os: 
+        - linux
+    requiresAccount: true
+```
+
+
+### *Install plans (deprecated)*
+
+Install plans are now deprecated in favor of using data sources. The following install plan fields have an equivalent data source field.  
+
+| _Install plan field_  | Data souce field    |
+| -------------------   | ------------------- |
+| _id_                  |  id                 |
+| _name_                | displayName         |
+| _description_         | description         |
+| _install_             | install             |
+| _install.mode_        | install.mode        |
+| _install.destination_ | install.destination |
+| _fallback_            | fallback            |
+
+
+The following fields are not available on data sources. You can create targeted installs using `nerdlet` for `install.mode` on data sources. Read more under data source install modes.
+
+| _Install plan field (deprecated)_ | Notes |
+| ------------------- |  ----------------- |
+| _title_               |  The name of the data source will be used instead of a title.        |
+| _target_              |  You can use `nerdlet` for `install.mode` to add a targeted install. Read more [here](#data-source-install-modes). |
+| _target.type_         |  You can set the `type` as a field in `install.destination.nerdletState`  Read more [here](#data-source-install-modes). |
+| _target.destination_  |  You can set the `destination` as a field in `install.destination.nerdletState` Read more [here](#data-source-install-modes). |
+| _target.os_           |  You can set the `os` as a field in `install.destination.nerdletState` Read more [here](#data-source-install-modes). |
+
+
+
 
 ## Quickstart Preview
 
