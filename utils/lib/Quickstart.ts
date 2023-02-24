@@ -16,7 +16,6 @@ import {
   fetchNRGraphqlResults,
   getCategoryTermsFromKeywords,
 } from './nr-graphql-helpers';
-import type { DataSourceContext } from './DataSource';
 import type {
   QuickstartMutationVariable,
   QuickstartMetaData,
@@ -43,23 +42,39 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
 type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
+enum ConfigKey {
+  DataSource = 'dataSourceIds',
+  AlertPolicies = 'alertPolicies',
+  Dashboards = 'dashboards', 
+};
+
 interface ConfigToMutationMap {
-  configKey: string;
+  configKey: ConfigKey;
   mutationKey: string;
   ctor: ComponentType;
-}
+};
 
 const ConfigToMutation: ConfigToMutationMap[] = [
-  { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
-  { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
+    configKey: ConfigKey.AlertPolicies,
+    mutationKey: 'alertConditions',
+    ctor: Alert,
+  },
+  {
+    configKey: ConfigKey.Dashboards,
+    mutationKey: 'dashboards',
+    ctor: Dashboard,
+  },
+  {
+    configKey: ConfigKey.DataSource,
     mutationKey: 'dataSourceIds',
     ctor: DataSource,
   },
 ];
 
-export interface QuickstartContext extends DataSourceContext {}
+export interface QuickstartContext {
+  coreDataSourceIds?: string[];
+}
 
 class Quickstart {
   public components: Components[];
@@ -121,10 +136,18 @@ class Quickstart {
         componentType.configKey as keyof QuickstartConfig
       ] as string[]; // its gonna be an array of something :smile:
 
+      const isDataSource = componentType.configKey === ConfigKey.DataSource
+
       return (
         componentConfig?.flatMap(
-          (name: string) =>
-            new componentType.ctor(name, this.basePath, this.context)
+          (name: string) => {
+            const isCoreDataSource = this.context?.coreDataSourceIds?.includes(name)
+            if (isDataSource && isCoreDataSource){
+              return [];
+            }
+
+            return new componentType.ctor(name, this.basePath)
+          }
         ) ?? []
       );
     });
