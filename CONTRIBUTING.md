@@ -333,7 +333,7 @@ documentation:
 - Aspect ratio: 1:1
 - 250px (width) x 100px (height)
 
-### Data Source Ids
+### Data Sources
 
 When adding a data source the following format should be used. Data source ids can either refer to a CORE data source or a COMMUNITY data source. 
 
@@ -552,7 +552,7 @@ For documentation on the rest of the alert condition fields, please review the [
 
 ### Install plans **(DEPRECATED)**
 
-Install plans are now deprecated in favor of using data sources. To learn about data sources and their fields, view the [data sources section](#data-sources) below. If you are migrating from install plans to data sources, the following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
+Install plans are now deprecated in favor of using data sources. To learn about data sources and their fields, view the [data sources section](#data-sources-1) below. If you are migrating from install plans to data sources, the following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
 
 | Install plan field  | Data souce field    |
 | -------------------   | ------------------- |
@@ -564,7 +564,7 @@ Install plans are now deprecated in favor of using data sources. To learn about 
 | install.destination | install.destination |
 | fallback            | fallback            |
 
-† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
 
 _Example of targeted install:_
 
