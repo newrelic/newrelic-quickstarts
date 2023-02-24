@@ -2,7 +2,8 @@ import * as path from 'path';
 import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
-import Dashboard from '../Dashboard';
+import DataSource from '../DataSource';
+
 
 nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
 
@@ -101,6 +102,39 @@ describe('Quickstart', () => {
 
       expect(qs.isValid).toBe(false);
     });
+
+    test('does not call DataSource constructor on core data source id', () => {
+      const DataSourceMock = jest
+        .spyOn(DataSource.prototype, 'constructor')
+
+      const qs = new Quickstart(
+        'quickstarts/mock-quickstart-9/config.yml',
+        MOCK_FILES_BASEPATH,
+        { coreDataSourceIds: ['nodejs'] }
+      );
+
+      const components = qs.getComponents();
+      expect(components).toHaveLength(2);
+      expect(DataSourceMock).not.toHaveBeenCalled();
+    });
+
+    test.only('calls DataSource constructor once with 1 community and 1 core data source id', () => {
+      const DataSourceSpy = jest
+        .spyOn(DataSource.prototype, 'constructor')
+
+      const qs = new Quickstart(
+        'quickstarts/mock-quickstart-10/config.yml',
+        MOCK_FILES_BASEPATH,
+        { coreDataSourceIds: ['nodejs'] }
+      );
+
+      const components = qs.getComponents();
+
+      // mock quickstart has 1 alert, 1 dashboard, 2 data source ids
+      expect(components).toHaveLength(3);
+      expect(DataSourceSpy).toHaveBeenCalled()
+      
+    });
   });
 
   describe('getMutationVariables', () => {
@@ -156,6 +190,7 @@ describe('Quickstart', () => {
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
+
   });
 
   describe('validate', () => {
@@ -188,7 +223,7 @@ describe('Quickstart', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll({ basePath: MOCK_FILES_BASEPATH });
 
-      expect(quickstarts).toHaveLength(9);
+      expect(quickstarts).toHaveLength(10);
     });
 
     test('Handles no quickstarts in directory', () => {
