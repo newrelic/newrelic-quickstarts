@@ -131,6 +131,11 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   private _getIconUrl() {
     const { icon } = this.config;
+
+    if (!icon) {
+      return undefined;
+    }
+
     const dirName = path.dirname(this.configPath);
     const relDirName = Component.removeBasePath(dirName, this.basePath);
 
