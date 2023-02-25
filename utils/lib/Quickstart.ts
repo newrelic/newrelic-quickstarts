@@ -87,7 +87,7 @@ class Quickstart {
 
   /**
    * Returns the file path from the top level of component
-   * @returns - filepath from top level direconstructory.
+   * @returns - filepath from top level directory.
    */
   getConfigFilePath() {
     return path.join(this.basePath, this.identifier);
