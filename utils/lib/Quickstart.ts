@@ -44,14 +44,14 @@ type Components = InstanceType<ComponentType>;
 
 enum ConfigKey {
   AlertPolicies = 'alertPolicies',
-  Dashboards = 'dashboards',
-}
+  Dashboards = 'dashboards', 
+};
 
 interface ConfigToMutationMap {
   configKey: ConfigKey;
   mutationKey: string;
   constructor: ComponentType;
-}
+};
 
 const ConfigToMutation: ConfigToMutationMap[] = [
   {
@@ -66,10 +66,6 @@ const ConfigToMutation: ConfigToMutationMap[] = [
   },
 ];
 
-export interface QuickstartContext {
-  coreDataSourceIds: string[];
-}
-
 class Quickstart {
   public components: Components[];
   public identifier: string; // Local path to the component. Ex: python/flask
@@ -77,19 +73,16 @@ class Quickstart {
   public config: QuickstartConfig;
   public isValid = true;
   public basePath: string;
-  private context: QuickstartContext;
 
   constructor(
     identifier: string,
-    basePath: string = path.join(__dirname, '..', '..'),
-    context: QuickstartContext = { coreDataSourceIds: [] }
+    basePath: string = path.join(__dirname, '..', '..')
   ) {
     this.identifier = identifier;
     this.basePath = basePath;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
     this.components = this.getComponents();
-    this.context = context;
   }
 
   /**

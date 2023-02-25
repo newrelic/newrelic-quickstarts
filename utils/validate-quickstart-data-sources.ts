@@ -18,15 +18,16 @@ export const validateDataSourceIds = async (
   const { coreDataSourceIds, errors } = await getPublishedDataSourceIds();
 
   if (errors && errors.length) {
-    console.error('Error fetching published data sources');
-    errors.forEach((error) => {
-      console.error(error.message);
-    });
+    console.error('Error fetching published data sources')
+    errors.forEach(error => {
+      console.error(error.message)
+    })
     if (require.main === module) {
       process.exit(1);
     }
-    return;
+    return
   }
+
 
   const quickstartsWithInvalidDataSources = filterQuickstartConfigFiles(
     githubFiles
@@ -74,7 +75,7 @@ export const validateDataSourceIds = async (
 };
 
 const main = async () => {
-  const [GITHUB_API_URL] = passedProcessArguments();
+  const [GITHUB_API_URL ] = passedProcessArguments();
   const githubToken = process.env.GITHUB_TOKEN;
 
   if (!githubToken) {
@@ -82,10 +83,10 @@ const main = async () => {
     process.exit(1);
   }
 
-  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken)
 
   await validateDataSourceIds(filterOutTestFiles(files));
-};
+}
 
 if (require.main === module) {
   main();

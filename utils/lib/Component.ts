@@ -3,33 +3,18 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import { GITHUB_REPO_BASE_URL } from '../constants';
-import { QuickstartContext } from './Quickstart';
-
-export interface ComponentContext extends QuickstartContext {
-  basePath: string;
-}
-
 abstract class Component<ConfigType, MutationVariablesType> {
   public identifier: string; // Local path to the component. Ex: python/flask
   public configPath: string; // Absolute path to the config file within the repository
   public config: ConfigType;
   public isValid = true;
   public basePath: string;
-  public context: ComponentContext | undefined;
 
   constructor(
     idenifier: string,
-    context: string | ComponentContext = path.join(__dirname, '..', '..')
-    //basePath: string = path.join(__dirname, '..', '..'),
-    //options?: Record<string, unknown>
+    basePath: string = path.join(__dirname, '..', '..')
   ) {
-    if (typeof context === 'string') {
-      this.basePath = context;
-    } else {
-      this.basePath = context.basePath;
-      this.context = context;
-    }
-
+    this.basePath = basePath;
     this.identifier = idenifier;
     this.configPath = this.getConfigFilePath();
     this.config = this.getConfigContent();
