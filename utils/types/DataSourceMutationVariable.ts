@@ -9,7 +9,7 @@ export interface DataSourceMetadataInput {
   keywords?: string[];
   description?: string;
   displayName: string;
-  icon: string;
+  icon?: string;
   install: DataSourceInstallInput;
 }
 
