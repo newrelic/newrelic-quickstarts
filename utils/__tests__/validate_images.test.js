@@ -35,14 +35,13 @@ describe('Action: validate images', () => {
   test('validateFileSizes, given an image size of <= 4MB, does not throw an error', () => {
     fs.statSync.mockReturnValue({ size: 1000 });
 
-
     validateFileSizes(globMockSize);
     expect(core.setFailed).not.toHaveBeenCalled();
     expect(global.console.warn).not.toHaveBeenCalled();
   });
 
   test('validateFileSizes, given an image size of > 4MB, throws an error', () => {
-   fs.statSync.mockReturnValue({ size: 500000000 });
+    fs.statSync.mockReturnValue({ size: 500000000 });
 
     validateFileSizes(globMockSize);
     expect(core.setFailed).toHaveBeenCalled();
@@ -84,9 +83,8 @@ describe('Action: validate images', () => {
     mockGlobSync(['dashboard ID']);
 
     validateImageCounts(globMock);
-    
+
     expect(core.setFailed).toHaveBeenCalled();
     expect(global.console.warn).toHaveBeenCalledTimes(2);
   });
-
 });
