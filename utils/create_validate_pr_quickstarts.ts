@@ -3,7 +3,7 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import { translateMutationErrors, chunk, getPublishedDataSourceIds } from './lib/nr-graphql-helpers';
+import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
 
 import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
