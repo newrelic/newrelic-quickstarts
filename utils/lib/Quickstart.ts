@@ -42,19 +42,27 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
 type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
+enum ConfigKey {
+  AlertPolicies = 'alertPolicies',
+  Dashboards = 'dashboards',
+}
+
 interface ConfigToMutationMap {
-  configKey: string;
+  configKey: ConfigKey;
   mutationKey: string;
-  ctor: ComponentType;
+  constructor: ComponentType;
 }
 
 const ConfigToMutation: ConfigToMutationMap[] = [
-  { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
-  { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
-    mutationKey: 'dataSourceIds',
-    ctor: DataSource,
+    configKey: ConfigKey.AlertPolicies,
+    mutationKey: 'alertConditions',
+    constructor: Alert,
+  },
+  {
+    configKey: ConfigKey.Dashboards,
+    mutationKey: 'dashboards',
+    constructor: Dashboard,
   },
 ];
 
@@ -124,11 +132,7 @@ class Quickstart {
 
       return (
         componentConfig?.flatMap(
-          (name: string) =>
-            new componentType.ctor(name, {
-              basePath: this.basePath,
-              ...this.context,
-            })
+          (name: string) => new componentType.constructor(name, this.basePath)
         ) ?? []
       );
     });
@@ -226,7 +230,7 @@ class Quickstart {
   private _addComponents(metadata: QuickstartMetaData) {
     return ConfigToMutation.reduce((vars, type) => {
       const componentsOfType = this.components.filter(
-        (c) => c instanceof type.ctor
+        (c) => c instanceof type.constructor
       );
 
       // if we don't have anything for this component type, just return the variables
