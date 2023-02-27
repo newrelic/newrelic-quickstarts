@@ -581,7 +581,7 @@ install:
 Data sources represent a _single_ type of instrumentation, such as an agent, attributes on a transaction, a cloud provider integration, a third-party integration, etc.
 They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository. 
 
-To see the available CORE data sources, you can use NerdGraph for to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
+To see the available CORE data sources, you can use NerdGraph to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
 
 COMMUNITY data sources live in the `data-sources/` directory and _CANNOT_ be nested. Example: `data-sources/example/config.yml`
 
