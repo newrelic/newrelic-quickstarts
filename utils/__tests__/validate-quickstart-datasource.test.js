@@ -17,7 +17,7 @@ jest.mock('../lib/github-api-helpers', () => ({
 jest.mock('../lib/nr-graphql-helpers.ts', () => ({
   ...jest.requireActual('../lib/nr-graphql-helpers.ts'),
   getPublishedDataSourceIds: jest.fn(),
-})
+}));
 
 jest.mock('../lib/Quickstart');
 jest.mock('../lib/DataSource');
@@ -48,10 +48,10 @@ describe('Action: validate data source id', () => {
   });
 
   beforeEach(() => {
-    nrGraphQlHelpers
-      .getPublishedDataSourceIds
-      .mockResolvedValueOnce({coreDataSourceIds: ['node-js']});
-  })
+    nrGraphQlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      coreDataSourceIds: ['node-js'],
+    });
+  });
 
   test('succeeds with valid data source id', async () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);
@@ -87,7 +87,7 @@ describe('Action: validate data source id', () => {
   test('succeeds when valid quickstart contains a core data source id', async () => {
     const files = mockGithubAPIFiles([validQuickstartWithoutDataSource]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
-    
+
     Quickstart.mockImplementation(() => {
       return { config: { dataSourceIds: ['node-js'] } };
     });
@@ -95,28 +95,25 @@ describe('Action: validate data source id', () => {
       return { isValid: false };
     });
 
-    
     await validateDataSourceIds(files);
     expect(global.console.error).not.toHaveBeenCalled();
     expect(DataSource).toHaveBeenCalledTimes(0);
-
   });
 
   test('fails when nerdgraph responds with an error', async () => {
-    nrGraphQlHelpers.getPublishedDataSourceIds.mockReset(); 
+    nrGraphQlHelpers.getPublishedDataSourceIds.mockReset();
 
     const files = mockGithubAPIFiles([validQuickstartWithoutDataSource]);
     githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
-    
-    nrGraphQlHelpers
-      .getPublishedDataSourceIds
-      .mockResolvedValueOnce({errors: [new Error('test error')]});
 
+    nrGraphQlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      errors: [new Error('test error')],
+    });
 
-    nrGraphQlHelpers
-      .getPublishedDataSourceIds
-      .mockResolvedValueOnce({errors: [new Error('fake error')]})
-    
+    nrGraphQlHelpers.getPublishedDataSourceIds.mockResolvedValueOnce({
+      errors: [new Error('fake error')],
+    });
+
     Quickstart.mockImplementation(() => {
       return { config: { dataSourceIds: ['node-js'] } };
     });
@@ -124,13 +121,11 @@ describe('Action: validate data source id', () => {
       return { isValid: false };
     });
 
-    
     await validateDataSourceIds(files);
     expect(global.console.error).toHaveBeenCalledTimes(2);
     expect(Quickstart).toHaveBeenCalledTimes(0);
     expect(DataSource).toHaveBeenCalledTimes(0);
-
-  })
+  });
 
   test('fails with invalid data source id', async () => {
     const files = mockGithubAPIFiles([invalidQuickstartFilename1]);
