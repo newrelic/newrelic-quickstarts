@@ -27,7 +27,7 @@ export const prop =
  * @returns quickstarts that use the passed in component
  */
 export const getRelatedQuickstarts = (
-  localComponentPath: string
+  localComponentPath: string,
 ): Quickstart[] =>
   Quickstart.getAll().filter((q) =>
     q.components.some((c) => c.identifier === localComponentPath)

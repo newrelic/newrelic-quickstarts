@@ -11,7 +11,7 @@ export interface InstallPlanConfig {
   description: string;
   target: InstallPlanTarget;
   install: InstallPlanInstall;
-  fallback: InstallPlanInstall;
+  fallback?: InstallPlanInstall;
 }
 
 export interface InstallPlanTarget {
