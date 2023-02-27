@@ -596,15 +596,17 @@ description: |
   test
 
 install:
-  primary:
-    nerdlet:
-      nerdletId: test.test-nerdlet
-      nerdletState:
-        test_state: test
-      requiresAccount: true
-  fallback:
-    link:
-      url: https://newrelic.com
+  mode: nerdlet
+  destination:
+    nerdletId: some-nerdlet.id
+    nerdletState:
+      optionalKey: optional-value
+    requiresAccount: true
+
+fallback:
+  mode: link
+  destination:
+    url: https://newrelic.com
 
 # An icon for display within the catalog
 icon: icon.png
