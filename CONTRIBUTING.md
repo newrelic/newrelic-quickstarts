@@ -281,7 +281,7 @@ summary: |
 
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
-- Every quick start that should be "installable" needs a `documentation URL` and an `data source` configuration if you want to use the guided install flow.
+- Every quick start that should be "installable" needs a `documentation URL` and a `data source` configuration if you want to use the guided install flow.
 - Use the proper YAML formatting `|` for the URL description
 - Use the proper YAML formatting `>-` for documentation URL references.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
