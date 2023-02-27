@@ -32,7 +32,7 @@
     - [Install Plans (DEPRECATED)](#install-plans-deprecated)
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
-      - [Data source install modes](#data-source-install-modes)
+      - [Data source install fields](#data-source-install-fields)
 
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
@@ -556,15 +556,15 @@ Install plans are now deprecated in favor of using data sources. To learn about 
 
 | Install plan field  | Data souce field    |
 | -------------------   | ------------------- |
-| id                  |  id                 |
-| name                | displayName         |
-| description        | description         |
-| install             | install             |
-| install.mode        | install.mode †        |
-| install.destination | install.destination |
-| fallback            | fallback            |
+| id                  |  `id`                 |
+| name                | `displayName`         |
+| description        | `description`         |
+| install             | `install`            |
+| install.mode        | `install.primary.nerdlet` or `install.primary.link` †        |
+| install.destination | `install.primary.nerdlet.nerdletId` or `install.primary.link.url` |
+| fallback            | `install.fallback`            |
 
-† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+† _The `install.primary` or `install.fallback` field on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
 
 _Example of targeted install:_
 
@@ -638,12 +638,13 @@ icon.png
 | icon                | yes       |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                                                                   |
 | keywords            | no        |         | A list of keywords for searching and filtering the catalogue                                                                                                                              |
 | categoryTerms       | no        |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under                                                             |
-| install             | yes       |         | The primary installation method. See [Install modes](#data-source-install-modes) for examples on how to use the `destination` field. |
-| install.mode        | yes       |         | The type of installation. Options are one of `link` or `nerdlet`                                                                                                                          |
-| install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode          |
-| fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                         |
+| install             | yes       |         | Configuration for the installation. See [Install fields](#data-source-install-fields) for examples on how to use the `primary` and `fallback` fields. |
+| install.primary        | yes       |         | The type of installation. Options are one of `link` or `nerdlet` as a subfield.                                                                                                                         |
+| install.primary.nerdlet | no if `install.primary.link` is defined      |         | Configuration for installation of `nerdlet` type. Must have `nerdletId`, `requiresAccount` and optionally `nerdletState` as subfields. |
+| install.primary.link | no if `install.primary.nerdlet` is defined      |         | Configuration for installation of `link` type. Must have `url` as a subfield. |
+| install.fallback            | no        |         | Uses the same fields as `install.primary`                                                                                                                                                         |
 
-#### Data source install modes 
+#### Data source install fields
 - `nerdlet`
 
   - Directs the user to a nerdlet to finish installing instrumentation
@@ -651,12 +652,12 @@ icon.png
 
   ```yaml
   install:
-    mode: nerdlet
-    destination:
-      nerdletId: some-nerdlet.id
-      nerdletState:
-        optionalKey: optional-value
-      requiresAccount: true
+    primary:
+      nerdlet:
+        nerdletId: test.test-nerdlet
+        nerdletState:
+          test_state: test
+        requiresAccount: true
   ```
 
 - `link`
@@ -664,9 +665,9 @@ icon.png
   - Example:
   ```yaml
   install:
-    mode: link
-    destination:
-      url: https://docs.newrelic.com
+    primary: 
+      link:
+        url: https://newrelic.com
   ```
 
 
