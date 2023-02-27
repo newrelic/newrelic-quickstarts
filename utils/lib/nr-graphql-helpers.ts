@@ -101,7 +101,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 export const translateMutationErrors = (
   errors: ErrorOrNerdGraphError[],
   filePath: string,
-  installPlanErrors: NerdGraphError[] = []
+  componentErrors: NerdGraphError[] = []
 ): void => {
   console.error(
     `\nERROR: The following errors occurred while validating: ${filePath}`
@@ -116,12 +116,12 @@ export const translateMutationErrors = (
     }
   });
 
-  if (installPlanErrors.length > 0) {
+  if (componentErrors.length > 0) {
     console.error(
-      `DEBUG: The following are install plan errors that occured while validating: ${filePath} and can be safely ignored.`
+      `DEBUG: The following are component errors that occured while validating: ${filePath} and can be safely ignored.`
     );
 
-    installPlanErrors.forEach((error) => {
+    componentErrors.forEach((error) => {
       if (error.extensions && error.extensions.argumentPath) {
         const errorPrefix = error.extensions.argumentPath.join('/');
 
@@ -221,9 +221,7 @@ export const getPublishedDataSourceIds =
       CoreDataSourceSearchResults
     >({ queryString: CORE_DATA_SOURCES_QUERY, variables: {} });
 
-    const {
-      search: { results },
-    } = data.actor.nr1Catalog;
+    const results = data?.actor?.nr1Catalog?.search?.results ?? [];
 
     const coreDataSourceIds = results.flatMap((result) => result.id);
 
