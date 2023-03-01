@@ -55,7 +55,7 @@ const main = async () => {
     .filter(Boolean)
     .map((filename) => new DataSource(filename));
 
-  const results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
+  let results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
     name: string;
   })[] = [];
   // Submit all of the mutations (in chunks of 5)
@@ -64,7 +64,7 @@ const main = async () => {
       c.map((source) => source.submitMutation(isDryRun))
     );
 
-    results.concat(res);
+    results = [...results, ...res];
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);

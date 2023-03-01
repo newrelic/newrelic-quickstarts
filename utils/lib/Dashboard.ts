@@ -188,7 +188,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     const { ids: currDataSourceIds, errors: queryErrors } =
       await this.getRequiredDataSources(templateId);
 
-    if (queryErrors) {
+    if (queryErrors && queryErrors.length > 0) {
       return { errors: queryErrors };
     }
 
