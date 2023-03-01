@@ -114,10 +114,6 @@ export const translateMutationErrors = (
     } else {
       console.error(`- ${error.message}`);
     }
-
-    if (error.message) {
-      console.error(error.message);
-    }
   });
 
   if (componentErrors.length > 0) {
