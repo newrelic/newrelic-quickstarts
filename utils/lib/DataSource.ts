@@ -131,6 +131,11 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   private _getIconUrl() {
     const { icon } = this.config;
+
+    if (!icon) {
+      return undefined;
+    }
+
     const dirName = path.dirname(this.configPath);
     const relDirName = Component.removeBasePath(dirName, this.basePath);
 
@@ -184,7 +189,7 @@ class DataSource extends Component<DataSourceConfig, string> {
 
 const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
-): string[] => 
+): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
 
 export default DataSource;
