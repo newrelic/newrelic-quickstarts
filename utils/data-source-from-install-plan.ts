@@ -83,8 +83,13 @@ const getIconFromQuickstart = (title: string): string | undefined => {
 };
 
 const createDataSourceConfig = ({ config }: InstallPlan): DataSourceConfig => {
+  const THIRD_PARTY_PREFIX = 'third-party-';
+  const configId = config.id.includes(THIRD_PARTY_PREFIX)
+    ? config.id.split('third-party-')[1]
+    : config.id;
+
   const dsConfig: DataSourceConfig = {
-    id: config.id,
+    id: configId,
     displayName: config.title,
     description: config.description,
     install: {
