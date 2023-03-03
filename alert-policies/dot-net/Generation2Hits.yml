@@ -1,0 +1,37 @@
+name: Generation 2 Hits
+
+description: |+
+  This alert is triggered when Unlike Gen0 and Gen1, memory that survives garbage collection is more than 10 MB and is not promoted.
+
+type: STATIC
+nrql:
+  query: "SELECT average(newrelic.timeslice.value) * 1e+6 AS 'Generation 2 Hits' FROM Metric WHERE metricTimesliceName = 'GC/Gen2/Size' and appName like '%'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 10000000
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 9000000
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 2592000
