@@ -1,13 +1,12 @@
 // Makes use of the LOG_LEVEL environment flag
 // defaults to INFO
+//
 
 enum LoggingLevel {
   DEBUG,
   INFO,
   ERROR,
 }
-
-type LoggingFn = (message: string, attributes: Record<string, unknown>) => void;
 
 class Logger {
   private level: LoggingLevel;
@@ -16,7 +15,7 @@ class Logger {
     this.level = this._readLogLevel();
   }
 
-  debug: LoggingFn(message, attributes){
+  debug(message: string, attributes?: Record<string, unknown>) {
     if (this.level < LoggingLevel.DEBUG) {
       return;
     }
@@ -24,7 +23,7 @@ class Logger {
     return this._log(message, attributes);
   }
 
-  info(message: string, attributes: Record<string, unknown>) {
+  info(message: string, attributes?: Record<string, unknown>) {
     if (this.level < LoggingLevel.INFO) {
       return;
     }
@@ -32,7 +31,7 @@ class Logger {
     this._log(message, attributes);
   }
 
-  error(message: string, attributes: Record<string, unknown>) {
+  error(message: string, attributes?: Record<string, unknown>) {
     if (this.level < LoggingLevel.ERROR) {
       return;
     }
@@ -40,8 +39,25 @@ class Logger {
     this._log(message, attributes);
   }
 
-  private _log(message: string, attributes: Record<string, unknown>) {
-    console.log(message, JSON.stringify(attributes));
+  private _log(message: string, attributes?: Record<string, unknown>) {
+    const datetime = new Date(Date.now());
+
+    this._logToConsole(message, datetime, attributes);
+  }
+
+  private _logToConsole(
+    message: string,
+    datetime: Date,
+    attributes?: Record<string, unknown>
+  ) {
+    const niceDate = datetime.toUTCString();
+    const separator = '-';
+
+    if (attributes) {
+      console.log(niceDate, separator, message, JSON.stringify(attributes));
+    } else {
+      console.log(niceDate, separator, message);
+    }
   }
 
   private _readLogLevel(): LoggingLevel {
@@ -63,3 +79,5 @@ class Logger {
     }
   }
 }
+
+export default Logger;
