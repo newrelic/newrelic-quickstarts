@@ -3,12 +3,14 @@
 <!-- toc -->
 
 - [Contributing](#contributing)
+
   - [Welcome 👋](#welcome-)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quickstart PR review workflow](#quickstart-pr-review-workflow)
     - [Pull requests](#pull-requests)
     - [Contributor license agreement](#contributor-license-agreement)
   - [Quickstart definitions](#quickstart-definitions)
+
     - [Quickstarts](#quickstarts)
       - [Fields](#fields)
       - [Style tips](#style-tips)
@@ -32,7 +34,7 @@
     - [Install Plans (DEPRECATED)](#install-plans-deprecated)
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
-      - [Data source install modes](#data-source-install-modes)
+      - [Data source install fields](#data-source-install-fields)
 
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
@@ -119,7 +121,7 @@ description: |
   * support
 
 summary: |
-  Short form summary of the quickstart. Limited to one or two sentences.
+  Short form summary of the quickstart. Limited to one or two sentences, and does not support markdown.
 
 # Possible values: New Relic | Verified | Community
 # Please consult with pull request reviewers if you think your quickstart should have a support level other than "Community"
@@ -156,7 +158,7 @@ alertPolicies:
   - example-alert-policy
   - another-example-alert-policy
 
-# References to data sources by their id. These can be either CORE or a COMMUNITY data source. 
+# References to data sources by their id. These can be either CORE or a COMMUNITY data source.
 # For more information on data source definitions, see the section below.
 dataSourceIds:
   - example-data-source
@@ -189,7 +191,7 @@ icon.png
 | icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                         |
 | dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
 | alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
-| dataSourceIds | no        |                                                                   | A list of data sources ids.                                                                                 |
+| dataSourceIds | no        |                                                                   | A list of data sources ids.                                                                                |
 
 #### Style tips
 
@@ -335,11 +337,11 @@ documentation:
 
 ### Data Sources
 
-When adding a data source the following format should be used. Data source ids can either refer to a CORE data source or a COMMUNITY data source. 
+When adding a data source the following format should be used. Data source ids can either refer to a CORE data source or a COMMUNITY data source.
 
 For a list of the available CORE data sources, you can use NerdGraph for to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
 
-COMMUNITY data sources are defined under the [data-sources](./data-sources) directory. COMMUNITY data sources should be referred to the path in that directory.  COMMUNITY data source ids should be the id defined under the `config.yml` for that data source. Example: for the data source located at `data-sources/argocd/config.yml`, you would use the `id` defined in that yaml, which is `argocd`.
+COMMUNITY data sources are defined under the [data-sources](./data-sources) directory. COMMUNITY data sources should be referred to the path in that directory. COMMUNITY data source ids should be the id defined under the `config.yml` for that data source. Example: for the data source located at `data-sources/argocd/config.yml`, you would use the `id` defined in that yaml, which is `argocd`.
 
 ```yml
 dataSourceIds:
@@ -554,17 +556,17 @@ For documentation on the rest of the alert condition fields, please review the [
 
 Install plans are now deprecated in favor of using data sources. To learn about data sources and their fields, view the [data sources section](#data-sources-1) below. If you are migrating from install plans to data sources, the following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
 
-| Install plan field  | Data souce field    |
-| -------------------   | ------------------- |
-| id                  |  id                 |
-| name                | displayName         |
-| description        | description         |
-| install             | install             |
-| install.mode        | install.mode †        |
-| install.destination | install.destination |
-| fallback            | fallback            |
+| Install plan field  | Data souce field                                                  |
+| ------------------- | ----------------------------------------------------------------- |
+| id                  | `id`                                                              |
+| name                | `displayName`                                                     |
+| description         | `description`                                                     |
+| install             | `install`                                                         |
+| install.mode        | `install.primary.nerdlet` or `install.primary.link` †             |
+| install.destination | `install.primary.nerdlet.nerdletId` or `install.primary.link.url` |
+| fallback            | `install.fallback`                                                |
 
-† _The `install.mode` on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+† _The `install.primary` or `install.fallback` field on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
 
 _Example of targeted install:_
 
@@ -575,11 +577,10 @@ install:
     recipeName: fake-install-recipe
 ```
 
-
 ### Data sources
 
 Data sources represent a _single_ type of instrumentation, such as an agent, attributes on a transaction, a cloud provider integration, a third-party integration, etc.
-They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository. 
+They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository.
 
 To see the available CORE data sources, you can use NerdGraph to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
 
@@ -630,20 +631,22 @@ icon.png
 
 #### Data source fields
 
-| field               | required? | default | description                                                                                                                                                                               |
-| ------------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                  | yes       |         | User defined id for the data source, must be unique                                                                                                                                       |
-| displayName         | yes       |         | The human-readable name for the data source                                                                                                                                               |
-| description         | no        |         | A short form description of the data source                                                                                                                                               |
-| icon                | yes       |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                                                                   |
-| keywords            | no        |         | A list of keywords for searching and filtering the catalogue                                                                                                                              |
-| categoryTerms       | no        |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under                                                             |
-| install             | yes       |         | The primary installation method. See [Install modes](#data-source-install-modes) for examples on how to use the `destination` field. |
-| install.mode        | yes       |         | The type of installation. Options are one of `link` or `nerdlet`                                                                                                                          |
-| install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode          |
-| fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                         |
+| field                   | required?                                  | default | description                                                                                                                                           |
+| ----------------------- | ------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id                      | yes                                        |         | User defined id for the data source, must be unique                                                                                                   |
+| displayName             | yes                                        |         | The human-readable name for the data source                                                                                                           |
+| description             | no                                         |         | A short form description of the data source in plain text. (This field *does not* support markdown syntax)                                                                                                           |
+| icon                    | yes                                        |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                               |
+| keywords                | no                                         |         | A list of keywords for searching and filtering the catalogue                                                                                          |
+| categoryTerms           | no                                         |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under                         |
+| install                 | yes                                        |         | Configuration for the installation. See [Install fields](#data-source-install-fields) for examples on how to use the `primary` and `fallback` fields. |
+| install.primary         | yes                                        |         | The type of installation. Options are one of `link` or `nerdlet` as a subfield.                                                                       |
+| install.primary.nerdlet | no if `install.primary.link` is defined    |         | Configuration for installation of `nerdlet` type. Must have `nerdletId`, `requiresAccount` and optionally `nerdletState` as subfields.                |
+| install.primary.link    | no if `install.primary.nerdlet` is defined |         | Configuration for installation of `link` type. Must have `url` as a subfield.                                                                         |
+| install.fallback        | no                                         |         | Uses the same fields as `install.primary`                                                                                                             |
 
-#### Data source install modes 
+#### Data source install fields
+
 - `nerdlet`
 
   - Directs the user to a nerdlet to finish installing instrumentation
@@ -651,12 +654,12 @@ icon.png
 
   ```yaml
   install:
-    mode: nerdlet
-    destination:
-      nerdletId: some-nerdlet.id
-      nerdletState:
-        optionalKey: optional-value
-      requiresAccount: true
+    primary:
+      nerdlet:
+        nerdletId: test.test-nerdlet
+        nerdletState:
+          test_state: test
+        requiresAccount: true
   ```
 
 - `link`
@@ -664,12 +667,10 @@ icon.png
   - Example:
   ```yaml
   install:
-    mode: link
-    destination:
-      url: https://docs.newrelic.com
+    primary:
+      link:
+        url: https://newrelic.com
   ```
-
-
 
 ## Quickstart Preview
 
