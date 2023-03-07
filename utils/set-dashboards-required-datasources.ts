@@ -102,7 +102,7 @@ const setDashboardRequiredDataSources = async (
     dataSourceIds
   );
 
-  if (result.errors) {
+  if (result.errors && result.errors.length > 0) {
     console.error(
       `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
         dataSourceIds
