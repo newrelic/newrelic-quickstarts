@@ -6,11 +6,8 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 import Quickstart from './lib/Quickstart';
-import Alert, {
-  AlertPolicySetRequiredDataSourcesMutationResults,
-  SubmitSetRequiredDataSourcesMutationResult,
-} from './lib/Alert';
-import { chunk } from './lib/nr-graphql-helpers';
+import Alert, { SubmitSetRequiredDataSourcesMutationResult } from './lib/Alert';
+import { chunk, translateNGErrors } from './lib/nr-graphql-helpers';
 
 type QuickstartResult = {
   name: string;
@@ -94,10 +91,11 @@ const setAlertPoliciesRequiredDataSources = async (
           dataSourceIds
         );
 
-        if (result.errors) {
+        if (result.errors && result.errors.length > 0) {
           console.error(
             `Failed to update alert policy ${templateId} for quickstart ${quickstart.name}`
           );
+          translateNGErrors(result.errors);
         }
 
         return result;
