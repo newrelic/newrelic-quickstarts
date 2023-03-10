@@ -31,16 +31,29 @@ const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
   error?.extensions?.argumentPath?.includes('installPlanStepIds') &&
   error?.message?.includes('contains an install plan step that does not exist');
 
+const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
+  'extensions' in error &&
+    error?.extensions?.argumentPath.includes('dataSourceIds') &&
+    error?.message?.includes('contains a data source that does not exist');
+
 export const countAndOutputErrors = (
   graphqlResponses: ResponseWithErrors[]
 ): number =>
   graphqlResponses.reduce((all, { errors, name }) => {
     const installPlanErrors =
       (errors?.filter(installPlanErrorExists) as NerdGraphError[]) ?? [];
+    const dataSourceErrors =
+      (errors?.filter(dataSourceErrorExists) as NerdGraphError[]) ?? [];
     const remainingErrors =
-      errors?.filter((error) => !installPlanErrorExists(error)) ?? [];
+      errors
+        ?.filter((error) => !installPlanErrorExists(error))
+        ?.filter((error) => !dataSourceErrorExists(error)) ?? [];
 
-    translateMutationErrors(remainingErrors, name, installPlanErrors);
+    translateMutationErrors(remainingErrors, name, [
+      ...installPlanErrors,
+      ...dataSourceErrors,
+    ]);
+
     return all + remainingErrors.length;
   }, 0);
 
@@ -95,7 +108,11 @@ export const createValidateQuickstarts = async (
     .filter(Boolean);
 
   if (invalidQuickstarts.length > 0) {
-    process.exit(1);
+    if (require.main === module) {
+      process.exit(1);
+    }
+
+    return true;
   }
 
   // Submit all of the mutations in chunks of 5
