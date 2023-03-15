@@ -161,10 +161,13 @@ export const DASHBOARD_REQUIRED_DATA_SOURCES_QUERY = gql`
 
 export const DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
   mutation DashboardSetRequiredDataSourcesMutation(
-    $dataSourceIds: [ID!]! 
-    templateId: ID!
+    $dataSourceIds: [ID!]!
+    $templateId: ID!
   ) {
-    nr1CatalogSetRequiredDataSourcesForDashboardTemplate(dataSourceIds: $dataSourceIds, dashboardTemplateId: $templateId) {
+    nr1CatalogSetRequiredDataSourcesForDashboardTemplate(
+      dataSourceIds: $dataSourceIds
+      dashboardTemplateId: $templateId
+    ) {
       dashboardTemplate {
         id
       }
@@ -208,4 +211,3 @@ export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
     }
   }
 `;
-
