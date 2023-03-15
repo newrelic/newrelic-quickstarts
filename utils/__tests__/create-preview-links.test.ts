@@ -85,27 +85,27 @@ describe('create-preview-links', () => {
   });
 
   describe('generatePreviewComment', () => {
-    test('returns false when token is not provided', async () => {
+    test('returns empty when token is not provided', async () => {
       const res = await generatePreviewComment('testurl', 'testnumber');
-      expect(res).toBe(false);
+      expect(res).toBe('');
     });
 
-    test('returns false when prURL is not provided', async () => {
+    test('returns empty when prURL is not provided', async () => {
       const res = await generatePreviewComment(
         undefined,
         'testnumber',
         'testtoken'
       );
-      expect(res).toBe(false);
+      expect(res).toBe('');
     });
 
-    test('returns false when prNumber is not provided', async () => {
+    test('returns empty when prNumber is not provided', async () => {
       const res = await generatePreviewComment(
         'testurl',
         undefined,
         'testtoken'
       );
-      expect(res).toBe(false);
+      expect(res).toBe('');
     });
 
     test('fails when Github API call errors', async () => {
@@ -118,7 +118,7 @@ describe('create-preview-links', () => {
         'testnumber',
         'testtoken'
       );
-      expect(res).toBe(false);
+      expect(res).toBe('');
     });
 
     test('does not set Github workflow output when there are no quickstart changes', async () => {
@@ -132,7 +132,7 @@ describe('create-preview-links', () => {
         'testnumber',
         'testtoken'
       );
-      expect(res).toBe(true);
+      expect(res).toBe('');
       expect(console.log).toHaveBeenCalledWith(
         'No quickstarts found, skipping preview'
       );
@@ -150,10 +150,7 @@ describe('create-preview-links', () => {
       const expectComment = `${expectCommentHeading}- [apache](${previewLink}?pr=1&quickstart=apache)`;
 
       const res = await generatePreviewComment('testurl', '1', 'testtoken');
-      expect(res).toBe(true);
-      expect(console.log).toHaveBeenCalledWith(
-        `::set-output name=comment::${expectComment}`
-      );
+      expect(res).toBe(expectComment);
     });
   });
 });
