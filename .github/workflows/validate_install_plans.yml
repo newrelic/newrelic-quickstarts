@@ -49,17 +49,6 @@ jobs:
           cd utils && yarn create-validate-install-plans $URL $DRY_RUN
       - name: Add commit status
         if: always()
-        uses: actions/github-script@v6
+        uses: './.github/actions/add-commit-status'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const result = await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-              sha: github.event.workflow_run.head_commit.id,
-              state: job.status,
-              target_url: `https://github.com/${github.repository}/actions/runs/${github.run_id}`,
-              context: "Validation / Install plan schema compliance"
-            })
-
-            console.log("Result:", result)
+          context: "Validation / Install plan schema compliance"
