@@ -23,14 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
           ref: "main"
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
 
@@ -44,12 +44,11 @@ jobs:
       - name: Temporarily disable branch protections
         id: disable-branch-protection
         if: always()
-        uses: actions/github-script@v1
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
           script: |
-            const result = await github.repos.updateBranchProtection({
+            const result = await github.rest.repos.updateBranchProtection({
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'main',
@@ -79,12 +78,11 @@ jobs:
       - name: Re-enable branch protections
         id: enable-branch-protection
         if: always()
-        uses: actions/github-script@v1
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          previews: luke-cage-preview
           script: |
-            const result = await github.repos.updateBranchProtection({
+            const result = await github.rest.repos.updateBranchProtection({
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'main',
