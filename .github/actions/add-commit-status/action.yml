@@ -1,0 +1,24 @@
+name: Add Commit Status
+description: Adds status to a commit
+inputs:
+  context:
+    description: The context passed to `createCommitStatus`
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Add commit status
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const result = await github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+            sha: github.event.workflow_run.head_commit.id,
+            state: job.status,
+            target_url: `https://github.com/${github.repository}/actions/runs/${github.run_id}`,
+            context: inputs.context
+          })
+
+          console.log("Result:", result)
