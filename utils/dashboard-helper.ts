@@ -11,7 +11,10 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"linkedEntityGuids\": (?:(?!null))/, `\"entityGuid\" should not be used`],
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
-  [/\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/, `\"accountIds\" must be set to []`]
+  [
+    /\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/,
+    `\"accountIds\" must be set to []`,
+  ],
 ];
 
 export const checkLine = (line: string) => {
@@ -44,17 +47,19 @@ export const createWarningComment = (warnings: string[]) => {
 export const runHelper = async (
   prUrl?: string,
   token?: string
-): Promise<boolean> => {
+): Promise<string> => {
+  let warningComment = '';
+
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
-    return false;
+    return '';
   }
 
   if (!prUrl) {
     console.error(
       `Missing arguments. Example: ts-node dashboard-helper.ts <pull request url>`
     );
-    return false;
+    return '';
   }
 
   const warnings: string[] = [];
@@ -88,17 +93,16 @@ export const runHelper = async (
       });
     } catch (error: any) {
       console.error('Error:', error.message);
-      return false;
+      return '';
     }
   }
 
   if (warnings.length > 0) {
     console.log('Found warnings:', warnings);
-    const warningComment = createWarningComment(warnings);
-    console.log(`::set-output name=comment::${warningComment}`);
+    warningComment = createWarningComment(warnings);
   }
 
-  return true;
+  return warningComment;
 };
 
 /**
