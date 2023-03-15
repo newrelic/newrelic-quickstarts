@@ -351,13 +351,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          cd utils && yarn dashboard-helper $URL
-
+          COMMENT = cd utils && yarn dashboard-helper $URL
+          echo "comment=$COMMENT" >> $GITHUB_ENV
       - name: Comment
-        if: steps.helper.outputs.comment != ''
+        if: env.COMMENT != ''
         env:
           PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT: ${{ steps.helper.outputs.comment }}
         run: |
-          gh pr comment "$PR_NUMBER" --body "$COMMENT"
+          gh pr comment "$PR_NUMBER" --body "env.COMMENT"
