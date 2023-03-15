@@ -43,7 +43,7 @@ jobs:
           git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
           git add ./docs/*
           git diff-index --quiet HEAD ./docs/* || git commit -m 'chore: generate schema documentation [skip ci]'
-          echo "::set-output name=commit::true"
+          echo "commit=true" >> $GITHUB_ENV
 
       - name: Temporarily disable branch protections
         id: disable-branch-protection
@@ -127,7 +127,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         working-directory: ./utils
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_ENV
 
       - uses: actions/cache@v2
         id: yarn-cache
@@ -169,7 +169,7 @@ jobs:
             git add third_party_manifest.json
             git add THIRD_PARTY_NOTICES.md
             git commit -m 'chore: update third-party manifest and notices [skip-cd]'
-            echo "::set-output name=commit::true"
+            echo "commit=true" >> $GITHUB_ENV
           else
             echo "No change in package.json, not regenerating third-party notices"
           fi

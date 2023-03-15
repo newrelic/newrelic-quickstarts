@@ -25,11 +25,11 @@ export const getQuickstartsFromPRFiles = async (
   const filesURL = `${prURL}/files`;
   const files = await fetchPaginatedGHResults(filesURL, token);
   const nonTestFiles = filterOutTestFiles(files);
-  
+
   const quickstartPaths = nonTestFiles
-      .map(prop('filename'))
-      .filter(filePath => QUICKSTART_CONFIG_REGEXP.test(filePath))
-      .map(filePath => path.dirname(filePath.split('quickstarts/').pop()!))
+    .map(prop('filename'))
+    .filter((filePath) => QUICKSTART_CONFIG_REGEXP.test(filePath))
+    .map((filePath) => path.dirname(filePath.split('quickstarts/').pop()!));
 
   /*
     We can rely on a quickstart existing on the `main` branch because if it isn't, then it was created in this 
@@ -39,9 +39,13 @@ export const getQuickstartsFromPRFiles = async (
   */
   const componentPaths = nonTestFiles
     .map(prop('filename'))
-    .filter(filePath => COMPONENT_PREFIX_REGEXP.test(filePath))
-    .flatMap(filePath => getRelatedQuickstarts(getComponentLocalPath(filePath)))
-    .map(quickstart => path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!))
+    .filter((filePath) => COMPONENT_PREFIX_REGEXP.test(filePath))
+    .flatMap((filePath) =>
+      getRelatedQuickstarts(getComponentLocalPath(filePath))
+    )
+    .map((quickstart) =>
+      path.dirname(quickstart.configPath.split('newrelic-quickstarts/').pop()!)
+    )
     .map((configPath) => configPath.split('quickstarts/').pop()!);
 
   return [...new Set([...quickstartPaths, ...componentPaths])];
@@ -93,17 +97,19 @@ export const generatePreviewComment = async (
   prURL?: string,
   prNumber?: string,
   token?: string
-): Promise<boolean> => {
+): Promise<string> => {
+  let comment = '';
+
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
-    return false;
+    return '';
   }
 
   if (!prURL || !prNumber) {
     console.error(
       `Missing arguments. Example: ts-node create-preview-links.ts <pull request url> <github token>`
     );
-    return false;
+    return '';
   }
 
   try {
@@ -117,17 +123,16 @@ export const generatePreviewComment = async (
     }));
 
     if (links.length > 0) {
-      const comment = createComment(links);
-      console.log(`::set-output name=comment::${comment}`);
+      comment = createComment(links);
     } else {
       console.log(`No quickstarts found, skipping preview`);
     }
   } catch (err) {
     console.error(err);
-    return false;
+    return '';
   }
 
-  return true;
+  return comment;
 };
 
 /**

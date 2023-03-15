@@ -70,7 +70,7 @@ jobs:
           git pull --ff-only origin main
 
           git add ./quickstarts/*
-          git diff-index --quiet HEAD ./quickstarts/* || { git commit -m 'chore: generate UUID(s) [skip ci]' && echo "::set-output name=commit::true"; }
+          git diff-index --quiet HEAD ./quickstarts/* || { git commit -m 'chore: generate UUID(s) [skip ci]' && echo "commit=true" >> $GITHUB_ENV; }
 
       - name: Push Commit
         if: steps.commit-changes.outputs.commit == 'true'
@@ -133,7 +133,7 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
   staging:
     needs: [generate-uuid, get-pr-number]
