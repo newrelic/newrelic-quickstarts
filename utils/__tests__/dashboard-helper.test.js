@@ -77,12 +77,12 @@ describe('dashboard-helper', () => {
     });
 
     test('exits if github token is undefined', async () => {
-      expect(await runHelper('PR_url')).toBe('');
+      expect(await runHelper('PR_url')).toBe(false);
       expect(console.error).toHaveBeenCalledTimes(1);
     });
 
     test('exits if PR url is undefined', async () => {
-      expect(await runHelper(undefined, 'token')).toBe('');
+      expect(await runHelper(undefined, 'token')).toBe(false);
       expect(console.error).toHaveBeenCalledTimes(1);
     });
 
@@ -103,7 +103,7 @@ describe('dashboard-helper', () => {
       });
 
       const output = await runHelper('http://localhost', 'token');
-      expect(output).toBe('### The PR checks have run and found the following warnings:%0A%0A| Warning | Filepath | Line # | %0A| --- | --- | --- | %0A| \"permissions\" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |%0A%0AReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. %0A');
+      expect(output).toBe(true);
       expect(fetch).toHaveBeenCalledWith(
         'raw-url/dashboards/cool-dash/cool-dash.json',
         { headers: { authorization: 'token token' } }
@@ -124,7 +124,7 @@ describe('dashboard-helper', () => {
         }),
       });
       const output = await runHelper('http://localhost', 'token');
-      expect(output).toBe('');
+      expect(output).toBe(false);
     });
 
     test('handles non 200 status code;', async () => {
@@ -141,7 +141,7 @@ describe('dashboard-helper', () => {
         status: 404,
       });
       const output = await runHelper('http://localhost', 'token');
-      expect(output).toBe('');
+      expect(output).toBe(false);
       expect(console.error).toHaveBeenCalledWith(
         'Error:',
         '404 - raw-url/dashboards/cool-dash/cool-dash.json'
