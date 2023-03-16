@@ -5,10 +5,12 @@ import {
   runHelper,
 } from '../dashboard-helper';
 import * as ghHelpers from '../lib/github-api-helpers';
+import * as core from '@actions/core';
 import fetch from 'node-fetch';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log').mockImplementation(() => {});
+jest.spyOn(core, 'setOutput');
 jest.mock('../lib/github-api-helpers', () => {
   return {
     ...jest.requireActual('../lib/github-api-helpers'),
@@ -108,6 +110,7 @@ describe('dashboard-helper', () => {
         'raw-url/dashboards/cool-dash/cool-dash.json',
         { headers: { authorization: 'token token' } }
       );
+      expect(core.setOutput).toHaveBeenCalledWith('comment', '### The PR checks have run and found the following warnings:%0A%0A| Warning | Filepath | Line # | %0A| --- | --- | --- | %0A| \"permissions\" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |%0A%0AReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. %0A');
     });
 
     test('handles network error;', async () => {

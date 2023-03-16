@@ -6,7 +6,7 @@ import {
   createPreviewLink,
   getQuickstartsFromPRFiles,
 } from '../create-preview-links';
-
+import * as core from '@actions/core';
 import type { GithubAPIPullRequestFile } from '../lib/github-api-helpers';
 
 jest.mock('../lib/github-api-helpers', () => {
@@ -17,7 +17,7 @@ jest.mock('../lib/github-api-helpers', () => {
 });
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log');
-
+jest.spyOn(core, 'setOutput');
 const mockedGithubHelpers = ghHelpers as jest.Mocked<typeof ghHelpers>;
 
 const expectCommentHeading = `### Click the link(s) below to view a preview of your changes on newrelic.com/instant-observability<br/><br/>`;
@@ -151,6 +151,7 @@ describe('create-preview-links', () => {
 
       const res = await generatePreviewComment('testurl', '1', 'testtoken');
       expect(res).toBe(true);
+      expect(core.setOutput).toHaveBeenCalledWith('comment', expectComment);
     });
   });
 });
