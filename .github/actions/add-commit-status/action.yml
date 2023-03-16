@@ -4,9 +4,6 @@ inputs:
   context:
     description: The context passed to `createCommitStatus`
     required: true
-  github_token:
-    description: Github token passed to github-script
-    required: true
   state:
     description: The state to assign to the commit
     required: true
@@ -15,19 +12,22 @@ runs:
   steps:
     - name: Add commit status
       uses: actions/github-script@v6
+      env:
+        STATE: ${{ inputs.state }}
+        CONTEXT: ${{ inputs.context }}
       with:
-        github-token: inputs.github_token
         script: |
           const {head_sha, status, repository, html_url} = context.payload.workflow_run;
           const {owner, name} = repository;
+          const {STATE, CONTEXT} = process.env;
 
           const args = {
             owner: owner.login,
             repo: name,
             sha: head_sha,
-            state: process.env.INPUT_STATE,
+            state: STATE,
             target_url: html_url,
-            context: process.env.INPUT_CONTEXT
+            context: CONTEXT
           }
 
           console.log('Calling `createCommitStatus` with args:', args);
