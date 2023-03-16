@@ -1,5 +1,5 @@
-import Quickstart from './lib/Quickstart';
 import * as path from 'path';
+import * as core from '@actions/core';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
@@ -97,19 +97,17 @@ export const generatePreviewComment = async (
   prURL?: string,
   prNumber?: string,
   token?: string
-): Promise<string> => {
-  let comment = '';
-
+): Promise<boolean> => {
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
-    return '';
+    return false;
   }
 
   if (!prURL || !prNumber) {
     console.error(
       `Missing arguments. Example: ts-node create-preview-links.ts <pull request url> <github token>`
     );
-    return '';
+    return false;
   }
 
   try {
@@ -123,16 +121,17 @@ export const generatePreviewComment = async (
     }));
 
     if (links.length > 0) {
-      comment = createComment(links);
+      const comment = createComment(links);
+      core.setOutput('comment', comment);
     } else {
       console.log(`No quickstarts found, skipping preview`);
     }
   } catch (err) {
     console.error(err);
-    return '';
+    return false;
   }
 
-  return comment;
+  return true;
 };
 
 /**

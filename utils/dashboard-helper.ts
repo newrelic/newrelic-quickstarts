@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import * as core from '@actions/core';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
@@ -47,19 +48,17 @@ export const createWarningComment = (warnings: string[]) => {
 export const runHelper = async (
   prUrl?: string,
   token?: string
-): Promise<string> => {
-  let warningComment = '';
-
+): Promise<boolean> => {
   if (!token) {
     console.error(`Missing GITHUB_TOKEN environment variable`);
-    return '';
+    return false;
   }
 
   if (!prUrl) {
     console.error(
       `Missing arguments. Example: ts-node dashboard-helper.ts <pull request url>`
     );
-    return '';
+    return false;
   }
 
   const warnings: string[] = [];
@@ -93,16 +92,17 @@ export const runHelper = async (
       });
     } catch (error: any) {
       console.error('Error:', error.message);
-      return '';
+      return false;
     }
   }
 
   if (warnings.length > 0) {
     console.log('Found warnings:', warnings);
-    warningComment = createWarningComment(warnings);
+    const warningComment = createWarningComment(warnings);
+    core.setOutput('comment', warningComment);
   }
 
-  return warningComment;
+  return true;
 };
 
 /**
