@@ -1,7 +1,7 @@
 name: Add Commit Status
 description: Adds status to a commit
 inputs:
-  context:
+  statusContext:
     description: The context passed to `createCommitStatus`
     required: true
   state:
@@ -14,12 +14,12 @@ runs:
       uses: actions/github-script@v6
       env:
         STATE: ${{ inputs.state }}
-        CONTEXT: ${{ inputs.context }}
+        STATUS_CONTEXT: ${{ inputs.statusContext }}
       with:
         script: |
           const {head_sha, status, repository, html_url} = context.payload.workflow_run;
           const {owner, name} = repository;
-          const {STATE, CONTEXT} = process.env;
+          const {STATE, STATUS_CONTEXT} = process.env;
 
           const args = {
             owner: owner.login,
@@ -27,7 +27,7 @@ runs:
             sha: head_sha,
             state: STATE,
             target_url: html_url,
-            context: CONTEXT
+            context: STATUS_CONTEXT
           }
 
           console.log('Calling `createCommitStatus` with args:', args);
