@@ -121,7 +121,7 @@ jobs:
     name: Get PR number
     runs-on: ubuntu-latest
     outputs:
-      pr-number: ${{ env.pr-number }}
+      pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
     steps:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -130,10 +130,10 @@ jobs:
           run_id: ${{ github.event.workflow_run.id }}
 
       - name: Get PR number
-        id: get_pr_number
+        id: output_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
   staging:
     needs: [generate-uuid, get-pr-number]
