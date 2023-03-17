@@ -29,7 +29,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -77,7 +77,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -125,7 +125,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -173,7 +173,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -194,7 +194,7 @@ jobs:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
           NEW_RELIC_HOST: staging-collector.newrelic.com
           NODE_ENV: production
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           DRY_RUN=true
@@ -234,7 +234,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -248,7 +248,7 @@ jobs:
         id: validation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           cd utils && yarn validate-quickstart-install-plans "$URL"
@@ -287,7 +287,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -334,7 +334,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -347,16 +347,16 @@ jobs:
       - name: Run dashboard helper
         id: helper
         env:
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           cd utils && yarn dashboard-helper $URL
       - name: Comment
-        if: env.comment != ''
+        if: steps.helper.outputs.comment != ''
         env:
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT: ${{ env.comment }}
+          COMMENT: ${{ steps.helper.outputs.comment }}
         run: |
           gh pr comment "$PR_NUMBER" --body "$COMMENT"
