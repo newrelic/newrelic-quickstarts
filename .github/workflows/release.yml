@@ -21,13 +21,8 @@ jobs:
           ref: "main"
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Generate schema docs for GraphQl
         id: generate-schema
@@ -117,27 +112,8 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        working-directory: ./utils
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ env.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        working-directory: ./utils
-        run: yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Install OSS CLI
         working-directory: ./utils
