@@ -3,81 +3,89 @@
 //
 
 enum LoggingLevel {
-  DEBUG,
-  INFO,
   ERROR,
+  INFO,
+  DEBUG,
 }
 
-class Logger {
-  private level: LoggingLevel;
+type logFn = (message: string, attributes?: Record<string, unknown>) => void;
 
-  constructor() {
-    this.level = this._readLogLevel();
+export const debug: logFn = (message, attributes) => {
+  if (!shouldLog(LoggingLevel.DEBUG)) {
+    return;
   }
 
-  debug(message: string, attributes?: Record<string, unknown>) {
-    if (this.level < LoggingLevel.DEBUG) {
-      return;
+  return log(message, { ...attributes, LEVEL: LoggingLevel.DEBUG });
+};
+
+export const info: logFn = (message, attributes) => {
+  if (!shouldLog(LoggingLevel.INFO)) {
+    return;
+  }
+
+  return log(message, { ...attributes, LEVEL: LoggingLevel.INFO });
+};
+
+export const error: logFn = (message, attributes) => {
+  if (!shouldLog(LoggingLevel.ERROR)) {
+    return;
+  }
+
+  return log(message, { ...attributes, LEVEL: LoggingLevel.ERROR });
+};
+
+const log: logFn = (message, attributes) => {
+  const datetime = new Date(Date.now());
+
+  logToConsole(message, datetime, attributes);
+};
+
+const logToConsole = (
+  message: string,
+  datetime: Date,
+  attributes?: Record<string, unknown>
+) => {
+  const niceDate = datetime.toUTCString();
+  const separator = '-';
+
+  if (attributes) {
+    console.log(niceDate, separator, message, JSON.stringify(attributes));
+  } else {
+    console.log(niceDate, separator, message);
+  }
+};
+
+const shouldLog = (level: LoggingLevel) => {
+  if (level <= readLogLevel()) {
+    return true;
+  }
+  return false;
+};
+
+const readLogLevel = (): LoggingLevel => {
+  const logLevel = process.env.LOG_LEVEL;
+
+  switch (logLevel) {
+    case 'ERROR': {
+      // 0
+      return LoggingLevel.ERROR;
     }
-
-    return this._log(message, attributes);
-  }
-
-  info(message: string, attributes?: Record<string, unknown>) {
-    if (this.level < LoggingLevel.INFO) {
-      return;
+    case 'INFO': {
+      // 1
+      return LoggingLevel.INFO;
     }
-
-    this._log(message, attributes);
-  }
-
-  error(message: string, attributes?: Record<string, unknown>) {
-    if (this.level < LoggingLevel.ERROR) {
-      return;
+    case 'DEBUG': {
+      //2
+      return LoggingLevel.DEBUG;
     }
-
-    this._log(message, attributes);
-  }
-
-  private _log(message: string, attributes?: Record<string, unknown>) {
-    const datetime = new Date(Date.now());
-
-    this._logToConsole(message, datetime, attributes);
-  }
-
-  private _logToConsole(
-    message: string,
-    datetime: Date,
-    attributes?: Record<string, unknown>
-  ) {
-    const niceDate = datetime.toUTCString();
-    const separator = '-';
-
-    if (attributes) {
-      console.log(niceDate, separator, message, JSON.stringify(attributes));
-    } else {
-      console.log(niceDate, separator, message);
+    default: {
+      return LoggingLevel.INFO;
     }
   }
+};
 
-  private _readLogLevel(): LoggingLevel {
-    const logLevel = process.env.LOG_LEVEL;
-
-    switch (logLevel) {
-      case 'DEBUG': {
-        return LoggingLevel.DEBUG;
-      }
-      case 'INFO': {
-        return LoggingLevel.INFO;
-      }
-      case 'ERROR': {
-        return LoggingLevel.ERROR;
-      }
-      default: {
-        return LoggingLevel.INFO;
-      }
-    }
-  }
-}
-
-export default Logger;
+export default {
+  debug,
+  error,
+  info,
+};
