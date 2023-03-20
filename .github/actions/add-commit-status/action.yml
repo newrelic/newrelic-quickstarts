@@ -17,21 +17,23 @@ runs:
         STATUS_CONTEXT: ${{ inputs.statusContext }}
       with:
         script: |
-          const {head_sha, status, repository, html_url} = context.payload.workflow_run;
+          const {head_sha, status, repository} = context.payload.workflow_run;
           const {owner, name} = repository;
           const {STATE, STATUS_CONTEXT} = process.env;
+
+          const target_url = `${repository.html_url}/actions/runs/${context.runId}`;
 
           const args = {
             owner: owner.login,
             repo: name,
             sha: head_sha,
             state: STATE,
-            target_url: html_url,
-            context: STATUS_CONTEXT
-          }
+            context: STATUS_CONTEXT,
+            target_url
+          };
 
           console.log('Calling `createCommitStatus` with args:', args);
 
-          const result = await github.rest.repos.createCommitStatus(args)
+          const result = await github.rest.repos.createCommitStatus(args);
 
           console.log("Result:", result)
