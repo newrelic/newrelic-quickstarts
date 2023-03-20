@@ -70,10 +70,10 @@ jobs:
           git pull --ff-only origin main
 
           git add ./quickstarts/*
-          git diff-index --quiet HEAD ./quickstarts/* || { git commit -m 'chore: generate UUID(s) [skip ci]' && echo "::set-output name=commit::true"; }
+          git diff-index --quiet HEAD ./quickstarts/* || { git commit -m 'chore: generate UUID(s) [skip ci]' && echo "commit=true" >> $GITHUB_ENV; }
 
       - name: Push Commit
-        if: steps.commit-changes.outputs.commit == 'true'
+        if: env.commit == 'true'
         run: git push origin HEAD
 
       - name: Re-enable branch protections
@@ -121,7 +121,7 @@ jobs:
     name: Get PR number
     runs-on: ubuntu-latest
     outputs:
-      pr-number: ${{ steps.get_pr_number.outputs.pr-number }}
+      pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
     steps:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -130,10 +130,10 @@ jobs:
           run_id: ${{ github.event.workflow_run.id }}
 
       - name: Get PR number
-        id: get_pr_number
+        id: output_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
   staging:
     needs: [generate-uuid, get-pr-number]
