@@ -616,7 +616,11 @@ keywords:
   - keyword2
 
 # Terms related to the categories for the data source.
-# NOTE: Although not required, highly recommended because they determine category placement. Otherwise will be in the 'Other' category.  See below table for category term mappings.
+#
+# NOTE:
+# Although not required, highly recommended because
+# they determine category placement. Otherwise will be
+# in the 'Other' category. See below table for category term mappings.
 categoryTerms:
   - test
   - term2
