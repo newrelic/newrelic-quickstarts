@@ -24,12 +24,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -72,12 +72,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -120,12 +120,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -168,12 +168,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -194,7 +194,7 @@ jobs:
           NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
           NEW_RELIC_HOST: staging-collector.newrelic.com
           NODE_ENV: production
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           DRY_RUN=true
@@ -229,12 +229,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -248,7 +248,7 @@ jobs:
         id: validation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           cd utils && yarn validate-quickstart-install-plans "$URL"
@@ -282,12 +282,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -329,12 +329,12 @@ jobs:
         id: get_pr_number
         run: |
           export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "::set-output name=pr-number::$PR_NUMBER"
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ steps.get_pr_number.outputs.pr-number }}/merge"
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -347,16 +347,15 @@ jobs:
       - name: Run dashboard helper
         id: helper
         env:
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           cd utils && yarn dashboard-helper $URL
-
       - name: Comment
         if: steps.helper.outputs.comment != ''
         env:
-          PR_NUMBER: ${{ steps.get_pr_number.outputs.pr-number }}
+          PR_NUMBER: ${{ env.pr-number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT: ${{ steps.helper.outputs.comment }}
         run: |
