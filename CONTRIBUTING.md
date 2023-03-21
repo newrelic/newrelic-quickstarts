@@ -191,7 +191,7 @@ icon.png
 | icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                         |
 | dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
 | alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
-| dataSourceIds | no        |                                                                   | A list of data sources ids.                                                                                |
+| dataSourceIds | yes      |                                                                   | A list of data sources ids.                                                                                |
 
 #### Style tips
 
