@@ -131,8 +131,8 @@ authors:
   - Author One
   - Other Author
 
-# These keywords can be mapped to category terms from
-# a datasource, which help to categorize quickstarts.
+# These keywords can be mapped to category terms
+# which help to categorize quickstarts.
 # To have your quickstart appear under a certain category,
 # these keywords must include a matching category term,
 # see link in the keywords row of the table below.
