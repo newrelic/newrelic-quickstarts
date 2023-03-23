@@ -27,17 +27,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Check for unique names and ids
         id: validation
@@ -45,18 +40,10 @@ jobs:
 
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Quickstart id are unique"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Quickstart id are unique"
+          state: ${{ job.status }}
 
   ensure-images-are-valid:
     name: Ensure images are valid
@@ -75,36 +62,24 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Validate Images
         id: validation
         run: cd utils && yarn validate-images
 
+
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Image count and extension compliance"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Image count and extension compliance"
+          state: ${{ job.status }}
 
   ensure-icons-exist:
     name: Ensure icons exist
@@ -123,17 +98,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Validate Icons
         id: validation
@@ -141,18 +111,10 @@ jobs:
 
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Ensure icons exist"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Ensure icons exist"
+          state: ${{ job.status }}
 
   validate-quickstart:
     name: Validate Quickstart
@@ -171,17 +133,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Validate pr quickstart files
         id: validation
@@ -202,18 +159,10 @@ jobs:
 
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Validate Quickstart Schema"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Validate Quickstart Schema"
+          state: ${{ job.status }}
 
   validate-install-plan-ids:
     name: Validate install plan ids
@@ -232,17 +181,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Validate new files
         id: validation
@@ -255,18 +199,10 @@ jobs:
 
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Install plan ids exist"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Install plan ids exist"
+          state: ${{ job.status }}
 
   ensure-quickstart-dashboard-names-are-unique:
     name: Ensure quickstart dashboard names are unique
@@ -285,17 +221,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Check for unique dashboard names
         id: validation
@@ -303,18 +234,10 @@ jobs:
 
       - name: Add commit status
         if: always()
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Quickstart dashboard name is unique"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Quickstart dashboard name is unique"
+          state: ${{ job.status }}
 
   dashboard-helper:
     runs-on: ubuntu-latest
@@ -332,17 +255,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Run dashboard helper
         id: helper

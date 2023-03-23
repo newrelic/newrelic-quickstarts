@@ -24,17 +24,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: cd utils && yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Validate new files
         id: validation
@@ -52,20 +47,9 @@ jobs:
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
           DRY_RUN=true
           cd utils && yarn create-validate-install-plans $URL $DRY_RUN
-
       - name: Add commit status
         if: always()
-        env:
-          COMMIT_SHA: ${{ github.event.workflow_run.head_commit.id }}
-        run: |
-          curl \
-            -X POST \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/$COMMIT_SHA \
-            -d '
-            {
-              "state": "${{ job.status }}", 
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "context": "Validation / Install plan schema compliance"
-            }'
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Install plan schema compliance"
+          state: ${{ job.status }}
