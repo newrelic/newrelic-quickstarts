@@ -371,7 +371,7 @@ that is not defined in this list below, it will be reviewed for use after you su
 
 > the `featured` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
 > the `newrelic partner` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
-> to reflect your quickstart under a specific category, make sure your keywords match the "terms" present in the "displayName" of this (GraphQL query)[https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20categories%20%7B%0A%20%20%20%20%20%20%20%20terms%0A%20%20%20%20%20%20%20%20displayName%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A]
+> to reflect your quickstart under a specific category in the add data section, make sure your keywords match the "terms" present in the "displayName" of this (GraphQL query)[https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20categories%20%7B%0A%20%20%20%20%20%20%20%20terms%0A%20%20%20%20%20%20%20%20displayName%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A]
 
 - apm
 - automation
