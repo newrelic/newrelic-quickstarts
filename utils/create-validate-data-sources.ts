@@ -14,6 +14,7 @@ import DataSource, { DataSourceMutationResponse } from './lib/DataSource';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
 import type { DataSourceConfig } from './types/DataSourceConfig';
+import logger from './logger';
 
 const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
   'data-sources/.+/config.+(yml|yaml)'
@@ -45,7 +46,9 @@ const main = async () => {
     process.exit(1);
   }
 
+  logger.info(`Fetching files for pull request ${GITHUB_API_URL}`);
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+  logger.info(`Found ${files.length} files`);
 
   const dataSources = filterOutTestFiles(files)
     .filter(isNotRemoved)
@@ -58,6 +61,8 @@ const main = async () => {
   let results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
     name: string;
   })[] = [];
+
+  logger.info(`Submitting ${dataSources.length} data sources...`);
   // Submit all of the mutations (in chunks of 5)
   for (const c of chunk(dataSources, 5)) {
     const res = await Promise.all(
@@ -84,6 +89,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info(`Success!`);
 };
 
 if (require.main === module) {
