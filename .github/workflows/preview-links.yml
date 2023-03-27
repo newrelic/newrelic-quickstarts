@@ -6,10 +6,6 @@ on:
       - main
     types: [opened]
 
-defaults:
-  run:
-    working-directory: utils
-
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -19,22 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
 
       - name: Create preview links
         id: links
         env:
           PR_URL: ${{ github.event.pull_request.url }}
         run: |
-          yarn create-preview-links "$PR_URL" "$PR_NUMBER"
+          cd utils && yarn create-preview-links "$PR_URL" "$PR_NUMBER"
       - name: Comment
         if: steps.links.outputs.comment != ''
         env:
