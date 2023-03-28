@@ -8,6 +8,7 @@ import {
 import Quickstart from './lib/Quickstart';
 import Alert, { SubmitSetRequiredDataSourcesMutationResult } from './lib/Alert';
 import { chunk, translateNGErrors } from './lib/nr-graphql-helpers';
+import logger from './logger';
 
 type QuickstartResult = {
   name: string;
@@ -28,7 +29,9 @@ const getQuickstartNameAndDataSources = async (
     return { hasFailed: true, results: [] };
   }
 
+  logger.info(`Fetching files for pull request ${ghUrl}`);
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
+  logger.info(`Found ${files.length} files`);
 
   const quickstartNames = filterQuickstartConfigFiles(files)
     .filter(isNotRemoved)
@@ -126,6 +129,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info('Success!');
 };
 
 /**
