@@ -164,46 +164,6 @@ jobs:
           statusContext: "Validation / Validate Quickstart Schema"
           state: ${{ job.status }}
 
-  validate-install-plan-ids:
-    name: Validate install plan ids
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: validation_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
-
-      - name: Get PR number
-        id: get_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: "refs/pull/${{ env.pr-number }}/merge"
-
-      - name: Setup workspace
-        uses: './.github/actions/bootstrap'
-
-      - name: Validate new files
-        id: validation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ env.pr-number }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          cd utils && yarn validate-quickstart-install-plans "$URL"
-
-      - name: Add commit status
-        if: always()
-        uses: './.github/actions/add-commit-status'
-        with:
-          statusContext: "Validation / Install plan ids exist"
-          state: ${{ job.status }}
-
   ensure-quickstart-dashboard-names-are-unique:
     name: Ensure quickstart dashboard names are unique
     runs-on: ubuntu-latest

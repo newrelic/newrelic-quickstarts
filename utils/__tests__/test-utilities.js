@@ -38,7 +38,6 @@ const mockGitHubResponseFilenames = [
   'utils/lib/github-api-helpers.js',
   'utils/helpers.js',
   'utils/package.json',
-  'utils/validate-install-plan.js',
   'utils/yarn.lock',
 ];
 

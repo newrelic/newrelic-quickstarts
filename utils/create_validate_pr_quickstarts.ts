@@ -111,6 +111,20 @@ export const createValidateQuickstarts = async (
     })
     .filter(Boolean);
 
+  const quickstartsWithInstallPlans = quickstarts
+    .map((qs) => {
+      return qs.config?.installPlans?.length ? qs.identifier : undefined;
+    })
+    .filter(Boolean);
+
+  if (quickstartsWithInstallPlans.length > 0) {
+    logger.info(
+      `WARNING: Found quickstart(s) with install plans.\n` + 
+      `\tInstall plans are in a deprecation period.\n` + 
+      `\tPlease switch to using a data sourcce`
+    );
+  }
+
   if (invalidQuickstarts.length > 0) {
     if (require.main === module) {
       process.exit(1);
