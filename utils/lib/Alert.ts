@@ -5,6 +5,7 @@ import * as glob from 'glob';
 
 import Component from './Component';
 
+import logger from '../logger';
 import type {
   AlertType,
   QuickstartAlertInput,
@@ -152,29 +153,36 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     | { alertPolicy: AlertPolicyDataSource }
     | { alertPolicy: null; errors: ErrorOrNerdGraphError[] }
   > {
+    const policyName = `${quickstart.name} alert policy`;
+
+    logger.info(`Request data sources for ${policyName}`);
     const { data, errors } = await fetchNRGraphqlResults<
       AlertPolicyRequiredDataSourcesQueryVariables,
       AlertPolicyRequiredDataSourcesQueryResults
     >({
       queryString: ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
-      variables: { query: `${quickstart.name} alert policy` },
+      variables: { query: policyName },
     });
+    logger.debug(`Results for ${policyName}`, { data, errors });
 
     const results = data?.actor?.nr1Catalog?.search?.results;
     const hasFailed = quickstart.dataSourceIds.length > 1;
 
     if (errors && errors.length > 0) {
+      logger.debug(`Errors requesting data sources for ${policyName}`, {
+        errors,
+      });
       return { alertPolicy: null, errors };
     }
 
     if (results === undefined || results.length === 0) {
-      console.log(`No alert policy for quickstart ${quickstart.name} exists`);
+      logger.info(`No alert policy for quickstart ${quickstart.name} exists`);
 
       return { alertPolicy: null, errors: [] };
     }
 
     if (hasFailed) {
-      console.log(
+      logger.info(
         `Multiple Quickstart data sources detected for Quickstart: ${quickstart.name} with AlertPolicy: ${results[0].id} must update manually`
       );
 
@@ -214,6 +222,10 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     templateId: string,
     dataSourceIds: string[]
   ) {
+    logger.info(`Submitting mutation for alert policy ${templateId}`, {
+      templateId,
+      dataSourceIds,
+    });
     const result = await fetchNRGraphqlResults<
       AlertPolicySetRequiredDataSourcesMutationVariables,
       AlertPolicySetRequiredDataSourcesMutationResults
@@ -221,6 +233,8 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
       queryString: ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
       variables: { templateId, dataSourceIds },
     });
+    logger.info(`Submitted mutation for alert policy ${templateId}`);
+    logger.debug(`Results for alert policy mutation`, { ...result });
 
     return result;
   }
