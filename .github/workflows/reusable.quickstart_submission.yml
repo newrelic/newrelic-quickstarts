@@ -26,30 +26,6 @@ env:
   DRY_RUN: ${{ inputs.dry-run }}
 
 jobs:
-  submit-install-plans:
-    name: Submit install plans
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        # Ensure we have the most recent commit to `main`
-        with:
-          ref: "main"
-          fetch-depth: 0
-
-      - name: Setup workspace
-        uses: './.github/actions/bootstrap'
-
-      - name: Update install plans
-        env:
-          NR_API_URL: ${{ secrets.nr-api-url }}
-          NR_API_TOKEN: ${{ secrets.nr-api-token }}
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          NEW_RELIC_LICENSE_KEY: ${{ secrets.nr-license-key }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          cd utils && yarn create-validate-install-plans "$URL" "$DRY_RUN"
-
   submit-data-sources:
     name: Submit data sources
     runs-on: ubuntu-latest
