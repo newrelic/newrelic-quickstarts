@@ -1,16 +1,16 @@
 # Name of the alert
-name: App Crash Rate
+name: Requests per Minute
 
 # Description and details
 description: |+
-  This alert is triggered when the application crash rate is above 20% for at least 5 mins.
+  This alert is triggered when the requests per minute is above 60 for at least 1 min.
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
 
-  query: "SELECT percentage(uniqueCount(sessionId), WHERE category = 'Crash') as `Crash rate` FROM MobileSession, MobileCrash WHERE crashFingerprint NOT IN ()"
+  query: "SELECT rate(count(*), 1 minute) FROM MobileRequest"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -21,18 +21,18 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 0.2
+    threshold: 60
     # Time in seconds; 120 - 3600
-    thresholdDuration: 300
+    thresholdDuration: 60
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
   - priority: WARNING
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 0.1
+    threshold: 40
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
-    thresholdDuration: 300
+    thresholdDuration: 60
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
