@@ -1,0 +1,19 @@
+name: Network Synthetic Jitter
+
+description: |+
+  This alert will trigger when a Kentik network synthetic test has average jitter above 250 ms for 600 seconds.  This is an indication of a very unreliable network path.
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.synth.jit_rtt)/1000 as 'Jitter ms' WHERE metricName = 'kentik.synth.jit_rtt' FACET test_name, agent_name"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 250
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

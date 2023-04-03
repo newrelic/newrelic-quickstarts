@@ -1,11 +1,6 @@
 id: 03b4a3b9-3a59-4603-91dd-6b0ced1d62de
-# Name of the quickstart (required)
 slug: argocd-quickstart
-
-# Displayed in the UI (required)
-title: ArgoCD Quickstart
-
-# Long-form description of the quickstart (required)
+title: Argo CD
 description: |
   ## What is Argo CD?
   Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
@@ -13,14 +8,14 @@ description: |
   ## Why Argo CD?
   Application definitions, configurations, and environments should be declarative and version controlled. Application deployment and lifecycle management should be automated, auditable, and easy to understand.
 
-  This dashboard mirrors the official Argo CD Grafana dashboard ([Link](https://github.com/argoproj/argo-cd/blob/master/examples/dashboard.json)).
+  This dashboard closely mirrors the official Argo CD Grafana dashboard ([Link](https://github.com/argoproj/argo-cd/blob/master/examples/dashboard.json)).
 
   ## Argo CD Getting started:
   - [Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started)
   - [Docs](https://argo-cd.readthedocs.io/en/stable/)
   - [Available Metrics](https://argo-cd.readthedocs.io/en/stable/operator-manual/metrics/)
 
-  ## ArgoCD Dashboard Highlights:
+  ## Argo CD Dashboard Highlights:
   - Sync Activity
   - Health Status
   - Controller Stats
@@ -28,30 +23,24 @@ description: |
   - Argo Server Stats
 
   ## Requirements:
-  1. NewRelic Kubernetes Integration ([Link](https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/installation/kubernetes-integration-install-configure/)) with the Prometheus OpenMetrics Integration ([Link](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/#OpenMetrics))
-  2. Patch the ArgoCD pods with `prometheus.io/scrape=true` podAnnotations.  This will enable the New Relic Prometheus Integration to scrape ArgoCD metrics:
+  1. [Prometheus Server or Prometheus Agent](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/) configured to remote write to New Relic.
+  2. Patch the Argo CD pods with `prometheus.io/scrape=true` podAnnotations.  This will enable the New Relic Prometheus Integration to scrape Argo CD metrics:
 
       `kubectl patch deployment argocd-server -n argocd -p '{"spec": {"template":{"metadata":{"annotations":{"prometheus.io/scrape":"true","prometheus.io/port": "8083","prometheus.io/path": "metrics"}}}} }'`
 
       `kubectl patch statefulset argocd-application-controller -n argocd -p '{"spec": {"template":{"metadata":{"annotations":{"prometheus.io/scrape":"true","prometheus.io/port": "8082","prometheus.io/path": "metrics"}}}} }'`
 
       `kubectl patch deployment argocd-repo-server -n argocd -p '{"spec": {"template":{"metadata":{"annotations":{"prometheus.io/scrape":"true","prometheus.io/port": "8084","prometheus.io/path": "metrics"}}}} }'`
-
-# Displayed in search results and recommendations. Summarizes a quickstarts functionality.
 summary: |
-  Displays the performance and availability of the ArgoCD platform within Kubernetes.
-
-# Support level: New Relic | Verified | Community (required)
+  Displays the performance and availability of the Argo CD platform within Kubernetes.
 level: New Relic
-
-# Authors of the quickstart (required)
 authors:
   - New Relic
-
-# Keywords for filtering / searching criteria in the UI
+  - Brad Schmitt
 keywords:
   - argocd
   - helm
+  - git
   - kubernetes
   - k8s
   - cd
@@ -61,32 +50,28 @@ keywords:
   - remote_write
   - promql
   - grafana
-
-# Reference to install plans located under /install directory
-# Allows us to construct reusable "install plans" and just use their ID in the quickstart config
+  - featured
 installPlans:
-  - kubernetes-install
-  - setup-pomi
   - setup-prometheus
-
+  - setup-prometheus-agent-mode
+dataSourceIds:
+  - prometheus
+  - prometheus-agent-mode
 documentation:
-  - name: ArgoCD Metrics Setup
+  - name: Prometheus Installation Docs
     description: |
-      Ship performance data from ArgoCD using Prometheus
-    url: >-
-      https://argo-cd.readthedocs.io/en/stable/operator-manual/metrics/
-  - name: Prometheus OpenMetrics Integration Setup
+      Use Prometheus remote_write or Prometheus Agent
+    url: https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/
+  - name: Argo CD Integration Docs
     description: |
-      Setup New Relic's Prometheus OpenMetrics Integration (POMI)
-    url: >-
-      https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/install-configure-openmetrics/install-update-or-uninstall-your-prometheus-openmetrics-integration
-  - name: Prometheus Remote Write Integrations Setup
+      New Relic documentation for the Argo CD integration including installation, configuration, and how to query the metrics.
+    url: https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/argocd-integration
+  - name: Argo CD Metrics Reference
     description: |
-      Use Prometheus remote_write integration
-    url: https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/install-configure-remote-write/set-your-prometheus-remote-write-integration
-
-# Content / Design
+      Argo CD Prometheus Metric Reference
+    url: https://argo-cd.readthedocs.io/en/stable/operator-manual/metrics/
+alertPolicies:
+  - argocd
 icon: logo.png
-
 dashboards:
   - argocd-dashboard

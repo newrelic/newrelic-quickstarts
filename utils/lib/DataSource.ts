@@ -1,8 +1,11 @@
 import * as path from 'path';
 import * as glob from 'glob';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 import Component from './Component';
 import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
+import logger from '../logger';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
@@ -26,19 +29,42 @@ class DataSource extends Component<DataSourceConfig, string> {
    * @returns Filepath for the configuration file (from top-level directory).
    */
   getConfigFilePath() {
-    const filePaths = glob.sync(
-      path.join(this.basePath, 'data-sources', this.identifier, '*.+(yml|yaml)')
+    const id = this.identifier;
+
+    // iterate through all data sources and read the contents of each file
+    const allDataSources = getAllDataSourceFiles(this.basePath).map((p) => ({
+      filePath: p,
+      content: yaml.load(
+        fs.readFileSync(p).toString('utf-8')
+      ) as DataSourceConfig,
+    }));
+
+    // find the matching data source ID from the config content
+    const dataSource = allDataSources.find((i) => i.content?.id === id);
+
+    // replace the identifier with the file path found from the id
+    this.identifier = path.dirname(
+      Component.removeBasePath(
+        dataSource?.filePath ?? '',
+        path.join(this.basePath, 'data-sources')
+      )
     );
 
+    // grab the config files from the identifier file path
+    const filePaths = glob.sync(
+      path.join(
+        this.basePath,
+        'data-sources',
+        this.identifier,
+        'config.+(yml|yaml)'
+      )
+    );
+
+    // validate the data source ID exists and ensure there is only
+    // one config file at that location
     if (!Array.isArray(filePaths) || filePaths.length !== 1) {
       this.isValid = false;
-      const errorMessage =
-        filePaths.length > 1
-          ? `Data source at ${this.identifier} contains multiple configuration files.\n`
-          : `Data source at ${this.identifier} does not exist. Please double check this location.\n`;
-      
-      console.error(errorMessage);
-      return ''
+      return '';
     }
 
     return Component.removeBasePath(filePaths[0], this.basePath);
@@ -89,6 +115,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       );
     }
 
+    logger.info(`Submitting mutation for ${this.config.id}`, { dryRun });
     const { data, errors } = await fetchNRGraphqlResults<
       DataSourceMutationVariable,
       DataSourceMutationResponse
@@ -96,6 +123,8 @@ class DataSource extends Component<DataSourceConfig, string> {
       queryString: DATA_SOURCE_MUTATION,
       variables: this._getComponentMutationVariables(dryRun),
     });
+    logger.info(`Submitted mutation for ${this.config.id}`, { dryRun });
+    logger.debug(`Submission results for ${this.config.id}`, { data, errors });
 
     // filePath may need to be changed for this rework
     return { data, errors, name: this.identifier };
@@ -106,6 +135,11 @@ class DataSource extends Component<DataSourceConfig, string> {
    */
   private _getIconUrl() {
     const { icon } = this.config;
+
+    if (!icon) {
+      return undefined;
+    }
+
     const dirName = path.dirname(this.configPath);
     const relDirName = Component.removeBasePath(dirName, this.basePath);
 
@@ -156,5 +190,10 @@ class DataSource extends Component<DataSourceConfig, string> {
     return directive;
   }
 }
+
+const getAllDataSourceFiles = (
+  basePath: string = path.join(__dirname, '..', '..')
+): string[] =>
+  glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
 
 export default DataSource;

@@ -1,0 +1,20 @@
+name: Ktranslate Container Low Buffer Violation
+
+description: |+
+  This alert will trigger when a Kentik ktranslate container has a low number of available buffer allocations.  This is an indication that the container does not have enough resources to keep up with the incoming data.  You may need to scale horizontally or vertically to address these needs.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT min(kentik.ktranslate.chf.kkc.jchfq) AS 'jchfq' FACET host, svc WHERE instrumentation.provider = 'kentik' AND instrumentation.name = 'heartbeat'"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: BELOW
+    threshold: 7000
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
