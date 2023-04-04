@@ -1,141 +1,2681 @@
 {
-  "name" : "MySQL overview dashboard",
-  "description" : "Official New Relic dashboard to show MySQL data",
-  "pages" : [ {
-    "name" : "MySQL overview dashboard",
-    "description" : "",
-    "widgets" : [ {
-      "visualization" : {
-        "id" : "viz.line"
+  "name": "MySQL Overview",
+  "description": null,
+  "pages": [
+    {
+      "name": "MySQL Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![MySQL logo](https://www.mysql.com/common/logos/logo-mysql-170x115.png)\n\n## Overview\n\n[MySQL](https://www.mysql.com/) is the world's most popular open source database. Whether you are a fast growing web property, technology ISV or large enterprise, MySQL can cost-effectively help you deliver high performance, scalable database applications.\n\n---\n\n## About this dashboard\n\n* For information on the MySQL on-host integration, please visit the documentation [here](https://docs.newrelic.com/install/mysql/).\n* To view the source code, please visit the [nri-mysql repository](https://github.com/newrelic/nri-mysql).\n* Use the `Host` and `Node` variables at the top of this page to filter your results."
+          }
+        },
+        {
+          "title": "Node Inventory",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n latest(entity.name) AS 'Node'\nFACET \n  mysql.hostname AS 'Hostname',\n  mysql.clusterNodeType AS 'Node Type',\n  mysql.port AS 'TCP Port',\n  mysql.version AS 'MySQL Version',\n  mysql.edition AS 'MySQL Edition'\nWHERE metricName = 'mysql.node.net.maxUsedConnections'\nAND mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Database Connections\n\nActive connections and connection attempts per second"
+          }
+        },
+        {
+          "title": "Current Active Connections",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n latest(mysql.node.net.threadsConnected) AS 'Active Connections'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Max Active Connections",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n max(mysql.node.net.threadsConnected) AS 'Max Connections'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Connections per Second",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n average(mysql.node.net.connectionsPerSecond) AS 'Connections per Second'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Database Operations\n\n`SELECT`, `INSERT`, `UPDATE`, and `DELETE` statements executed per second"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Database Waits\n\nWaits per second due to failed requests for a table lock"
+          }
+        },
+        {
+          "title": "Operations per Second",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.query.insertPerSecond) AS 'Insert Commands', \n  average(mysql.node.query.selectPerSecond) AS 'Select Commands', \n  average(mysql.node.query.updatePerSecond) AS 'Update Comands', \n  average(mysql.node.query.deletePerSecond) AS 'Delete Commands'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Waits per Second",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.tablesLocksWaitedPerSecond) AS 'Waits'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Database Queries\n\nTotal queries per second (including stored programs), Percentage of queries per second exceeding the `long_query_time` parameter, and Total queries per second, filtered to only clients (Questions)"
+          }
+        },
+        {
+          "title": "Queries per Second",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.query.queriesPerSecond) AS 'Queries'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Slow Query %",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  (average(mysql.node.query.slowQueriesPerSecond)/average(mysql.node.query.queriesPerSecond))*100 AS 'Slow Query Rate'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Questions per Second",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.query.questionsPerSecond) AS 'Questions'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Database Throughput\n\nNetwork byte throughput (Sent and Received) and [InnoDB](https://dev.mysql.com/doc/refman/8.0/en/innodb-introduction.html) tables data Read/Write rates"
+          }
+        },
+        {
+          "title": "Network Bytes/sec",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.net.bytesReceivedPerSecond) AS 'Received', \n  average(mysql.node.net.bytesSentPerSecond) AS 'Sent'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "InnoDB R/W Bytes/sec",
+          "layout": {
+            "column": 7,
+            "row": 19,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.innodb.dataReadBytesPerSecond) AS 'Read InnoDB Data', \n  average(mysql.node.innodb.dataWrittenBytesPerSecond) AS 'Write InnoDB Data'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extended Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Extended Metrics\n\nThis page is populated with the [extended metrics](https://docs.newrelic.com/install/mysql/#extended-metrics) collected when enabled in the [integration configuration file](https://github.com/newrelic/nri-mysql/blob/master/mysql-config.yml.sample).\n\nExample:\n\n```yaml\nintegrations:\n- name: nri-mysql\n  env:\n    EXTENDED_METRICS: true    # Default: false\n    ...\n```"
+          }
+        },
+        {
+          "title": "Execution Timeout Exceeded per Second",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.maxExecutionTimeExceededPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Temporary Objects\n\nTemp tables and files created per second"
+          }
+        },
+        {
+          "title": "Temporary Tables per Second",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpTablesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Temporary Tables on Disk per Second",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpDiskTablesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Temporary Files per Second",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpFilesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Open Tables Cache\n\nHits, Misses, and Overflows per second"
+          }
+        },
+        {
+          "title": "Cache Hits per Second",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheHitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Misses per Second",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheMissesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Overflows per Second",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheOverflowsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Thread Cache\n\nTotal count and rates for creation and misses"
+          }
+        },
+        {
+          "title": "Total Threads in Cache",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.threadsCached)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Threads Created per Second",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.threadsCreatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Thread Cache Miss Rate",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.threadCacheMissRate)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Query Performance\n\nVarious metrics that indicate performance pressure that could be optimized by redesigning queries and/or tables"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of joins that perform table scans because they do not use indexes, per second."
+          }
+        },
+        {
+          "title": "Full Join per Second",
+          "layout": {
+            "column": 2,
+            "row": 17,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.selectFullJoinPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 17,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of joins per second that used a range search on a reference table."
+          }
+        },
+        {
+          "title": "Range Search Join per Second",
+          "layout": {
+            "column": 8,
+            "row": 17,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.selectFullJoinRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of joins per second without keys that check for key usage after each row."
+          }
+        },
+        {
+          "title": "Key Check Join per Second",
+          "layout": {
+            "column": 2,
+            "row": 20,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.selectRangeCheckPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 20,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of joins per second that used ranges on the first table."
+          }
+        },
+        {
+          "title": "First Table Range Join per Second",
+          "layout": {
+            "column": 8,
+            "row": 20,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.selectRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of merge passes that the sort algorithm has had to do, per second."
+          }
+        },
+        {
+          "title": "Sort Merge Passes per Second",
+          "layout": {
+            "column": 2,
+            "row": 23,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.sortMergePassesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 23,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of sorts per second that were done using ranges."
+          }
+        },
+        {
+          "title": "Sort Range per Second",
+          "layout": {
+            "column": 8,
+            "row": 23,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.sortRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 26,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of sorted rows per second."
+          }
+        },
+        {
+          "title": "Sort Rows per Second",
+          "layout": {
+            "column": 2,
+            "row": 26,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.sortRowsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 26,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Number of sorts that were done by scanning the table, per second."
+          }
+        },
+        {
+          "title": "Sort Scans per Second",
+          "layout": {
+            "column": 8,
+            "row": 26,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\nmax(mysql.node.sortScanPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extended InnoDB Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Extended InnoDB Metrics\n\nThis page is populated with both the default and [extended InnoDB metrics](https://docs.newrelic.com/install/mysql/#extended-innodb-metrics), which are collected when enabled in the [integration configuration file](https://github.com/newrelic/nri-mysql/blob/master/mysql-config.yml.sample).\n\nExample:\n\n```yaml\nintegrations:\n- name: nri-mysql\n  env:\n    EXTENDED_INNODB_METRICS: true    # Default: false\n    ...\n```"
+          }
+        },
+        {
+          "title": "Buffer Pool Requests vs Reads from Disk (%)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  (latest(mysql.node.innodb.bufferPool.pagesTotal) - latest(mysql.node.innodb.bufferPool.pagesFree))/latest(mysql.node.innodb.bufferPool.pagesTotal)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB Table Activity"
+          }
+        },
+        {
+          "title": "InnoDB Read bytes per second",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataReadBytesPerSecond) AS 'Read'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Write bytes per second",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataWrittenBytesPerSecond) AS 'Write'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB Logs and Table Row Locks"
+          }
+        },
+        {
+          "title": "InnoDB Log Waits per second",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWaitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Row Lock Waits per second",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowLockWaitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Row Lock Time (ms)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(mysql.node.innodb.rowLockTimeAvg)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB Buffer Pool Pages and Read-Ahead"
+          }
+        },
+        {
+          "title": "Buffer Pool Dirty Pages",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.pagesDirty)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Pages Flushed per second",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.pagesFlushedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Read-Ahead Eviction Rate",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readAheadEvictedPerSecond)/max(mysql.node.innodb.bufferPool.readAheadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Read Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Reads per seond",
+          "layout": {
+            "column": 4,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Write Requests per second",
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.writeRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Buffer Pool Waits per second",
+          "layout": {
+            "column": 10,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.waitFreePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB `fsync()` Operations, Data, and Redo Log Activity"
+          }
+        },
+        {
+          "title": "InnoDB Open Files",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.numOpenFiles)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB fsync() Operations per second",
+          "layout": {
+            "column": 5,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataFsyncsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Pending fsync() Operations",
+          "layout": {
+            "column": 9,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingFsyncs)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Pending Reads",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingReads)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "InnoDB Pending Writes",
+          "layout": {
+            "column": 7,
+            "row": 23,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingWrites)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Log Write Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 26,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWriteRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Log Writes per second",
+          "layout": {
+            "column": 7,
+            "row": 26,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWritesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 29,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB Pages Activity"
+          }
+        },
+        {
+          "title": "Pages Created per second",
+          "layout": {
+            "column": 1,
+            "row": 30,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesCreatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Pages Read per second",
+          "layout": {
+            "column": 5,
+            "row": 30,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesReadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Pages Written per second",
+          "layout": {
+            "column": 9,
+            "row": 30,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesWrittenPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 33,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### InnoDB Table Row Activity"
+          }
+        },
+        {
+          "title": "Rows Deleted per second",
+          "layout": {
+            "column": 1,
+            "row": 34,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsDeletedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Rows Inserted per second",
+          "layout": {
+            "column": 7,
+            "row": 34,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsInsertedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Rows Read per second",
+          "layout": {
+            "column": 1,
+            "row": 37,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsReadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Rows Updated per second",
+          "layout": {
+            "column": 7,
+            "row": 37,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsUpdatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extended MyISAM Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Extended MyISAM Metrics\n\nThis page is populated with the [extended MyISAM metrics](https://docs.newrelic.com/install/mysql/#extended-myisam-metrics) collected when enabled in the [integration configuration file](https://github.com/newrelic/nri-mysql/blob/master/mysql-config.yml.sample).\n\nExample:\n\n```yaml\nintegrations:\n- name: nri-mysql\n  env:\n    EXTENDED_MY_ISAM_METRICS: true    # Default: false\n    ...\n```"
+          }
+        },
+        {
+          "title": "Key Cache Utilization %",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyCacheUtilization)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Key Blocks Not Flushed",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyBlocksNotFlushed)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Key Read Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyReadRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Key Reads per second",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyReadsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Key Write Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyWriteRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Key Writes per second",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyWritesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extended Cluster Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Extended Cluster Metrics\n\nThis page is populated with the [extended cluster metrics](https://docs.newrelic.com/install/mysql/#extended-slave-cluster-metrics) collected when `extended metrics` are enabled in the [integration configuration file](https://github.com/newrelic/nri-mysql/blob/master/mysql-config.yml.sample) and the integration has found an active slave node (`mysql.node.cluster.slaveRunning: 1`)\n\nExample:\n\n```yaml\nintegrations:\n- name: nri-mysql\n  env:\n    EXTENDED_METRICS: true    # Default: false\n    ...\n```"
+          }
+        },
+        {
+          "title": "Current Replication Status",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  latest(mysql.clusterSlaveIoRunning) AS 'Slave IO Running',\n  latest(mysql.clusterSlaveSqlRunning) AS 'Slave SQL Running'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Relay Log Files Combines (bytes)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.relayLogSpace)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Seconds Behind Master Replica Sync",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  max(mysql.node.cluster.secondsBehindMaster)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "mysql_host",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(mysql.hostname)\nWHERE metricName = 'mysql.node.net.maxUsedConnections'\nSINCE 1 WEEK AGO LIMIT MAX"
       },
-      "layout" : {
-        "column" : 1,
-        "row" : 1,
-        "height" : 3,
-        "width" : 8
+      "title": "Host",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "mysql_node",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(entity.name)\nWHERE metricName = 'mysql.node.net.maxUsedConnections'\nSINCE 1 WEEK AGO LIMIT MAX"
       },
-      "title" : "Operations per second",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT average(`mysql.node.query.insertPerSecond`) * uniqueCount(entity.name) as 'Insert Commands', average(`mysql.node.query.selectPerSecond`) * uniqueCount(entity.name) as 'Select Commands', average(`mysql.node.query.updatePerSecond`) * uniqueCount(entity.name) as 'Update Comands', average(`mysql.node.query.deletePerSecond`) * uniqueCount(entity.name) as 'Delete Commands' FROM Metric WHERE `metricName` IN ('mysql.node.query.insertPerSecond', 'mysql.node.query.selectPerSecond', 'mysql.node.query.updatePerSecond', 'mysql.node.query.deletePerSecond') TIMESERIES"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.markdown"
-      },
-      "layout" : {
-        "column" : 9,
-        "row" : 1,
-        "height" : 6,
-        "width" : 4
-      },
-      "rawConfiguration" : {
-        "text" : "# MySQL\n\nMySQL is the world's most popular open source database. With its proven performance, reliability, and ease-of-use, MySQL has become the leading database choice for web-based applications.\n\nThe MySQL integration provides different parameters to control the metrics that are captured.\n\n\n"
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.line"
-      },
-      "layout" : {
-        "column" : 1,
-        "row" : 4,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Queries per second",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT average(`mysql.node.query.queriesPerSecond`) * uniqueCount(entity.name) as 'Queries' FROM Metric WHERE `metricName` = 'mysql.node.query.queriesPerSecond' TIMESERIES"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.area"
-      },
-      "layout" : {
-        "column" : 5,
-        "row" : 4,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Slow Queries per minute, by node",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT average(`mysql.node.query.slowQueriesPerSecond`) * 60 as 'Slow Queries' FROM Metric TIMESERIES facet entity.name"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.bar"
-      },
-      "layout" : {
-        "column" : 1,
-        "row" : 7,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Active Connections, by node",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT latest(`mysql.node.net.threadsConnected`) as 'Active Connections' FROM Metric facet entity.name"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.line"
-      },
-      "layout" : {
-        "column" : 5,
-        "row" : 7,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Max Connections, by node",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT max(`mysql.node.net.threadsConnected`) as 'Max Connections' FROM Metric TIMESERIES facet entity.name"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.line"
-      },
-      "layout" : {
-        "column" : 1,
-        "row" : 10,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Read vs Written InnoDB Bytes per second",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT average(`mysql.node.innodb.dataReadBytesPerSecond`) * uniqueCount(entity.name) as 'Read InnoDB Data', average(`mysql.node.innodb.dataWrittenBytesPerSecond`) * uniqueCount(entity.name) as 'Write InnoDB Data' FROM Metric WHERE `metricName` IN ('mysql.node.innodb.dataReadBytesPerSecond', 'mysql.node.innodb.dataWrittenBytesPerSecond') TIMESERIES"
-        } ]
-      }
-    }, {
-      "visualization" : {
-        "id" : "viz.line"
-      },
-      "layout" : {
-        "column" : 5,
-        "row" : 10,
-        "height" : 3,
-        "width" : 4
-      },
-      "title" : "Received vs Sent Bytes per second",
-      "rawConfiguration" : {
-        "nrqlQueries" : [ {
-          "accountId" : 0,
-          "query" : "SELECT average(`mysql.node.net.bytesReceivedPerSecond`) * uniqueCount(entity.name) as 'Bytes Received', average(`mysql.node.net.bytesSentPerSecond`) * uniqueCount(entity.name) as 'Bytes Sent' FROM Metric WHERE `metricName` IN ('mysql.node.net.bytesReceivedPerSecond', 'mysql.node.net.bytesSentPerSecond') TIMESERIES"
-        } ]
-      }
-    } ]
-  } ]
+      "title": "Node",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }

@@ -1,462 +1,565 @@
 {
-    "name": "Redis-Prometheus",
-    "description": "Dashboard for displaying Redis metrics from Prometheus",
-    "pages": [
-      {
-        "name": "Redis",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Reporting Nodes",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT  filter(uniqueCount(role), WHERE role  = 'slave') as 'Slaves', filter(uniqueCount(role), WHERE role  = 'master') as 'Master' FROM Metric where metricName = 'redis_instance_info' until 1 minute ago"
-                }
-              ],
-              "thresholds": []
-            }
+  "name": "Redis (Prometheus)",
+  "description": "Dashboard for displaying Redis metrics from Prometheus",
+  "pages": [
+    {
+      "name": "Redis",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 4
           },
-          {
-            "title": "Commands Processed",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 4,
-              "height": 3
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Redis Logo](https://redis.com/wp-content/uploads/2021/08/redis-logo.png)\n\n### Overview\n\nRedis is an open source, in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and spatial indexes.\n\n---\n\n### About this Dashboard\n\nThis dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\nFor information on the prerequisites for this dashboard, please visit [our documentation here.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/redis-integration)"
+          }
+        },
+        {
+          "title": "Reporting Nodes",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_commands_processed_total)  as 'Commands' FROM Metric  where metricName = 'redis_commands_processed_total'  TIMESERIES until 1 minutes ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nuniqueCount(concat(prometheus_server,' - ',instance)) AS 'Members'\nFACET concat(prometheus_server,' - ',instance) AS 'Redis', role\nWHERE metricName = 'redis_instance_info'\nAND instrumentation.name = 'remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )"
               }
-            }
-          },
-          {
-            "title": "",
-            "layout": {
-              "column": 9,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "\n![Redis Logo](https://redis.com/wp-content/uploads/2021/08/redis-logo.png)\n\n\nRedis is an open source, in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and spatial indexes.\n\n\n"
-            }
-          },
-          {
-            "title": "Commands by node",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 12,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_commands_processed_total) as 'Commands' FROM Metric TIMESERIES FACET instance"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Connected Clients",
-            "layout": {
-              "column": 1,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_connected_clients)  as 'Connected clients' FROM Metric where metricName = 'redis_connected_clients' TIMESERIES until 1 minutes ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Connected Clients, by node",
-            "layout": {
-              "column": 5,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_connected_clients)  as 'Connected clients' FROM Metric where metricName = 'redis_connected_clients' Facet instance TIMESERIES until 1 minutes ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Changes Since Last Save, by node",
-            "layout": {
-              "column": 9,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT average(redis_rdb_changes_since_last_save) as 'Rdb changes' FROM Metric TIMESERIES FACET instance"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Blocked Clients",
-            "layout": {
-              "column": 1,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT average(redis_blocked_clients) * uniqueCount(instance) AS 'Blocked Clients' FROM Metric  TIMESERIES until 1 minutes ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Redis Used Memory (bytes), by node",
-            "layout": {
-              "column": 5,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT average(redis_memory_used_bytes) as 'Used memory' FROM Metric TIMESERIES FACET instance "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Cache Hit Ratio",
-            "layout": {
-              "column": 9,
-              "row": 10,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT 1 - (sum(redis_keyspace_misses_total) / sum(redis_keyspace_hits_total)) as 'Cache Hit Ratio' FROM Metric Facet instance TIMESERIES "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Keyspace Hit Ratio, by node",
-            "layout": {
-              "column": 1,
-              "row": 13,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT average(redis_keyspace_hits_total) / (average(redis_keyspace_misses_total) + average(redis_keyspace_hits_total)) as 'Hit Ratio' FROM Metric TIMESERIES FACET entity.name"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Evicted Keys by node",
-            "layout": {
-              "column": 5,
-              "row": 13,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_evicted_keys_total) as 'Evicted keys' FROM Metric TIMESERIES FACET instance"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Expired Keys by node",
-            "layout": {
-              "column": 9,
-              "row": 13,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "FROM Metric SELECT average(redis_expired_keys_total) Facet instance TIMESERIES"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Network I/O (bytes)",
-            "layout": {
-              "column": 1,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_net_input_bytes_total) * uniqueCount(instance) as 'Input', sum(redis_net_output_bytes_total) * uniqueCount(instance) as 'Output' FROM Metric  TIMESERIES until 1 minutes ago"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Input Bytes by node",
-            "layout": {
-              "column": 5,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_net_input_bytes_total) as 'Input' FROM Metric TIMESERIES FACET instance"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Output Bytes by node",
-            "layout": {
-              "column": 9,
-              "row": 16,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId" : 0,
-                  "query": "SELECT sum(redis_net_output_bytes_total) as 'Output' FROM Metric TIMESERIES FACET instance"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      }
-    ]
-  }
+        },
+        {
+          "title": "Commands Processed",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_commands_processed_total) AS 'Commands'\nFACET concat(prometheus_server,' - ',instance)\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Commands by node",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_commands_processed_total) AS 'Commands'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Connected Clients",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nmax(redis_connected_clients) AS'Connected clients'\nFACET concat(prometheus_server,' - ',instance)\nWHERE metricName = 'redis_connected_clients'\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Connected Clients, by node",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nmax(redis_connected_clients) AS'Connected clients'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE metricName = 'redis_connected_clients'\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Changes Since Last Save, by node",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(redis_rdb_changes_since_last_save) AS 'Rdb changes'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Blocked Clients",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(redis_blocked_clients) * uniqueCount(instance) AS 'Blocked Clients'\nFACET concat(prometheus_server,' - ',instance)\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Redis Used Memory (bytes), by node",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(redis_memory_used_bytes) AS 'Used memory'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Hit Ratio",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n1 - (sum(redis_keyspace_misses_total) / sum(redis_keyspace_hits_total)) AS 'Cache Hit Ratio'\nFACET concat(prometheus_server,' - ',instance)\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Keyspace Hit Ratio, by node",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(redis_keyspace_hits_total) / (average(redis_keyspace_misses_total) + average(redis_keyspace_hits_total)) AS 'Hit Ratio'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Evicted Keys by node",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_evicted_keys_total) AS 'Evicted keys'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Expired Keys by node",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\naverage(redis_expired_keys_total) AS 'Expired keys'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Network I/O (bytes) per Instance",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_net_input_bytes_total) AS 'Input',\nsum(redis_net_output_bytes_total) AS 'Output'\nFACET concat(prometheus_server,' - ',instance)\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Input Bytes by node",
+          "layout": {
+            "column": 5,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_net_input_bytes_total) AS 'Input'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Output Bytes by node",
+          "layout": {
+            "column": 9,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nsum(redis_net_output_bytes_total) AS 'Input'\nFACET concat(prometheus_server,' - ',instance), node\nWHERE instrumentation.name='remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "isMultiSelection": true,
+      "defaultValues": [
+        {
+          "value" : {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' AND metricName LIKE 'redis%' SINCE 1 WEEK AGO\n\n\n\n"
+      },
+      "title": "",
+      "type": "NRQL"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "isMultiSelection": true,
+      "defaultValues": [
+        {
+          "value" : {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'redis%' SINCE 1 WEEK AGO\n\n\n"
+      },
+      "title": "",
+      "type": "NRQL"
+    }
+  ]
+}

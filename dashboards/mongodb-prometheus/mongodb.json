@@ -1,0 +1,1694 @@
+{
+  "name": "MongoDB (Prometheus)",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![MongoDB logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/320px-MongoDB_Logo.svg.png)\n\nMongoDB is a highly scalable document-oriented NoSQL database.\n\nNew Relic's MongoDB integration collects data by using a Prometheus exporter about the services running on your MongoDB infrastucture and sends it to our platform.\n\nUse this dashboard to get meaningful insights about clusters, databases and collections and shards,\n\nRead more in the [docs](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/mongodb/mongodb-monitoring-integration-new/) (TBD)\n- - -\nIn this tab, the following variables filters data\n- Cluster"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(mongodb_cluster_name) AS 'Clusters', uniqueCount(database) AS 'Databases', filter(uniqueCount(collection), WHERE metricName='mongodb_collstats_storageStats_count') AS 'Collections' WHERE mongodb_cluster_name IN ({{select_instance}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connections Saturation",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(average(mongodb_ss_connections), WHERE conn_type IN ('current')) AS 'Open', filter(average(mongodb_ss_connections), WHERE conn_type IN ('available')) AS 'Available', 100 * filter(average(mongodb_ss_connections) , WHERE conn_type IN ('current')) / filter(average(mongodb_ss_connections), WHERE conn_type IN ('available')) AS '% used' WHERE metricName='mongodb_ss_connections' AND mongodb_cluster_name IN ({{select_instance}}) FACET mongodb_cluster_name AS 'Cluster'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connections Saturation",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(average(mongodb_ss_connections) , WHERE conn_type IN ('current')) / filter(average(mongodb_ss_connections) , WHERE conn_type IN ('available')) AS '% used' WHERE metricName='mongodb_ss_connections' AND mongodb_cluster_name IN ({{select_instance}})  FACET mongodb_cluster_name AS 'Instance' TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Oplog Size",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Storage",
+                "type": "humanized"
+              },
+              {
+                "name": "Current",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_oplog_stats_size) AS 'Current', latest(mongodb_oplog_stats_storageSize) AS 'Storage' WHERE (metricName='mongodb_oplog_stats_size' OR metricName='mongodb_oplog_stats_storageSize') AND mongodb_cluster_name IN ({{select_instance}}) facet mongodb_cluster_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Oplog Size",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_oplog_stats_size) AS 'Current', latest(mongodb_oplog_stats_storageSize) AS 'Storage' WHERE (metricName='mongodb_oplog_stats_size' OR metricName='mongodb_oplog_stats_storageSize') AND mongodb_cluster_name IN ({{select_instance}}) TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Query Operations",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "mongodb_ss_opcounters",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_opcounters, 1 minute) WHERE metricName='mongodb_ss_opcounters'AND  mongodb_cluster_name IN ({{select_instance}}) FACET  mongodb_cluster_name, CASES ( WHERE legacy_op_type = 'command' AS 'Command', WHERE legacy_op_type = 'delete' AS 'Delete', WHERE legacy_op_type = 'getmore' AS 'Getmore', WHERE legacy_op_type = 'insert' AS 'Insert', WHERE legacy_op_type = 'query' AS 'Query', WHERE legacy_op_type = 'update' AS 'Update')  compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Query Operations (per minute)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_opcounters, 1 minute) WHERE metricName='mongodb_ss_opcounters'AND  mongodb_cluster_name IN ({{select_instance}}) FACET mongodb_cluster_name, CASES ( WHERE legacy_op_type = 'command' AS 'Command', WHERE legacy_op_type = 'delete' AS 'Delete', WHERE legacy_op_type = 'getmore' AS 'Getmore', WHERE legacy_op_type = 'insert' AS 'Insert', WHERE legacy_op_type = 'query' AS 'Query', WHERE legacy_op_type = 'update' AS 'Update')  TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Document Query Executor",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_metrics_queryExecutor_scanned, 1 minute) AS 'Scanned', derivative(mongodb_ss_metrics_queryExecutor_scannedObjects, 1 minute) AS 'Scanned Objects' WHERE (metricName='mongodb_ss_metrics_queryExecutor_scanned' OR metricName='mongodb_ss_metrics_queryExecutor_scannedObjects') AND mongodb_cluster_name IN ({{select_instance}}) compare with 1 hour ago FACET mongodb_cluster_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Document Query Executor (per minute)",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_metrics_queryExecutor_scanned, 1 minute) AS 'Scanned', derivative(mongodb_ss_metrics_queryExecutor_scannedObjects, 1 minute) AS 'Scanned Objects' WHERE (metricName='mongodb_ss_metrics_queryExecutor_scanned' OR metricName='mongodb_ss_metrics_queryExecutor_scannedObjects') AND mongodb_cluster_name IN ({{select_instance}}) facet mongodb_cluster_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Document Operations",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "mongodb_ss_metrics_document",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_metrics_document, 1 minute) WHERE metricName='mongodb_ss_metrics_document' AND mongodb_cluster_name IN ({{select_instance}}) FACET mongodb_cluster_name, CASES ( WHERE doc_op_type = 'returned' AS 'Returned', WHERE doc_op_type = 'inserted' AS 'Inserted', WHERE doc_op_type = 'deleted' AS 'Deleted', WHERE doc_op_type = 'updated' AS 'Updated' ) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Document Operations (per minute)",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_metrics_document, 1 minute) WHERE metricName='mongodb_ss_metrics_document' AND mongodb_cluster_name IN ({{select_instance}}) FACET CASES ( WHERE doc_op_type = 'returned' AS 'Returned', WHERE doc_op_type = 'inserted' AS 'Inserted', WHERE doc_op_type = 'deleted' AS 'Deleted', WHERE doc_op_type = 'updated' AS 'Updated' ), mongodb_cluster_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Databases",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "In this tab, the following variables filters data\n- Cluster\n- Database"
+          }
+        },
+        {
+          "title": "Databases size",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_dbstats_dataSize) AS 'Size (Bytes)' WHERE mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) FACET mongodb_cluster_name AS 'Cluster',database AS 'Database' timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Databases",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 5,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Average Object Size (Bytes)",
+                "type": "humanized"
+              },
+              {
+                "name": "Objects",
+                "type": "humanized"
+              },
+              {
+                "name": "Size (Bytes)",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_dbstats_dataSize) AS 'Size (Bytes)', latest(mongodb_dbstats_objects) AS 'Objects', latest(mongodb_dbstats_views) AS 'Views', latest(mongodb_dbstats_indexes) AS 'Indexes', latest(mongodb_dbstats_indexSize) AS 'Index Size (Bytes)'   WHERE mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) FACET mongodb_cluster_name AS 'Cluster',database AS 'Database'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Databases objects",
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_dbstats_objects) AS 'Objects' WHERE mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) FACET mongodb_cluster_name AS 'Cluster',database AS 'Database' timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Views",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(mongodb_dbstats_views) AS 'Views' WHERE mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) FACET mongodb_cluster_name,database timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Index size",
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(mongodb_dbstats_indexSize) AS 'Index Size (Bytes)' WHERE mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) FACET mongodb_cluster_name,database timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Collections",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "\nIn this tab, the following variables filters data\n- Cluster\n- Database\n- Collection"
+          }
+        },
+        {
+          "title": "Size",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Size (Bytes)",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(mongodb_collstats_storageStats_size) AS 'Size (Bytes)' WHERE metricName IN ('mongodb_collstats_storageStats_count','mongodb_collstats_storageStats_size') AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) limit max FACET concat(mongodb_cluster_name,'-',database) AS 'Database', collection"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Size",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(mongodb_collstats_storageStats_size) AS 'Size (Bytes)' WHERE metricName IN ('mongodb_collstats_storageStats_size') AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) timeseries auto limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Size",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Size (Bytes)",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(size) FROM (FROM Metric SELECT latest(mongodb_collstats_storageStats_size) AS 'size' WHERE metricName IN ('mongodb_collstats_storageStats_count','mongodb_collstats_storageStats_size') AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET collection) COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Read Operations",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT derivative(mongodb_collstats_latencyStats_reads_ops, 1 minute) WHERE metricName='mongodb_collstats_latencyStats_reads_ops' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Read Latency",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_reads_latency, 1 minute)/1000 WHERE metricName='mongodb_collstats_latencyStats_reads_latency' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Write Operations",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_writes_ops, 1 minute) WHERE metricName='mongodb_collstats_latencyStats_writes_ops' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection)  TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Write Latency",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_writes_latency, 1 minute)/1000 WHERE metricName='mongodb_collstats_latencyStats_writes_latency' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Transactions",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_transactions_ops, 1 minute) WHERE metricName='mongodb_collstats_latencyStats_transactions_ops' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Transactions Latency",
+          "layout": {
+            "column": 4,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_transactions_latency, 1 minute)/1000 WHERE metricName='mongodb_collstats_latencyStats_transactions_latency' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Index Access Operations",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_indexstats_accesses_ops, 1 minute) WHERE metricName='mongodb_indexstats_accesses_ops' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Commands ",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_commands_ops, 1 minute) WHERE metricName='mongodb_collstats_latencyStats_commands_ops' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection)  TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Commands Latency",
+          "layout": {
+            "column": 4,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "From Metric SELECT derivative(mongodb_collstats_latencyStats_commands_latency, 1 minute)/1000 WHERE metricName='mongodb_collstats_latencyStats_commands_latency' AND mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) FACET concat(mongodb_cluster_name,',', database, ',',collection) TIMESERIES AUTO limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Commands Frequency",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(mongodb_top_insert_count) AS 'Commands', average(mongodb_top_getmore_count) AS 'Getmore', average(mongodb_top_insert_count) AS 'Insert', average(mongodb_top_queries_count) AS 'Queries', average(mongodb_top_readLock_count) AS 'ReadLock', average(mongodb_top_writeLock_count) AS 'WriteLock', average(mongodb_top_remove_count) AS 'Remove', average(mongodb_top_update_count) AS 'Update' FROM Metric WHERE  mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}})  TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Commands Duration",
+          "layout": {
+            "column": 10,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT derivative(mongodb_top_insert_time, 1 minute)/1000 AS 'Commands', derivative(mongodb_top_getmore_time, 1 minute)/1000 AS 'Getmore', derivative(mongodb_top_insert_time, 1 minute)/1000 AS 'Insert', derivative(mongodb_top_queries_time, 1 minute)/1000 AS 'Queries', derivative(mongodb_top_readLock_time, 1 minute)/1000 AS 'ReadLock', derivative(mongodb_top_writeLock_time, 1 minute)/1000 AS 'WriteLock', derivative(mongodb_top_remove_time, 1 minute)/1000 AS 'Remove', derivative(mongodb_top_update_time, 1 minute)/1000 AS 'Update' FROM Metric FACET mongodb_cluster_name WHERE  mongodb_cluster_name IN ({{select_instance}}) AND database IN ({{select_database}}) AND collection IN ({{select_collection}}) TIMESERIES limit max "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Replica Sets",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Replica Sets\nIn this section, the following variables filters data: Clusters | Replica Sets"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(rs_nm) AS 'Total' WHERE metricName='mongodb_members_health' AND mongodb_cluster_name IN ({{select_instance}}) AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 2,
+            "row": 2,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(uniqueCount(rs_nm), WHERE mongodb_rs_ok['latest']=1) AS 'Up ' WHERE metricName='mongodb_rs_ok' AND mongodb_cluster_name IN ({{select_instance}})  AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 2,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(uniqueCount(rs_nm), WHERE mongodb_rs_ok['latest']=0) AS 'Down' WHERE metricName='mongodb_rs_ok' AND mongodb_cluster_name IN ({{select_instance}})  AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Members per Replica Set",
+          "layout": {
+            "column": 4,
+            "row": 2,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(member_idx) WHERE mongodb_cluster_name IN ({{select_instance}}) AND mongodb_cluster_name IN ({{select_instance}}) AND rs_nm IN ({{select_replicaset}}) FACET mongodb_cluster_name AS 'Cluster', rs_nm AS 'ReplicaSet' TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 4,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric WITH mongodb_rs_ok['latest'] AS mh SELECT latest(CASES(mh=1 AS 'Up', mh=0 as 'Down')) AS 'Status' WHERE mongodb_cluster_name IN ({{select_instance}}) AND mongodb_cluster_name IN ({{select_instance}}) AND rs_nm IN ({{select_replicaset}}) FACET mongodb_cluster_name AS 'Cluster', rs_nm AS 'ReplicaSet'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Query operations (per minute)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT derivative(mongodb_ss_opcountersRepl, 1 minute) WHERE mongodb_cluster_name IN ({{select_instance}}) AND rs_nm IN ({{select_replicaset}}) FACET mongodb_cluster_name, CASES ( WHERE legacy_op_type = 'command' AS 'Command', WHERE legacy_op_type = 'delete' AS 'Delete', WHERE legacy_op_type = 'getmore' AS 'Getmore', WHERE legacy_op_type = 'insert' AS 'Insert', WHERE legacy_op_type = 'query' AS 'Query', WHERE legacy_op_type = 'update' AS 'Update')  TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Members\nIn this section, the following variables filters data: Clusters | Replica Sets | Members | Members State"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(member_idx) AS 'Total' WHERE metricName='mongodb_rs_members_health' AND mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND member_state IN ({{select_member_state}}) AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 2,
+            "row": 9,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(uniqueCount(member_idx), WHERE mongodb_rs_members_health['latest']=1) AS 'Up' WHERE metricName='mongodb_rs_members_health' AND mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND member_state IN ({{select_member_state}}) AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 9,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(uniqueCount(member_idx), WHERE mongodb_rs_members_health['latest']=0) AS 'Down' WHERE metricName='mongodb_rs_members_health' AND mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND member_state IN ({{select_member_state}}) AND rs_nm IN ({{select_replicaset}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 4,
+            "row": 9,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "format": "%b %d, %Y, %X",
+                "name": "Latest Oplog Entry",
+                "type": "custom"
+              },
+              {
+                "format": "%b %d, %Y, %X",
+                "name": "Latest Heartbeat",
+                "type": "custom"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric WITH mongodb_rs_members_health['latest'] AS mh SELECT latest(CASES(mh=1 AS 'Up', mh=0 as 'Down')) AS 'Status', latest(mongodb_members_lastHeartbeatRecv) AS 'Latest Heartbeat', latest(mongodb_members_optimeDate) AS 'Latest Oplog Entry' WHERE mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND member_state IN ({{select_member_state}}) AND rs_nm IN ({{select_replicaset}}) FACET mongodb_cluster_name AS 'Cluster', rs_nm AS 'ReplicaSet' ,  member_idx AS 'Member', member_state AS 'Member State'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Ping Times",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(mongodb_rs_members_pingMs) FROM Metric WHERE metricName='mongodb_rs_members_pingMs' AND mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND member_state IN ({{select_member_state}}) AND rs_nm IN ({{select_replicaset}}) FACET member_idx TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average replication lag",
+          "layout": {
+            "column": 6,
+            "row": 12,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (latest(mongodb_members_lastHeartbeat) - latest(mongodb_members_optimeDate)) / 1000 WHERE member_state='SECONDARY' AND mongodb_cluster_name IN ({{select_instance}}) AND member_idx IN ({{select_member}}) AND rs_nm IN ({{select_replicaset}}) FACET rs_nm, member_idx TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "select_instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT cluster FROM (FROM Metric SELECT count(*)  WHERE metricName='mongodb_dbstats_dataSize' limit max FACET mongodb_cluster_name AS 'cluster' ) ORDER BY cluster since 30 days ago"
+      },
+      "title": "Clusters",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_database",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT database FROM (FROM Metric SELECT count(*) limit max WHERE metricName='mongodb_dbstats_dataSize' FACET database  AS 'database' ) ORDER BY database"
+      },
+      "title": "Databases",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_collection",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT collection FROM (FROM Metric SELECT count(*) limit max WHERE metricName='mongodb_collstats_storageStats_count' FACET collection  AS 'collection' ) ORDER BY collection"
+      },
+      "title": "Collections",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_replicaset",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT replica FROM (FROM Metric SELECT count(*) limit max WHERE metricName='mongodb_rs_members_health' FACET rs_nm  AS 'replica' ) ORDER BY replica"
+      },
+      "title": "Replica Sets",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_member",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT member FROM (FROM Metric SELECT count(*) limit max WHERE metricName='mongodb_rs_members_health' FACET member_idx  AS 'member' ) ORDER BY member"
+      },
+      "title": "Members",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_member_state",
+      "items": [
+        {
+          "title": null,
+          "value": "STARTUP"
+        },
+        {
+          "title": null,
+          "value": "PRIMARY"
+        },
+        {
+          "title": null,
+          "value": "SECONDARY"
+        },
+        {
+          "title": null,
+          "value": "RECOVERING"
+        },
+        {
+          "title": null,
+          "value": "STARTUP2"
+        },
+        {
+          "title": null,
+          "value": "UNKNOWN"
+        },
+        {
+          "title": null,
+          "value": "ARBITER"
+        },
+        {
+          "title": null,
+          "value": "DOWN"
+        },
+        {
+          "title": null,
+          "value": "ROLLBACK"
+        },
+        {
+          "title": null,
+          "value": "REMOVED"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        },
+        {
+          "value": {
+            "string": "STARTUP"
+          }
+        },
+        {
+          "value": {
+            "string": "PRIMARY"
+          }
+        },
+        {
+          "value": {
+            "string": "SECONDARY"
+          }
+        },
+        {
+          "value": {
+            "string": "RECOVERING"
+          }
+        },
+        {
+          "value": {
+            "string": "STARTUP2"
+          }
+        },
+        {
+          "value": {
+            "string": "UNKNOWN"
+          }
+        },
+        {
+          "value": {
+            "string": "ARBITER"
+          }
+        },
+        {
+          "value": {
+            "string": "DOWN"
+          }
+        },
+        {
+          "value": {
+            "string": "ROLLBACK"
+          }
+        },
+        {
+          "value": {
+            "string": "REMOVED"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Members state",
+      "type": "ENUM",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
