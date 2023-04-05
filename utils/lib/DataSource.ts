@@ -5,6 +5,7 @@ import * as yaml from 'js-yaml';
 
 import Component from './Component';
 import { DATA_SOURCE_MUTATION, GITHUB_RAW_BASE_URL } from '../constants';
+import logger from '../logger';
 
 import { fetchNRGraphqlResults } from './nr-graphql-helpers';
 
@@ -114,6 +115,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       );
     }
 
+    logger.info(`Submitting mutation for ${this.config.id}`, { dryRun });
     const { data, errors } = await fetchNRGraphqlResults<
       DataSourceMutationVariable,
       DataSourceMutationResponse
@@ -121,6 +123,8 @@ class DataSource extends Component<DataSourceConfig, string> {
       queryString: DATA_SOURCE_MUTATION,
       variables: this._getComponentMutationVariables(dryRun),
     });
+    logger.info(`Submitted mutation for ${this.config.id}`, { dryRun });
+    logger.debug(`Submission results for ${this.config.id}`, { data, errors });
 
     // filePath may need to be changed for this rework
     return { data, errors, name: this.identifier };

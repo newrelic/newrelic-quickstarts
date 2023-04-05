@@ -1,0 +1,27 @@
+name: Bootstrap Workflow
+description: Reusable action for setting up the repo
+runs:
+  using: composite
+  steps: 
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Get yarn cache directory path
+      shell: bash
+      id: yarn-cache-dir-path
+      working-directory: utils
+      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install dependencies
+      shell: bash
+      run: cd utils && yarn install --frozen-lockfile
