@@ -17,7 +17,6 @@ export const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
 export const COMPONENT_PREFIX_REGEXP =
   /^(dashboards|alert-policies|install-plans|data-sources)\//;
 
-
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
  * this mock UUID allows for validation to take place knowing a different UUID will be used for the actual release.
@@ -95,21 +94,42 @@ export const DATA_SOURCE_MUTATION = gql`
 `;
 
 export const CORE_DATA_SOURCES_QUERY = gql`
-{
-  actor {
-    nr1Catalog {
-      search(filter: {types: DATA_SOURCE}) {
-        results {
-          ... on Nr1CatalogDataSource {
-            id
+  {
+    actor {
+      nr1Catalog {
+        search(filter: { types: DATA_SOURCE }) {
+          results {
+            ... on Nr1CatalogDataSource {
+              id
+            }
           }
         }
       }
     }
   }
-}
+`;
 
-`
+export const QUICKSTART_COMPONENTS_IDS_QUERY = gql`
+  query QuickstartComponentsIdsQuery($id: ID!) {
+    actor {
+      nr1Catalog {
+        quickstart(id: $id) {
+          metadata {
+            dataSources {
+              id
+            }
+            quickstartComponents {
+              __typename
+              ... on Nr1CatalogQuickstartDashboard {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const CATEGORIES_QUERY = gql`
   {
@@ -118,6 +138,75 @@ export const CATEGORIES_QUERY = gql`
         categories {
           terms
         }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_REQUIRED_DATA_SOURCES_QUERY = gql`
+  query DashboardRequiredDataSourcesQuery($id: ID!) {
+    actor {
+      nr1Catalog {
+        dashboardTemplate(id: $id) {
+          metadata {
+            requiredDataSources {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
+  mutation DashboardSetRequiredDataSourcesMutation(
+    $dataSourceIds: [ID!]!
+    $templateId: ID!
+  ) {
+    nr1CatalogSetRequiredDataSourcesForDashboardTemplate(
+      dataSourceIds: $dataSourceIds
+      dashboardTemplateId: $templateId
+    ) {
+      dashboardTemplate {
+        id
+      }
+    }
+  }
+`;
+
+export const ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY = gql`
+  query AlertPolicyRequiredDataSources($query: String) {
+    actor {
+      nr1Catalog {
+        search(filter: { types: [ALERT_POLICY_TEMPLATE] }, query: $query) {
+          results {
+            ... on Nr1CatalogAlertPolicyTemplate {
+              id
+              metadata {
+                requiredDataSources {
+                  id
+                }
+                displayName
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
+  mutation AlertPolicySetRequiredDataSourcesMutation(
+    $dataSourceIds: [ID!]!
+    $templateId: ID!
+  ) {
+    nr1CatalogSetRequiredDataSourcesForAlertPolicyTemplate(
+      alertPolicyTemplateId: $templateId
+      dataSourceIds: $dataSourceIds
+    ) {
+      alertPolicyTemplate {
+        id
       }
     }
   }

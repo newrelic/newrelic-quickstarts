@@ -51,7 +51,7 @@ const main = async () => {
     .filter(Boolean)
     .map((installId) => new InstallPlan(installId));
 
-  const results: (NerdGraphResponseWithLocalErrors<InstallPlanMutationResponse> & {
+  let results: (NerdGraphResponseWithLocalErrors<InstallPlanMutationResponse> & {
     name: string;
   })[] = [];
   // Submit all of the mutations (in chunks of 5)
@@ -60,7 +60,7 @@ const main = async () => {
       c.map((plan) => plan.submitMutation(isDryRun))
     );
 
-    results.concat(res);
+    results = [...results, ...res];
   }
 
   // Find the failed mutations and report

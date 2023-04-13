@@ -1,0 +1,23 @@
+name: Ping Packet Loss % Violation
+
+description: |+
+  This alert will trigger when a router or switch fails to respond to at least 10% of the pings sent by ktranslate.  This indicates problems on the device or in the network between the container and the device.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.ping.PacketLossPct) FACET device_name WHERE metricName = 'kentik.ping.PacketLossPct' AND entity.type in ('ROUTER','SWITCH')"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 10
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
+
+signal:
+  aggregationWindow: 300

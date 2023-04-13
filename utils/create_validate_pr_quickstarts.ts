@@ -19,6 +19,7 @@ import {
   NerdGraphResponseWithLocalErrors,
   NerdGraphError,
 } from './types/nerdgraph';
+import logger from './logger';
 
 type ResponseWithErrors =
   NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
@@ -31,16 +32,29 @@ const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
   error?.extensions?.argumentPath?.includes('installPlanStepIds') &&
   error?.message?.includes('contains an install plan step that does not exist');
 
+const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
+  'extensions' in error &&
+  error?.extensions?.argumentPath.includes('dataSourceIds') &&
+  error?.message?.includes('contains a data source that does not exist');
+
 export const countAndOutputErrors = (
   graphqlResponses: ResponseWithErrors[]
 ): number =>
   graphqlResponses.reduce((all, { errors, name }) => {
     const installPlanErrors =
       (errors?.filter(installPlanErrorExists) as NerdGraphError[]) ?? [];
+    const dataSourceErrors =
+      (errors?.filter(dataSourceErrorExists) as NerdGraphError[]) ?? [];
     const remainingErrors =
-      errors?.filter((error) => !installPlanErrorExists(error)) ?? [];
+      errors
+        ?.filter((error) => !installPlanErrorExists(error))
+        ?.filter((error) => !dataSourceErrorExists(error)) ?? [];
 
-    translateMutationErrors(remainingErrors, name, installPlanErrors);
+    translateMutationErrors(remainingErrors, name, [
+      ...installPlanErrors,
+      ...dataSourceErrors,
+    ]);
+
     return all + remainingErrors.length;
   }, 0);
 
@@ -59,8 +73,11 @@ export const createValidateQuickstarts = async (
     return false;
   }
 
+  logger.info(`Fetching files for pull request ${ghUrl}`);
   // Get all files from PR
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
+
+  logger.info(`Found ${files.length} files`);
 
   // Get all quickstart mutation variables
   const quickstarts = filterOutTestFiles(files)
@@ -95,7 +112,11 @@ export const createValidateQuickstarts = async (
     .filter(Boolean);
 
   if (invalidQuickstarts.length > 0) {
-    process.exit(1);
+    if (require.main === module) {
+      process.exit(1);
+    }
+
+    return true;
   }
 
   // Submit all of the mutations in chunks of 5
@@ -104,6 +125,7 @@ export const createValidateQuickstarts = async (
   // Class implementations may throw an error
   const quickstartErrors: string[] = [];
 
+  logger.info(`Submitting ${quickstarts.length} quickstarts...`);
   for (const c of chunk(quickstarts, 5)) {
     try {
       const res = await Promise.all(
@@ -145,6 +167,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info(`Success!`);
 };
 
 /**
