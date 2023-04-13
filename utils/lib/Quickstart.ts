@@ -7,6 +7,7 @@ import Alert from './Alert';
 import Dashboard from './Dashboard';
 import DataSource from './DataSource';
 import Component from './Component';
+import logger from '../logger';
 import {
   MOCK_UUID,
   GITHUB_RAW_BASE_URL,
@@ -42,19 +43,27 @@ const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
 type ComponentType = typeof Alert | typeof Dashboard | typeof DataSource;
 type Components = InstanceType<ComponentType>;
 
+enum ConfigKey {
+  AlertPolicies = 'alertPolicies',
+  Dashboards = 'dashboards',
+}
+
 interface ConfigToMutationMap {
-  configKey: string;
+  configKey: ConfigKey;
   mutationKey: string;
-  ctor: ComponentType;
+  constructor: ComponentType;
 }
 
 const ConfigToMutation: ConfigToMutationMap[] = [
-  { configKey: 'alertPolicies', mutationKey: 'alertConditions', ctor: Alert },
-  { configKey: 'dashboards', mutationKey: 'dashboards', ctor: Dashboard },
   {
-    configKey: 'dataSourceIds',
-    mutationKey: 'dataSourceIds',
-    ctor: DataSource,
+    configKey: ConfigKey.AlertPolicies,
+    mutationKey: 'alertConditions',
+    constructor: Alert,
+  },
+  {
+    configKey: ConfigKey.Dashboards,
+    mutationKey: 'dashboards',
+    constructor: Dashboard,
   },
 ];
 
@@ -117,7 +126,7 @@ class Quickstart {
 
       return (
         componentConfig?.flatMap(
-          (name: string) => new componentType.ctor(name, this.basePath)
+          (name: string) => new componentType.constructor(name, this.basePath)
         ) ?? []
       );
     });
@@ -192,12 +201,18 @@ class Quickstart {
   }
 
   public async submitMutation(dryRun = true) {
+    logger.info(`Submitting mutation for ${this.identifier}`, { dryRun });
     const { data, errors } = await fetchNRGraphqlResults<
       QuickstartMutationVariable,
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
       variables: await this.getMutationVariables(dryRun),
+    });
+    logger.info(`Submitted mutation for ${this.identifier}`, { dryRun });
+    logger.debug(`Submission results for ${this.identifier}`, {
+      data,
+      errors,
     });
 
     // filePath may need to be changed for this rework
@@ -215,7 +230,7 @@ class Quickstart {
   private _addComponents(metadata: QuickstartMetaData) {
     return ConfigToMutation.reduce((vars, type) => {
       const componentsOfType = this.components.filter(
-        (c) => c instanceof type.ctor
+        (c) => c instanceof type.constructor
       );
 
       // if we don't have anything for this component type, just return the variables
