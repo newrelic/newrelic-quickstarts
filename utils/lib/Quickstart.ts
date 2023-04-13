@@ -7,6 +7,7 @@ import Alert from './Alert';
 import Dashboard from './Dashboard';
 import DataSource from './DataSource';
 import Component from './Component';
+import logger from '../logger';
 import {
   MOCK_UUID,
   GITHUB_RAW_BASE_URL,
@@ -44,14 +45,14 @@ type Components = InstanceType<ComponentType>;
 
 enum ConfigKey {
   AlertPolicies = 'alertPolicies',
-  Dashboards = 'dashboards', 
-};
+  Dashboards = 'dashboards',
+}
 
 interface ConfigToMutationMap {
   configKey: ConfigKey;
   mutationKey: string;
   constructor: ComponentType;
-};
+}
 
 const ConfigToMutation: ConfigToMutationMap[] = [
   {
@@ -200,12 +201,18 @@ class Quickstart {
   }
 
   public async submitMutation(dryRun = true) {
+    logger.info(`Submitting mutation for ${this.identifier}`, { dryRun });
     const { data, errors } = await fetchNRGraphqlResults<
       QuickstartMutationVariable,
       QuickstartMutationResponse
     >({
       queryString: QUICKSTART_MUTATION,
       variables: await this.getMutationVariables(dryRun),
+    });
+    logger.info(`Submitted mutation for ${this.identifier}`, { dryRun });
+    logger.debug(`Submission results for ${this.identifier}`, {
+      data,
+      errors,
     });
 
     // filePath may need to be changed for this rework
