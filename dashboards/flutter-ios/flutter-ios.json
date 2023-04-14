@@ -23,7 +23,7 @@
 					}
 				},
 				{
-					"title": "Mobile Crashed",
+					"title": "App Crashes",
 					"layout": {
 						"column": 3,
 						"row": 1,
@@ -41,7 +41,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) AS `` FROM MobileCrash "
+								"query": "SELECT count(*) AS `` FROM MobileCrash WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -56,7 +56,7 @@
 					}
 				},
 				{
-					"title": "Flutter Sessions By Device",
+					"title": "App Usage by Device",
 					"layout": {
 						"column": 5,
 						"row": 1,
@@ -83,7 +83,7 @@
 					}
 				},
 				{
-					"title": "Flutter Sessions By Country",
+					"title": "App Usage by Country",
 					"layout": {
 						"column": 7,
 						"row": 1,
@@ -101,7 +101,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT uniqueCount(sessionId) as 'App launches' FROM Mobile FACET `countryCode` LIMIT 5 SINCE 1656737340000 UNTIL 1673585400000"
+								"query": "SELECT uniqueCount(sessionId) as 'App launches' FROM Mobile FACET `countryCode` LIMIT 5 SINCE 1656737340000 UNTIL 1673585400000 WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -152,15 +152,42 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "**About**\n\nInstrument your application with New Relic - [iOS Agent](https://one.newrelic.com/marketplace?account=3627899&duration=259200000&filters=%28domain%3D%27MOBILE%27%20AND%20type%3D%27APPLICATION%27%29&state=46c2765a-bb46-10d0-901f-5a0d29c6ed2b) and\n\n[Flutter Agent](https://docs.newrelic.com/docs/mobile-monitoring/new-relic-mobile-flutter/monitor-your-flutter-application/).\n\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=FlutteriOS) here and let us know how we can improve it for you."
+						"text": "**About**\n\nInstrument your application with New Relic - [iOS Agent](https://docs.newrelic.com/docs/mobile-monitoring/new-relic-mobile-ios/get-started/introduction-new-relic-mobile-ios/) and\n\n[Flutter Agent](https://docs.newrelic.com/docs/mobile-monitoring/new-relic-mobile-flutter/monitor-your-flutter-application/).\n\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=FlutteriOS) here and let us know how we can improve it for you."
+					}
+				},
+				{
+					"title": "Avg Session Time (minutes)",
+					"layout": {
+						"column": 1,
+						"row": 4,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT average(sessionDuration) / 60 AS '' FROM MobileSession WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
 					}
 				},
 				{
 					"title": "Active Sessions",
 					"layout": {
-						"column": 1,
+						"column": 5,
 						"row": 4,
-						"width": 3,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -177,7 +204,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileSession FACET sessionId  TIMESERIES "
+								"query": "SELECT count(*) FROM MobileSession FACET sessionId  TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -189,11 +216,11 @@
 					}
 				},
 				{
-					"title": "Avarage of User CPU Utilization (KB)",
+					"title": "Avg CPU Utilization",
 					"layout": {
-						"column": 4,
+						"column": 9,
 						"row": 4,
-						"width": 3,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -210,67 +237,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg User CPU Utilization` FROM Metric WHERE metricTimesliceName = 'CPU/User/Utilization' WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Avarage of System CPU Utilization (KB)",
-					"layout": {
-						"column": 7,
-						"row": 4,
-						"width": 3,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.stacked-bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg System Used CPU` FROM Metric WHERE metricTimesliceName = 'CPU/System/Utilization' WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Avarage of Total CPU Utilization (KB)",
-					"layout": {
-						"column": 10,
-						"row": 4,
-						"width": 3,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg Total CPU Utilization` FROM Metric WHERE metricTimesliceName = 'CPU/Total/Utilization' WHERE appName = {{appName}} TIMESERIES"
+								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg User CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg System CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg Total CPU Utilization` FROM Metric WHERE metricTimesliceName = 'CPU/User/Utilization' WHERE appName = {{appName}} TIMESERIES"
 							}
 						],
 						"platformOptions": {
@@ -297,15 +264,15 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "# Monitoring the HTTP Errors and Response\nOur New Relic Flutter agent monitoring the your application Https Errors, Network Failures and Https Response Time."
+						"text": "## Monitoring the HTTP Errors and Response \n\nOur New Relic Flutter agent monitors HTTP errors, network failures, and HTTP response times for your application."
 					}
 				},
 				{
-					"title": "Error Rate (%)",
+					"title": "Errors and Failures Rate",
 					"layout": {
 						"column": 1,
 						"row": 2,
-						"width": 3,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -322,7 +289,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) AS 'Error Rate %' FROM Metric  LIMIT 5 SINCE 10800 seconds AGO WITH METRIC_FORMAT 'Mobile/OSGroup/{osGroup}/Version/{version}/ErrorRate' WHERE appName = {{appName}} TIMESERIES"
+								"query": "SELECT percentage(count(*), where errorType is not null) AS 'Errors and Failures Rate %' FROM MobileRequestError, MobileRequest WHERE appName = {{appName}} TIMESERIES"
 							}
 						],
 						"platformOptions": {
@@ -331,10 +298,241 @@
 					}
 				},
 				{
-					"title": "Average Response Time Overview (seconds)",
+					"title": "HTTP Errors and Network Failures",
 					"layout": {
-						"column": 4,
+						"column": 5,
 						"row": 2,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequestError  FACET `errorType` WHERE appName = {{appName}} TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Error Messages",
+					"layout": {
+						"column": 9,
+						"row": 2,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequestError FACET `responseBody` LIMIT 5 SINCE 259200 seconds AGO WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Number of Requested URLs",
+					"layout": {
+						"column": 1,
+						"row": 5,
+						"width": 5,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequest FACET `requestUrl` LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Requests per Minute",
+					"layout": {
+						"column": 6,
+						"row": 5,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}} TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Top Request Domains",
+					"layout": {
+						"column": 10,
+						"row": 5,
+						"width": 3,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequestError FACET `requestDomain` LIMIT 5 WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Top HTTP Status Codes",
+					"layout": {
+						"column": 1,
+						"row": 8,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.pie"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": true
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequest, MobileRequestError WHERE appName = {{appName}} FACET statusCode"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "HTTP Requests",
+					"layout": {
+						"column": 5,
+						"row": 8,
+						"width": 3,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequest WHERE appName = {{appName}} AND statusCode = {{statusCode}} FACET requestMethod"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "HTTP Response Time",
+					"layout": {
+						"column": 8,
+						"row": 8,
+						"width": 5,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT average(newrelic.timeslice.value) * 1000 FROM Metric FACET `requestDomain` LIMIT 5 SINCE 259200 seconds AGO WITH METRIC_FORMAT 'External/{requestDomain}/all' TIMESERIES WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Avg Response Time (seconds)",
+					"layout": {
+						"column": 1,
+						"row": 11,
 						"width": 4,
 						"height": 3
 					},
@@ -364,243 +562,9 @@
 					}
 				},
 				{
-					"title": "HTTP Errors and Network Failures",
-					"layout": {
-						"column": 8,
-						"row": 2,
-						"width": 5,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.line"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequestError  FACET `errorType` WHERE appName = {{appName}} TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						},
-						"yAxisLeft": {
-							"zero": true
-						}
-					}
-				},
-				{
-					"title": "Top Request Domains",
-					"layout": {
-						"column": 1,
-						"row": 5,
-						"width": 3,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequestError FACET `requestDomain` LIMIT 5 WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Errors and Failures Rate",
-					"layout": {
-						"column": 4,
-						"row": 5,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT percentage(count(*), where errorType is not null) AS 'Errors and Failures Rate %' FROM MobileRequestError, MobileRequest WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Number of Requested URL's",
-					"layout": {
-						"column": 8,
-						"row": 5,
-						"width": 5,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequest FACET `requestUrl` LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Error Responses",
-					"layout": {
-						"column": 1,
-						"row": 8,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequestError FACET `responseBody` LIMIT 5 SINCE 259200 seconds AGO WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Top Status Codes",
-					"layout": {
-						"column": 5,
-						"row": 8,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequestError FACET `statusCode` LIMIT 5 SINCE 259200 seconds AGO WHERE appName = {{appName}} TIMESERIES auto"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Requests per Minute",
-					"layout": {
-						"column": 9,
-						"row": 8,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "HTTP Response Time",
-					"layout": {
-						"column": 1,
-						"row": 11,
-						"width": 5,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 FROM Metric FACET `requestDomain` LIMIT 5 SINCE 259200 seconds AGO WITH METRIC_FORMAT 'External/{requestDomain}/all' TIMESERIES WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
 					"title": "Mobile Events",
 					"layout": {
-						"column": 6,
+						"column": 5,
 						"row": 11,
 						"width": 4,
 						"height": 3
@@ -619,7 +583,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(install), average(interactionDuration), latest(isFirstOccurrence), average(memUsageMb), average(reportedTimestampMs), average(sessionCrashed), average(sessionDuration), count(symbolicated), average(timeSinceLoad) FROM Mobile TIMESERIES AUTO WHERE appName = 'NR-Flutter-IOS2'"
+								"query": "SELECT count(install), average(interactionDuration), latest(isFirstOccurrence), average(memUsageMb), average(reportedTimestampMs), average(sessionCrashed), average(sessionDuration), count(symbolicated), average(timeSinceLoad) FROM Mobile TIMESERIES AUTO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -628,11 +592,11 @@
 					}
 				},
 				{
-					"title": "Flutter Device Interaction Time (ms)",
+					"title": "Flutter Device Interaction Time (milliseconds)",
 					"layout": {
-						"column": 10,
+						"column": 9,
 						"row": 11,
-						"width": 3,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -649,7 +613,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) as value FROM Metric FACET `device` LIMIT 5 SINCE 1 day AGO WITH METRIC_FORMAT 'Mobile/DeviceGroup/{deviceGroup}/Device/{device}/Activity' TIMESERIES WHERE appName = 'NR-Flutter-IOS2'"
+								"query": "SELECT average(newrelic.timeslice.value) as value FROM Metric FACET `device` LIMIT 5 SINCE 1 day AGO WITH METRIC_FORMAT 'Mobile/DeviceGroup/{deviceGroup}/Device/{device}/Activity' TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -676,11 +640,11 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "# Crash Analysis\nOur Android agent monitoring the your application Crash rate, Crash free-users and App crash locations."
+						"text": "# Crash Analysis\nUsing our iOS and Flutter mobile agents, we monitor your application crash rate, crash free users, and app crash locations."
 					}
 				},
 				{
-					"title": "Crash Rate",
+					"title": "App Crash Rate",
 					"layout": {
 						"column": 1,
 						"row": 2,
@@ -701,7 +665,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as 'Crash rate' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO TIMESERIES"
+								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as 'Crash rate' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -755,7 +719,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT crashMessage FROM MobileCrash LIMIT 5 SINCE 10800 seconds AGO"
+								"query": "SELECT crashMessage FROM MobileCrash LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -764,7 +728,7 @@
 					}
 				},
 				{
-					"title": "Crash-free Users",
+					"title": "Crash Free Users",
 					"layout": {
 						"column": 6,
 						"row": 5,
@@ -785,7 +749,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT (1 - filter(uniqueCount(uuid), where category = 'Crash') / uniqueCount(uuid)) as 'Crash free users' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO TIMESERIES"
+								"query": "SELECT (1 - filter(uniqueCount(uuid), where category = 'Crash') / uniqueCount(uuid)) as 'Crash free users' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -834,7 +798,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileHandledException FACET `lastInteraction` LIMIT 5 SINCE 86400 seconds AGO "
+								"query": "SELECT count(*) FROM MobileHandledException FACET `lastInteraction` LIMIT 5 SINCE 86400 seconds AGO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -843,7 +807,7 @@
 					}
 				},
 				{
-					"title": "Top Exception Locations",
+					"title": "Top Dart Exception Locations",
 					"layout": {
 						"column": 4,
 						"row": 2,
@@ -864,7 +828,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileHandledException FACET `exceptionLocation` LIMIT 5 SINCE 86400 seconds AGO "
+								"query": "SELECT count(*) FROM MobileHandledException FACET `exceptionLocation` LIMIT 5 SINCE 86400 seconds AGO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -873,7 +837,7 @@
 					}
 				},
 				{
-					"title": "Users Affected",
+					"title": "Dart Users Affected Rate (%)",
 					"layout": {
 						"column": 9,
 						"row": 2,
@@ -894,7 +858,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT percentage(uniqueCount(uuid), where exceptionLocation IS NOT NULL) as 'Users affected' FROM MobileSession, MobileHandledException LIMIT 1000 SINCE 86400 seconds AGO TIMESERIES"
+								"query": "SELECT percentage(uniqueCount(uuid), where exceptionLocation IS NOT NULL) as 'Users affected' FROM MobileSession, MobileHandledException LIMIT 1000 SINCE 86400 seconds AGO TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -903,7 +867,7 @@
 					}
 				},
 				{
-					"title": "Sessions Affected",
+					"title": "Dart Sessions Affected Rate (%)",
 					"layout": {
 						"column": 1,
 						"row": 5,
@@ -924,7 +888,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT percentage(uniqueCount(sessionId), where exceptionLocation IS NOT NULL) as 'Sessions affected' FROM MobileSession, MobileHandledException LIMIT 1000 SINCE 86400 seconds AGO TIMESERIES"
+								"query": "SELECT percentage(uniqueCount(sessionId), where exceptionLocation IS NOT NULL) as 'Sessions affected' FROM MobileSession, MobileHandledException LIMIT 1000 SINCE 86400 seconds AGO TIMESERIES WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -933,7 +897,7 @@
 					}
 				},
 				{
-					"title": "Top Exception Causes",
+					"title": "Top Dart Exception Causes",
 					"layout": {
 						"column": 7,
 						"row": 5,
@@ -951,7 +915,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileHandledException FACET `exceptionCause` LIMIT 5 SINCE 86400 seconds AGO "
+								"query": "SELECT count(*) FROM MobileHandledException FACET `exceptionCause` LIMIT 5 SINCE 86400 seconds AGO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -984,7 +948,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as 'Crash rate %' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO "
+								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as 'Crash rate %' FROM MobileSession, MobileCrash LIMIT 5 SINCE 10800 seconds AGO WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1003,7 +967,7 @@
 					}
 				},
 				{
-					"title": "Number Requests per Minute",
+					"title": "Requests per Minute",
 					"layout": {
 						"column": 4,
 						"row": 1,
@@ -1021,7 +985,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest "
+								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1040,7 +1004,7 @@
 					}
 				},
 				{
-					"title": "Used Memory (MB)",
+					"title": "Memory Used (MB)",
 					"layout": {
 						"column": 7,
 						"row": 1,
@@ -1058,7 +1022,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(memUsageMb) AS 'MB' FROM Mobile"
+								"query": "SELECT latest(memUsageMb) AS 'MB' FROM Mobile WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1077,7 +1041,7 @@
 					}
 				},
 				{
-					"title": "Response Time (Seconds)",
+					"title": "Response Time (seconds)",
 					"layout": {
 						"column": 10,
 						"row": 1,
@@ -1095,7 +1059,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(responseTime) FROM MobileRequest"
+								"query": "SELECT latest(responseTime) FROM MobileRequest WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1125,10 +1089,29 @@
 				"accountIds": [],
 				"query": "SELECT uniques(appName) FROM Metric, Mobile, MobileSession, MobileUserAction, MobileCrash LIMIT MAX SINCE 7 days ago WHERE appName IS NOT NULL"
 			},
-			"title": "Application Names",
+			"title": "Select Your Application Names",
 			"type": "NRQL",
 			"isMultiSelection": false,
 			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "statusCode",
+			"items": null,
+			"defaultValues": [
+				{
+					"value": {
+						"string": "200"
+					}
+				}
+			],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "SELECT uniques(statusCode) FROM MobileRequest, MobileRequestError SINCE 1 week Ago WHERE statusCode IS NOT NULL"
+			},
+			"title": "HTTP Status Codes",
+			"type": "NRQL",
+			"isMultiSelection": false,
+			"replacementStrategy": "NUMBER"
 		}
 	]
 }
