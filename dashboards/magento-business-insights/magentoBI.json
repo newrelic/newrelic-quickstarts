@@ -458,7 +458,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Revenue at Stake\nKeeping track of downtime and lost revenue can help businesses quantify the impact of these issues."
+            "text": "# Revenue at Stake\nKeeping track of error, page load, order performance and lost average orders can help businesses quantify the impact of these issues."
           }
         },
         {
@@ -474,11 +474,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Downtime Performance"
+            "text": "# Error Performance"
           }
         },
         {
-          "title": "Downtime (seconds) - Monthly",
+          "title": "HTTP Errors - Montly",
           "layout": {
             "column": 3,
             "row": 11,
@@ -499,7 +499,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(duration) from SyntheticCheck where result = 'FAILED' since 12 month ago until today facet MonthOf(timestamp) TIMESERIES "
+                "query": "SELECT count(httpResponseCode) from Transaction where httpResponseCode > '299' since 1 year ago until today facet MonthOf(timestamp) TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -508,7 +508,7 @@
           }
         },
         {
-          "title": "Downtime (seconds) - Monthly",
+          "title": "HTTP Errors - Monthly",
           "layout": {
             "column": 7,
             "row": 11,
@@ -526,16 +526,22 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(duration) from SyntheticCheck where result = 'FAILED' since 12 month ago until today facet MonthOf(timestamp) "
+                "query": "SELECT count(httpResponseCode) from Transaction where httpResponseCode > '299' facet MonthOf(timestamp) "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            }
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 10
+              }
+            ]
           }
         },
         {
-          "title": "Revenue at Risk due to Downtime ($)",
+          "title": "Average Orders at Risk due to HTTP Errors",
           "layout": {
             "column": 9,
             "row": 11,
@@ -553,7 +559,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(duration) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue Per Second' FROM MYSQLRevenuePerMonthAndYear WHERE Year IN (2023)) from SyntheticCheck where result = 'FAILED' facet monthOf(timestamp)"
+                "query": "SELECT average(duration) * (SELECT (LATEST(AverageNumberOfOrders)/365) / 86400  AS 'Average Order Count Per Second' FROM MYSQLOrdersAverage WHERE Year IN ({{Year}})) from Transaction where httpResponseCode > '299' facet monthOf(timestamp)"
               }
             ],
             "platformOptions": {
@@ -641,7 +647,7 @@
           }
         },
         {
-          "title": "Revenue at Risk due to Slow Page Load ($)",
+          "title": "Average Orders at Risk due to Slow Page Load per second",
           "layout": {
             "column": 9,
             "row": 13,
@@ -659,7 +665,107 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (average(duration) - 2) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue per Second' FROM MYSQLRevenuePerMonthAndYear) AS 'Revenue at Risk due to Slow Page Load ($)' from PageView"
+                "query": "SELECT (average(duration) - 2) * (SELECT (LATEST(AverageNumberOfOrders) / 365) / 86400 AS 'Average Order Count Per Second' FROM MYSQLOrdersAverage  WHERE Year IN ({{Year}})) AS 'Average Order Count at Risk due to Slow Page Load' from PageView"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Order Performance"
+          }
+        },
+        {
+          "title": "Average Orders - Yearly",
+          "layout": {
+            "column": 3,
+            "row": 15,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT LATEST(AverageNumberOfOrders) AS 'Average Orders' FROM MYSQLOrdersAverage TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Order Count - Yearly",
+          "layout": {
+            "column": 7,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT LATEST(AverageNumberOfOrders) AS 'Average Order Count' FROM MYSQLOrdersAverage "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Orders at Risk due to Downtime per second",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " SELECT average(duration) * (SELECT (LATEST(AverageNumberOfOrders)/365) / 86400 AS 'Average Order Count Per Second' FROM MYSQLOrdersAverage  WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED' facet monthOf(timestamp)"
               }
             ],
             "platformOptions": {
