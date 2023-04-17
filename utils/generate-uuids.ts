@@ -3,11 +3,13 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 import Quickstart from './lib/Quickstart';
+import logger from './logger';
 
 const main = (quickstarts: Quickstart[]): void => {
   for (const quickstart of quickstarts) {
     if (!quickstart.config.id) {
-      console.log(`Generated ID for ${quickstart.config.title}`);
+      logger.info(`Generating ID for ${quickstart.config.title}...`);
+
       const newId: string = uuidv4();
       const rawConfig: string = fs.readFileSync(
         quickstart.getConfigFilePath(),
@@ -18,6 +20,7 @@ const main = (quickstarts: Quickstart[]): void => {
       fs.writeFileSync(quickstart.getConfigFilePath(), configWithId, {
         encoding: 'utf8',
       });
+      logger.info(`Generated ID for ${quickstart.config.title}`);
     }
   }
 };
