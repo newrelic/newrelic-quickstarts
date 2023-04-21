@@ -40,7 +40,7 @@ export interface NerdGraphResponseWithLocalErrors<T> {
  *   variables: { name: 'Bob' },
  * };
  */
-export interface NerdGraphRequest<T = {}> {
+export interface NerdGraphRequest<T> {
   queryString: string;
   variables?: T;
 }

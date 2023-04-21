@@ -1,0 +1,20 @@
+name: BGP Neighbor State Changes
+
+description: |+
+  This alert will trigger when the specified BGP neighbor establishes a new connection.  This is useful for seeing flapping connections in between the poll intervals.  You will need to edit the NRQL condition to specify which relationship(s) you want the alert to target.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT max(kentik.snmp.bgpPeerFsmEstablishedTransitions) - min(kentik.snmp.bgpPeerFsmEstablishedTransitions) AS 'Neighbor State Transitions' WHERE metricName = 'kentik.snmp.bgpPeerFsmEstablishedTransitions' AND bgpPeerAdminStatus = 'start' AND neighbor_ip IN ('x.x.x.x') FACET device_name, neighbor_ip"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

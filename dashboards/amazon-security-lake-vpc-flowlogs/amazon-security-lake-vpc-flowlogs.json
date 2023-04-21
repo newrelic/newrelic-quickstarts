@@ -1,0 +1,612 @@
+{
+    "name": "Amazon Security Lake - VPC flow logs",
+    "description": null,
+    "pages": [
+      {
+        "name": "AWS Security Lake VPC flow logs",
+        "description": null,
+        "widgets": [
+          {
+            "title": "VPC Network Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT latest(plugin.type) as 'Flow Type', rate(count(*),1 second) as 'Flows per Second', latest(timestamp) as 'Last Update', uniqueCount(src_endpoint.ip,dst_endpoint.ip) as 'Observed IP Addresses'  WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}})  SINCE 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Flow Bytes",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes)Facet CASES (  WHERE connection_info.direction = 'egress' as 'Egress Bytes',  WHERE connection_info.direction = 'ingress' as 'Ingress Bytes') WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Flow Packets",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.packets) Facet CASES ( WHERE connection_info.direction = 'egress' as 'Egress Packets',  WHERE connection_info.direction = 'ingress' as 'Ingress Packets') WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Observed Applications",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(src_endpoint.svc_name) AS 'Applications' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 5 - Inbound Applications",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'ingress' FACET src_endpoint.svc_name WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) LIMIT 5"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 5 - Outbound Applications",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'egress' FACET src_endpoint.svc_name WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) LIMIT 5"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Sources",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(src_endpoint.ip) AS 'Sources' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 25 - Sources",
+            "layout": {
+              "column": 5,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'ingress' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET src_endpoint.ip  LIMIT 25 WHERE metadata.product.feature.name = 'Flowlogs'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 25 - Sources",
+            "layout": {
+              "column": 9,
+              "row": 8,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'ingress' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET src_endpoint.ip WHERE metadata.product.feature.name = 'Flowlogs' LIMIT 25 TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Destinations",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(dst_endpoint.ip) AS 'Destinations' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 25 - Destinations",
+            "layout": {
+              "column": 5,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE metadata.product.feature.name ='Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET dst_endpoint.ip LIMIT 25"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 25 - Destinations",
+            "layout": {
+              "column": 9,
+              "row": 11,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE metadata.product.feature.name ='Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET dst_endpoint.ip LIMIT 25 TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Protocols",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(connection_info.protocol_num) AS 'Protocols' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 5 - Inbound Protocols",
+            "layout": {
+              "column": 5,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'ingress' AND metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET connection_info.protocol_num LIMIT 5"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 5 - Outbound Protocols",
+            "layout": {
+              "column": 9,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT sum(traffic.bytes) AS 'Bytes' WHERE connection_info.direction = 'egress' OR metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET connection_info.protocol_num LIMIT 5"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Devices with most outbound partners",
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(dst_endpoint.ip) AS 'Destination IPS', uniqueCount(dst_endpoint.port) AS 'Outbound Ports' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET src_endpoint.ip AS 'Source' LIMIT 25"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Devices with most inbound partners",
+            "layout": {
+              "column": 7,
+              "row": 17,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(dst_endpoint.port) AS 'Destination Ports', uniqueCount(src_endpoint.ip) AS 'Source IPS' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET dst_endpoint.ip AS 'Destination' LIMIT 25"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Devices with most outbound partners",
+            "layout": {
+              "column": 1,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniqueCount(dst_endpoint.ip) AS 'Destination IPS' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET src_endpoint.ip AS 'Source' LIMIT 25 TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Devices with most inbound partners",
+            "layout": {
+              "column": 7,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT  uniqueCount(src_endpoint.ip) AS 'Source IPS' WHERE metadata.product.feature.name = 'Flowlogs' AND src_endpoint.vpc_uid IN ({{aws_vpc}}) OR dst_endpoint.vpc_uid IN ({{aws_vpc}}) FACET dst_endpoint.ip AS 'Destination' LIMIT 25 TIMESERIES 5 MINUTES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "aws_vpc",
+        "items": null,
+        "defaultValues": [],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM Log SELECT uniques(src_endpoint.vpc_uid), uniques(dst_endpoint.vpc_uid) WHERE metadata.product.feature.name = 'Flowlogs'"
+        },
+        "title": "VPC",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }

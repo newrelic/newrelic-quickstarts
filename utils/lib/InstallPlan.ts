@@ -29,8 +29,10 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
    * @returns Filepath for the configuration file (from top-level directory).
    */
   getConfigFilePath() {
-    // Lines next few lines are a hack to allow us to pass in the install plan id
-    // as the identifier instead of its path under the `install/` directory, this code then parses all install plans and sets
+    // Lines next few lines are a hack to allow us to pass in the 
+    // install plan id as the identifier instead 
+    // of its path under the `install/` directory, 
+    // this code then parses all install plans and sets
     // the correct path to the requested install plan
     const id = this.identifier;
     const allInstallPlans = getAllInstallPlanFiles(this.basePath).map((p) => ({
@@ -88,7 +90,7 @@ class InstallPlan extends Component<InstallPlanConfig, string> {
   public async submitMutation(dryRun = true) {
     if (!this.isValid) {
       console.error(
-        `Install plan is invalid.\nPlease check the dashboard at ${this.identifier}\n`
+        `Install plan is invalid.\nPlease check the install plan at ${this.identifier}\n`
       );
     }
 

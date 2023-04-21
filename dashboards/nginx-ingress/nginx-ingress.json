@@ -1,443 +1,596 @@
 {
-    "name": "NGINX Ingress Controller",
-    "description": null,
-    "pages": [
-      {
-        "name": "NGINX Ingress Controller",
-        "description": null,
-        "widgets": [
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "![nginx-logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/kubernetes/nginx/logo.svg)\n\n- [Ensure NGINX metrics are enabled](https://kubernetes.github.io/ingress-nginx/user-guide/monitoring/#wildcard-ingresses)\n- To find a description of NGINX metrics, navigate to your Prometheus server at path `/api/v1/targets/metadata`\n  - There is an outstanding issue for documenting metrics for NGINX [here](https://github.com/kubernetes/ingress-nginx/issues/2924) but you'll find many metric descriptions there."
-            }
+  "name": "NGINX Ingress Controller (Prometheus)",
+  "description": null,
+  "pages": [
+    {
+      "name": "NGINX Ingress Controller",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
           },
-          {
-            "title": "Error during config reload",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT IFTHEN(min(nginx_ingress_controller_config_last_reload_successful) < 1, 1) OR 0 as 'Last config reload errors'"
-                }
-              ],
-              "thresholds": [
-                {
-                  "alertSeverity": "CRITICAL",
-                  "value": 0
-                }
-              ]
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
           },
-          {
-            "title": "Last successful config reload",
-            "layout": {
-              "column": 9,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "dataFormatters": [
-                {
-                  "name": "Last successful config reload",
-                  "type": "date"
-                }
-              ],
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT latest(nginx_ingress_controller_config_last_reload_successful_timestamp_seconds) * 1000 as 'Last successful config reload'"
-                }
-              ],
-              "thresholds": []
-            }
+          "rawConfiguration": {
+            "text": "![nginx-logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/kubernetes/nginx/logo.png)\n\n### Overview\n\nThe NGINX ingress controller exposes many useful metrics that can be scraped by a Prometheus server or agent. These metrics can inform you of ongoing process connections and the current ingress load that your system is handling. Furthermore, these metrics can inform you on ingress config reloads and empower alert conditions on config reload errors or unexpected config changes.\n\n\n\n---\n\n### About this Dashboard\n\nThis dashboard is based on metrics sent to New Relic using [Prometheus Agent or Prometheus Server.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/get-started/send-prometheus-metric-data-new-relic/)\n\nFor information on the prerequisites for this dashboard, please visit [our documentation here.](https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/integrations-list/ingress-controller-integration)"
+          }
+        },
+        {
+          "title": "Error during config reload",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
           },
-          {
-            "title": "Ratio of requests by status",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT sum(nginx_ingress_controller_requests) facet status "
-                }
-              ]
-            }
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
           },
-          {
-            "title": "Average process connections",
-            "layout": {
-              "column": 5,
-              "row": 4,
-              "width": 4,
-              "height": 3
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) FROM (SELECT average(nginx_ingress_controller_nginx_process_connections_total) AS `__result_0` FROM Metric FACET dimensions() LIMIT 100 TIMESERIES 60000 SLIDE BY 30000) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 30000"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nif(latest(nginx_ingress_controller_config_last_reload_successful) < 1, 'Errors', 'No Errors') AS 'Last config reload errors'\nFACET prometheus_server\nWHERE instrumentation.name = 'remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )"
               }
-            }
-          },
-          {
-            "title": "Requests per second by status",
-            "layout": {
-              "column": 9,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(nginx_ingress_controller_request_size_count), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 60000 SLIDE BY 10000 facet status"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
+        },
+        {
+          "title": "Last successful config reload",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Last successful config reload",
+                "type": "date"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(nginx_ingress_controller_config_last_reload_successful_timestamp_seconds) * 1000 as 'Last successful config reload' FACET prometheus_server where instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} )"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Ratio of requests by status",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(nginx_ingress_controller_requests)  WHERE instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) facet status"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average process connections",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (average(`__result_0`) * cardinality(`__result_0`)) AS 'Average process connections' FROM (\n  FROM Metric SELECT\n    average(nginx_ingress_controller_nginx_process_connections_total) AS `__result_0`\n  FACET prometheus_server, instance\n  WHERE instrumentation.name = 'remote-write'\n  AND prometheus_server IN ( {{prometheus_server}} )\n  AND instance IN ( {{instance}} )\n  TIMESERIES 60000 SLIDE BY 30000\n)\nFACET concat(prometheus_server, ' - ', instance)\nTIMESERIES 30000 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests per second by status",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  rate(sum(nginx_ingress_controller_request_size_count), 1 SECONDS)\nFACET concat(prometheus_server, ' - ', instance, ' : ', status)\nWHERE instrumentation.name = 'remote-write'\nAND prometheus_server IN ( {{prometheus_server}} )\nAND instance IN ( {{instance}} )\nTIMESERIES 60000 SLIDE BY 10000"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payload Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## This page displays payload metrics for your NGINX Ingress controller. Use the `dimensions` dashboard template variable to change the facet value for the widgets here."
+          }
+        },
+        {
+          "title": "Ingress classes",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT count(nginx_ingress_controller_requests) WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} ) FACET ({{dimensions}})"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Upstream service latency by ingress definition",
+          "layout": {
+            "column": 7,
+            "row": 2,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(nginx_ingress_controller_ingress_upstream_latency_seconds_sum), 1 SECONDS) FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} )  TIMESERIES 60000 SLIDE BY 10000 facet {{dimensions}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Requests Stats"
+          }
+        },
+        {
+          "title": "Request Size Buckets",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketPercentile(nginx_ingress_controller_request_size_bucket, 50, 75, 90) As 'Request size' FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} ) TIMESERIES facet {{dimensions}} "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request duration seconds ",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketPercentile(nginx_ingress_controller_request_duration_seconds_bucket, 50, 75, 90) As 'Request duration' FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} ) TIMESERIES facet ({{dimensions}}) "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Response Stats"
+          }
+        },
+        {
+          "title": "Response Size Buckets",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketPercentile(nginx_ingress_controller_response_size_bucket, 50, 75, 90) As 'Response size' FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} ) TIMESERIES facet {{dimensions}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response duration seconds",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT bucketPercentile(nginx_ingress_controller_response_duration_seconds_bucket, 50, 75, 90) As 'Response duration' FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} ) AND ingress IN ( {{ingress}} ) TIMESERIES facet {{dimensions}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CPU/Memory",
+      "description": null,
+      "widgets": [
+        {
+          "title": "CPU Second Rate by Pod",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(nginx_ingress_controller_nginx_process_cpu_seconds_total), 1 SECONDS) FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} )  TIMESERIES 60000 SLIDE BY 30000 facet concat(prometheus_server, ' - ', controller_pod)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Process Memory Bytes by Pod",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(nginx_ingress_controller_nginx_process_resident_memory_bytes), 1 SECONDS) FROM Metric WHERE  instrumentation.name = 'remote-write' AND prometheus_server IN ( {{prometheus_server}} ) AND instance IN ( {{instance}} )  TIMESERIES 60000 SLIDE BY 30000 facet concat(prometheus_server, ' - ', controller_pod) "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "prometheus_server",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(prometheus_server) WHERE instrumentation.name='remote-write' AND metricName LIKE 'nginx%' SINCE 1 WEEK AGO\n\n\n\n\n\n\n"
       },
-      {
-        "name": "Payload Metrics",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Ingress classes",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 6,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "FROM Metric SELECT count(nginx_ingress_controller_requests) FACET ingress "
-                }
-              ]
-            }
-          },
-          {
-            "title": "Upstream service latency by ingress definition",
-            "layout": {
-              "column": 7,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(nginx_ingress_controller_ingress_upstream_latency_seconds_sum), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 60000 SLIDE BY 10000 facet ingress"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 4,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "# Requests Stats"
-            }
-          },
-          {
-            "title": "Request Size Buckets",
-            "layout": {
-              "column": 3,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT bucketPercentile(nginx_ingress_controller_request_size_bucket, 50, 75, 90) FROM Metric TIMESERIES facet ingress "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Request duration seconds ",
-            "layout": {
-              "column": 7,
-              "row": 4,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT bucketPercentile(nginx_ingress_controller_request_duration_seconds_bucket, 50, 75, 90) FROM Metric TIMESERIES facet ingress "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "",
-            "layout": {
-              "column": 1,
-              "row": 7,
-              "width": 2,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.markdown"
-            },
-            "rawConfiguration": {
-              "text": "# Response Stats"
-            }
-          },
-          {
-            "title": "Response Size Buckets",
-            "layout": {
-              "column": 3,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT bucketPercentile(nginx_ingress_controller_response_size_bucket, 50, 75, 90) FROM Metric TIMESERIES facet ingress"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Response duration seconds",
-            "layout": {
-              "column": 7,
-              "row": 7,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT bucketPercentile(nginx_ingress_controller_response_duration_seconds_bucket, 50, 75, 90) FROM Metric TIMESERIES facet ingress"
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
+      "title": "",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "instance",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
           }
-        ]
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(instance) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'nginx%' SINCE 1 WEEK AGO\n\n\n"
       },
-      {
-        "name": "CPU/Memory",
-        "description": null,
-        "widgets": [
-          {
-            "title": "CPU Second Rate",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(nginx_ingress_controller_nginx_process_cpu_seconds_total), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 60000 SLIDE BY 10000 facet controller_pod "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
-          },
-          {
-            "title": "Process Memory Bytes",
-            "layout": {
-              "column": 5,
-              "row": 1,
-              "width": 4,
-              "height": 3
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountId": 0,
-                  "query": "SELECT rate(sum(nginx_ingress_controller_nginx_process_resident_memory_bytes), 1 SECONDS) FROM Metric SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 60000 SLIDE BY 30000 facet controller_pod "
-                }
-              ],
-              "yAxisLeft": {
-                "zero": true
-              }
-            }
+      "title": "",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "ingress",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
           }
-        ]
-      }
-    ]
-  }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(ingress) WHERE instrumentation.name = 'remote-write' AND metricName LIKE 'nginx%' SINCE 1 WEEK AGO\n\n\n\n"
+      },
+      "title": "",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "dimensions",
+      "items": [
+        {
+          "title": null,
+          "value": "instance"
+        },
+        {
+          "title": null,
+          "value": "prometheus_server"
+        },
+        {
+          "title": null,
+          "value": "ingress"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "ingress"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "IDENTIFIER"
+    }
+  ]
+}
