@@ -1,0 +1,23 @@
+name: Ping Response Time Violation
+
+description: |+
+  This alert will trigger when a router or switch takes more than 500 ms to respond to a ping.  This requires that ping based checks are enabled in the ktranslate config using the response_time or ping_only options.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT average(kentik.ping.AvgRttMs) FACET device_name WHERE metricName = 'kentik.ping.AvgRttMs' AND entity.type in ('ROUTER','SWITCH')"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 500
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
+
+signal:
+  aggregationWindow: 300

@@ -2,7 +2,6 @@ import * as path from 'path';
 import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
-import Dashboard from '../Dashboard';
 
 nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
 
@@ -54,10 +53,9 @@ describe('Quickstart', () => {
   });
 
   describe('getComponents', () => {
-
     afterAll(() => {
       jest.resetAllMocks();
-    })
+    });
 
     test('Returns empty array when there are no components', () => {
       const qs = new Quickstart(
@@ -78,7 +76,7 @@ describe('Quickstart', () => {
       const components = qs.getComponents();
 
       expect(components).toBeDefined();
-      expect(components).toHaveLength(3);
+      expect(components).toHaveLength(2);
     });
 
     test('Ensure quickstart is invalid from invalid components', () => {
@@ -93,17 +91,15 @@ describe('Quickstart', () => {
       expect(components).toBeDefined();
       expect(qs.isValid).toBe(true);
 
-
       // all components are invalid
-      qs.components.forEach(component => {
-        expect(component.isValid).toBe(false)
-      })
+      qs.components.forEach((component) => {
+        expect(component.isValid).toBe(false);
+      });
 
-      qs.validate()
+      qs.validate();
 
       expect(qs.isValid).toBe(false);
-
-    })
+    });
   });
 
   describe('getMutationVariables', () => {
@@ -132,6 +128,7 @@ describe('Quickstart', () => {
           keywords: ['list', 'of', 'searchable', 'keywords'],
           categoryTerms: undefined,
           installPlanStepIds: ['mock-install-1'],
+          dataSourceIds: ['test-data-source'],
           icon: `${GITHUB_RAW_BASE_URL}/quickstarts/mock-quickstart-1/logo.png`,
           sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1`,
           documentation: [
@@ -190,7 +187,7 @@ describe('Quickstart', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
 
-      expect(quickstarts).toHaveLength(8);
+      expect(quickstarts).toHaveLength(10);
     });
 
     test('Handles no quickstarts in directory', () => {

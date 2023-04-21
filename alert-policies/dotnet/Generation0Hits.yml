@@ -1,0 +1,36 @@
+name: Generation 0 Hits
+
+description: |+
+  This alert is triggered when the memory that survives garbage collection is more than 256 KB and has been promoted from Generation 0 to Generation 1.
+
+type: STATIC
+nrql:
+  query: "SELECT average(newrelic.timeslice.value) * 1000 AS 'Generation 0 Hits' FROM Metric WHERE metricTimesliceName = 'GC/Gen0/Size' and appName like '%'"
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 256000
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+    
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 250000
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 2592000

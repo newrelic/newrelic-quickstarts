@@ -5,7 +5,7 @@ export interface DataSourceConfig {
   install: DataSourceConfigInstall;
   keywords?: string[];
   categoryTerms?: string[];
-  icon: string;
+  icon?: string;
 }
 
 export type DataSourceConfigInstall = {
