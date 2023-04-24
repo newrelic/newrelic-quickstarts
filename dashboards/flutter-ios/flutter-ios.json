@@ -56,7 +56,7 @@
 					}
 				},
 				{
-					"title": "App Usage by Device",
+					"title": "App Crashes by Version",
 					"layout": {
 						"column": 5,
 						"row": 1,
@@ -65,7 +65,7 @@
 					},
 					"linkedEntityGuids": null,
 					"visualization": {
-						"id": "viz.billboard"
+						"id": "viz.bar"
 					},
 					"rawConfiguration": {
 						"facet": {
@@ -74,7 +74,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(newrelic.timeslice.value) FROM Metric WHERE (metricTimesliceName = 'Session/Start') FACET `instanceName` LIMIT 5  WHERE appName = {{appName}}"
+								"query": "SELECT count(*) FROM MobileCrash FACET appVersion WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -110,7 +110,7 @@
 					}
 				},
 				{
-					"title": "Memory Used (MB)",
+					"title": "App Sessions",
 					"layout": {
 						"column": 9,
 						"row": 1,
@@ -119,19 +119,16 @@
 					},
 					"linkedEntityGuids": null,
 					"visualization": {
-						"id": "viz.stacked-bar"
+						"id": "viz.billboard"
 					},
 					"rawConfiguration": {
 						"facet": {
 							"showOtherSeries": false
 						},
-						"legend": {
-							"enabled": true
-						},
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) / 1000 AS `Memory used` FROM Metric TIMESERIES AUTO  WHERE metricTimesliceName = 'Memory/Used' where appName = {{appName}} "
+								"query": "SELECT count(newrelic.timeslice.value) FROM Metric WHERE (metricTimesliceName = 'Session/Start') FACET `instanceName` LIMIT 5  WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -160,7 +157,7 @@
 					"layout": {
 						"column": 1,
 						"row": 4,
-						"width": 4,
+						"width": 2,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -183,11 +180,71 @@
 					}
 				},
 				{
-					"title": "Active Sessions",
+					"title": "Avg CPU Utilization",
 					"layout": {
-						"column": 5,
+						"column": 3,
 						"row": 4,
 						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg User CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg System CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg Total CPU Utilization` FROM Metric WHERE metricTimesliceName = 'CPU/User/Utilization' WHERE appName = {{appName}} TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Memory Used (MB)",
+					"layout": {
+						"column": 7,
+						"row": 4,
+						"width": 3,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT average(newrelic.timeslice.value) / 1000 AS `Memory used` FROM Metric TIMESERIES AUTO  WHERE metricTimesliceName = 'Memory/Used' where appName = {{appName}} "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Active Sessions",
+					"layout": {
+						"column": 10,
+						"row": 4,
+						"width": 3,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -214,36 +271,6 @@
 							"zero": true
 						}
 					}
-				},
-				{
-					"title": "Avg CPU Utilization",
-					"layout": {
-						"column": 9,
-						"row": 4,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Avg User CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg System CPU Utilization`, average(newrelic.timeslice.value) * 1000 AS `Avg Total CPU Utilization` FROM Metric WHERE metricTimesliceName = 'CPU/User/Utilization' WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
 				}
 			]
 		},
@@ -268,10 +295,67 @@
 					}
 				},
 				{
-					"title": "Errors and Failures Rate",
+					"title": "HTTP Status Code & Request Methods",
 					"layout": {
 						"column": 1,
 						"row": 2,
+						"width": 6,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.pie"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": true
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequest WHERE appName = {{appName}} FACET statusCode, requestMethod"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Error Messages",
+					"layout": {
+						"column": 7,
+						"row": 2,
+						"width": 6,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT count(*) FROM MobileRequestError FACET `responseBody` LIMIT 5 WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Errors and Failures Rate",
+					"layout": {
+						"column": 1,
+						"row": 5,
 						"width": 4,
 						"height": 3
 					},
@@ -301,8 +385,8 @@
 					"title": "HTTP Errors and Network Failures",
 					"layout": {
 						"column": 5,
-						"row": 2,
-						"width": 4,
+						"row": 5,
+						"width": 5,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -327,90 +411,6 @@
 						},
 						"yAxisLeft": {
 							"zero": true
-						}
-					}
-				},
-				{
-					"title": "Error Messages",
-					"layout": {
-						"column": 9,
-						"row": 2,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequestError FACET `responseBody` LIMIT 5 WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Number of Requested URLs",
-					"layout": {
-						"column": 1,
-						"row": 5,
-						"width": 5,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequest FACET `requestUrl` LIMIT 5 WHERE appName = {{appName}}"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Requests per Minute",
-					"layout": {
-						"column": 6,
-						"row": 5,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest LIMIT 5 WHERE appName = {{appName}} TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
 						}
 					}
 				},
@@ -442,39 +442,9 @@
 					}
 				},
 				{
-					"title": "Top HTTP Status Codes",
+					"title": "Number of Requested URLs",
 					"layout": {
 						"column": 1,
-						"row": 8,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.pie"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": true
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequest, MobileRequestError WHERE appName = {{appName}} FACET statusCode"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "HTTP Requests",
-					"layout": {
-						"column": 5,
 						"row": 8,
 						"width": 3,
 						"height": 3
@@ -490,7 +460,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT count(*) FROM MobileRequest WHERE appName = {{appName}} AND statusCode = {{statusCode}} FACET requestMethod"
+								"query": "SELECT count(*) FROM MobileRequest FACET `requestUrl` LIMIT 5 WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -499,11 +469,11 @@
 					}
 				},
 				{
-					"title": "HTTP Response Time",
+					"title": "Requests per Minute",
 					"layout": {
-						"column": 8,
+						"column": 4,
 						"row": 8,
-						"width": 5,
+						"width": 4,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -520,7 +490,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT average(newrelic.timeslice.value) * 1000 FROM Metric FACET `requestDomain` LIMIT 5 WITH METRIC_FORMAT 'External/{requestDomain}/all' TIMESERIES WHERE appName = {{appName}}"
+								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest LIMIT 5 WHERE appName = {{appName}} TIMESERIES"
 							}
 						],
 						"platformOptions": {
@@ -531,9 +501,9 @@
 				{
 					"title": "Avg Response Time (seconds)",
 					"layout": {
-						"column": 1,
-						"row": 11,
-						"width": 4,
+						"column": 8,
+						"row": 8,
+						"width": 5,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -558,6 +528,36 @@
 						},
 						"yAxisLeft": {
 							"zero": true
+						}
+					}
+				},
+				{
+					"title": "HTTP Response Time",
+					"layout": {
+						"column": 1,
+						"row": 11,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT average(newrelic.timeslice.value) * 1000 FROM Metric FACET `requestDomain` LIMIT 5 WITH METRIC_FORMAT 'External/{requestDomain}/all' TIMESERIES WHERE appName = {{appName}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
 						}
 					}
 				},
@@ -719,7 +719,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT crashMessage FROM MobileCrash LIMIT 5 WHERE appName = {{appName}}"
+								"query": "SELECT crashMessage FROM MobileCrash LIMIT 5 WHERE appName = {{appName}} and crashMessage!=''"
 							}
 						],
 						"platformOptions": {
@@ -948,7 +948,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as 'Crash rate %' FROM MobileSession, MobileCrash LIMIT 5 WHERE appName = {{appName}}"
+								"query": "SELECT percentage(uniqueCount(sessionId), where category LIKE 'Crash') as ''  FROM MobileSession, MobileCrash LIMIT 5 WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -985,7 +985,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT rate(count(*), 1 minute) FROM MobileRequest WHERE appName = {{appName}}"
+								"query": "SELECT rate(count(*), 1 minute) AS 'requests' FROM MobileRequest WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1059,7 +1059,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(responseTime) FROM MobileRequest WHERE appName = {{appName}}"
+								"query": "SELECT latest(responseTime) AS 'seconds' FROM MobileRequest WHERE appName = {{appName}}"
 							}
 						],
 						"platformOptions": {
@@ -1095,29 +1095,10 @@
 				"accountIds": [],
 				"query": "SELECT uniques(appName) FROM Metric, Mobile, MobileSession, MobileUserAction, MobileCrash LIMIT MAX SINCE 1 MONTH AGO WHERE appName IS NOT NULL"
 			},
-			"title": "Select Your Application Names",
+			"title": "Select Your Application Name",
 			"type": "NRQL",
 			"isMultiSelection": false,
 			"replacementStrategy": "STRING"
-		},
-		{
-			"name": "statusCode",
-			"items": null,
-			"defaultValues": [
-				{
-					"value": {
-						"string": "200"
-					}
-				}
-			],
-			"nrqlQuery": {
-				"accountIds": [],
-				"query": "SELECT uniques(statusCode) FROM MobileRequest, MobileRequestError SINCE 1 week Ago WHERE statusCode IS NOT NULL"
-			},
-			"title": "HTTP Status Codes",
-			"type": "NRQL",
-			"isMultiSelection": false,
-			"replacementStrategy": "NUMBER"
 		}
 	]
 }
