@@ -6,11 +6,9 @@ import {
   isNotRemoved,
 } from './lib/github-api-helpers';
 import Quickstart from './lib/Quickstart';
-import Alert, {
-  AlertPolicySetRequiredDataSourcesMutationResults,
-  SubmitSetRequiredDataSourcesMutationResult,
-} from './lib/Alert';
-import { chunk } from './lib/nr-graphql-helpers';
+import Alert, { SubmitSetRequiredDataSourcesMutationResult } from './lib/Alert';
+import { chunk, translateNGErrors } from './lib/nr-graphql-helpers';
+import logger from './logger';
 
 type QuickstartResult = {
   name: string;
@@ -31,7 +29,9 @@ const getQuickstartNameAndDataSources = async (
     return { hasFailed: true, results: [] };
   }
 
+  logger.info(`Fetching files for pull request ${ghUrl}`);
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
+  logger.info(`Found ${files.length} files`);
 
   const quickstartNames = filterQuickstartConfigFiles(files)
     .filter(isNotRemoved)
@@ -94,10 +94,11 @@ const setAlertPoliciesRequiredDataSources = async (
           dataSourceIds
         );
 
-        if (result.errors) {
+        if (result.errors && result.errors.length > 0) {
           console.error(
             `Failed to update alert policy ${templateId} for quickstart ${quickstart.name}`
           );
+          translateNGErrors(result.errors);
         }
 
         return result;
@@ -128,6 +129,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info('Success!');
 };
 
 /**

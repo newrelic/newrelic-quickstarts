@@ -15,6 +15,7 @@ import Dashboard, {
 } from './lib/Dashboard';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import { passedProcessArguments } from './lib/helpers';
+import logger from './logger';
 
 const getQuickstartIds = async (
   ghUrl?: string,
@@ -30,7 +31,9 @@ const getQuickstartIds = async (
     return { hasFailed: true, results: [] };
   }
 
+  logger.info(`Fetching files for pull request ${ghUrl}`);
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
+  logger.info(`Found ${files.length} files`);
 
   const filteredQuickstarts = filterQuickstartConfigFiles(files)
     .filter(isNotRemoved)
@@ -102,7 +105,7 @@ const setDashboardRequiredDataSources = async (
     dataSourceIds
   );
 
-  if (result.errors) {
+  if (result.errors && result.errors.length > 0) {
     console.error(
       `Failed to associate dashboard with id ${dashboardId} to ${JSON.stringify(
         dataSourceIds
@@ -171,6 +174,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info('Success!');
 };
 
 /**

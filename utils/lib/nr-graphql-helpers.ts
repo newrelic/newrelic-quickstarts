@@ -16,6 +16,7 @@ import {
 } from '../constants';
 import { Policy } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
+import logger from '../logger';
 
 const NR_API_URL = process.env.NR_API_URL || '';
 const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
@@ -62,6 +63,8 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
   try {
     const body = buildRequestBody<Variables>(queryBody);
 
+    logger.debug(`Running NerdGraph request...`, { url: NR_API_URL, body });
+
     const res = await retry.execute(() =>
       fetch(NR_API_URL, {
         method: 'POST',
@@ -73,19 +76,34 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
       })
     );
 
+    logger.debug(`Received status code`, {
+      status: res.statusText,
+      code: res.status,
+    });
+
     if (!res.ok) {
       graphqlErrors.push(
         new Error(`Received status code ${res.status} from the API`)
       );
+
+      logger.error(`Bad response`, {
+        status: res.statusText,
+        code: res.status,
+      });
     } else {
       const { data, errors } = await res.json();
       results = data;
       if (errors) {
         graphqlErrors = [...graphqlErrors, ...errors];
+
+        // only debug logging here, since we expect validation errors
+        // coming back from nerdgraph
+        logger.debug(`Received errors from NerdGraph`, { errors });
       }
     }
   } catch (error) {
     graphqlErrors.push(error as Error);
+    logger.error(`Request errored out`, { error: error });
   }
 
   return { data: results, errors: graphqlErrors };
@@ -101,7 +119,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 export const translateMutationErrors = (
   errors: ErrorOrNerdGraphError[],
   filePath: string,
-  installPlanErrors: NerdGraphError[] = []
+  componentErrors: NerdGraphError[] = []
 ): void => {
   console.error(
     `\nERROR: The following errors occurred while validating: ${filePath}`
@@ -116,12 +134,12 @@ export const translateMutationErrors = (
     }
   });
 
-  if (installPlanErrors.length > 0) {
+  if (componentErrors.length > 0) {
     console.error(
-      `DEBUG: The following are install plan errors that occured while validating: ${filePath} and can be safely ignored.`
+      `DEBUG: The following are component errors that occured while validating: ${filePath} and can be safely ignored.`
     );
 
-    installPlanErrors.forEach((error) => {
+    componentErrors.forEach((error) => {
       if (error.extensions && error.extensions.argumentPath) {
         const errorPrefix = error.extensions.argumentPath.join('/');
 
@@ -175,6 +193,9 @@ type CategoryTermsNRGraphqlResults = {
 export const getCategoryTermsFromKeywords = async (
   configKeywords: string[] | undefined = []
 ): Promise<string[] | undefined> => {
+  logger.debug(`Fetching categories...`);
+
+  // TODO: handles errors!!
   const { data } = await fetchNRGraphqlResults<
     {},
     CategoryTermsNRGraphqlResults
@@ -182,6 +203,7 @@ export const getCategoryTermsFromKeywords = async (
     queryString: CATEGORIES_QUERY,
     variables: {},
   });
+  logger.debug(`Category result`, { data });
 
   const { categories } = data.actor.nr1Catalog;
 
@@ -216,14 +238,15 @@ type GetPublishedDataSourceIdsResponse = {
 
 export const getPublishedDataSourceIds =
   async (): Promise<GetPublishedDataSourceIdsResponse> => {
+    logger.debug(`Fetching all data source Ids`);
+
     const { data, errors } = await fetchNRGraphqlResults<
       {},
       CoreDataSourceSearchResults
     >({ queryString: CORE_DATA_SOURCES_QUERY, variables: {} });
+    logger.debug(`Data source Ids result`, { data, errors });
 
-    const {
-      search: { results },
-    } = data.actor.nr1Catalog;
+    const results = data?.actor?.nr1Catalog?.search?.results ?? [];
 
     const coreDataSourceIds = results.flatMap((result) => result.id);
 
@@ -243,6 +266,8 @@ export type GetPublishedComponentIdsResult = {
 export const getPublishedComponentIds = async (
   quickstartId: string
 ): Promise<GetPublishedComponentIdsResult> => {
+  logger.debug(`Fetching quickstart components for ${quickstartId}`);
+
   const { data, errors } = await fetchNRGraphqlResults<
     { id: string },
     QuickstartComponentsIdsResponse
@@ -250,6 +275,7 @@ export const getPublishedComponentIds = async (
     queryString: QUICKSTART_COMPONENTS_IDS_QUERY,
     variables: { id: quickstartId },
   });
+  logger.debug(`Quickstart components result`, { data, errors });
 
   const {
     metadata: { dataSources, quickstartComponents },

@@ -50,7 +50,14 @@
 
 ### Nr1CatalogInstallAlertPolicyTemplateResult
 
-Information about the mutation result when installing an alert policy template
+Information about the mutation result when installing an alert policy template * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -67,7 +74,13 @@ Information about the mutation result when installing an alert policy template
 <td valign="top">Nr1CatalogAlertPolicyTemplate!</td>
 <td>
 
-The template that was used for the installation
+The template that was used for the installation * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -76,7 +89,13 @@ The template that was used for the installation
 <td valign="top">Nr1CatalogAlertPolicyOutline!</td>
 <td>
 
-An outline of the created alert policy
+An outline of the created alert policy * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -85,7 +104,14 @@ An outline of the created alert policy
 
 ### Nr1CatalogInstallDashboardTemplateResult
 
-Information about the mutation result when installing a dashboard template
+Information about the mutation result when installing a dashboard template * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -102,7 +128,13 @@ Information about the mutation result when installing a dashboard template
 <td valign="top">Nr1CatalogDashboardOutline!</td>
 <td>
 
-An outline of the created dashboard
+An outline of the created dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -111,7 +143,13 @@ An outline of the created dashboard
 <td valign="top">Nr1CatalogDashboardTemplate!</td>
 <td>
 
-The template that was used for the installation
+The template that was used for the installation * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -120,7 +158,14 @@ The template that was used for the installation
 
 ### Nr1CatalogInstallPlan
 
-An installer that uses install plan steps
+An installer that uses install plan steps * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -137,7 +182,13 @@ An installer that uses install plan steps
 <td valign="top">[<a href="#nr1cataloginstallplanstep">Nr1CatalogInstallPlanStep</a>!]!</td>
 <td>
 
-The list of install plan steps necessary to execute the installation of the quickstart
+The list of install plan steps necessary to execute the installation of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -146,7 +197,13 @@ The list of install plan steps necessary to execute the installation of the quic
 <td valign="top"><a href="#nr1cataloginstallertype">Nr1CatalogInstallerType</a>!</td>
 <td>
 
-The type of installer
+The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -155,7 +212,14 @@ The type of installer
 
 ### Nr1CatalogInstallPlanStep
 
-Information pertaining to a specific step in the installation plan
+Information pertaining to a specific step in the installation plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -172,7 +236,13 @@ Information pertaining to a specific step in the installation plan
 <td valign="top">String</td>
 <td>
 
-A short form description for the install plan step
+A short form description for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -181,7 +251,13 @@ A short form description for the install plan step
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the install plan step
+The human-readable name for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -190,7 +266,13 @@ The human-readable name for the install plan step
 <td valign="top"><a href="#nr1cataloginstallplandirective">Nr1CatalogInstallPlanDirective</a></td>
 <td>
 
-Provides context about how the fallback install plan step should proceed
+Provides context about how the fallback install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -199,7 +281,13 @@ Provides context about how the fallback install plan step should proceed
 <td valign="top">String!</td>
 <td>
 
-Used as a heading for the install plan step
+Used as a heading for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -208,7 +296,13 @@ Used as a heading for the install plan step
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the install plan step
+The unique identifier for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -217,7 +311,13 @@ The unique identifier for the install plan step
 <td valign="top"><a href="#nr1cataloginstallplandirective">Nr1CatalogInstallPlanDirective</a>!</td>
 <td>
 
-Provides context about how the primary install plan step should proceed
+Provides context about how the primary install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -226,7 +326,13 @@ Provides context about how the primary install plan step should proceed
 <td valign="top"><a href="#nr1cataloginstallplantarget">Nr1CatalogInstallPlanTarget</a>!</td>
 <td>
 
-Provides context about where the install will occur
+Provides context about where the install will occur * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -235,7 +341,14 @@ Provides context about where the install will occur
 
 ### Nr1CatalogInstallPlanTarget
 
-Represents the location of an install
+Represents the location of an install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -252,7 +365,13 @@ Represents the location of an install
 <td valign="top"><a href="#nr1cataloginstallplandestination">Nr1CatalogInstallPlanDestination</a>!</td>
 <td>
 
-Provides context on the location the install will take place
+Provides context on the location the install will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -261,7 +380,13 @@ Provides context on the location the install will take place
 <td valign="top">[<a href="#nr1cataloginstallplanoperatingsystem">Nr1CatalogInstallPlanOperatingSystem</a>!]!</td>
 <td>
 
-Provides context for the operating system that will be targeted
+Provides context for the operating system that will be targeted * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -270,7 +395,13 @@ Provides context for the operating system that will be targeted
 <td valign="top"><a href="#nr1cataloginstallplantargettype">Nr1CatalogInstallPlanTargetType</a>!</td>
 <td>
 
-Provides context for the type of installation that will take place
+Provides context for the type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -279,7 +410,14 @@ Provides context for the type of installation that will take place
 
 ### Nr1CatalogQuickstart
 
-Information about the quickstart
+Information about the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -296,7 +434,13 @@ Information about the quickstart
 <td valign="top">Boolean!</td>
 <td>
 
-Determines if this is a featured quickstart
+Determines if this is a featured quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -305,7 +449,13 @@ Determines if this is a featured quickstart
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the quickstart
+The unique identifier for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -314,7 +464,13 @@ The unique identifier for the quickstart
 <td valign="top"><a href="#nr1catalogquickstartmetadata">Nr1CatalogQuickstartMetadata</a></td>
 <td>
 
-Metadata associated with the quickstart
+Metadata associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -323,7 +479,13 @@ Metadata associated with the quickstart
 <td valign="top">String</td>
 <td>
 
-Specifies the URL where the source definition for the quickstart can be found
+Specifies the URL where the source definition for the quickstart can be found * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -332,7 +494,13 @@ Specifies the URL where the source definition for the quickstart can be found
 <td valign="top">Nr1CatalogSupportLevel!</td>
 <td>
 
-Level of support expected for the quickstart
+Level of support expected for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -341,7 +509,14 @@ Level of support expected for the quickstart
 
 ### Nr1CatalogQuickstartAlert
 
-Information about an alert in a quickstart
+Information about an alert in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -358,7 +533,13 @@ Information about an alert in a quickstart
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the alert
+The unique identifier for the alert * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -373,7 +554,13 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 <td valign="top"><a href="#nr1catalogquickstartalertmetadata">Nr1CatalogQuickstartAlertMetadata</a>!</td>
 <td>
 
-Metadata associated with the alert
+Metadata associated with the alert * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -388,7 +575,14 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 
 ### Nr1CatalogQuickstartAlertCondition
 
-Information about an alert condition in a quickstart
+Information about an alert condition in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -405,7 +599,13 @@ Information about an alert condition in a quickstart
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the alert condition
+The unique identifier for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -414,7 +614,13 @@ The unique identifier for the alert condition
 <td valign="top"><a href="#nr1catalogquickstartalertconditionmetadata">Nr1CatalogQuickstartAlertConditionMetadata</a>!</td>
 <td>
 
-Metadata associated with the alert condition
+Metadata associated with the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -423,7 +629,14 @@ Metadata associated with the alert condition
 
 ### Nr1CatalogQuickstartAlertConditionMetadata
 
-Metadata associated with the alert condition in a quickstart
+Metadata associated with the alert condition in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -440,7 +653,13 @@ Metadata associated with the alert condition in a quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the alert condition
+A short form description for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -449,7 +668,13 @@ A short form description for the alert condition
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the alert condition
+The human-readable name for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -458,7 +683,13 @@ The human-readable name for the alert condition
 <td valign="top"><a href="#nr1catalogquickstartalertconditiontype">Nr1CatalogQuickstartAlertConditionType</a>!</td>
 <td>
 
-Determines the type of alert condition that will be created
+Determines the type of alert condition that will be created * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -467,7 +698,14 @@ Determines the type of alert condition that will be created
 
 ### Nr1CatalogQuickstartAlertMetadata
 
-Metadata associated with the alert in a quickstart
+Metadata associated with the alert in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -484,7 +722,13 @@ Metadata associated with the alert in a quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the alert.
+A short form description for the alert. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -499,7 +743,13 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the alert.
+The human-readable name for the alert. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -514,7 +764,14 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 
 ### Nr1CatalogQuickstartDashboard
 
-Information about a dashboard in a quickstart
+Information about a dashboard in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -531,7 +788,13 @@ Information about a dashboard in a quickstart
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the dashboard
+The unique identifier for the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -540,7 +803,13 @@ The unique identifier for the dashboard
 <td valign="top"><a href="#nr1catalogquickstartdashboardmetadata">Nr1CatalogQuickstartDashboardMetadata</a>!</td>
 <td>
 
-Metadata associated with the dashboard
+Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -549,7 +818,14 @@ Metadata associated with the dashboard
 
 ### Nr1CatalogQuickstartDashboardMetadata
 
-Metadata associated with the dashboard in a quickstart
+Metadata associated with the dashboard in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -566,7 +842,13 @@ Metadata associated with the dashboard in a quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the dashboard.
+A short form description for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -575,7 +857,13 @@ A short form description for the dashboard.
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the dashboard.
+The human-readable name for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -584,7 +872,13 @@ The human-readable name for the dashboard.
 <td valign="top">[Nr1CatalogPreview!]!</td>
 <td>
 
-A list of previews for the dashboard, such as screenshots.
+A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -593,7 +887,14 @@ A list of previews for the dashboard, such as screenshots.
 
 ### Nr1CatalogQuickstartDocumentation
 
-Information about a documentation component in a quickstart
+Information about a documentation component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -610,7 +911,13 @@ Information about a documentation component in a quickstart
 <td valign="top"><a href="#nr1catalogquickstartdocumentationmetadata">Nr1CatalogQuickstartDocumentationMetadata</a>!</td>
 <td>
 
-Metadata associated with the dashboard
+Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -619,7 +926,14 @@ Metadata associated with the dashboard
 
 ### Nr1CatalogQuickstartDocumentationMetadata
 
-Metadata associated with the documentation component in a quickstart
+Metadata associated with the documentation component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -636,7 +950,13 @@ Metadata associated with the documentation component in a quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the documentation component.
+A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -645,7 +965,13 @@ A short form description for the documentation component.
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the documentation component.
+The human-readable name for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -654,7 +980,13 @@ The human-readable name for the documentation component.
 <td valign="top">String!</td>
 <td>
 
-The documentation URL
+The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -663,7 +995,14 @@ The documentation URL
 
 ### Nr1CatalogQuickstartInstallPlan
 
-Information about an install plan component in a quickstart
+Information about an install plan component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -680,7 +1019,13 @@ Information about an install plan component in a quickstart
 <td valign="top"><a href="#nr1catalogquickstartinstallplanmetadata">Nr1CatalogQuickstartInstallPlanMetadata</a>!</td>
 <td>
 
-Metadata associated with the install plan
+Metadata associated with the install plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -695,7 +1040,14 @@ This field is no longer supported. Please use installer instead.
 
 ### Nr1CatalogQuickstartInstallPlanMetadata
 
-Metadata associated with the install plan in a quickstart
+Metadata associated with the install plan in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -712,7 +1064,13 @@ Metadata associated with the install plan in a quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the documentation component.
+A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -727,7 +1085,13 @@ This field is no longer supported. Please use installer instead.
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the install plan component.
+The human-readable name for the install plan component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 <p>⚠️ <strong>DEPRECATED</strong></p>
 <blockquote>
@@ -742,7 +1106,14 @@ This field is no longer supported. Please use installer instead.
 
 ### Nr1CatalogQuickstartMetadata
 
-Metadata associated with the quickstart that is available in New Relic I/O
+Metadata associated with the quickstart that is available in New Relic I/O * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -759,7 +1130,13 @@ Metadata associated with the quickstart that is available in New Relic I/O
 <td valign="top">[Nr1CatalogAuthor!]!</td>
 <td>
 
-Authors for the quickstart
+Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -768,7 +1145,13 @@ Authors for the quickstart
 <td valign="top">[Nr1CatalogCategory!]!</td>
 <td>
 
-The list of categories for filtering, searching, and grouping associated with the quickstart
+The list of categories for filtering, searching, and grouping associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -777,7 +1160,13 @@ The list of categories for filtering, searching, and grouping associated with th
 <td valign="top">[String!]!</td>
 <td>
 
-The list of category terms associated with the quickstart
+The list of category terms associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -786,7 +1175,13 @@ The list of category terms associated with the quickstart
 <td valign="top">[Nr1CatalogDataSource!]!</td>
 <td>
 
-The list of data sources associated with the quickstart
+The list of data sources associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -795,7 +1190,13 @@ The list of data sources associated with the quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the quickstart. Used throughout the platform when displaying the quickstart.
+A short form description for the quickstart. Used throughout the platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -804,7 +1205,13 @@ A short form description for the quickstart. Used throughout the platform when d
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart.
+The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -813,7 +1220,13 @@ The human-readable name for the quickstart. Used throughout the New Relic One pl
 <td valign="top">Nr1CatalogIcon</td>
 <td>
 
-The corresponding icon for the quickstart
+The corresponding icon for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -822,7 +1235,13 @@ The corresponding icon for the quickstart
 <td valign="top"><a href="#nr1cataloginstaller">Nr1CatalogInstaller</a></td>
 <td>
 
-Information about how a quickstart is installed
+Information about how a quickstart is installed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -831,7 +1250,13 @@ Information about how a quickstart is installed
 <td valign="top">[String!]!</td>
 <td>
 
-A list of keywords for filtering and searching
+A list of keywords for filtering and searching * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -840,7 +1265,13 @@ A list of keywords for filtering and searching
 <td valign="top">[<a href="#nr1catalogquickstartcomponent">Nr1CatalogQuickstartComponent</a>!]!</td>
 <td>
 
-List of components in a quickstart
+List of components in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -849,7 +1280,13 @@ List of components in a quickstart
 <td valign="top">String!</td>
 <td>
 
-The URL friendly name of the quickstart
+The URL friendly name of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -858,7 +1295,13 @@ The URL friendly name of the quickstart
 <td valign="top">String</td>
 <td>
 
-A short summary detailing the functionality of the quickstart
+A short summary detailing the functionality of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -867,7 +1310,14 @@ A short summary detailing the functionality of the quickstart
 
 ### Nr1CatalogQuickstartsListing
 
-Paginated information about Quickstarts
+Paginated information about Quickstarts * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -884,7 +1334,13 @@ Paginated information about Quickstarts
 <td valign="top">String</td>
 <td>
 
-Cursor used to fetch the next set of results
+Cursor used to fetch the next set of results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -893,7 +1349,13 @@ Cursor used to fetch the next set of results
 <td valign="top">[<a href="#nr1catalogquickstart">Nr1CatalogQuickstart</a>!]!</td>
 <td>
 
-The list of quickstart results
+The list of quickstart results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -902,7 +1364,13 @@ The list of quickstart results
 <td valign="top">Int!</td>
 <td>
 
-The total number of quickstart results
+The total number of quickstart results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -913,7 +1381,14 @@ The total number of quickstart results
 
 ### Nr1CatalogInstallDirectiveInput
 
-Set of attributes which represent how an install takes place
+Set of attributes which represent how an install takes place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -929,7 +1404,13 @@ Set of attributes which represent how an install takes place
 <td valign="top">Nr1CatalogLinkInstallDirectiveInput</td>
 <td>
 
-Link information for this directive. Cannot be used with a nerdlet directive.
+Link information for this directive. Cannot be used with a nerdlet directive. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -938,7 +1419,13 @@ Link information for this directive. Cannot be used with a nerdlet directive.
 <td valign="top">Nr1CatalogNerdletInstallDirectiveInput</td>
 <td>
 
-Nerdlet information for this directive. Cannot be used with a link directive.
+Nerdlet information for this directive. Cannot be used with a link directive. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -947,7 +1434,14 @@ Nerdlet information for this directive. Cannot be used with a link directive.
 
 ### Nr1CatalogInstallPlanDirectiveInput
 
-Set of attributes which represent how an install takes place
+Set of attributes which represent how an install takes place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -963,7 +1457,13 @@ Set of attributes which represent how an install takes place
 <td valign="top">String</td>
 <td>
 
-Value that pairs with the mode to enable the installation step. Supported values are a recipe_name, nerdlet_id, or a link
+Value that pairs with the mode to enable the installation step. Supported values are a recipe_name, nerdlet_id, or a link * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -972,7 +1472,13 @@ Value that pairs with the mode to enable the installation step. Supported values
 <td valign="top">Nr1CatalogLinkDirectiveInput</td>
 <td>
 
-Link information for this directive. Cannot be used with nerdlet or targeted directives.
+Link information for this directive. Cannot be used with nerdlet or targeted directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -981,7 +1487,13 @@ Link information for this directive. Cannot be used with nerdlet or targeted dir
 <td valign="top"><a href="#nr1cataloginstallplandirectivemode">Nr1CatalogInstallPlanDirectiveMode</a></td>
 <td>
 
-The type of installation that will take place
+The type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -990,7 +1502,13 @@ The type of installation that will take place
 <td valign="top">Nr1CatalogNerdletDirectiveInput</td>
 <td>
 
-Nerdlet information for this directive. Cannot be used with link or targeted directives.
+Nerdlet information for this directive. Cannot be used with link or targeted directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -999,7 +1517,13 @@ Nerdlet information for this directive. Cannot be used with link or targeted dir
 <td valign="top">Nr1CatalogTargetedDirectiveInput</td>
 <td>
 
-Targeted information for this directive. Cannot be used with link or nerdlet directives.
+Targeted information for this directive. Cannot be used with link or nerdlet directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1008,7 +1532,14 @@ Targeted information for this directive. Cannot be used with link or nerdlet dir
 
 ### Nr1CatalogInstallPlanStepInput
 
-Metadata associated with a specific step in the install plan
+Metadata associated with a specific step in the install plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1024,7 +1555,13 @@ Metadata associated with a specific step in the install plan
 <td valign="top">String!</td>
 <td>
 
-A short form description for the install plan step
+A short form description for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1033,7 +1570,13 @@ A short form description for the install plan step
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the install plan step
+The human-readable name for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1042,7 +1585,13 @@ The human-readable name for the install plan step
 <td valign="top"><a href="#nr1cataloginstallplandirectiveinput">Nr1CatalogInstallPlanDirectiveInput</a></td>
 <td>
 
-Provides context about how the fallback install plan step should proceed
+Provides context about how the fallback install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1051,7 +1600,13 @@ Provides context about how the fallback install plan step should proceed
 <td valign="top">String!</td>
 <td>
 
-Used as a heading for the install plan step
+Used as a heading for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1060,7 +1615,13 @@ Used as a heading for the install plan step
 <td valign="top">ID!</td>
 <td>
 
-The unique identifier for the install plan step
+The unique identifier for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1069,7 +1630,13 @@ The unique identifier for the install plan step
 <td valign="top"><a href="#nr1cataloginstallplandirectiveinput">Nr1CatalogInstallPlanDirectiveInput</a>!</td>
 <td>
 
-Provides context about how the primary install plan step should proceed
+Provides context about how the primary install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1078,7 +1645,13 @@ Provides context about how the primary install plan step should proceed
 <td valign="top"><a href="#nr1cataloginstallplantargetinput">Nr1CatalogInstallPlanTargetInput</a>!</td>
 <td>
 
-Provides context about where the install will occur
+Provides context about where the install will occur * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1087,7 +1660,14 @@ Provides context about where the install will occur
 
 ### Nr1CatalogInstallPlanTargetInput
 
-Represents the location of an install
+Represents the location of an install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1103,7 +1683,13 @@ Represents the location of an install
 <td valign="top"><a href="#nr1cataloginstallplandestination">Nr1CatalogInstallPlanDestination</a>!</td>
 <td>
 
-Provides context on the location the install will take place
+Provides context on the location the install will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1112,7 +1698,13 @@ Provides context on the location the install will take place
 <td valign="top">[<a href="#nr1cataloginstallplanoperatingsystem">Nr1CatalogInstallPlanOperatingSystem</a>!]</td>
 <td>
 
-Operating system for the install
+Operating system for the install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1121,7 +1713,13 @@ Operating system for the install
 <td valign="top"><a href="#nr1cataloginstallplantargettype">Nr1CatalogInstallPlanTargetType</a>!</td>
 <td>
 
-Provides context for the type of installation that will take place
+Provides context for the type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1130,7 +1728,14 @@ Provides context for the type of installation that will take place
 
 ### Nr1CatalogQuickstartMetadataAlertConditionInput
 
-Metadata associated with the alert condition in this quickstart
+Metadata associated with the alert condition in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1146,7 +1751,13 @@ Metadata associated with the alert condition in this quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the alert condition.
+A short form description for the alert condition. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1155,7 +1766,13 @@ A short form description for the alert condition.
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the alert condition. Used throughout the New Relic One platform when displaying the alert condition.
+The human-readable name for the alert condition. Used throughout the New Relic One platform when displaying the alert condition. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1164,7 +1781,13 @@ The human-readable name for the alert condition. Used throughout the New Relic O
 <td valign="top">Nr1CatalogRawConfiguration!</td>
 <td>
 
-The raw JSON configuration for the alert condition
+The raw JSON configuration for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1173,7 +1796,13 @@ The raw JSON configuration for the alert condition
 <td valign="top">String</td>
 <td>
 
-The source of the alert configuration
+The source of the alert configuration * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1182,7 +1811,13 @@ The source of the alert configuration
 <td valign="top"><a href="#nr1catalogquickstartalertconditiontype">Nr1CatalogQuickstartAlertConditionType</a>!</td>
 <td>
 
-Determines the type of alert condition that will be created
+Determines the type of alert condition that will be created * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1191,7 +1826,14 @@ Determines the type of alert condition that will be created
 
 ### Nr1CatalogQuickstartMetadataDashboardInput
 
-Metadata associated with the dashboard in this quickstart
+Metadata associated with the dashboard in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1207,7 +1849,13 @@ Metadata associated with the dashboard in this quickstart
 <td valign="top">String</td>
 <td>
 
-A short form description for the dashboard.
+A short form description for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1216,7 +1864,13 @@ A short form description for the dashboard.
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the dashboard. Used throughout the New Relic One platform when displaying the dashboard.
+The human-readable name for the dashboard. Used throughout the New Relic One platform when displaying the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1225,7 +1879,13 @@ The human-readable name for the dashboard. Used throughout the New Relic One pla
 <td valign="top">Nr1CatalogRawConfiguration!</td>
 <td>
 
-The raw JSON configuration for the dashboard
+The raw JSON configuration for the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1234,7 +1894,13 @@ The raw JSON configuration for the dashboard
 <td valign="top">[Nr1CatalogScreenshotInput!]</td>
 <td>
 
-A list of previews for the dashboard, such as screenshots.
+A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1243,7 +1909,13 @@ A list of previews for the dashboard, such as screenshots.
 <td valign="top">String</td>
 <td>
 
-The source of the dashboard configuration
+The source of the dashboard configuration * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1252,7 +1924,14 @@ The source of the dashboard configuration
 
 ### Nr1CatalogQuickstartMetadataDocumentationInput
 
-Metadata associated with the documentation in this quickstart
+Metadata associated with the documentation in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1268,7 +1947,13 @@ Metadata associated with the documentation in this quickstart
 <td valign="top">String!</td>
 <td>
 
-A short form description for the documentation component.
+A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1277,7 +1962,13 @@ A short form description for the documentation component.
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the documentation component. Used throughout the New Relic One platform when displaying the documentation component.
+The human-readable name for the documentation component. Used throughout the New Relic One platform when displaying the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1286,7 +1977,13 @@ The human-readable name for the documentation component. Used throughout the New
 <td valign="top">String!</td>
 <td>
 
-The documentation URL
+The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1295,7 +1992,14 @@ The documentation URL
 
 ### Nr1CatalogQuickstartMetadataInput
 
-Metadata associated with the quickstart that will be available in New Relic Instant Observability
+Metadata associated with the quickstart that will be available in New Relic Instant Observability * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
+
 
 <table>
 <thead>
@@ -1311,7 +2015,13 @@ Metadata associated with the quickstart that will be available in New Relic Inst
 <td valign="top">[<a href="#nr1catalogquickstartmetadataalertconditioninput">Nr1CatalogQuickstartMetadataAlertConditionInput</a>!]</td>
 <td>
 
-A list of alert condition components that are included in the quickstart
+A list of alert condition components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1320,7 +2030,13 @@ A list of alert condition components that are included in the quickstart
 <td valign="top">[Nr1CatalogAuthorInput!]!</td>
 <td>
 
-Authors for the quickstart
+Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1329,7 +2045,13 @@ Authors for the quickstart
 <td valign="top">[String!]</td>
 <td>
 
-The list of category terms associated with the quickstart
+The list of category terms associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1338,7 +2060,13 @@ The list of category terms associated with the quickstart
 <td valign="top">[<a href="#nr1catalogquickstartmetadatadashboardinput">Nr1CatalogQuickstartMetadataDashboardInput</a>!]</td>
 <td>
 
-A list of dashboard components that are included in the quickstart
+A list of dashboard components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1347,7 +2075,13 @@ A list of dashboard components that are included in the quickstart
 <td valign="top">[ID!]</td>
 <td>
 
-A list of data source ids corresponding to the data sources associated with this quickstart
+A list of data source ids corresponding to the data sources associated with this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1356,7 +2090,13 @@ A list of data source ids corresponding to the data sources associated with this
 <td valign="top">String!</td>
 <td>
 
-A short form description for the quickstart. Used throughout the platform when displaying the quickstart.
+A short form description for the quickstart. Used throughout the platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1365,7 +2105,13 @@ A short form description for the quickstart. Used throughout the platform when d
 <td valign="top">String!</td>
 <td>
 
-The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart.
+The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1374,7 +2120,13 @@ The human-readable name for the quickstart. Used throughout the New Relic One pl
 <td valign="top">[<a href="#nr1catalogquickstartmetadatadocumentationinput">Nr1CatalogQuickstartMetadataDocumentationInput</a>!]</td>
 <td>
 
-A list of documentation components that are included in the quickstart
+A list of documentation components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1383,7 +2135,13 @@ A list of documentation components that are included in the quickstart
 <td valign="top">String!</td>
 <td>
 
-The public url of an icon for the quickstart
+The public url of an icon for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1392,7 +2150,13 @@ The public url of an icon for the quickstart
 <td valign="top">[ID!]</td>
 <td>
 
-A list of install plan step ids corresponding to the steps of the installation plan
+A list of install plan step ids corresponding to the steps of the installation plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1401,7 +2165,13 @@ A list of install plan step ids corresponding to the steps of the installation p
 <td valign="top">[String!]</td>
 <td>
 
-A list of keywords for filtering and searching
+A list of keywords for filtering and searching * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1410,7 +2180,13 @@ A list of keywords for filtering and searching
 <td valign="top">String</td>
 <td>
 
-The URL friendly name for the quickstart
+The URL friendly name for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1419,7 +2195,13 @@ The URL friendly name for the quickstart
 <td valign="top">String</td>
 <td>
 
-Specifies the URL where the source definition for the quickstart can be found
+Specifies the URL where the source definition for the quickstart can be found * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1428,7 +2210,13 @@ Specifies the URL where the source definition for the quickstart can be found
 <td valign="top">String!</td>
 <td>
 
-A short summary detailing the functionality of the quickstart
+A short summary detailing the functionality of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1437,7 +2225,13 @@ A short summary detailing the functionality of the quickstart
 <td valign="top">Nr1CatalogSupportLevel</td>
 <td>
 
-Level of support for the quickstart
+Level of support for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(flag:`DevEx/nrio_mutations`)
+
+
 
 </td>
 </tr>
@@ -1448,7 +2242,14 @@ Level of support for the quickstart
 
 ### Nr1CatalogInstallPlanDestination
 
-Possible destinations for the install plan target
+Possible destinations for the install plan target * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1501,7 +2302,14 @@ Unknown install - special case when the target where the install takes place is 
 
 ### Nr1CatalogInstallPlanDirectiveMode
 
-Possible modes for an install plan directive
+Possible modes for an install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1538,7 +2346,14 @@ Directs the installation toward a specific target
 
 ### Nr1CatalogInstallPlanOperatingSystem
 
-Possible types for the install plan operating system
+Possible types for the install plan operating system * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1575,7 +2390,14 @@ Windows operating system
 
 ### Nr1CatalogInstallPlanTargetType
 
-Possible types for the install plan target
+Possible types for the install plan target * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1620,7 +2442,14 @@ Unknown install - special case when the target where the install takes place is 
 
 ### Nr1CatalogInstallerType
 
-Type of installer
+Type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1641,7 +2470,14 @@ Install plan
 
 ### Nr1CatalogQuickstartAlertConditionType
 
-Possible types of configured alert conditions
+Possible types of configured alert conditions * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1687,7 +2523,14 @@ A static alert condition
 
 ### Nr1CatalogInstallPlanDirective
 
-Information about an install plan directive
+Information about an install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1704,7 +2547,13 @@ Information about an install plan directive
 <td valign="top"><a href="#nr1cataloginstallplandirectivemode">Nr1CatalogInstallPlanDirectiveMode</a>!</td>
 <td>
 
-The mode of the install plan directive
+The mode of the install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -1713,7 +2562,14 @@ The mode of the install plan directive
 
 ### Nr1CatalogInstaller
 
-Information about how a quickstart is installed
+Information about how a quickstart is installed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1730,7 +2586,13 @@ Information about how a quickstart is installed
 <td valign="top"><a href="#nr1cataloginstallertype">Nr1CatalogInstallerType</a>!</td>
 <td>
 
-The type of installer
+The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -1739,7 +2601,14 @@ The type of installer
 
 ### Nr1CatalogQuickstartComponent
 
-Information about a component in a quickstart
+Information about a component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1756,7 +2625,13 @@ Information about a component in a quickstart
 <td valign="top"><a href="#nr1catalogquickstartcomponentmetadata">Nr1CatalogQuickstartComponentMetadata</a>!</td>
 <td>
 
-Metadata associated with the quickstart component
+Metadata associated with the quickstart component * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -1765,7 +2640,14 @@ Metadata associated with the quickstart component
 
 ### Nr1CatalogQuickstartComponentMetadata
 
-Information related to the metadata attached to a quickstart component
+Information related to the metadata attached to a quickstart component * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
+
 
 <table>
 <thead>
@@ -1782,7 +2664,13 @@ Information related to the metadata attached to a quickstart component
 <td valign="top">String</td>
 <td>
 
-A short form description for the quickstart component.
+A short form description for the quickstart component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>
@@ -1791,7 +2679,13 @@ A short form description for the quickstart component.
 <td valign="top">String</td>
 <td>
 
-The human-readable name for the quickstart component.
+The human-readable name for the quickstart component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+
+* No repo link provided
+
+ * visibility(customer)
+
+
 
 </td>
 </tr>

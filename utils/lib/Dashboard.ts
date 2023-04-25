@@ -6,6 +6,7 @@ import type { QuickstartDashboardInput } from '../types/QuickstartMutationVariab
 import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
 import Component from './Component';
+import logger from '../logger';
 import {
   GITHUB_RAW_BASE_URL,
   DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
@@ -160,6 +161,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
   static async getRequiredDataSources(
     templateId: string
   ): Promise<{ ids: string[]; errors?: ErrorOrNerdGraphError[] }> {
+    logger.info(`Requesting data sources for ${templateId}`);
     const { data, errors } = await fetchNRGraphqlResults<
       DashboardRequiredDataSourcesQueryVariables,
       DashboardRequiredDataSourcesQueryResults
@@ -167,6 +169,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       queryString: DASHBOARD_REQUIRED_DATA_SOURCES_QUERY,
       variables: { id: templateId },
     });
+    logger.debug(`Results for ${templateId}`, { data, errors });
 
     const ids =
       data?.actor?.nr1Catalog?.dashboardTemplate?.metadata?.requiredDataSources?.map(
@@ -188,7 +191,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     const { ids: currDataSourceIds, errors: queryErrors } =
       await this.getRequiredDataSources(templateId);
 
-    if (queryErrors) {
+    if (queryErrors && queryErrors.length > 0) {
       return { errors: queryErrors };
     }
 
@@ -196,12 +199,21 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
       ...new Set([...currDataSourceIds, ...newDataSourceIds]),
     ];
 
+    logger.info(`Submitting mutation for dashboard ${templateId}`, {
+      templateId,
+      newDataSourceIds,
+    });
     const result = await fetchNRGraphqlResults<
       DashboardSetRequiredDataSourcesMutationVariables,
       DashboardSetRequiredDataSourcesMutationResults
     >({
       queryString: DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
       variables: { templateId, dataSourceIds },
+    });
+    logger.info(`Submitted mutation for dashboard ${templateId}`);
+    logger.debug(`Results for dashboard ${templateId}`, {
+      data: result.data,
+      errors: result.errors,
     });
 
     return result;
