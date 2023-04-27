@@ -1,16 +1,16 @@
 # Name of the alert
-name: Requests per Minute
+name: Users Affected Rate
 
 # Description and details
 description: |+
-  This alert is triggered when the requests per minute is above 60 for at least 1 min.
+  This alert is triggered when the users affected rate is above 5% for at least 5 mins.
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
 
-  query: "SELECT rate(count(*), 1 minute) FROM MobileRequest"
+  query: "SELECT percentage(uniqueCount(uuid), where exceptionLocation IS NOT NULL) as 'users affected' FROM MobileSession, MobileHandledException"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -21,18 +21,18 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 60
+    threshold: 0.05
     # Time in seconds; 120 - 3600
-    thresholdDuration: 60
+    thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
   - priority: WARNING
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 40
+    threshold: 0.02
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
-    thresholdDuration: 60
+    thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
