@@ -8,6 +8,7 @@ import * as githubHelpers from '../lib/github-api-helpers';
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
 
 jest.mock('../lib/github-api-helpers', () => ({
   ...jest.requireActual('../lib/github-api-helpers'),
