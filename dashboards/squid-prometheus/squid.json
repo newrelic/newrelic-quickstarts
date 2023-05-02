@@ -1,0 +1,448 @@
+{
+  "name": "Squid Cache Manager",
+  "description": null,
+  "pages": [
+    {
+      "name": "Squid",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Squid logo](https://upload.wikimedia.org/wikipedia/fr/b/b7/Squid-cache_logo.jpg)\n\n[Squid](http://www.squid-cache.org/) is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more.\n\nNew Relic requires the [Prometheus squid-exporter](https://github.com/boynux/squid-exporter) to be installed  in order to get entites and metrics from your Squid infrastructure.\n\nRead more installation, configuration and usage in the [docs](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/collector/collector-configuration-examples/opentelemetry-collector-squid/)"
+          }
+        },
+        {
+          "title": "Active cache managers",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(squid_up) WHERE squid_cachemgr IN ({{squid_cachemgr}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Traffic ",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "HTTP Traffic Out",
+                "type": "humanized"
+              },
+              {
+                "name": "Total squid_client_http_kbytes_in_kbytes_total",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_kbytes_in_kbytes_total) AS 'HTTP In (Kbs)', sum(squid_client_http_kbytes_out_kbytes_total) AS 'HTTP Out (Kbs)', sum(squid_client_http_requests_total) AS 'HTTP Requests'  WHERE squid_cachemgr  IN ({{squid_cachemgr}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Hit Rate (%)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg squid_client_http_hit_kbytes_out_bytes_total",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (sum(squid_client_http_hit_kbytes_out_bytes_total) / sum(squid_client_http_kbytes_out_kbytes_total)) * 100 As 'Bytes %', sum(squid_client_http_hits_total) / sum(squid_client_http_requests_total) * 100 AS 'Cache %' WHERE squid_cachemgr IN ({{squid_cachemgr}})"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Error Rate (%)",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg squid_client_http_errors_total",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_errors_total) / sum(squid_client_http_requests_total) * 100 AS 'Error rate' WHERE squid_cachemgr IN ({{squid_cachemgr}}) "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Traffic",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_kbytes_in_kbytes_total) AS 'HTTP In (Kbs)', sum(squid_client_http_kbytes_out_kbytes_total) AS 'HTTP Out (Kbs)', sum(squid_client_http_hit_kbytes_out_bytes_total) AS 'HTTP Out Hits (Kbs)' , sum(squid_client_http_requests_total) AS 'HTTP requests'  WHERE squid_cachemgr IN ({{squid_cachemgr}}) facet squid_cachemgr AS 'Cache Manager'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Traffic (Kbs)",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_kbytes_in_kbytes_total) AS 'HTTP In (Kbs)', sum(squid_client_http_kbytes_out_kbytes_total) AS 'HTTP Out (Kbs)' WHERE squid_cachemgr IN ({{squid_cachemgr}}) timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Traffic requests",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_requests_total) AS 'HTTP Requests'  WHERE squid_cachemgr IN ({{squid_cachemgr}}) facet squid_cachemgr timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Hit Rate (%)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Cache %",
+                "type": "humanized"
+              },
+              {
+                "name": "Bytes %",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (sum(squid_client_http_hit_kbytes_out_bytes_total) / sum(squid_client_http_kbytes_out_kbytes_total)) * 100 As 'Bytes %', sum(squid_client_http_hits_total) / sum(squid_client_http_requests_total) * 100 AS 'Cache %' WHERE squid_cachemgr IN ({{squid_cachemgr}}) facet squid_cachemgr"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Bytes Hit Rate (%)",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_hit_kbytes_out_bytes_total) / sum(squid_client_http_kbytes_out_kbytes_total) WHERE squid_cachemgr IN ({{squid_cachemgr}}) TIMESERIES facet squid_cachemgr"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Hit Rate (%)",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_hits_total) / sum(squid_client_http_requests_total) WHERE squid_cachemgr IN ({{squid_cachemgr}}) TIMESERIES facet squid_cachemgr"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Error Rate (%)",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_errors_total) / sum(squid_client_http_requests_total) * 100 AS 'Error rate %' WHERE squid_cachemgr IN ({{squid_cachemgr}}) facet squid_cachemgr"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Error Rate (%)",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(squid_client_http_errors_total) / sum(squid_client_http_requests_total)  WHERE squid_cachemgr IN ({{squid_cachemgr}}) TIMESERIES facet squid_cachemgr"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "squid_cachemgr",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        },
+        {
+          "value": {
+            "string": "squid_cor3int"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(squid_cachemgr) FROM Metric"
+      },
+      "title": "Cache manager",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
