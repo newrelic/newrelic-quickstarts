@@ -1,0 +1,191 @@
+{
+    "name": "Apollo-Server Dashboard",
+    "description": null,
+    "pages": [
+      {
+        "name": "Apollo-Server Dashboard",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Top 10 Slowest Operations",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                    "accountIds": [],
+                  "query": "FROM Metric SELECT average(newrelic.timeslice.value) * 1000 as 'Avg Seconds'\nWHERE appName = {{app_name}} WITH METRIC_FORMAT 'GraphQL/operation/ApolloServer/{operation}' \nFACET operation LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Operation Details",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(newrelic.timeslice.value) * 1000 as 'AVG Duration (s)' WHERE appName = {{app_name}} WITH METRIC_FORMAT 'GraphQL/operation/ApolloServer/{type}/{name}/{deepest-path}' FACET type, name, `deepest-path` LIMIT 20"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Average Operation Time",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(newrelic.timeslice.value) WHERE appName = {{app_name}}\n WITH METRIC_FORMAT 'GraphQL/operation/ApolloServer/{operation}' TIMESERIES FACET operation"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "SECONDS"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 10 Slowest Resolvers",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric\nSELECT average(newrelic.timeslice.value) * 1000 as 'Average Duration (s)' WHERE appName = {{app_name}} WITH METRIC_FORMAT 'GraphQL/resolve/ApolloServer/{field}' FACET field LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Average Resolver Time",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric\nSELECT average(newrelic.timeslice.value) * 1000 as 'Average Duration (s)' TIMESERIES WHERE appName = {{app_name}} WITH METRIC_FORMAT 'GraphQL/resolve/ApolloServer/{field}' FACET field"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "SECONDS"
+              },
+              "yAxisLeft": {
+                "zero": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "app_name",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          },
+          {
+            "value": {
+              "string": "Apollo-Server"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "from Transaction select uniques(appName)"
+        },
+        "title": "APM App Name",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "DEFAULT"
+      }
+    ]
+  }
