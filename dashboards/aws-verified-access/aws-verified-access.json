@@ -1,0 +1,254 @@
+{
+    "name": "AWS Verified Access",
+    "description": null,
+    "pages": [
+      {
+        "name": "Amazon Verified Access",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Total recent VA Logs",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Log WHERE metadata.product.name = 'Verified Access' SINCE 3 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Device attempts over time",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Log FACET activity WHERE device.ip IN ({{ip_address}}) AND activity IN ({{activity}}) AND http_request.url.hostname IN ({{hostname}}) AND identity.user.email_addr IN ({{user}}) AND metadata.product.name = 'Verified Access' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top accessed hostnames",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Log FACET http_request.url.hostname, activity WHERE  device.ip IN ({{ip_address}}) AND activity IN ({{activity}}) AND identity.user.email_addr IN ({{user}}) AND http_request.url.hostname IN ({{hostname}}) AND metadata.product.name = 'Verified Access'  SINCE 3 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Access Denied IP's",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Log WHERE device.ip IN ({{ip_address}}) AND http_request.url.hostname IN ({{hostname}}) AND identity.user.email_addr IN ({{user}}) AND metadata.product.name = 'Verified Access' AND activity = 'Access Denied' FACET device.ip, identity.user.email_addr SINCE 3 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Verified Access activity from devices",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Log FACET activity WHERE  device.ip IN ({{ip_address}}) AND activity IN ({{activity}}) AND http_request.url.hostname IN ({{hostname}}) AND identity.user.email_addr IN ({{user}}) AND metadata.product.name = 'Verified Access' "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Accounts with login attempts from multiple devices",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT uniques(tuple(identity.user.email_addr, device.ip)) as 'email , ip address', latest(activity) as 'latest activity'  WHERE identity.user.email_addr IN ({{user}}) AND identity.user.email_addr IN (FROM (FROM Log SELECT uniqueCount(device.ip) AS count FACET identity.user.email_addr ) SELECT identity.user.email_addr WHERE count > 1)  SINCE 3 weeks ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Real time logs",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "logger.log-table-widget"
+            },
+            "rawConfiguration": {
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Log SELECT * WHERE device.ip IN ({{ip_address}}) AND activity IN ({{activity}}) AND http_request.url.hostname IN ({{hostname}}) AND identity.user.email_addr IN ({{user}}) AND metadata.product.name = 'Verified Access' SINCE 30 minutes ago LIMIT 50"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "hostname",
+        "items": null,
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(http_request.url.hostname) FROM Log  WHERE http_request.url.hostname IS NOT NULL AND metadata.product.name = 'Verified Access' SINCE 1 weeks ago"
+        },
+        "title": "Hostname",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "ip_address",
+        "items": null,
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(device.ip) FROM Log WHERE metadata.product.name = 'Verified Access' SINCE 1 month ago"
+        },
+        "title": "Device IP Address",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "activity",
+        "items": null,
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(activity) FROM Log WHERE metadata.product.name = 'Verified Access' SINCE 1 month ago"
+        },
+        "title": "Activity",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "user",
+        "items": null,
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(identity.user.email_addr) FROM Log WHERE metadata.product.name = 'Verified Access' SINCE 1 month ago"
+        },
+        "title": "User",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
