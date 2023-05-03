@@ -1,0 +1,1265 @@
+{
+    "name": "Vsphere Summary",
+    "description": null,
+    "pages": [
+      {
+        "name": "Datacenters",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Datacenter Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 3
+            },
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatacenterSample SELECT latest(overallStatus), latest(clusters), latest(hostCount), latest(vmCount), latest(cpu.cores), latest(mem.size), latest(datastores), latest(datastore.totalGiB), latest(networks), latest(resourcePools) facet datacenterName limit max where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current CPU Used %",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatacenterSample SELECT latest(cpu.overallUsagePercentage) facet datacenterName limit 20 where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Current Memory Used %",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatacenterSample SELECT latest(mem.usagePercentage) facet datacenterName limit 20 where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Current Datastore Used %",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatacenterSample SELECT latest(datastore.totalUsedGiB) * 100 / latest (datastore.totalGiB) facet datacenterName limit 20 where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top CPU Usage",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select average(vsphere.datacenter.cpu.overallUsagePercentage) where entityName like 'vsphere-datacenter%' limit 20 TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Top Memory Usage",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select average(vsphere.datacenter.mem.usagePercentage) where entityName like 'vsphere-datacenter%' limit 20 TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Top Datastore Usage",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select average(vsphere.datacenter.datastore.totalUsedGiB) * 100 / average(vsphere.datacenter.datastore.totalGiB) where entityName like 'vsphere-datacenter%' limit 20 TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Cluster Count",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select max(vsphere.datacenter.clusters) where entityName like 'vsphere-datacenter%' limit max TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Host Count",
+            "layout": {
+              "column": 4,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select max(vsphere.datacenter.hostCount) where entityName like 'vsphere-datacenter%' limit max TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Datastore Count",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select max(vsphere.datacenter.datastores) where entityName like 'vsphere-datacenter%' limit max TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "VM Count",
+            "layout": {
+              "column": 10,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric select max(vsphere.datacenter.vmCount) where entityName like 'vsphere-datacenter%' limit max TIMESERIES facet datacenterName since 24 hours ago where datacenterName = {{datacenter}} or {{datacenter}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Clusters",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Cluster Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereClusterSample SELECT latest(overallStatus), latest(hosts), latest(effectiveHosts), latest(cpu.cores), latest(mem.effectiveSize) facet capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')  limit max WHERE  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') = {{cluster}} or {{cluster}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "HA DAS Settings",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereClusterSample SELECT latest(dasConfig.enabled) as enabled, latest(dasConfig.hostMonitoring) as hostMonitoring, latest(dasConfig.vmMonitoring) as vmMonitoring, latest(dasConfig.admissionControlEnabled) as admissionControlEnabled, latest(dasConfig.hbDatastoreCandidatePolicy) as hbDatastoreCandidatePolicy, latest(dasConfig.isolationResponse) as isolationResponse, latest(dasConfig.restartPriority) as restartPriority, latest(dasConfig.restartPriorityTimeout) as restartPriorityTimeout, latest(dasConfig.vmComponentProtecting) as vmComponentProtecting facet capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') limit max WHERE  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') = {{cluster}} or {{cluster}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "DRS Settings",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereClusterSample SELECT latest(drsConfig.enabled) as enabled, latest(drsConfig.defaultVmBehavior) as defaultVmBehavior, latest(drsConfig.vmotionRate) as vmotionRate, latest(drsConfig.enableVmBehaviorOverrides) as enableVmBehaviorOverrides facet capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') limit max WHERE  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') = {{cluster}} or {{cluster}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Host Count",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereClusterSample select max(hosts) where entityName like 'vsphere-cluster%' limit max TIMESERIES facet capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') since 24 hours ago WHERE  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') = {{cluster}} or {{cluster}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts in Maintenance",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereClusterSample select max(hosts) - max(effectiveHosts) where entityName like 'vsphere-cluster%' limit max TIMESERIES facet capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') since 24 hours ago WHERE  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') = {{cluster}} or {{cluster}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Hosts",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Host Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample SELECT latest(overallStatus), latest(powerState), latest(connectionState), latest(vmCount), latest(cpu.cores), latest(mem.size), latest(inMaintenanceMode), latest(inQuarantineMode), latest(standbyMode), latest(bootTime) facet hypervisorHostname limit max WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current CPU Used %",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vsphere.host.cpu.percent) facet vsphere.hostHypervisorHostname limit 20 WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Current Memory Used %",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT latest(vsphere.host.mem.usage) * 100 / latest(vsphere.host.mem.size) facet vsphere.hostHypervisorHostname limit 20 WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top CPU Usage",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample SELECT average(cpu.percent) FACET hypervisorHostname limit 20 TIMESERIES since 24 hours ago WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Top Memory Usage",
+            "layout": {
+              "column": 7,
+              "row": 8,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample SELECT max(mem.usage) * 100 / max(mem.size) FACET hypervisorHostname limit 20 TIMESERIES since 24 hours ago WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "VM Count",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereHostSample select max(vmCount) where entityName like 'vsphere-host%' limit max TIMESERIES facet hypervisorHostname since 24 hours ago WHERE hypervisorHostname = {{host}} or {{host}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Datastores",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Datastore Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatastoreSample SELECT latest(overallStatus), latest(accessible), latest(capacity) as capacityGiB, latest(freeSpace) as freeGiB, latest(uncommitted) as uncommittedGiB, latest(fileSystemType), latest(vmCount) facet name limit max WHERE name = {{datastore}} or {{datastore}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Used Space %",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatastoreSample SELECT 100 - latest(freeSpace) * 100 / latest(capacity) facet name limit 20 WHERE name = {{datastore}} or {{datastore}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Space Usage %",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 8,
+              "height": 5
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereDatastoreSample SELECT 100 - (max(freeSpace) * 100 / max(capacity)) FACET name limit 20 TIMESERIES since 24 hours ago WHERE name = {{datastore}} or {{datastore}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "VMs",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Virtual Machine Summary",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT latest(overallStatus), latest(powerState), latest(connectionState), latest(cpu.cores), latest(mem.size), latest(disk.totalMiB) / 1024 as committedGiB , latest(ipAddress) facet vmConfigName, vmHostname  limit max WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current Host CPU Used %",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT latest(cpu.hostUsagePercent) facet vmConfigName limit 20 where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top CPU Usage %",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT average(cpu.hostUsagePercent) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0
+              }
+            }
+          },
+          {
+            "title": "Top Host CPU Consumed MHZ",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT average(cpu.overallUsage) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current Memory Used %",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT latest(mem.usage) * 100 / latest(mem.size) facet vmConfigName limit 20 where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 80
+                },
+                {
+                  "value": 90
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Memory Usage %",
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT max(mem.usage) * 100 / max(mem.size) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Top Host Memory Consumed MiB",
+            "layout": {
+              "column": 9,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT average(mem.hostUsage) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current Memory Balloon Size",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT latest(mem.balloned) facet vmConfigName limit 20 where mem.balloned > 0 WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Host Memory Balloon Size MiB",
+            "layout": {
+              "column": 4,
+              "row": 13,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT average(mem.balloned) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Current Memory Swapped Size",
+            "layout": {
+              "column": 7,
+              "row": 13,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT latest(mem.swapped) facet vmConfigName limit 20 where mem.swapped > 0 WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Top Host Memory Swapping MiB",
+            "layout": {
+              "column": 10,
+              "row": 13,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM VSphereVmSample SELECT average(mem.swapped) FACET vmConfigName limit 20 TIMESERIES since 24 hours ago where powerState = 'poweredOn' WHERE vmConfigName = {{vm}} or {{vm}} = ''"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "datacenter",
+        "items": null,
+        "defaultValue": null,
+        "nrqlQuery": {
+          "accountIds": [
+            0
+          ],
+          "query": "FROM VSphereDatacenterSample SELECT uniques(datacenterName)limit max"
+        },
+        "title": "datacenter",
+        "type": "NRQL"
+      },
+      {
+        "name": "cluster",
+        "items": null,
+        "defaultValue": null,
+        "nrqlQuery": {
+          "accountIds": [
+            0
+          ],
+          "query": "FROM VSphereClusterSample select uniques(capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')) limit max"
+        },
+        "title": "cluster",
+        "type": "NRQL"
+      },
+      {
+        "name": "host",
+        "items": null,
+        "defaultValue": null,
+        "nrqlQuery": {
+          "accountIds": [
+            0
+          ],
+          "query": "FROM VSphereHostSample select uniques(hypervisorHostname) limit max"
+        },
+        "title": "host",
+        "type": "NRQL"
+      },
+      {
+        "name": "datastore",
+        "items": null,
+        "defaultValue": null,
+        "nrqlQuery": {
+          "accountIds": [
+            0
+          ],
+          "query": "FROM VSphereDatastoreSample select uniques(name) limit max"
+        },
+        "title": "datastore",
+        "type": "NRQL"
+      },
+      {
+        "name": "vm",
+        "items": null,
+        "defaultValue": null,
+        "nrqlQuery": {
+          "accountIds": [
+            0
+          ],
+          "query": "FROM VSphereVmSample select uniques(vmConfigName) limit max"
+        },
+        "title": "vm",
+        "type": "NRQL"
+      }
+    ]
+  }
