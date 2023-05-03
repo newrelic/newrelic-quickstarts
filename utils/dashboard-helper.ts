@@ -28,7 +28,8 @@ export const checkLine = (line: string) => {
   return warningsFound;
 };
 
-const encodedNewline = '%0A';
+const encodedNewline = '\n';
+
 export const createWarningComment = (warnings: string[]) => {
   const commentMessage = [
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
