@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import * as core from '@actions/core';
 import {
   fetchPaginatedGHResults,
   filterOutTestFiles,
@@ -11,6 +12,10 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"linkedEntityGuids\": (?:(?!null))/, `\"entityGuid\" should not be used`],
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
+  [
+    /\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/,
+    `\"accountIds\" must be set to []`,
+  ],
 ];
 
 export const checkLine = (line: string) => {
@@ -23,7 +28,8 @@ export const checkLine = (line: string) => {
   return warningsFound;
 };
 
-const encodedNewline = '%0A';
+const encodedNewline = '\n';
+
 export const createWarningComment = (warnings: string[]) => {
   const commentMessage = [
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
@@ -94,7 +100,7 @@ export const runHelper = async (
   if (warnings.length > 0) {
     console.log('Found warnings:', warnings);
     const warningComment = createWarningComment(warnings);
-    console.log(`::set-output name=comment::${warningComment}`);
+    core.setOutput('comment', warningComment);
   }
 
   return true;

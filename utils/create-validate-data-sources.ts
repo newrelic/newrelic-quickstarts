@@ -1,4 +1,6 @@
 import * as path from 'path';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 import {
   fetchPaginatedGHResults,
@@ -11,10 +13,29 @@ import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
 import DataSource, { DataSourceMutationResponse } from './lib/DataSource';
 import { NerdGraphResponseWithLocalErrors } from './types/nerdgraph';
 
+import type { DataSourceConfig } from './types/DataSourceConfig';
+import logger from './logger';
+
 const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
   'data-sources/.+/config.+(yml|yaml)'
 );
 
+export const getDataSourceId = (filename: string) => {
+  const filePath = path.resolve(__dirname, '..', filename);
+  if (!fs.existsSync(filePath)) {
+    return '';
+  }
+
+  const config = yaml.load(
+    fs.readFileSync(filePath).toString('utf-8')
+  ) as DataSourceConfig;
+
+  return config.id;
+};
+
+/**
+ * Entrypoint.
+ */
 const main = async () => {
   const [GITHUB_API_URL, dryRun] = passedProcessArguments();
   const githubToken = process.env.GITHUB_TOKEN;
@@ -25,25 +46,30 @@ const main = async () => {
     process.exit(1);
   }
 
+  logger.info(`Fetching files for pull request ${GITHUB_API_URL}`);
   const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+  logger.info(`Found ${files.length} files`);
 
   const dataSources = filterOutTestFiles(files)
     .filter(isNotRemoved)
     .map(prop('filename'))
     .filter((filename) => DATA_SOURCE_CONFIG_REGEXP.test(filename))
-    .map((filename) => path.dirname(filename).replace('data-sources/', ''))
+    .map((filename) => getDataSourceId(filename))
+    .filter(Boolean)
     .map((filename) => new DataSource(filename));
 
-  const results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
+  let results: (NerdGraphResponseWithLocalErrors<DataSourceMutationResponse> & {
     name: string;
   })[] = [];
+
+  logger.info(`Submitting ${dataSources.length} data sources...`);
   // Submit all of the mutations (in chunks of 5)
   for (const c of chunk(dataSources, 5)) {
     const res = await Promise.all(
       c.map((source) => source.submitMutation(isDryRun))
     );
 
-    results.concat(res);
+    results = [...results, ...res];
   }
 
   const failures = results.filter((r) => r.errors && r.errors.length);
@@ -53,6 +79,7 @@ const main = async () => {
   );
 
   const hasFailed = failures.length > 0;
+
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_DATA_SOURCES
     : CUSTOM_EVENT.UPDATE_DATA_SOURCES;
@@ -62,6 +89,8 @@ const main = async () => {
   if (hasFailed) {
     process.exit(1);
   }
+
+  logger.info(`Success!`);
 };
 
 if (require.main === module) {

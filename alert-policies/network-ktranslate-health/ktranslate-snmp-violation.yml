@@ -1,0 +1,20 @@
+name: Ktranslate SNMP Polling Violation
+
+description: |+
+  This alert will trigger when a Kentik ktranslate container is unable to communicate with a monitored SNMP device. You may need to check the SNMP credentials are valid or that the network path is open between the container and the device.
+
+type: STATIC
+
+nrql:
+  query: "FROM Metric SELECT filter(count(*), WHERE PollingHealth = 'BAD') / count(*) * 100 as PercentFailed WHERE instrumentation.provider = 'kentik' AND PollingHealth IS NOT NULL FACET device_name, tags.container_service"
+
+valueFunction: SINGLE_VALUE 
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 5
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

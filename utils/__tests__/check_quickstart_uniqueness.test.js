@@ -40,8 +40,8 @@ describe('Action: check quickstart uniqueness', () => {
   test('does not find match', () => {
     const mockGetAll = jest.fn().mockReturnValueOnce([
       { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/3/path/config.yml', config: { id: 34567} },
+      { configPath: 'test/2/path/config.yml', config: { id: 23456 } },
+      { configPath: 'test/3/path/config.yml', config: { id: 34567 } },
     ]);
     Quickstart.getAll = mockGetAll;
 
@@ -54,13 +54,13 @@ describe('Action: check quickstart uniqueness', () => {
   test('finds and returns separate id matches', () => {
     const mockGetAll = jest.fn().mockReturnValueOnce([
       { configPath: 'test/path/config.yml', config: { id: 12345 } },
-      { configPath: 'test/2/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/3/path/config.yml', config: { id: 12345} },
-      { configPath: 'test/4/path/config.yml', config: { id: 23456} },
-      { configPath: 'test/4/path/config.yml', config: { id: 98765} },
+      { configPath: 'test/2/path/config.yml', config: { id: 23456 } },
+      { configPath: 'test/3/path/config.yml', config: { id: 12345 } },
+      { configPath: 'test/4/path/config.yml', config: { id: 23456 } },
+      { configPath: 'test/4/path/config.yml', config: { id: 98765 } },
     ]);
 
-    Quickstart.getAll = mockGetAll
+    Quickstart.getAll = mockGetAll;
 
     checkQuickstartUniqueness();
 
