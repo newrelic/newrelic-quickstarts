@@ -1,0 +1,516 @@
+{
+  "name": "k6",
+  "description": "",
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "k6",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/K6-logo.svg/1200px-K6-logo.svg.png)"
+          }
+        },
+        {
+          "title": "Virtual Users",
+          "layout": {
+            "column": 2,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(k6.vus) FROM Metric TIMESERIES SINCE 1800 seconds ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Response time: max, 90th, avg, median",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(k6.http_req_duration.sum.percentiles) as '90th' FROM Metric WHERE percentile = 90 TIMESERIES SINCE 1800 seconds ago"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT max(k6.http_req_duration) as 'Max Duration', average(k6.http_req_duration.median) as 'Median', average(k6.http_req_duration.mean) as 'Avg' FROM Metric TIMESERIES SINCE 1800 seconds ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "All k6 metrics",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 12
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select uniques(metricName) where metricName like 'k6%' limit max"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Requests per second",
+          "layout": {
+            "column": 2,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "select rate(max(k6.http_reqs.per_second), 1 seconds) from Metric timeseries 10 second since 30 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Response timings - 90th",
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(k6.http_req_duration.sum.percentiles) as '90th' FROM Metric WHERE percentile = 90 TIMESERIES 10 seconds SINCE 1800 seconds ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Data Sent/Received (B)",
+          "layout": {
+            "column": 2,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(k6.data_received) as 'Data Received', max(k6.data_sent) as 'Data Sent' FROM Metric TIMESERIES 10 seconds since 30 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Requests Histogram",
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.histogram"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogram(`k6.http_reqs`, 80, 20) FROM Metric SINCE 30 minutes AGO UNTIL NOW "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Ramping Rate",
+          "layout": {
+            "column": 2,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "select derivative(k6.http_reqs, 30 seconds) as 'Ramping Rate /reqs' from Metric timeseries since 30 minutes ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Blocked Requests",
+          "layout": {
+            "column": 6,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT sum(k6.http_req_blocked.per_second) as 'Blocked Requests' timeseries 10 seconds since 30 minutes ago"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure Scaling Impact",
+      "description": null,
+      "widgets": [
+        {
+          "title": "ELB Instances (Scalability)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT uniqueCount(host) as 'ELB Instances' FROM Metric WHERE appName like '%' TIMESERIES auto SINCE 1800 seconds ago until 2 minutes ago facet host "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Memory Utilization Percentage",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(apm.service.memory.physical) as 'Percent Utilization' FROM Metric where appName like '%' TIMESERIES SINCE 1800 seconds ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "k6 Virtual Users",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(k6.vus) FROM Metric TIMESERIES "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Requests Per Minute",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(count(*), 1 minute) AS 'Requests per minute' FROM Transaction WHERE appName like '%' TIMESERIES SINCE 1800 seconds ago EXTRAPOLATE"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CPU Utilization Percentage",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT max(apm.service.cpu.usertime.utilization) FROM Metric WHERE appName like '%' TIMESERIES SINCE 1800 seconds ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Errors by host",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from TransactionError SELECT count(*) facet host where appName like '%'"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Application Impact",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Attribute Sheet",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(*), uniqueCount(session) as 'Browser Sessions', max(duration), sum(k6.vus) FROM PageView, Transaction, Metric"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Transaction Duration Histogram",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.histogram"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT histogram(duration, 0.05, 10) FROM Transaction where appName like '%'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "k6 Virtual Users",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(k6.vus) as 'k6 VUs' FROM Metric TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Duration: Real vs k6",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from Span SELECT sum(duration)as 'k6 User Agents' timeseries where appName like '%' and request.headers.userAgent like 'k6%'"
+              },
+              {
+                "accountId": 0,
+                "query": "from Span SELECT sum(duration) as 'Non-k6 User Agents' timeseries where appName like '%' and request.headers.userAgent not like 'k6%' "
+              }
+            ]
+          }
+        },
+        {
+          "title": "k6 user agents: slowest pages",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from Span SELECT sum(duration) as '(s), k6 User Agents'  where appName like '%' where request.headers.userAgent like 'k6%' facet request.uri "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Errors: Real vs k6",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 9,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from  TransactionError  SELECT count(error) as 'Non-k6 User Agents' timeseries where appName like '%' AND request.headers.userAgent not like 'k6%' "
+              },
+              {
+                "accountId": 0,
+                "query": "from  TransactionError  SELECT count(error) as 'k6 User Agents' timeseries where appName like '%' AND request.headers.userAgent like 'k6%' "
+              }
+            ]
+          }
+        },
+        {
+          "title": "real user agents: slowest pages",
+          "layout": {
+            "column": 10,
+            "row": 8,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "from Span SELECT sum(duration) as '(s), k6 User Agents'  where appName like '%' AND request.headers.userAgent not like 'k6%' and request.uri != '/favicon.ico' and request.uri != '/stylesheets/style.css' facet request.uri limit max"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
