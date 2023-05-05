@@ -3,22 +3,44 @@
 <!-- toc -->
 
 - [Contributing](#contributing)
+
   - [Welcome 👋](#welcome-)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quickstart PR review workflow](#quickstart-pr-review-workflow)
     - [Pull requests](#pull-requests)
     - [Contributor license agreement](#contributor-license-agreement)
   - [Quickstart definitions](#quickstart-definitions)
+
     - [Quickstarts](#quickstarts)
+      - [Fields](#fields)
+      - [Style tips](#style-tips)
+      - [Quickstart description prose template](#quickstart-description-prose-template)
+      - [Quickstart usage](#quickstart-usage)
+      - [Authors](#authors)
+      - [Slug & title fields](#slug--title-fields)
+      - [Summary & descriptions](#summary--descriptions)
+      - [Documentation](#documentation)
+      - [Support Levels](#support-levels)
+      - [Icons](#icons)
+    - [Data Sources](#data-sources)
+    - [Keywords](#keywords)
     - [Dashboards](#dashboards)
+      - [Dashboard JSON Fields](#dashboard-json-fields)
+      - [Dashboard Permissions](#dashboard-permissions)
+      - [Dashboard name uniqueness](#dashboard-name-uniqueness)
+      - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
-    - [Install plans](#install-plans)
-    - [Data sources](#data-sources)
+      - [Alert condition fields](#alert-condition-fields)
+    - [Install Plans (DEPRECATED)](#install-plans-deprecated)
+    - [Data sources](#data-sources-1)
+      - [Data source fields](#data-source-fields)
+      - [Data source install fields](#data-source-install-fields)
+
   - [Quickstart Preview](#quickstart-preview)
     - [Local Quickstart Preview](#local-quickstart-preview)
       - [Step-by-step guide to view Local Quickstart Preview](#step-by-step-guide-to-view-local-quickstart-preview)
-    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
   - [Support](#support)
+    - [Pull Request Quickstart Preview](#pull-request-quickstart-preview)
     - [Feature requests](#feature-requests)
     - [Slack](#slack)
     - [Partnerships](#partnerships)
@@ -77,9 +99,9 @@ For more information about CLAs, please check out Alex Russell's excellent post,
 
 ### Quickstarts
 
-Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or Wordpress.
+Quickstarts are higher level "bundles" of dashboards and alerts (components), plus the instrumentation required to power them. Some examples of things that should be quickstarts are Ruby on Rails, the LAMP stack, or WordPress.
 
-They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, install plans, and data sources.
+They are defined under the `quickstarts/` directory and can be nested under organizational directories such as `aws`, `logging`, or `kubernetes`. Each quickstart has a `config.yml` file that defines metadata, components, and data sources.
 
 ```yaml
 # quickstarts/example-category/example-quickstart/config.yml
@@ -99,7 +121,7 @@ description: |
   * support
 
 summary: |
-  Short form summary of the quickstart. Limited to one or two sentences.
+  Short form summary of the quickstart. Limited to one or two sentences, and does not support markdown.
 
 # Possible values: New Relic | Verified | Community
 # Please consult with pull request reviewers if you think your quickstart should have a support level other than "Community"
@@ -109,6 +131,11 @@ authors:
   - Author One
   - Other Author
 
+# These keywords can be mapped to category terms
+# which help to categorize quickstarts.
+# To have your quickstart appear under a certain category,
+# these keywords must include a matching category term,
+# see link in the keywords row of the table below.
 keywords:
   - list
   - of
@@ -136,18 +163,13 @@ alertPolicies:
   - example-alert-policy
   - another-example-alert-policy
 
-# References to install plan IDs (**NOTE**: Not the file path)
-# The Ordering of installPlans is important as it sets the order of installation.
-installPlans:
-  - example-install-plan-id
-
-# References to data sources by file path, this references a data source located at `data-sources/example-data-source`
+# References to data sources by their id. These can be either CORE or a COMMUNITY data source.
 # For more information on data source definitions, see the section below.
-dataSources:
+dataSourceIds:
   - example-data-source
 ```
 
-_Note:_ For a quickstart to be "installable" through New Relic, it must have an install plan.
+_Note:_ For a quickstart to be "installable" through New Relic, it must have a data source. The data source ids can either refer
 
 An example quickstart directory looks like this:
 
@@ -160,22 +182,21 @@ icon.png
 
 #### Fields
 
-| field         | required? | default                                                           | description                                                                                                |
-| ------------- | --------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| id            | yes       |                                                                   | A UUID for the quickstart, this is generated by the system and should _not_ be provided by the contributor |
-| slug          | no        | The title in lowercase with spaces and special characters removed | Used to reference the quickstart in URLs, should not be changed after creation                             |
-| title         | yes       |                                                                   | Used as the display name for the quickstart                                                                |
-| description   | yes       |                                                                   | The long form description of the quickstart, has support for markdown syntax                               |
-| summary       | yes       |                                                                   | The short form description of the quickstart, should be under 250 characters                               |
-| level         | no        | `Community`                                                       | The support level for the quickstart, possible values are `New Relic`, `Verified`, and `Community`         |
-| authors       | yes       |                                                                   | A list of authors for the quickstart                                                                       |
-| keywords      | no        |                                                                   | A list of terms for searching within the catalogue                                                         |
-| documentation | no        |                                                                   | A list of related documentation for the quickstart                                                         |
-| icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                         |
-| dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                         |
-| alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                     |
-| installPlans  | no        |                                                                   | A list of install plans, at least one is required to allow this quickstart to be installed                 |
-| dataSources   | no        |                                                                   | A list of data sources                                                                                     |
+| field         | required? | default                                                           | description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------- | --------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id            | yes       |                                                                   | A UUID for the quickstart, this is generated by the system and should _not_ be provided by the contributor                                                                                                                                                                                                                                                                                                                                                 |
+| slug          | no        | The title in lowercase with spaces and special characters removed | Used to reference the quickstart in URLs, should not be changed after creation                                                                                                                                                                                                                                                                                                                                                                             |
+| title         | yes       |                                                                   | Used as the display name for the quickstart                                                                                                                                                                                                                                                                                                                                                                                                                |
+| description   | yes       |                                                                   | The long form description of the quickstart, has support for markdown syntax                                                                                                                                                                                                                                                                                                                                                                               |
+| summary       | yes       |                                                                   | The short form description of the quickstart, should be under 250 characters                                                                                                                                                                                                                                                                                                                                                                               |
+| level         | no        | `Community`                                                       | The support level for the quickstart, possible values are `New Relic`, `Verified`, and `Community`                                                                                                                                                                                                                                                                                                                                                         |
+| authors       | yes       |                                                                   | A list of authors for the quickstart                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| keywords      | no        |                                                                   | A list of terms for searching within the catalogue. To have your quickstart listed in a certain category, you must include a keyword matching a category term from [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20categories%20%7B%0A%20%20%20%20%20%20%20%20terms%0A%20%20%20%20%20%20%20%20displayName%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A) |
+| documentation | no        |                                                                   | A list of related documentation for the quickstart                                                                                                                                                                                                                                                                                                                                                                                                         |
+| icon          | no        | An image generated using the initials of the quickstart title     | Used to denote the quickstart within the catalogue                                                                                                                                                                                                                                                                                                                                                                                                         |
+| dashboards    | no        |                                                                   | A list of dashboards to include in this quickstart                                                                                                                                                                                                                                                                                                                                                                                                         |
+| alertPolicies | no        |                                                                   | A list of alert policies to include in this quickstart                                                                                                                                                                                                                                                                                                                                                                                                     |
+| dataSourceIds | no        |                                                                   | A list of data sources ids.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 #### Style tips
 
@@ -267,7 +288,7 @@ summary: |
 
 - The first `documentation URL` listed in the documentation configuration should be the primary doc reference.
 - The see installation docs buttons will always link to the primary `documentation URL`.
-- Every quick start that should be "installable" needs a `documentation URL` and an `installPlan` configuration if you want use the guided install flow.
+- Every quick start that should be "installable" needs a `documentation URL` and a `data source` configuration if you want to use the guided install flow.
 - Use the proper YAML formatting `|` for the URL description
 - Use the proper YAML formatting `>-` for documentation URL references.
 - Please review the [YAML cheat sheet](https://lzone.de/cheat-sheet/YAML) for more details.
@@ -321,10 +342,14 @@ documentation:
 
 ### Data Sources
 
-Data sources are optional. When adding a data source the following format should be used. Each entry in the list is the path to a data source under the [data-sources](./data-sources) directory. Example: for `argocd` located at `data-sources/argocd/config.yml`, you would add the `argocd` part to your list of data sources.
+When adding a data source the following format should be used. Data source ids can either refer to a CORE data source or a COMMUNITY data source.
+
+For a list of the available CORE data sources, you can use NerdGraph for to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
+
+COMMUNITY data sources are defined under the [data-sources](./data-sources) directory. COMMUNITY data sources should be referred to the path in that directory. COMMUNITY data source ids should be the id defined under the `config.yml` for that data source. Example: for the data source located at `data-sources/argocd/config.yml`, you would use the `id` defined in that yaml, which is `argocd`.
 
 ```yml
-dataSources:
+dataSourceIds:
   - argocd
   - postman
 ```
@@ -346,6 +371,7 @@ that is not defined in this list below, it will be reviewed for use after you su
 
 > the `featured` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
 > the `newrelic partner` keyword is used to feature quickstarts. It can only be set by a New Relic employee.
+> to reflect your quickstart under a specific category in the add data section, make sure your keywords match the "terms" present in the "displayName" of this (GraphQL query)[https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20categories%20%7B%0A%20%20%20%20%20%20%20%20terms%0A%20%20%20%20%20%20%20%20displayName%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A]
 
 - apm
 - automation
@@ -386,7 +412,8 @@ To convert an exported dashboard to the correct schema:
 
 1. Remove the `permissions` field
 2. Set every instance of `accountId` to `0`
-3. Set every instance of `linkedEntityGuids` to `null`
+3. Set every instance of `accountIds` (plural) to `[]`
+4. Set every instance of `linkedEntityGuids` to `null`
 
 We provide a handy script to do this for you:
 
@@ -411,6 +438,7 @@ exmaple-screenshot2.png
 | name        | yes       |         | The name of the dashboard, must be unique across all dashboards in the system. Name uniqueness will be checked at pull request time |
 | description | no        |         | A nice description of the dashboard, displayed in the catalogue                                                                     |
 | pages       | yes       |         | The main configuration for the dashboard, generated when exporting from New Relic                                                   |
+| variables   | no        |         | Variables for the dashboard                                                                                                         |
 
 #### Dashboard Permissions
 
@@ -530,113 +558,37 @@ example-alert-condition2.yml
 
 For documentation on the rest of the alert condition fields, please review the [Introduction to alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/introduction-alerts)
 
-### Install plans
+### Install plans **(DEPRECATED)**
 
-Install plans define how to get data into New Relic. They are located under the `install/` directory and can be nested. Example: `install/third-party/netlify/install.yml`.
+Install plans are now deprecated in favor of using data sources. To learn about data sources and their fields, view the [data sources section](#data-sources-1) below. If you are migrating from install plans to data sources, the following fields can be used equivalently on data sources when creating a COMMUNITY data source. The fields `title` and `target` do not have an equivalent on data sources.
+
+| Install plan field  | Data souce field                                                  |
+| ------------------- | ----------------------------------------------------------------- |
+| id                  | `id`                                                              |
+| name                | `displayName`                                                     |
+| description         | `description`                                                     |
+| install             | `install`                                                         |
+| install.mode        | `install.primary.nerdlet` or `install.primary.link` †             |
+| install.destination | `install.primary.nerdlet.nerdletId` or `install.primary.link.url` |
+| fallback            | `install.fallback`                                                |
+
+† _The `install.primary` or `install.fallback` field on data source does not support `targetedInstall`. We are deprecating the use of targeted installs in favor of using CORE data sources. You can learn more about CORE data sources under the [data sources section](#data-sources-1). If you are currently using a targeted install mode and need help with converting a targeted install plan to a CORE data source, please reach out to our team for assistance._
+
+_Example of targeted install:_
 
 ```yaml
-# in install/example/install.yml
-
-# Defined by the author, must be unique
-id: example-install-1
-
-# A human readable name
-name: Example Install Plan
-
-# Used as a heading during the install process
-title: Example Install Plan
-
-description: |
-  A short description of what this plan does
-
-target:
-  # type can be agent | integration | on_host_integration | unknown
-  type: agent
-  # destination can be application | cloud | host | kubernetes | unknown
-  destination: host
-  # os can be darwin | linux | windows
-  os:
-    - linux
-    - windows
-
 install:
   mode: targetedInstall
   destination:
-    recipeName: test-install-installer
-
-fallback:
-  mode: link
-  destination:
-    url: https://docs.newrelic.com/docs/infrastructure/install-infrastructure-agent/linux-installation/install-infrastructure-monitoring-agent-linux/#manual-install
+    recipeName: fake-install-recipe
 ```
-
-An example install plan directory looks like this:
-
-```bash
-# in install/example-install directory
-install.yml
-```
-
-#### Install plan fields
-
-| field               | required? | default | description                                                                                                                                                                                                                               |
-| ------------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                  | yes       |         | User defined id for the install plan, must be unique                                                                                                                                                                                      |
-| name                | yes       |         | The human-readable name for the install plan                                                                                                                                                                                              |
-| title               | yes       |         | Used as the heading for this step in the install process                                                                                                                                                                                  |
-| description         | yes       |         | A short form description of the install plan                                                                                                                                                                                              |
-| target              | yes       |         | Context about where the install will occur                                                                                                                                                                                                |
-| target.type         | yes       |         | The type of installation. Options are one of `agent`, `integration`, `on_host_integration`, or `unknown`                                                                                                                                  |
-| target.destination  | yes       |         | The location of the installation. Options are one of `application`, `cloud`, `host`, `kubernetes`, or `unknown`                                                                                                                           |
-| target.os           | yes       |         | The operating system of the installation target. Options are one of `darwin`, `linux`, or `windows`                                                                                                                                       |
-| install             | yes       |         | The primary installation method. See [Install fields](#install-fields) for examples on how to use the `destination` field                                                                                                                 |
-| install.mode        | yes       |         | The type of installation. Options are one of `link`, `nerdlet`, or `targetedInstall`                                                                                                                                                      |
-| install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, options are `recipeName` for the `targetedInstall` mode, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode |
-| fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                                                                         |
-
-#### Install fields
-
-- `targetedInstall`
-
-  - Uses the New Relic CLI to install instrumentation
-  - Example:
-
-  ```yaml
-  install:
-    mode: targetedInstall
-    destination:
-      recipeName: fake-install-recipe
-  ```
-
-- `nerdlet`
-
-  - Directs the user to a nerdlet to finish installing instrumentation
-  - Example:
-
-  ```yaml
-  install:
-    mode: nerdlet
-    destination:
-      nerdletId: some-nerdlet.id
-      nerdletState:
-        optionalKey: optional-value
-      requiresAccount: true
-  ```
-
-- `link`
-  - Directs the user to a documentation link to finish installing instrumentation
-  - Example:
-  ```yaml
-  install:
-    mode: link
-    destination:
-      url: https://docs.newrelic.com
-  ```
 
 ### Data sources
 
 Data sources represent a _single_ type of instrumentation, such as an agent, attributes on a transaction, a cloud provider integration, a third-party integration, etc.
 They can be broken out into two categories, CORE and COMMUNITY. The CORE data sources are provided by New Relic One and do _not_ exist within this repository, the COMMUNITY data sources _are_ defined within this repository.
+
+To see the available CORE data sources, you can use NerdGraph to explore the available data source ids and their corresponding metadata using [this query](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20search%28filter%3A%20%7Btypes%3A%20DATA_SOURCE%7D%29%20%7B%0A%20%20%20%20%20%20%20%20results%20%7B%0A%20%20%20%20%20%20%20%20%20%20...%20on%20Nr1CatalogDataSource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A).
 
 COMMUNITY data sources live in the `data-sources/` directory and _CANNOT_ be nested. Example: `data-sources/example/config.yml`
 
@@ -669,7 +621,12 @@ keywords:
   - test
   - keyword2
 
-# Terms related to the categories for the data source
+# Terms related to the categories for the data source.
+#
+# NOTE:
+# Although not required, highly recommended because
+# they determine category placement. Otherwise will be
+# in the 'Other' category. See below table for category term mappings.
 categoryTerms:
   - test
   - term2
@@ -685,18 +642,46 @@ icon.png
 
 #### Data source fields
 
-| field               | required? | default | description                                                                                                                                                                               |
-| ------------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                  | yes       |         | User defined id for the data source, must be unique                                                                                                                                       |
-| displayName         | yes       |         | The human-readable name for the data source                                                                                                                                               |
-| description         | no        |         | A short form description of the data source                                                                                                                                               |
-| icon                | yes       |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                                                                   |
-| keywords            | no        |         | A list of keywords for searching and filtering the catalogue                                                                                                                              |
-| categoryTerms       | no        |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under                                                             |
-| install             | yes       |         | The primary installation method. See [Install fields](#install-fields) for examples on how to use the `destination` field. _Note_: Data sources do not support the `targetedInstall` mode |
-| install.mode        | yes       |         | The type of installation. Options are one of `link` or `nerdlet`                                                                                                                          |
-| install.destination | yes       |         | The destination of the installation. Based on the chosen install `mode`, `url` for the `link` mode, or `nerdletId`, `nerdletState`, and `requiresAccount` for the `nerdlet` mode          |
-| fallback            | no        |         | Uses the same fields as `install`                                                                                                                                                         |
+| field                   | required?                                  | default | description                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------- | ------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id                      | yes                                        |         | User defined id for the data source, must be unique                                                                                                                                                                                                                                                                                                                                                                                            |
+| displayName             | yes                                        |         | The human-readable name for the data source                                                                                                                                                                                                                                                                                                                                                                                                    |
+| description             | no                                         |         | A short form description of the data source in plain text. (This field _does not_ support markdown syntax and has a max-length of 240 characters)                                                                                                                                                                                                                                                                                              |
+| icon                    | yes                                        |         | The path to an icon for the data source. The icon should follow the sizing conventions of the [quickstart icon](#icons)                                                                                                                                                                                                                                                                                                                        |
+| keywords                | no                                         |         | A list of keywords for searching and filtering the catalogue                                                                                                                                                                                                                                                                                                                                                                                   |
+| categoryTerms           | no                                         |         | A list of terms that relate to categories within the catalogue, this controls which categories the data source shows up under. See the category term mapping [here](https://api.newrelic.com/graphiql?#query=%7B%0A%20%20actor%20%7B%0A%20%20%20%20nr1Catalog%20%7B%0A%20%20%20%20%20%20categories%20%7B%0A%20%20%20%20%20%20%20%20terms%0A%20%20%20%20%20%20%20%20displayName%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A) |
+| install                 | yes                                        |         | Configuration for the installation. See [Install fields](#data-source-install-fields) for examples on how to use the `primary` and `fallback` fields.                                                                                                                                                                                                                                                                                          |
+| install.primary         | yes                                        |         | The type of installation. Options are one of `link` or `nerdlet` as a subfield.                                                                                                                                                                                                                                                                                                                                                                |
+| install.primary.nerdlet | no if `install.primary.link` is defined    |         | Configuration for installation of `nerdlet` type. Must have `nerdletId`, `requiresAccount` and optionally `nerdletState` as subfields.                                                                                                                                                                                                                                                                                                         |
+| install.primary.link    | no if `install.primary.nerdlet` is defined |         | Configuration for installation of `link` type. Must have `url` as a subfield.                                                                                                                                                                                                                                                                                                                                                                  |
+| install.fallback        | no                                         |         | Uses the same fields as `install.primary`                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+#### Data source install fields
+
+- `nerdlet`
+
+  - Directs the user to a nerdlet to finish installing instrumentation
+  - Example:
+
+  ```yaml
+  install:
+    primary:
+      nerdlet:
+        nerdletId: test.test-nerdlet
+        nerdletState:
+          test_state: test
+        requiresAccount: true
+  ```
+
+- `link`
+  - Directs the user to a documentation link to finish installing instrumentation
+  - Example:
+  ```yaml
+  install:
+    primary:
+      link:
+        url: https://newrelic.com
+  ```
 
 ## Quickstart Preview
 

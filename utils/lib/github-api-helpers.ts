@@ -4,6 +4,7 @@ import {
   QUICKSTART_CONFIG_REGEXP,
   DATA_SOURCE_CONFIG_REGEXP,
 } from '../constants';
+import logger from '../logger';
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 const TEMPLATE_REGEXP = new RegExp('_template/.+');
@@ -51,23 +52,31 @@ export const fetchPaginatedGHResults = async (
   url: string,
   token: string
 ): Promise<GithubAPIPullRequestFile[]> => {
+  logger.debug(`Running fetch against ${url}`, { url });
   let files: GithubAPIPullRequestFile[] = [];
   let nextPageLink: string | null = url;
   try {
     while (nextPageLink) {
+      logger.debug(`Fetching ${nextPageLink}`, { url: nextPageLink });
       const resp = await fetch(nextPageLink, {
         headers: { authorization: `token ${token}` },
       });
+      // TODO: this should happen after the resp.ok check
       const responseJson = await resp.json();
 
       if (!resp.ok) {
+        logger.error(`Error from Github API`, {
+          url: nextPageLink,
+          status: resp.statusText,
+          code: resp.status,
+        });
         throw new Error(`Github API returned: ${responseJson.message}`);
       }
       nextPageLink = getNextLink(resp.headers.get('Link'));
       files = [...files, ...responseJson];
     }
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Error:', { error });
     process.exit(1);
   }
 
