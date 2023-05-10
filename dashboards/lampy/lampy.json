@@ -96,7 +96,7 @@
           }
         },
         {
-          "title": "Memory (bytes)",
+          "title": "Memory (megabytes)",
           "layout": {
             "column": 8,
             "row": 2,
@@ -114,7 +114,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(host.memoryFreeBytes) as 'Memory Free Bytes', average(host.memoryUsedBytes) as 'Memory Used Bytes',average(host.memoryTotalBytes) as 'Memory Total Bytes'"
+                "query": "FROM Metric SELECT average(host.memoryFreeBytes)/1e+6 as 'Free', average(host.memoryUsedBytes)/1e+6 as 'Used',average(host.memoryTotalBytes)/1e+6 as 'Total'"
               }
             ],
             "platformOptions": {
@@ -132,11 +132,14 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": false
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
             },
             "nrqlQueries": [
               {
@@ -162,7 +165,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Apache web server\nUsing the New Relic Apache agent, you have the ability to understand the number of busy workers, number of idle workers, requests per second."
+            "text": "# Apache HTTP Server\nBy using the New Relic Apache agent, you can get a sense of how busy, idle, and how many requests per second your servers are."
           }
         },
         {
@@ -314,7 +317,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Database Monitoring\n\nUsing the New Relic MySQL agent, you have the ability to understand database operations, read & write InnoDB data , Received & sent bytes and Active connections.\n\n"
+            "text": "# Database Monitoring\n\n By using the New Relic MySQL agent, you can easily understand database operations, read and write InnoDB data, and receive & send bytes.\n"
           }
         },
         {
@@ -457,7 +460,7 @@
           "title": "",
           "layout": {
             "column": 1,
-            "row": 16,
+            "row": 13,
             "width": 12,
             "height": 1
           },
@@ -466,14 +469,14 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Application Monitoring\nTrace the host related information at real-time using New Relic python agent. Your entire application can be observed."
+            "text": "# Application Monitoring\nTrace your entire host related information at real time using the New Relic Python agent."
           }
         },
         {
           "title": "",
           "layout": {
             "column": 1,
-            "row": 17,
+            "row": 14,
             "width": 2,
             "height": 3
           },
@@ -489,7 +492,7 @@
           "title": "Applications (click on the application name to filter)",
           "layout": {
             "column": 3,
-            "row": 17,
+            "row": 14,
             "width": 2,
             "height": 3
           },
@@ -516,7 +519,7 @@
           "title": "Throughput",
           "layout": {
             "column": 5,
-            "row": 17,
+            "row": 14,
             "width": 2,
             "height": 3
           },
@@ -549,7 +552,7 @@
           "title": "WSGI (seconds)",
           "layout": {
             "column": 7,
-            "row": 17,
+            "row": 14,
             "width": 4,
             "height": 3
           },
@@ -582,7 +585,7 @@
           "title": "Transactions Overview",
           "layout": {
             "column": 11,
-            "row": 17,
+            "row": 14,
             "width": 2,
             "height": 3
           },
@@ -666,61 +669,22 @@
           }
         },
         {
-          "title": "Apache Error Messages",
+          "title": "Apache Error Logs",
           "layout": {
             "column": 7,
             "row": 1,
-            "width": 3,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "logger.log-table-widget"
           },
           "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(messageId) WHERE filePath LIKE '%apache2/error.log%' AND apmApplicationNames IS NOT NULL FACET apmApplicationNames "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Error Transaction (%)",
-          "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT percentage(count(*), WHERE error is true) AS '' FROM Transaction "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": -1
+                "query": "FROM Log SELECT (message) WHERE filePath LIKE '%apache2/error.log%' AND apmApplicationNames IS NOT NULL "
               }
             ]
           }
@@ -754,6 +718,39 @@
               "ignoreTimeRange": false
             }
           }
+        },
+        {
+          "title": "Transaction Error (%)",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE error is true) AS '' FROM Transaction "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": -1
+              }
+            ]
+          }
         }
       ]
     },
@@ -762,7 +759,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Memory Used",
+          "title": "Memory Usage",
           "layout": {
             "column": 1,
             "row": 1,
@@ -780,7 +777,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM SystemSample SELECT  average(memoryUsedPercent) as 'Memory Used (%)'"
+                "query": "FROM SystemSample SELECT  average(memoryUsedPercent) as 'Memory used (%)'"
               }
             ],
             "platformOptions": {
