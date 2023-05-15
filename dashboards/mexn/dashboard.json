@@ -39,7 +39,7 @@
           }
         },
         {
-          "title": "Page Response Time",
+          "title": "Window Load Time (seconds)",
           "layout": {
             "column": 3,
             "row": 2,
@@ -57,7 +57,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT percentile(firstInputDelay, 50) FROM PageViewTiming WHERE (firstInteraction < 300) AND appName = {{appName_browser}} FACET `pageUrl` LIMIT 10"
+                "query": "FROM PageViewTiming SELECT LATEST(windowLoad) WHERE appName = {{appName_browser}} FACET pageUrl"
               }
             ],
             "platformOptions": {
@@ -147,7 +147,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT percentile(firstPaint, 50), percentile(firstContentfulPaint, 50), percentile(largestContentfulPaint, 50), percentile(windowLoad, 50), percentile(firstInteraction, 50) FROM PageViewTiming WHERE appName = {{appName_browser}} LIMIT 1000"
+                "query": "SELECT percentile(firstContentfulPaint, 50), percentile(windowLoad, 50), percentile(firstInteraction, 50) FROM PageViewTiming WHERE appName = {{appName_browser}} LIMIT 1000"
               }
             ],
             "platformOptions": {
@@ -340,7 +340,7 @@
           }
         },
         {
-          "title": "GC Pause Time",
+          "title": "Garbage Collection Pause Time (seconds)",
           "layout": {
             "column": 6,
             "row": 10,
@@ -361,7 +361,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(newrelic.timeslice.value) * 1000 AS 'Average', max(newrelic.timeslice.value) * 1000 AS 'Max', rate(sum(newrelic.timeslice.value), 1 minute) * 1000 AS 'Total Time per minute' FROM Metric WHERE metricTimesliceName LIKE '%GC/System/Pauses%' AND appName = {{appName_nodejs}} TIMESERIES AUTO"
+                "query": "SELECT (average(newrelic.timeslice.value) * 1000)/1000 AS 'Average', (max(newrelic.timeslice.value) * 1000)/1000 AS 'Max' FROM Metric WHERE metricTimesliceName LIKE '%GC/System/Pauses%' AND appName = {{appName_nodejs}} TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -465,7 +465,7 @@
           }
         },
         {
-          "title": "Opcounters",
+          "title": "Opcounters - Total Operations Since Restart",
           "layout": {
             "column": 3,
             "row": 14,
@@ -495,7 +495,7 @@
           }
         },
         {
-          "title": "Connection Types",
+          "title": "Top 3 Connection Types",
           "layout": {
             "column": 7,
             "row": 14,
@@ -513,7 +513,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(mongodb_ss_connections) WHERE host.fullHostname = {{fullHostname}} FACET conn_type"
+                "query": "FROM Metric SELECT latest(mongodb_ss_connections) WHERE host.fullHostname = {{fullHostname}} FACET conn_type LIMIT 3"
               }
             ],
             "platformOptions": {
@@ -588,7 +588,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Infrastructure Monitoring\n\nTrace the host related information at real-time using New Relic's Infra Agent. Your entire infrastructure can be observed, whether it is running on the dedicated server/container/cloud running in orchestrated environments."
+            "text": "# Infrastructure Monitoring\n\nTrace the host related information at real-time using New Relic Infra Agent. Your entire infrastructure can be observed, whether it is running on the dedicated server/container/cloud running in orchestrated environments."
           }
         },
         {
@@ -1578,7 +1578,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT errorMessage FROM JavaScriptError WHERE appName = {{appName_browser}}"
+                "query": "SELECT uniques(errorMessage) FROM JavaScriptError WHERE appName = {{appName_browser}}"
               }
             ],
             "platformOptions": {
