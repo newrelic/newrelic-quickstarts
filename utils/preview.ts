@@ -16,8 +16,7 @@ const PORT = process.env.PORT || '3000';
 const PARENT_DIRECTORY = path.resolve(__dirname, '../quickstarts');
 const DASHBOARDS_DIRECTORY = path.resolve(__dirname, '../dashboards');
 const ALERTS_DIRECTORY = path.resolve(__dirname, '../alert-policies');
-const BASE_PREVIEW_LINK =
-  'https://newrelic.com/instant-observability/preview?local=true';
+const BASE_PREVIEW_LINK = 'http://localhost:8000/preview?local=true';
 
 const app = express();
 
