@@ -1,245 +1,288 @@
 {
-    "name": "Amazon Security Lake - Security Hub",
-    "description": null,
-    "pages": [
-      {
-        "name": "Amazon Security Lake - Security Hub",
-        "description": null,
-        "widgets": [
-          {
-            "title": "Overall compliance status by account, region (count pass vs. fail logs)",
-            "layout": {
-              "column": 1,
-              "row": 1,
-              "width": 5,
-              "height": 4
-            },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.billboard"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "SELECT percentage(count(*), WHERE compliance.status = 'PASSED') FROM Log WHERE metadata.product.feature.name = 'Security Hub' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(cloud.account_uid,' : ',cloud.region) SINCE 1 day ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "thresholds": [
-                {
-                  "alertSeverity": "WARNING",
-                  "value": 0.85
-                },
-                {
-                  "alertSeverity": "CRITICAL",
-                  "value": 0.6
-                }
-              ]
-            }
+  "name": "Amazon Security Lake - Security Hub",
+  "description": null,
+  "pages": [
+    {
+      "name": "Amazon Security Lake - Security Hub",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Overall compliance status by account, region (count pass vs. fail logs)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 4
           },
-          {
-            "title": "Top findings per region",
-            "layout": {
-              "column": 6,
-              "row": 1,
-              "width": 3,
-              "height": 3
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT count(*) as 'Logs' WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET cloud.region as 'Region',finding.title as 'Title' LIMIT 25"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(uniqueCount(finding.uid), WHERE compliance.status = 'PASSED') FROM Log WHERE metadata.product.feature.name = 'Security Hub' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(cloud.account_uid,' : ',cloud.region) LIMIT 6 SINCE 1 day ago"
               }
-            }
-          },
-          {
-            "title": "Compliance falures by account/region",
-            "layout": {
-              "column": 9,
-              "row": 1,
-              "width": 4,
-              "height": 3
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.85
               },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT count(*) WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(cloud.account_uid, ' : ',cloud.region) SINCE 3 days ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.6
               }
-            }
+            ]
+          }
+        },
+        {
+          "title": "Critical Vulnerabilities",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 3,
+            "height": 2
           },
-          {
-            "title": "High & Critical compliance findings",
-            "layout": {
-              "column": 6,
-              "row": 4,
-              "width": 3,
-              "height": 4
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.bar"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT count(*) WHERE metadata.product.feature.name = 'Security Hub' AND severity IN ('HIGH','CRITICAL') AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(cloud.account_uid ,' : ',cloud.region) as 'Account & Region',finding.title as 'Title' SINCE 3 days ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) as 'Vulnerabilites' WHERE metadata.product.feature.name = 'Security Hub' AND severity = 'CRITICAL' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) SINCE 24 hours ago"
               }
-            }
-          },
-          {
-            "title": "Compliance logs by severity",
-            "layout": {
-              "column": 9,
-              "row": 4,
-              "width": 4,
-              "height": 4
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.pie"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": true
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT count(*) WHERE metadata.product.feature.name = 'Security Hub' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(compliance.status,' - ',severity) SINCE 3 days ago"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 1
               }
-            }
+            ]
+          }
+        },
+        {
+          "title": "High Vulnerabilities",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "title": "Compliance failures per region/account",
-            "layout": {
-              "column": 1,
-              "row": 5,
-              "width": 5,
-              "height": 3
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "viz.line"
-            },
-            "rawConfiguration": {
-              "facet": {
-                "showOtherSeries": false
-              },
-              "legend": {
-                "enabled": true
-              },
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT count(*) as 'Logs' WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) FACET concat(cloud.account_uid ,' : ',cloud.region as 'Region') LIMIT 25 TIMESERIES 10 minutes"
-                }
-              ],
-              "platformOptions": {
-                "ignoreTimeRange": false
-              },
-              "yAxisLeft": {
-                "zero": true
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) as 'Vulnerabilites' WHERE metadata.product.feature.name = 'Security Hub' AND severity = 'HIGH' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) SINCE 24 hours ago"
               }
-            }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "title": "Other Vulnerabilities",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
           },
-          {
-            "title": "Real time High and Critical severity Security Hub Failure Logs",
-            "layout": {
-              "column": 1,
-              "row": 8,
-              "width": 12,
-              "height": 5
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "linkedEntityGuids": null,
-            "visualization": {
-              "id": "logger.log-table-widget"
-            },
-            "rawConfiguration": {
-              "nrqlQueries": [
-                {
-                  "accountIds": [],
-                  "query": "FROM Log SELECT concat(cloud.account_uid,' : ',cloud.region) as 'Account & Region',finding.title as 'Title',`finding.desc` as 'Description', aparse(finding.remediation.kb_articles,'[\"*\"]') as 'Articles'  WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND severity IN ('CRITICAL','HIGH') AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}})"
-                }
-              ]
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) as 'Vulnerabilites' WHERE metadata.product.feature.name = 'Security Hub' AND severity IN ('LOW','MEDIUM') AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
-        ]
-      }
-    ],
-    "variables": [
-      {
-        "name": "aws_region",
-        "items": null,
-        "defaultValues": [],
-        "nrqlQuery": {
-          "accountIds": [],
-          "query": "SELECT uniques(cloud.region) FROM Log WHERE metadata.product.feature.name = 'Security Hub' SINCE 1 week ago"
         },
-        "title": "Region",
-        "type": "NRQL",
-        "isMultiSelection": true,
-        "replacementStrategy": "STRING"
+        {
+          "title": "Compliance logs by severity",
+          "layout": {
+            "column": 6,
+            "row": 3,
+            "width": 3,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) as 'Vulnerabilites' WHERE metadata.product.feature.name = 'Security Hub' AND severity != 'INFORMATIONAL'  AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) FACET concat(compliance.status,' - ',severity) SINCE 3 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "High & Critical compliance findings",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) WHERE metadata.product.feature.name = 'Security Hub' AND severity IN ('HIGH','CRITICAL') AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) FACET finding.title as 'Title', concat('     ',cloud.account_uid ,' : ',cloud.region) as 'Account & Region' SINCE 3 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Vulnerabilities",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(finding.uid) as 'Vulnerabilities' WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) FACET severity LIMIT 25 TIMESERIES 24 hours SINCE 1 month ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "High and Critical vulnerabilities",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT concat(cloud.account_uid,' : ',cloud.region) as 'Account & Region',finding.title as 'Title',`finding.desc` as 'Description', aparse(finding.remediation.kb_articles,'[\"*\"]') as 'Articles'  WHERE metadata.product.feature.name = 'Security Hub' AND compliance.status = 'FAILED' AND severity IN ('CRITICAL','HIGH') AND cloud.account_uid IN ({{aws_account}}) AND cloud.region IN ({{aws_region}}) AND severity IN ({{aws_severity}}) SINCE 24 hours ago"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "aws_region",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(cloud.region) FROM Log WHERE metadata.product.feature.name = 'Security Hub' SINCE 1 week ago"
       },
-      {
-        "name": "aws_account",
-        "items": null,
-        "defaultValues": [],
-        "nrqlQuery": {
-          "accountIds": [],
-          "query": "SELECT uniques(cloud.account_uid) FROM Log WHERE metadata.product.feature.name = 'Security Hub' SINCE 1 week ago"
-        },
-        "title": "Account",
-        "type": "NRQL",
-        "isMultiSelection": true,
-        "replacementStrategy": "STRING"
-      }
-    ]
-  }
+      "title": "Region",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "aws_account",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(cloud.account_uid) FROM Log WHERE metadata.product.feature.name = 'Security Hub' SINCE 1 week ago"
+      },
+      "title": "Account",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "aws_severity",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(severity) FROM Log WHERE metadata.product.feature.name = 'Security Hub' SINCE 1 week ago"
+      },
+      "title": "Severity",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
