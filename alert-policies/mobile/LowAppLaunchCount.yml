@@ -1,0 +1,49 @@
+# Name of the alert
+name: Low App Launch Count (Mobile)
+
+# Description and details
+description: |+
+    This alert fires when the number of mobile app launches goes below 10 for a period of 5 minutes. 
+    It will also fire if number of launches drops to 0 for a period of 30 minutes.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT percentage(uniqueCount(requestUuid), WHERE category = 'RequestError') FROM MobileRequest,MobileRequestError FACET appName"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE 
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: BELOW
+    # Value that triggers a violation; float value
+    threshold: 10
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+  # Adding a Warning threshold is optional
+  - priority: WARNING
+    operator: BELOW
+    threshold: 20
+    thresholdDuration: 300
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Loss of Signal Settings
+expiration:
+  # Close open violations if signal is lost (Default: false)
+  closeViolationsOnExpiration: true
+  # Open "Loss of Signal" violation if signal is lost (Default: false)
+  openViolationOnExpiration: true
+  # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
+  expirationDuration: 1800
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 259200
