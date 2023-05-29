@@ -6,6 +6,7 @@ import * as nrGraphQlHelpers from '../lib/nr-graphql-helpers';
 import { setDashboardsRequiredDataSources } from '../set-dashboards-required-datasources';
 
 jest.spyOn(global.console, 'error').mockImplementation(() => {});
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
 
 jest.mock('../lib/github-api-helpers', () => ({
   ...jest.requireActual('../lib/github-api-helpers'),
