@@ -110,7 +110,10 @@ describe('dashboard-helper', () => {
         'raw-url/dashboards/cool-dash/cool-dash.json',
         { headers: { authorization: 'token token' } }
       );
-      expect(core.setOutput).toHaveBeenCalledWith('comment', '### The PR checks have run and found the following warnings:%0A%0A| Warning | Filepath | Line # | %0A| --- | --- | --- | %0A| \"permissions\" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |%0A%0AReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. %0A');
+      expect(core.setOutput).toHaveBeenCalledWith(
+        'comment',
+        '### The PR checks have run and found the following warnings:\n\n| Warning | Filepath | Line # | \n| --- | --- | --- | \n| "permissions" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |\n\nReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. \n'
+      );
     });
 
     test('handles network error;', async () => {

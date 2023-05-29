@@ -1,0 +1,354 @@
+{
+  "name": "Amazon Security Lake - Cloudtrail",
+  "description": null,
+  "pages": [
+    {
+      "name": "AWS Security Lake - Cloudtrail",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Top activity by region",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights'  AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET cloud.region"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top API errors",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND api.response.error != 'null' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET api.response.error"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Operation Activity",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Activity' FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND src_endpoint.ip != 'null' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET api.operation LIMIT 25 TIMESERIES 5 minutes"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top EC2 activity by region and event",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights'  WHERE api.service.name = 'ec2.amazonaws.com' AND cloud.region IN ({{aws_region}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET concat(cloud.region, ' : ', api.operation) LIMIT 25"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top activity by service, operation, and region",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET concat(cloud.region,' : ',api.service.name,' - ',api.operation) LIMIT 25"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top activity by IP",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Activity' FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND src_endpoint.ip != 'null' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET src_endpoint.ip LIMIT 25 TIMESERIES 5 minutes"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Login activity",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'logins' FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND activity_name = 'Login' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) TIMESERIES 30 minutes SINCE 12 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Errors on the UpdateTrail API",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND api.operation = 'UpdateTrail' AND api.response.error != 'null' AND api.response.error IS NOT NULL AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET api.response.error SINCE 2 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Regions with recently stopped/started EC2 instances",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights'  WHERE api.operation = 'StartInstances' OR api.operation = 'StopInstances' AND cloud.region IN ({{aws_region}}) AND api.service.name IN ({{aws_service}}) AND src_endpoint.ip IN ({{aws_ip}}) AND identity.user.account_uid IN ({{aws_account}}) FACET cloud.region SINCE 2 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Real time API error logs",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT api.response.error as 'Error', api.response.message as 'Error Message' FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' AND api.response.error != 'null' AND cloud.region IN ({{aws_region}}) AND identity.user.account_uid IN ({{aws_account}})"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "aws_region",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(cloud.region) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' SINCE 7 days ago"
+      },
+      "title": "Region",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "aws_service",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(api.service.name) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' SINCE 7 days ago"
+      },
+      "title": "Service",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "aws_ip",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(src_endpoint.ip) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' SINCE 7 days ago"
+      },
+      "title": "IP Address",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "aws_account",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(identity.user.account_uid) FROM Log WHERE metadata.product.feature.name = 'Management, Data, and Insights' SINCE 7 days ago"
+      },
+      "title": "User Account",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
