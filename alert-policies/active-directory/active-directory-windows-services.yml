@@ -1,0 +1,32 @@
+name: Active Directory Windows Services
+description: |+
+  This alert is triggered when the any of the targeted Windows Services are in a state other than "running".
+  The scope of this alert is Windows Services using the 'label.primary_app = active_directory' decoration.
+
+type: STATIC
+nrql:
+  query: "FROM Metric SELECT count(*) FACET hostname, entity.name WHERE metricName = 'windows_service_state' AND state != 'running' AND label.primary_app = 'active_directory'"
+
+valueFunction: SINGLE_VALUE 
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+expiration:
+  closeViolationsOnExpiration: false
+  openViolationOnExpiration: false
+  expirationDuration: null
+
+signal:
+  aggregationDelay: 120
+  aggregationMethod: EVENT_FLOW
+  aggregationTimer: null
+  aggregationWindow: 60
+  fillOption: NONE
+  fillValue: null
+  slideBy: null
+
+violationTimeLimitSeconds: 86400
