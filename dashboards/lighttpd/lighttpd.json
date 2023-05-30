@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used (%)' FROM Metric"
+                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used (%)' FROM Metric WHERE host.hostname = {{hostname}}"
               }
             ],
             "platformOptions": {
@@ -78,7 +78,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers'"
+                "query": "FROM LighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers'"
               }
             ],
             "platformOptions": {
@@ -116,7 +116,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(concat(\nif(day is not null,day, ''), if(day is not null, 'day(s) ',''),\nif(hour is not null, hour, ''),if(hour is not null,':',''),\nif(min is not null,min,''),if(min is not null,':',''),\nsec, precision: 0)) as 'Uptime (hh:mm:ss)' FROM (SELECT floor(latest(Uptime/86400)) as 'day', floor(latest(mod(Uptime, 86400)/3600)) as 'hour', floor(latest(mod(mod(Uptime, 86400),3600)/60)) as 'min', floor(latest(mod(mod(mod(Uptime, 86400),3600),60))) as 'sec'  FROM lighttpdStatusSample) "
+                "query": "SELECT latest(concat(\nif(day is not null,day, ''), if(day is not null, ' day(s) ',''),\nif(hour is not null, hour, ''),if(hour is not null,':',''),\nif(min is not null,min,''),if(min is not null,':',''),\nsec, precision: 0)) as 'Uptime (hh:mm:ss)' FROM (SELECT floor(latest(Uptime/86400)) as 'day', floor(latest(mod(Uptime, 86400)/3600)) as 'hour', floor(latest(mod(mod(Uptime, 86400),3600)/60)) as 'min', floor(latest(mod(mod(mod(Uptime, 86400),3600),60))) as 'sec'  FROM LighttpdStatusSample) "
               }
             ],
             "platformOptions": {
@@ -159,7 +159,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers' TIMESERIES AUTO"
+                "query": "FROM LighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -197,7 +197,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(IdleServers) As 'Idle Servers' TIMESERIES AUTO"
+                "query": "FROM LighttpdStatusSample SELECT latest(IdleServers) As 'Idle Servers' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -246,7 +246,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(TrafficTotal) / 1e+3 As 'Traffic' TIMESERIES AUTO"
+                "query": "FROM LighttpdStatusSample SELECT latest(TrafficTotal) / 1e+3 As 'Traffic' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -276,7 +276,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(TrafficAverage5s) As 'Average Traffic' TIMESERIES AUTO "
+                "query": "FROM LighttpdStatusSample SELECT latest(TrafficAverage5s) As 'Average Traffic' TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -297,7 +297,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -309,14 +309,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(RequestsTotal)/1e+3 AS 'Requests' FROM lighttpdStatusSample TIMESERIES AUTO "
+                "query": "SELECT latest(RequestsTotal)/1e+3 AS 'Requests' FROM LighttpdStatusSample TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -342,7 +339,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(RequestAverage5s) As 'Average Number of Requests' TIMESERIES AUTO "
+                "query": "FROM LighttpdStatusSample SELECT latest(RequestAverage5s) As 'Average Number of Requests' TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -445,7 +442,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.cpuIdlePercent) as 'CPU Idle %', average(host.cpuIoWaitPercent) as 'CPU IO Wait %', average(host.cpuSystemPercent) as 'CPU System %', average(host.cpuUserPercent) as 'CPU User %' from Metric TIMESERIES AUTO"
+                "query": "SELECT average(host.cpuIdlePercent) as 'CPU Idle %', average(host.cpuIoWaitPercent) as 'CPU IO Wait %', average(host.cpuSystemPercent) as 'CPU System %', average(host.cpuUserPercent) as 'CPU User %' from Metric WHERE host.hostname = {{hostname}} TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -478,7 +475,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used %' FROM Metric TIMESERIES auto"
+                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used %' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
@@ -496,7 +493,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -508,14 +505,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.disk.usedPercent) as 'Storage Used %' FROM Metric TIMESERIES auto"
+                "query": "SELECT average(host.disk.usedPercent) as 'Storage Used %' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -540,8 +534,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(host.net.transmitBytesPerSecond) AS 'Transmit Bytes per Second', latest(host.net.receiveBytesPerSecond) AS 'Receive Bytes per Second' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT latest(host.net.transmitBytesPerSecond) AS 'Transmit Bytes per Second', latest(host.net.receiveBytesPerSecond) AS 'Receive Bytes per Second' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
@@ -573,8 +567,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
@@ -592,7 +586,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -603,15 +597,12 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(`host.process.memoryResidentSizeBytes`)/1e+6 as 'Physical Memory', latest(`host.process.memoryVirtualSizeBytes`)/1e+6 as 'Virtual Memory' FROM Metric TIMESERIES AUTO "
+                "accountIds": [],
+                "query": "SELECT latest(`host.process.memoryResidentSizeBytes`)/1e+6 as 'Physical Memory', latest(`host.process.memoryVirtualSizeBytes`)/1e+6 as 'Virtual Memory' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
@@ -622,7 +613,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Average Number of Requests",
+          "title": "Number of Requests (%)",
           "layout": {
             "column": 1,
             "row": 1,
@@ -640,7 +631,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(RequestAverage5s) As 'Average Number of Requests'"
+                "query": "SELECT latest(RequestAverage5s)/latest(RequestsTotal) * 100 AS 'Number of Requests (%)' FROM LighttpdStatusSample  where RequestAverage5s > 0"
               }
             ],
             "platformOptions": {
@@ -649,17 +640,17 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 4000
+                "value": 0.8
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 2000
+                "value": 0.6
               }
             ]
           }
         },
         {
-          "title": "Busy Servers",
+          "title": "Busy Servers (%)",
           "layout": {
             "column": 5,
             "row": 1,
@@ -677,7 +668,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM lighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers'"
+                "query": "FROM LighttpdStatusSample SELECT (latest(BusyServers) * 100)/(latest(BusyServers) + latest(IdleServers)) As 'Busy Servers (%)'"
               }
             ],
             "platformOptions": {
@@ -686,17 +677,17 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 1000
+                "value": 0.8
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 800
+                "value": 0.6
               }
             ]
           }
         },
         {
-          "title": "High Memory Usage",
+          "title": "High Memory Usage (%)",
           "layout": {
             "column": 9,
             "row": 1,
@@ -714,7 +705,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.memoryUsedPercent) AS 'High Memory Usage' FROM Metric"
+                "query": "SELECT average(host.memoryUsedPercent) AS 'High Memory Usage (%)' FROM Metric WHERE host.hostname = {{hostname}}"
               }
             ],
             "platformOptions": {
@@ -735,5 +726,25 @@
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "hostname",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "lighttpd-VM"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(hostname)  FROM Metric"
+      },
+      "title": "Select your host",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }
