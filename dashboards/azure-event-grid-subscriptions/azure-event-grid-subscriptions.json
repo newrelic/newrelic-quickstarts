@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(`azure.eventgrid.eventsubscriptions.DeliveryAttemptFailCount`) AS 'Total Delivery Failed Events', sum(`azure.eventgrid.eventsubscriptions.DeliverySuccessCount`) AS 'Total Delivered Events', Average(`azure.eventgrid.eventsubscriptions.DestinationProcessingDurationInMs`) AS 'Avg Destination Processing Duration', sum(`azure.eventgrid.eventsubscriptions.MatchedEventCount`) AS 'Total Matched Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions'"
+                "query": "FROM Metric SELECT sum(`azure.eventgrid.eventsubscriptions.DeliveryAttemptFailCount`) AS 'Total Delivery Failed Events', sum(`azure.eventgrid.eventsubscriptions.DeliverySuccessCount`) AS 'Total Delivered Events', Average(`azure.eventgrid.eventsubscriptions.DestinationProcessingDurationInMs`) AS 'Average Destination Processing Duration', sum(`azure.eventgrid.eventsubscriptions.MatchedEventCount`) AS 'Total Matched Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions'"
               }
             ],
             "platformOptions": {
@@ -51,7 +51,7 @@
           }
         },
         {
-          "title": "Dead lettered count",
+          "title": "Dead lettered count by reason",
           "layout": {
             "column": 1,
             "row": 4,
@@ -60,7 +60,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -72,11 +72,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(`azure.eventgrid.eventsubscriptions.DeadLetteredCount`) AS 'Total Dead Lettered Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions' TIMESERIES AUTO  "
+                "query": "FROM Metric SELECT sum(`azure.eventgrid.eventsubscriptions.DeadLetteredCount`) AS 'Total Dead Lettered Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions' TIMESERIES AUTO FACET azure.eventgrid.eventsubscriptions.deadletterreason "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         },
@@ -168,11 +171,17 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT Average(`azure.eventgrid.eventsubscriptions.DestinationProcessingDurationInMs`) AS 'Avg Destination Processing Duration' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT Average(`azure.eventgrid.eventsubscriptions.DestinationProcessingDurationInMs`) AS 'Average Destination Processing Duration' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/eventsubscriptions' TIMESERIES AUTO "
               }
             ],
+            "nullValues": {
+              "nullValue": "default"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
             }
           }
         },
