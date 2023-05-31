@@ -1,10 +1,10 @@
 {
-  "name": "Azure Event Grid Partner Topics",
+  "name": "Azure SQL Elastic pool",
   "description": null,
 
   "pages": [
     {
-      "name": "Azure Event Grid Partner Topics",
+      "name": "Azure SQL Elastic pool",
       "description": null,
       "widgets": [
         {
@@ -12,7 +12,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 7,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -20,14 +20,30 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
-            "dataFormatters": [],
+            "dataFormatters": [
+              {
+                "name": "Average DTU Usage",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Average Sessions Count",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Average CPU Usage (%)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count', sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count', sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Attempt Fail Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics'"
+                "query": "FROM Metric SELECT average(azure.sql.servers.elasticpools.cpu_percent) AS 'Average CPU Percentage', average(azure.sql.servers.elasticpools.eDTU_used) AS 'Average DTU Usage', average(azure.sql.servers.elasticpools.sessions_count) AS 'Average Sessions Count', sum(azure.sql.servers.elasticpools.workers_percent) AS 'Total Workers Percent'"
               }
             ],
             "platformOptions": {
@@ -38,9 +54,9 @@
         {
           "title": "",
           "layout": {
-            "column": 8,
+            "column": 7,
             "row": 1,
-            "width": 5,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -48,11 +64,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Event Grid Partner Topics\nAzure Event Grid Partner Topics refer to custom event types that are created and published by third-party services or applications. These partner topics enable Azure Event Grid to integrate with other services or systems, such as Salesforce, GitHub, or Twilio, and receive notifications when specific events occur within those systems."
+            "text": "# Azure SQL Elastic Pool\nAzure SQL Database elastic pools are a simple, cost-effective solution for managing and scaling multiple databases that have varying and unpredictable usage demands. The databases in an elastic pool are on a single server and share a set number of resources at a set price. Elastic pools in SQL Database enable software as a service (SaaS) developers to optimize the price performance for a group of databases within a prescribed budget while delivering performance elasticity for each database."
           }
         },
         {
-          "title": "Publish success count",
+          "title": "eDTU usage details",
           "layout": {
             "column": 1,
             "row": 4,
@@ -73,14 +89,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT AVERAGE(azure.sql.servers.elasticpools.eDTU_limit) AS 'Average eDTU Limit', AVERAGE(azure.sql.servers.elasticpools.eDTU_used) AS 'Average eDTU Used' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -88,7 +101,7 @@
           }
         },
         {
-          "title": "Delivery success count by subscription",
+          "title": "Data & Log IO",
           "layout": {
             "column": 5,
             "row": 4,
@@ -109,14 +122,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.eventsubscriptionname"
+                "query": "FROM Metric SELECT AVERAGE(`azure.sql.servers.elasticpools.physical_data_read_percent`) AS 'Average Data IO Percentage', AVERAGE(`azure.sql.servers.elasticpools.log_write_percent`) AS 'Average Log IO Percentage' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
             "units": {
-              "unit": "COUNT"
+              "unit": "PERCENTAGE"
             },
             "yAxisLeft": {
               "zero": true
@@ -124,47 +137,11 @@
           }
         },
         {
-          "title": "Delivery fail count by error",
+          "title": "CPU usage details",
           "layout": {
             "column": 9,
             "row": 4,
             "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.stacked-bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Fail Count'  WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.error"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
-            }
-          }
-        },
-        {
-          "title": "Event delivery details",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -181,14 +158,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.MatchedEventCount) AS 'Total Matched Events', sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Events', sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Failed Events', sum(azure.eventgrid.partnertopics.DroppedEventCount) AS 'Total Dropped Events', sum(azure.eventgrid.partnertopics.DeadLetteredCount) AS 'Total Dead Lettered Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT AVERAGE(azure.sql.servers.elasticpools.cpu_limit) AS 'Average CPU Limit', AVERAGE(azure.sql.servers.elasticpools.cpu_used) AS 'Average CPU Used' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -196,10 +170,79 @@
           }
         },
         {
-          "title": "Destination processing duration by topic",
+          "title": "Database size (bytes)",
           "layout": {
-            "column": 8,
+            "column": 1,
             "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(`azure.sql.servers.elasticpools.storage_limit`) AS 'Average Data Space Limit', AVERAGE(`azure.sql.servers.elasticpools.storage_used`) AS 'Average Data Space Used' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Tempdb usage (Kilobytes)",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(`azure.sql.servers.elasticpools.tempdb_log_size`) AS 'Maximum Tempdb Log File Size',  MAX(azure.sql.servers.elasticpools.tempdb_data_size) AS 'Maximum Tempdb Data File Size' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "App CPU billed",
+          "layout": {
+            "column": 1,
+            "row": 10,
             "width": 5,
             "height": 3
           },
@@ -217,7 +260,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.eventgrid.partnertopics.DestinationProcessingDurationInMs) AS 'Average Destination Processing Duration' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.eventsubscriptionname"
+                "query": "FROM Metric SELECT SUM(`azure.sql.servers.elasticpools.app_cpu_billed`) AS 'Total App CPU Billed' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -226,41 +269,11 @@
           }
         },
         {
-          "title": "Dead lettered events by reason",
+          "title": "App CPU & Memory",
           "layout": {
-            "column": 1,
+            "column": 6,
             "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeadLetteredCount ) AS 'Total Dead Lettered Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' FACET azure.eventgrid.partnertopics.deadletterreason"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Dropped events by reason",
-          "layout": {
-            "column": 7,
-            "row": 10,
-            "width": 6,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -277,11 +290,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DroppedEventCount) AS 'Total Dropped Event Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.dropreason"
+                "query": "FROM Metric SELECT AVERAGE(`azure.sql.servers.elasticpools.app_cpu_percent`)/100 AS 'Average App CPU Percentage', AVERAGE(`azure.sql.servers.elasticpools.app_memory_percent`)/100 AS 'Average Memory Percentage' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             },
             "yAxisLeft": {
               "zero": true
