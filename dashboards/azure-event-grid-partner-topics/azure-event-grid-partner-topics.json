@@ -20,13 +20,14 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count', average(azure.eventgrid.partnertopics.DestinationProcessingDurationInMs) AS 'Avg Destination Processing Duration', sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count', sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Failed Events', sum(azure.eventgrid.partnertopics.MatchedEventCount) AS 'Total Matched Event Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics'"
+                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count', sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count', sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Attempt Fail Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics'"
               }
             ],
             "platformOptions": {
@@ -51,7 +52,7 @@
           }
         },
         {
-          "title": "Delivery success count",
+          "title": "Publish success count",
           "layout": {
             "column": 1,
             "row": 4,
@@ -72,11 +73,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -84,7 +88,7 @@
           }
         },
         {
-          "title": "Destination processing duration ",
+          "title": "Delivery success count by subscription",
           "layout": {
             "column": 5,
             "row": 4,
@@ -105,11 +109,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(azure.eventgrid.partnertopics.DestinationProcessingDurationInMs) AS 'Avg Destination Processing Duration' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
+                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.eventsubscriptionname"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -117,7 +124,7 @@
           }
         },
         {
-          "title": "Publish success count",
+          "title": "Delivery fail count by error",
           "layout": {
             "column": 9,
             "row": 4,
@@ -126,7 +133,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -138,23 +145,26 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.PublishSuccessCount) AS 'Total Publish Success Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Fail Count'  WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/systemtopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.error"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "COUNT"
             }
           }
         },
         {
-          "title": "Publish success latency",
+          "title": "Event delivery details",
           "layout": {
             "column": 1,
             "row": 7,
-            "width": 4,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -171,11 +181,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Failed Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO  "
+                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.MatchedEventCount) AS 'Total Matched Events', sum(azure.eventgrid.partnertopics.DeliverySuccessCount) AS 'Total Delivery Success Events', sum(azure.eventgrid.partnertopics.DeliveryAttemptFailCount) AS 'Total Delivery Failed Events', sum(azure.eventgrid.partnertopics.DroppedEventCount) AS 'Total Dropped Events', sum(azure.eventgrid.partnertopics.DeadLetteredCount) AS 'Total Dead Lettered Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -183,11 +196,71 @@
           }
         },
         {
-          "title": "Matched event count",
+          "title": "Destination processing duration by topic",
           "layout": {
-            "column": 5,
+            "column": 8,
             "row": 7,
-            "width": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.eventgrid.partnertopics.DestinationProcessingDurationInMs) AS 'Average Destination Processing Duration' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.eventsubscriptionname"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Dead lettered events by reason",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DeadLetteredCount ) AS 'Total Dead Lettered Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' FACET azure.eventgrid.partnertopics.deadletterreason"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Dropped events by reason",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -204,7 +277,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.eventgrid.systemtopics.MatchedEventCount) AS 'Total Matched Event Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO"
+                "query": " FROM Metric SELECT sum(azure.eventgrid.partnertopics.DroppedEventCount) AS 'Total Dropped Event Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.eventgrid/partnertopics' TIMESERIES AUTO FACET azure.eventgrid.partnertopics.dropreason"
               }
             ],
             "platformOptions": {
