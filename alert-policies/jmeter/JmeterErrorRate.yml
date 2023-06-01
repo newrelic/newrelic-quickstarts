@@ -1,0 +1,40 @@
+# Name of the alert
+name: JMeter Error Rate
+
+# Description and details
+description: |+
+  This alert monitors the error rate for all tests currently executing and is triggered when the error percent exceeds 25% indicating that JMeter test(s) are failing.
+  The alert threshold is set to 15% for warning and 25% for critical.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT percentage(count(jmeter), WHERE ResponseCode != '200') FROM Metric FACET SampleLabel"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE 
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation; float value
+    threshold: 25
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 60
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+  # Adding a Warning threshold is optional
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 15
+    thresholdDuration: 60
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 259200
