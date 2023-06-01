@@ -1,15 +1,14 @@
-name: Node Pod count nearing capacity
+name: Node is unschedulable
 
 # Description and details
 description: |
-  Alert when the Running pod count on a Node is > 90% of the Node's Pod Capacity for more than 5 minutes
-
+  Alert when Node has been marked as unschedulable
 # Type of alert: BASELINE | STATIC
 type: STATIC
 
 # NRQL query
 nrql:
-  query: "FROM K8sPodSample, K8sNodeSample select ceil(filter(uniqueCount(podName), where status = 'Running') / latest(capacityPods) * 100) as 'Pod Capacity %' where nodeName != '' and nodeName is not null and clusterName in ('YOUR_CLUSTER_NAME') facet nodeName, clusterName"
+  query: "from K8sNodeSample select latest(unschedulable) where clusterName in ('YOUR_CLUSTER_NAME') facet nodeName, clusterName"
 
 # Direction in which baseline is set (Default: LOWER_ONLY)
 # baselineDirection: LOWER_ONLY | UPPER_AND_LOWER | UPPER_ONLY
@@ -19,26 +18,26 @@ valueFunction: SINGLE_VALUE
 
 # List of Critical and Warning thresholds for the condition
 terms:
-  - priority: CRITICAL
+  # - priority: CRITICAL
+  #   # Operator used to compare against the threshold.
+  #   operator: ABOVE
+  #   # Value that triggers a violation
+  #   threshold: 1
+  #   # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
+  #   thresholdDuration: 300
+  #   # How many data points must be in violation for the duration
+  #   thresholdOccurrences: ALL
+
+  # Adding a Warning threshold is optional
+  - priority: WARNING
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 90
+    threshold: 0
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
-
-  # Adding a Warning threshold is optional
-  # - priority: WARNING
-  #   # Operator used to compare against the threshold.
-  #   operator: ABOVE
-  #   # Value that triggers a violation
-  #   threshold: 0
-  #   # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
-  #   thresholdDuration: 60
-  #   # How many data points must be in violation for the duration
-  #   thresholdOccurrences: AT_LEAST_ONCE
 
 # Loss of Signal Settings
 expiration:
@@ -47,7 +46,7 @@ expiration:
   # Open "Loss of Signal" violation if signal is lost (Default: false)
   openViolationOnExpiration: false
   # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
-  expirationDuration: 300
+  expirationDuration: 900
 
 # Advanced Signal Settings
 # Duration of the time window used to evaluate the NRQL Condition
@@ -67,7 +66,7 @@ signal:
   # This setting gathers data in overlapping time windows to smooth the chart line, making it easier to spot trends.
   slideBy: null # seconds
   # Evaluation delay is how long we wait before we start evaluating a signal against the thresholds in this condition.
-  evaluationDelay: 300
+  evaluationDelay: 60
 
 
 # OPTIONAL: URL of runbook to be sent with notification

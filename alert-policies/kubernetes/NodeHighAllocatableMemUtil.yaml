@@ -1,15 +1,14 @@
-name: Node Pod count nearing capacity
-
+name: Node allocatable memory utilization is high
 # Description and details
 description: |
-  Alert when the Running pod count on a Node is > 90% of the Node's Pod Capacity for more than 5 minutes
+  Alert when Node allocatable memory utilization is > 90% for more than 5 minutes
 
 # Type of alert: BASELINE | STATIC
 type: STATIC
 
 # NRQL query
 nrql:
-  query: "FROM K8sPodSample, K8sNodeSample select ceil(filter(uniqueCount(podName), where status = 'Running') / latest(capacityPods) * 100) as 'Pod Capacity %' where nodeName != '' and nodeName is not null and clusterName in ('YOUR_CLUSTER_NAME') facet nodeName, clusterName"
+  query: "from K8sNodeSample select average(allocatableMemoryUtilization) where clusterName in ('YOUR_CLUSTER_NAME') facet nodeName, clusterName"
 
 # Direction in which baseline is set (Default: LOWER_ONLY)
 # baselineDirection: LOWER_ONLY | UPPER_AND_LOWER | UPPER_ONLY
@@ -47,7 +46,7 @@ expiration:
   # Open "Loss of Signal" violation if signal is lost (Default: false)
   openViolationOnExpiration: false
   # Time in seconds; Max value: 172800 (48hrs), null if closeViolationsOnExpiration and openViolationOnExpiration are both 'false'
-  expirationDuration: 300
+  expirationDuration: 900
 
 # Advanced Signal Settings
 # Duration of the time window used to evaluate the NRQL Condition
@@ -59,15 +58,15 @@ signal:
   # How long we wait after each data point arrives to make sure we've processed the whole batch.
   aggregationTimer: null # seconds
   # Controls the duration of the time window used to evaluate the NRQL query 
-  aggregationWindow: 60 # seconds; 30 seconds <= x < 15 minutes
+  aggregationWindow: 300 # seconds; 30 seconds <= x < 15 minutes
   # Option that determines the type of value that should be used to fill gaps (empty windows).
   fillOption: NONE # defaults to STATIC
   # If using the static fill option, this value is used for filling.
   fillValue: null # default
   # This setting gathers data in overlapping time windows to smooth the chart line, making it easier to spot trends.
-  slideBy: null # seconds
+  slideBy: 60 # seconds
   # Evaluation delay is how long we wait before we start evaluating a signal against the thresholds in this condition.
-  evaluationDelay: 300
+  evaluationDelay: 60
 
 
 # OPTIONAL: URL of runbook to be sent with notification
