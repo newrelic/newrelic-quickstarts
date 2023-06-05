@@ -1,5 +1,5 @@
 {
-  "name": "LAMPy",
+  "name": "IBM Websphere Liberty Profile",
   "description": null,
   "pages": [
     {
@@ -11,40 +11,24 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 12,
-            "height": 1
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Infrastructure Monitoring\n\nTrace the host related information at real-time using New Relic's Infra Agent. Your entire infrastructure can be observed, whether it is running on the dedicated server/container/cloud running in orchestrated environments."
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 2,
             "width": 2,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![Linux](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/f672edfaa05d3573ca6f381c695d5072b162377b/dashboards/lamp/linux.svg)\n"
+            "text": "![Websphere Liberty Profile icon](https://connect.redhat.com/s3api/prod-s3api/wl.png)"
           }
         },
         {
-          "title": "Host Entity Name (click on the entity name to filter)",
+          "title": "Applications Name (click on the application name to filter)",
           "layout": {
             "column": 3,
-            "row": 2,
-            "width": 2,
-            "height": 3
+            "row": 1,
+            "width": 3,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -57,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(*) FROM Metric  FACET entityName "
+                "query": "FROM Transaction SELECT count(*) FACET appName "
               }
             ],
             "platformOptions": {
@@ -66,11 +50,111 @@
           }
         },
         {
-          "title": "CPU Usage (%)",
+          "title": "Server Running ",
           "layout": {
-            "column": 5,
-            "row": 2,
+            "column": 6,
+            "row": 1,
             "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) from Transaction FACET process.instanceName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Active Threads",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(newrelic.timeslice.value) AS `Active Threads` FROM Metric WHERE metricTimesliceName like 'Threads/Count/Active%' TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "**About**\n\nInstrument your application with New Relic - [Add Data](https://onenr.io/0Bj38a7qJQX).\n\nUnable to find data in your dashboard? - [Troubleshoot here](\nhttps://docs.newrelic.com/docs/apm/agents/java-agent/troubleshooting/no-data-appears-java/)\n\n\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=IBM-Websphere-Liberty-Profile) here and let us know how we can improve it for you."
+          }
+        },
+        {
+          "title": "Port in use",
+          "layout": {
+            "column": 6,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Port in use'from Transaction facet port"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average CPU Utilization",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -87,7 +171,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.cpuPercent) AS 'CPU used ' FROM Metric  TIMESERIES auto"
+                "query": "SELECT average(apm.service.cpu.usertime.utilization) as 'Average CPU Utilization' FROM Metric TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -96,11 +180,169 @@
           }
         },
         {
-          "title": "Memory (megabytes)",
+          "title": "Average Response Time (seconds)",
           "layout": {
-            "column": 8,
+            "column": 6,
+            "row": 5,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration)as 'Average Response Time (seconds)' from Transaction TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Transaction Errors\nTransaction Errors helps you proactively catch the error transactions, error class and message."
+          }
+        },
+        {
+          "title": "Transaction Errors - Daily",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) from TransactionError  since 1 month ago until today facet dateOf(timestamp)TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Error Class",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM TransactionError facet `error.class`  TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Error Message",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM TransactionError facet `error.message`  TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Transaction \nTransaction allows you to track transaction overview, top transactions, average application throughput, apdex score and transaction duration."
+          }
+        },
+        {
+          "title": "Transactions Overview",
+          "layout": {
+            "column": 1,
             "row": 2,
-            "width": 2,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -114,7 +356,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(host.memoryFreeBytes)/1e+6 as 'Free', average(host.memoryUsedBytes)/1e+6 as 'Used',average(host.memoryTotalBytes)/1e+6 as 'Total'"
+                "query": "FROM Transaction SELECT count(*) as 'Total Transactions', average(duration) as 'Average Duration (seconds)',  percentage(count(*), WHERE error is false) AS 'Success Rate', percentage(count(*), WHERE error is true) AS 'Failed Rate'"
               }
             ],
             "platformOptions": {
@@ -123,11 +365,11 @@
           }
         },
         {
-          "title": "Disk Usage(%)",
+          "title": "Top Transactions",
           "layout": {
-            "column": 10,
+            "column": 6,
             "row": 2,
-            "width": 3,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -144,7 +386,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(host.disk.usedPercent) as 'Used ',latest(host.disk.freePercent) as 'Free' FROM Metric FACET device "
+                "query": "SELECT count(*) FROM Transaction SINCE today FACET name"
               }
             ],
             "platformOptions": {
@@ -153,71 +395,12 @@
           }
         },
         {
-          "title": "",
+          "title": "Average Transaction Duration (seconds)",
           "layout": {
             "column": 1,
             "row": 5,
-            "width": 12,
-            "height": 1
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Apache HTTP Server\nBy using the New Relic Apache agent, you can get a sense of how busy, idle, and how many requests per second your servers are."
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "![Apache](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/f672edfaa05d3573ca6f381c695d5072b162377b/dashboards/lamp/apache.svg)\n"
-          }
-        },
-        {
-          "title": "Server Entity Name (click on the entity name to filter)",
-          "layout": {
-            "column": 3,
-            "row": 6,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT count(*) FROM Metric where  entityName like 'server:%' FACET entityName "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Requests per Second",
-          "layout": {
-            "column": 5,
-            "row": 6,
             "width": 3,
-            "height": 3
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -233,7 +416,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(`apache.server.net.requestsPerSecond`) as 'Requests' FROM Metric  TIMESERIES auto"
+                "query": "SELECT average(duration) as 'seconds' FROM Transaction TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -242,12 +425,12 @@
           }
         },
         {
-          "title": "Bytes Sent per Request",
+          "title": "Apdex Score ",
           "layout": {
-            "column": 8,
-            "row": 6,
-            "width": 2,
-            "height": 3
+            "column": 4,
+            "row": 5,
+            "width": 3,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -263,7 +446,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (average(`apache.server.net.bytesPerSecond`)/average(`apache.server.net.requestsPerSecond`)) as 'Bytes sent per request' FROM Metric  TIMESERIES auto"
+                "query": "SELECT apdex(apm.service.apdex) as 'App Server', apdex(apm.service.apdex.user) as 'End User' FROM Metric  TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -275,12 +458,12 @@
           }
         },
         {
-          "title": "Busy Worker Status",
+          "title": "Average Application Throughput (seconds)",
           "layout": {
-            "column": 10,
-            "row": 6,
+            "column": 7,
+            "row": 5,
             "width": 3,
-            "height": 3
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -296,7 +479,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(`apache.server.scoreboard.readingWorkers`) as 'Reading request', average(`apache.server.scoreboard.writingWorkers`) as 'Writing', average(`apache.server.scoreboard.loggingWorkers`) as 'Logging', average(`apache.server.scoreboard.finishingWorkers`) as 'Finishing', average(`apache.server.scoreboard.closingWorkers`) as 'Closing connection', average(`apache.server.scoreboard.keepAliveWorkers`) as 'Keep alive', average(`apache.server.scoreboard.dnsLookupWorkers`) as 'DNS lookup', average(`apache.server.scoreboard.idleCleanupWorkers`) as 'Idle cleanup', average(`apache.server.scoreboard.startingWorkers`) as 'Starting' FROM Metric  TIMESERIES auto"
+                "query": "SELECT average(newrelic.goldenmetrics.apm.application.throughput) AS 'seconds' from Metric TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -305,48 +488,43 @@
           }
         },
         {
-          "title": "",
+          "title": "Top 5 Slowest Transactions",
+          "layout": {
+            "column": 10,
+            "row": 5,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(duration) FROM Transaction SINCE today LIMIT 5 FACET name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Min, Max, Average of Transaction Duration (seconds)",
           "layout": {
             "column": 1,
             "row": 9,
-            "width": 12,
-            "height": 1
+            "width": 6,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Database Monitoring\n\n By using the New Relic MySQL agent, you can easily understand database operations, read and write InnoDB data, and receive & send bytes.\n"
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "![MySQL](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/mysql/logo.png)"
-          }
-        },
-        {
-          "title": "Node Entity Name(click on the entity name to filter)",
-          "layout": {
-            "column": 3,
-            "row": 10,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "facet": {
@@ -355,7 +533,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(*) FROM Metric where entityName like 'node:%' FACET entityName "
+                "query": "SELECT min(duration), max(duration), average(duration) FROM Transaction FACET name as 'Transaction'"
               }
             ],
             "platformOptions": {
@@ -364,201 +542,65 @@
           }
         },
         {
-          "title": "Operations per Second",
-          "layout": {
-            "column": 5,
-            "row": 10,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT average(`mysql.node.query.insertPerSecond`) as 'Insert commands', average(`mysql.node.query.selectPerSecond`) as 'Select commands', average(`mysql.node.query.updatePerSecond`) as 'Update comands', average(`mysql.node.query.deletePerSecond`) as 'Delete commands' FROM Metric  TIMESERIES auto"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Received and Sent Bytes per Second",
-          "layout": {
-            "column": 8,
-            "row": 10,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT average(`mysql.node.net.bytesReceivedPerSecond`) as 'Bytes received', average(`mysql.node.net.bytesSentPerSecond`) as 'Bytes sent' FROM Metric  TIMESERIES auto"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Read and Write InnoDB (bytes/s)",
-          "layout": {
-            "column": 10,
-            "row": 10,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT average(`mysql.node.innodb.dataReadBytesPerSecond`) as 'Read InnoDB data', average(`mysql.node.innodb.dataWrittenBytesPerSecond`) as 'Write InnoDB data' FROM Metric  TIMESERIES auto"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 13,
-            "width": 12,
-            "height": 1
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Application Monitoring\nTrace your entire host related information at real time using the New Relic Python agent."
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 14,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "![Python](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/ec054ad274f7ad248184911c445f2c711917076e/quickstarts/python/python/logo.svg)"
-          }
-        },
-        {
-          "title": "Applications (click on the application name to filter)",
-          "layout": {
-            "column": 3,
-            "row": 14,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric Select count(*) facet appName"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Throughput",
-          "layout": {
-            "column": 5,
-            "row": 14,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT rate(count(apm.service.transaction.duration), 1 minute) as 'Web throughput' FROM Metric WHERE  transactionType LIKE 'Web'  TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "WSGI (seconds)",
+          "title": "Transaction Error Message",
           "layout": {
             "column": 7,
-            "row": 14,
+            "row": 9,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Error Message' FROM TransactionError facet `error.message` "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "JVMs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# JVM's\nWith the help of Java Agent, you can easily track your Application’s heap memory usage, heap memory pool usage, loaded and unloaded classes, non-heap memory pool usage and garbage collection."
+          }
+        },
+        {
+          "title": "Heap Memory Usage (MB)",
+          "layout": {
+            "column": 1,
+            "row": 2,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -570,70 +612,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(newrelic.timeslice.value) AS `seconds` FROM Metric WHERE metricTimesliceName LIKE 'Python/WSGI%' FACET metricTimesliceName TIMESERIES  "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Transactions Overview",
-          "layout": {
-            "column": 11,
-            "row": 14,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Transaction SELECT count(*) as 'Total transactions', average(duration) as 'Avg duration (s)', percentile(duration, 90) as 'Slowest 10% (s)', percentage(count(*), WHERE error is false) AS 'Success rate' "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Errors",
-      "description": null,
-      "widgets": [
-        {
-          "title": "Applications (click on the application name to filter)",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric Select count(*) facet appName"
+                "query": "SELECT average(apm.service.memory.heap.max) as 'Max Heap', average(apm.service.memory.heap.committed) as 'Committed Heap', average(apm.service.memory.heap.used) as 'Used Heap' FROM Metric TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -642,59 +621,11 @@
           }
         },
         {
-          "title": "Transaction Errors Overview",
+          "title": "Heap MemoryPool Usage (MB)",
           "layout": {
-            "column": 4,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Transaction SELECT count(*) as 'Total transactions', percentage(count(*), WHERE error IS true) as 'Failed transactions (%)', count(*) * percentage(count(*), WHERE error IS true) / 100 as 'Failed transactions'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Apache Error Logs",
-          "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "logger.log-table-widget"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Log SELECT (message) WHERE filePath LIKE '%apache2/error.log%' AND apmApplicationNames IS NOT NULL "
-              }
-            ]
-          }
-        },
-        {
-          "title": "Error count",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 9,
+            "column": 5,
+            "row": 2,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -711,7 +642,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(*) FROM TransactionError WHERE  (`error.expected` IS FALSE OR `error.expected` IS NULL) FACET `error.class`, `transactionUiName`, `error.message`  TIMESERIES "
+                "query": "FROM Metric SELECT count(newrelic.timeslice.value) * 1000 where metricTimesliceName like 'MemoryPool/Heap%' FACET metricTimesliceName TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -720,166 +651,152 @@
           }
         },
         {
-          "title": "Transaction Error (%)",
+          "title": "Non-Heap MemoryPool Usage (MB) ",
           "layout": {
-            "column": 10,
-            "row": 4,
-            "width": 3,
+            "column": 9,
+            "row": 2,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT percentage(count(*), WHERE error is true) AS '' FROM Transaction "
+                "query": "FROM Metric SELECT count(newrelic.timeslice.value) * 1000 where metricTimesliceName like 'MemoryPool/Non-Heap%' FACET metricTimesliceName TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": -1
-              }
-            ]
+            }
           }
-        }
-      ]
-    },
-    {
-      "name": "Alerts",
-      "description": null,
-      "widgets": [
+        },
         {
-          "title": "Memory Usage",
+          "title": "Garbage Collection",
           "layout": {
             "column": 1,
-            "row": 1,
-            "width": 3,
+            "row": 5,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM SystemSample SELECT  average(memoryUsedPercent) as 'Memory used (%)'"
+                "query": "SELECT average(newrelic.timeslice.value) * 1000 FROM Metric WHERE metricTimesliceName LIKE 'GC%' FACET metricTimesliceName TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 90
-              },
-              {
-                "alertSeverity": "WARNING",
-                "value": 50
-              }
-            ]
+            }
           }
         },
         {
-          "title": "CPU Utilization",
+          "title": "Loaded Classes",
           "layout": {
-            "column": 4,
-            "row": 1,
-            "width": 3,
+            "column": 5,
+            "row": 5,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.cpuPercent) AS 'CPU used %' FROM Metric  "
+                "query": "SELECT average(newrelic.timeslice.value) as 'Loaded Classes' FROM Metric where metricTimesliceName like 'JmxBuiltIn/Classes/Loaded' timeseries"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 90
-              },
-              {
-                "alertSeverity": "WARNING",
-                "value": 80
-              }
-            ]
+            }
           }
         },
         {
-          "title": "Questions per Second",
+          "title": "Unloaded Classes",
           "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 3,
+            "column": 9,
+            "row": 5,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(`mysql.node.query.questionsPerSecond`) as '' FROM Metric"
+                "query": "SELECT average(newrelic.timeslice.value) as 'Unloaded Classes' FROM Metric where metricTimesliceName like 'JmxBuiltIn/Classes/Unloaded' timeseries"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 4
-              },
-              {
-                "alertSeverity": "WARNING",
-                "value": 2
-              }
-            ]
+            }
           }
         },
         {
-          "title": "Error Transactions (%)",
+          "title": "",
           "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Thread\nView details about thread counts, time consuming threads and thread state."
+          }
+        },
+        {
+          "title": "Top 5 Time Consuming Threads",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.billboard"
+            "id": "viz.bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -887,19 +804,73 @@
             },
             "nrqlQueries": [
               {
-                "accountIds": [],
-                "query": "SELECT percentage(count(*), WHERE error is true) AS '' FROM Transaction "
+                "accountId": 0,
+                "query": "SELECT sum(newrelic.timeslice.value) FROM Metric WITH METRIC_FORMAT 'Threads/TotalTime/{thread}/CpuTime' WHERE metricTimesliceName LIKE 'Threads/TotalTime/%/CpuTime' AND thread NOT LIKE '%New Relic%' FACET `thread` LIMIT 5"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Thread Count",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
             },
-            "thresholds": [
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
               {
-                "alertSeverity": "CRITICAL",
-                "value": -1
+                "accountIds": [],
+                "query": "SELECT average(newrelic.timeslice.value) AS `Average Thread Count` FROM Metric WHERE metricTimesliceName = 'JmxBuiltIn/Threads/Thread Count' TIMESERIES"
               }
-            ]
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Thread State",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(newrelic.timeslice.value) FROM Metric WITH METRIC_FORMAT 'Threads/SummaryState/{threadstate}/Count' WHERE metricTimesliceName LIKE 'Threads/SummaryState/%/Count' AND threadstate NOT LIKE '%New Relic%' FACET `threadstate` LIMIT 5 SINCE 604800 seconds AGO TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
           }
         }
       ]
