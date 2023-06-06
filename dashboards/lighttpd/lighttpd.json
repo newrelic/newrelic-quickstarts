@@ -23,12 +23,119 @@
           }
         },
         {
-          "title": "Busy Servers",
+          "title": "Memory Used (%)",
           "layout": {
             "column": 3,
             "row": 1,
-            "width": 5,
-            "height": 3
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used (%)' FROM Metric WHERE host.hostname = {{hostname}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0.9
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0.8
+              }
+            ]
+          }
+        },
+        {
+          "title": "Busy Servers",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 1000
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 800
+              }
+            ]
+          }
+        },
+        {
+          "title": "Latest Uptime (hh:mm:ss)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(concat(\nif(day is not null,day, ''), if(day is not null, ' day(s) ',''),\nif(hour is not null, hour, ''),if(hour is not null,':',''),\nif(min is not null,min,''),if(min is not null,':',''),\nsec, precision: 0)) as 'Uptime (hh:mm:ss)' FROM (SELECT floor(latest(Uptime/86400)) as 'day', floor(latest(mod(Uptime, 86400)/3600)) as 'hour', floor(latest(mod(mod(Uptime, 86400),3600)/60)) as 'min', floor(latest(mod(mod(mod(Uptime, 86400),3600),60))) as 'sec'  FROM LighttpdStatusSample) "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Idle Servers",
+          "layout": {
+            "column": 3,
+            "row": 3,
+            "width": 3,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -43,8 +150,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers' TIMESERIES AUTO"
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(IdleServers) As 'Idle Servers' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -53,18 +160,26 @@
           }
         },
         {
-          "title": "Idle Servers",
+          "title": "Busy Servers",
           "layout": {
-            "column": 8,
-            "row": 1,
-            "width": 5,
-            "height": 3
+            "column": 6,
+            "row": 3,
+            "width": 3,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#69378b",
+                  "seriesName": "Busy Servers"
+                }
+              ]
+            },
             "facet": {
               "showOtherSeries": false
             },
@@ -73,15 +188,53 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample SELECT latest(IdleServers) As 'Idle Servers' TIMESERIES AUTO"
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(BusyServers) As 'Busy Servers' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Uptime (hh:mm:ss)",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#d6bf29",
+                  "seriesName": "Uptime"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Uptime) as 'Uptime' FROM  LighttpdStatusSample TIMESERIES auto"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "SECONDS"
             }
           }
         },
@@ -102,548 +255,12 @@
           }
         },
         {
-          "title": "Uptime (minutes)",
-          "layout": {
-            "column": 3,
-            "row": 4,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(uptime) / 60 TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Memory Usage (megabytes)",
-          "layout": {
-            "column": 8,
-            "row": 4,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(memoryUsage) / 1e+6 TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Requests",
+          "title": "Total Volume Deliver (MB)",
           "layout": {
             "column": 1,
             "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(requestsAvg) As 'Average', latest(requestsAvg5sec) As '5 Seconds Average'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Absolute Requests ",
-          "layout": {
-            "column": 3,
-            "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(requestsAbs)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Total Accesses",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 2,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample SELECT latest(`Total Accesses`) As 'Requests Handle'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "HTTP Status Overview",
-          "layout": {
-            "column": 7,
-            "row": 7,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(status1xx) As '1xx (Info)', latest(status2xx) AS '2xx (Success)', latest(status3xx) As '3xx (Redirect)', latest(status4xx) As '4xx (Client Error)', latest(status5xx) As '5xx (Server Error)'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Connection",
-      "description": null,
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 12,
-            "height": 1
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Connection\nThe New Relic infrastructure agent with nri-flex configuration keeps track of active connections to provide connection state details."
-          }
-        },
-        {
-          "title": "Connection State Start",
-          "layout": {
-            "column": 1,
-            "row": 2,
-            "width": 4,
+            "width": 3,
             "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateStart) TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Connections",
-          "layout": {
-            "column": 5,
-            "row": 2,
-            "width": 2,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionsAvg) As 'Average', latest(connectionsAvg5sec) As '5 Seconds Average'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Connection State Handle Request",
-          "layout": {
-            "column": 7,
-            "row": 2,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateHandleRequest)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Connection State Keep Alive",
-          "layout": {
-            "column": 9,
-            "row": 2,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateKeepAlive)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Connection State Write Response",
-          "layout": {
-            "column": 11,
-            "row": 2,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateWriteResponse)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Absolute Connections",
-          "layout": {
-            "column": 7,
-            "row": 4,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionsAbs)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Connection State Upgrade",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateUpgraded)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Connection State Read Header",
-          "layout": {
-            "column": 11,
-            "row": 4,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionStateReadHeader)"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Traffic",
-      "description": null,
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 12,
-            "height": 1
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "# Traffic\nThe New Relic infrastructure agent with nri-flex configuration gives the count of bytes sent and received per second."
-          }
-        },
-        {
-          "title": "Traffic In (megabytes)",
-          "layout": {
-            "column": 1,
-            "row": 2,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(trafficInAvg) / 1e+6 As 'Total Average', latest(trafficInAvg5sec) / 1e+6 As '5 seconds Average' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Traffic Out (megabytes)",
-          "layout": {
-            "column": 7,
-            "row": 2,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(trafficOutAvg) / 1e+6 As 'Total Average', latest(trafficOutAvg5sec) / 1e+6 As '5 Seconds Average' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Absolute Traffic (megabytes)",
-          "layout": {
-            "column": 1,
-            "row": 5,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(trafficInAbs) / 1e+6 As 'Traffic In (Absolute)', latest(trafficOutAbs) / 1e+6 As 'Traffic Out (Absolute)' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Total Volume Deliver (megabytes)",
-          "layout": {
-            "column": 7,
-            "row": 5,
-            "width": 6,
-            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -658,13 +275,181 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample SELECT latest(`Total kBytes`) / 1e+3 As 'Total Volume Deliver (megabytes)' TIMESERIES AUTO"
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(TrafficTotal) / 1e+3 As 'Traffic' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             }
+          }
+        },
+        {
+          "title": "Average Traffic",
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(TrafficAverage5s) As 'Average Traffic' TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests Handled (KB)",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(RequestsTotal)/1e+3 AS 'Requests' FROM LighttpdStatusSample TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Number of Requests",
+          "layout": {
+            "column": 10,
+            "row": 7,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT latest(RequestAverage5s) As 'Average Number of Requests' TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Logs Information",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 10,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT message FROM Log where logtype = 'lighttpd_log'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Logs Message Received",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Logs Count' FROM Log since 1 hour ago COMPARE WITH 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Logs Summary",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT * FROM Log"
+              }
+            ]
           }
         }
       ]
@@ -686,11 +471,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Infrastructure Monitoring\n\nBy using New Relic's Infrastructure Agent, you can track host-related information in real-time. Regardless of whether your infrastructure is running in the cloud, on dedicated servers, or in containers in orchestrated environments, you can monitor it all."
+            "text": "# Infrastructure Monitoring\n\nBy using New Relic infrastructure agent, you can track host-related information in real-time. Regardless of whether your infrastructure is running in the cloud, on dedicated servers, or in containers in orchestrated environments, you can monitor it all."
           }
         },
         {
-          "title": "CPU Used %",
+          "title": "CPU Used (%)",
           "layout": {
             "column": 1,
             "row": 2,
@@ -699,7 +484,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -710,20 +495,17 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(host.cpuIdlePercent) as 'CPU Idle %', average(host.cpuIoWaitPercent) as 'CPU IO Wait %', average(host.cpuSystemPercent) as 'CPU System %', average(host.cpuUserPercent) as 'CPU User %' from Metric TIMESERIES AUTO"
+                "accountIds": [],
+                "query": "SELECT average(host.cpuIdlePercent) as 'CPU Idle %', average(host.cpuIoWaitPercent) as 'CPU IO Wait %', average(host.cpuSystemPercent) as 'CPU System %', average(host.cpuUserPercent) as 'CPU User %' from Metric WHERE host.hostname = {{hostname}} TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Memory Used %",
+          "title": "Memory Used (%)",
           "layout": {
             "column": 5,
             "row": 2,
@@ -743,8 +525,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used %' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory Used %' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
@@ -753,7 +535,7 @@
           }
         },
         {
-          "title": "Storage Used %",
+          "title": "Storage Used (%)",
           "layout": {
             "column": 9,
             "row": 2,
@@ -762,7 +544,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -773,15 +555,12 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(host.disk.usedPercent) as 'Storage Used %' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT average(host.disk.usedPercent) as 'Storage Used %' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -795,7 +574,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -806,15 +585,12 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(host.net.transmitBytesPerSecond) AS 'Transmit Bytes per Second', latest(host.net.receiveBytesPerSecond) AS 'Receive Bytes per Second' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT latest(host.net.transmitBytesPerSecond) AS 'Transmit Bytes per Second', latest(host.net.receiveBytesPerSecond) AS 'Receive Bytes per Second' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -839,8 +615,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric TIMESERIES auto"
+                "accountIds": [],
+                "query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
               }
             ],
             "platformOptions": {
@@ -858,7 +634,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -869,15 +645,12 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(`host.process.memoryResidentSizeBytes`)/1e+6 as 'Physical Memory', latest(`host.process.memoryVirtualSizeBytes`)/1e+6 as 'Virtual Memory' FROM Metric TIMESERIES AUTO "
+                "accountIds": [],
+                "query": "SELECT latest(`host.process.memoryResidentSizeBytes`)/1e+6 as 'Physical Memory', latest(`host.process.memoryVirtualSizeBytes`)/1e+6 as 'Virtual Memory' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
@@ -888,7 +661,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Average Number of Requests",
+          "title": "Number of Requests (%)",
           "layout": {
             "column": 1,
             "row": 1,
@@ -905,8 +678,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(requestsAvg)"
+                "accountIds": [],
+                "query": "SELECT latest(RequestAverage5s)/latest(RequestsTotal) * 100 AS 'Number of Requests (%)' FROM LighttpdStatusSample  where RequestAverage5s > 0"
               }
             ],
             "platformOptions": {
@@ -915,17 +688,17 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 4000
+                "value": 0.8
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 2000
+                "value": 0.6
               }
             ]
           }
         },
         {
-          "title": "Average Number of Connections",
+          "title": "Busy Servers (%)",
           "layout": {
             "column": 5,
             "row": 1,
@@ -942,8 +715,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT latest(connectionsAvg)"
+                "accountIds": [],
+                "query": "FROM LighttpdStatusSample SELECT (latest(BusyServers) * 100)/(latest(BusyServers) + latest(IdleServers)) As 'Busy Servers (%)'"
               }
             ],
             "platformOptions": {
@@ -952,17 +725,17 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 6000
+                "value": 0.8
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 4000
+                "value": 0.6
               }
             ]
           }
         },
         {
-          "title": "High Memory Usage",
+          "title": "High Memory Usage (%)",
           "layout": {
             "column": 9,
             "row": 1,
@@ -979,8 +752,8 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "FROM lighttpdStatusSample2 SELECT percentile(memoryUsage, 95)/1e+6"
+                "accountIds": [],
+                "query": "SELECT average(host.memoryUsedPercent) AS 'High Memory Usage (%)' FROM Metric WHERE host.hostname = {{hostname}}"
               }
             ],
             "platformOptions": {
@@ -1001,5 +774,25 @@
       ]
     }
   ],
-  "variables": []
+  "variables": [
+    {
+      "name": "hostname",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "lighttpd-VM"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(hostname)  FROM Metric"
+      },
+      "title": "Select your host",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    }
+  ]
 }

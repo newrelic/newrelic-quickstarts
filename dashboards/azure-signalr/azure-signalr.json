@@ -20,13 +20,20 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Maximum Connection Quota Utilization",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCloseCount`) AS 'Total Connection Close Count', AVERAGE(`azure.signalrservice.signalr.InboundTraffic`) AS 'Average Inbound Traffic', AVERAGE(`azure.signalrservice.signalr.UserErrors`) AS 'Average User Errors', SUM(`azure.signalrservice.signalr.MessageCount`) AS 'Total Message Count'  WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.signalrservice/signalr'"
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCount`) AS 'Total Connection Count', MAX(`azure.signalrservice.signalr.ConnectionQuotaUtilization`) AS 'Maximum Connection Quota Utilization', SUM(`azure.signalrservice.signalr.MessageCount`) AS 'Total Message Count', AVERAGE(`azure.signalrservice.signalr.ServerLoad`) AS 'Average Server Load' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr'"
               }
             ],
             "platformOptions": {
@@ -51,7 +58,7 @@
           }
         },
         {
-          "title": "Connection quota utilization",
+          "title": "Connection count by endpoint",
           "layout": {
             "column": 1,
             "row": 4,
@@ -60,31 +67,25 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.bar"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCloseCount`) AS 'Total Connection Close Count' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.signalrservice/signalr' "
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCount`) AS  'Total Connection Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr' FACET azure.signalrservice.signalr.endpoint"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Inbound traffic",
+          "title": "Traffic",
           "layout": {
             "column": 5,
             "row": 4,
@@ -93,7 +94,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,19 +106,19 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.signalrservice.signalr.InboundTraffic`) AS 'Average Inbound Traffic' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.signalrservice/signalr' "
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.InboundTraffic`) AS 'Total Inbound Traffic', SUM(`azure.signalrservice.signalr.OutboundTraffic`) AS 'Total Outbound Traffic' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         },
         {
-          "title": "User error",
+          "title": "Connection open count by endpoint",
           "layout": {
             "column": 9,
             "row": 4,
@@ -126,7 +127,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
@@ -138,22 +139,112 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.signalrservice.signalr.UserErrors) AS  'Average User Error' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.signalrservice/signalr' "
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionOpenCount`) AS 'Total Connection Open Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr' FACET azure.signalrservice.signalr.Endpoint"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connection close count by endpoint",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCloseCount`) AS 'Total Connection Close Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr' FACET azure.signalrservice.signalr.Endpoint"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connection close count by category ",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.ConnectionCloseCount`) AS 'Total Connection Close Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr' FACET azure.signalrservice.signalr.ConnectionCloseCategory"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Errors",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(azure.signalrservice.signalr.UserErrors) AS 'Maximum User Errors', MAX(azure.signalrservice.signalr.SystemErrors) AS 'Maximum System Errors' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "PERCENTAGE"
             }
           }
         },
         {
-          "title": "Message count",
+          "title": "Connection quota utilization",
           "layout": {
             "column": 1,
-            "row": 7,
+            "row": 10,
             "width": 4,
             "height": 3
           },
@@ -171,11 +262,86 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.MessageCount`) AS  'Total Message Count' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.signalrservice/signalr' "
+                "query": "FROM Metric SELECT MAX(`azure.signalrservice.signalr.ConnectionQuotaUtilization`) AS 'Maximum Connection Quota Utilization' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr' "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Average Connection Quota Utilization",
+                  "unit": "PERCENTAGE"
+                }
+              ],
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Server load",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(`azure.signalrservice.signalr.ServerLoad`) AS 'Average Server Load' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Message count",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.signalrservice.signalr.MessageCount`) AS 'Total Message Count' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.signalrservice/signalr'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
