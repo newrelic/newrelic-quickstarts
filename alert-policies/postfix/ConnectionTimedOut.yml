@@ -1,16 +1,16 @@
 # Name of the alert
-name: Connection(s) Timed Out
+name: Connection Timed Out (%)
 
 # Description and details
 description: |+
-  This alert is triggered when the connection timed out exceeds 3.
+  This alert is triggered when connection timeout exceeds 90%.
 
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
-  query: "SELECT latest(`unixMonitor:postfix_SMTPD_timedOutAfterConnectToday`.connection_timedout_count) AS 'Connection(s) Timed Out' FROM `unixMonitor:postfix_SMTPD_timedOutAfterConnectToday`"
+  query: "SELECT latest(Postfix_SMTPDtimedOut.value) / latest(Postfix_SMTPDdisconnection.value) * 100 as 'Connection Timed Out (%)' FROM Postfix_SMTPDtimedOut, Postfix_SMTPDdisconnection"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -21,7 +21,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 3
+    threshold: 90
     # Time in seconds; 120 - 3600
     thresholdDuration: 120
     # How many data points must be in violation for the duration
@@ -30,7 +30,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 0
+    threshold: 80
     # Time in seconds; 120 - 3600
     thresholdDuration: 120
     # How many data points must be in violation for the duration
