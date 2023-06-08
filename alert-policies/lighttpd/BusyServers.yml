@@ -1,0 +1,36 @@
+name: Busy Servers (%)
+
+description: |+
+  This alert is triggered when the active connection per server exceeds 80% for 5 minutes.
+type: STATIC
+nrql:
+  query: "FROM LighttpdStatusSample SELECT (latest(BusyServers) * 100)/(latest(BusyServers) + latest(IdleServers)) As 'Busy Servers (%)'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE).
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition.
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation.
+    threshold: 0.8
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration?
+    thresholdOccurrences: ALL
+
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation.
+    threshold: 0.6
+    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions.
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration?
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes.
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
