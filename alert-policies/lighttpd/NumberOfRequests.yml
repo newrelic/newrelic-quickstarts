@@ -1,10 +1,10 @@
-name: Average Number of Connections
+name: Number of Requests (%)
 
 description: |+
-  This alert is triggered when the average number of connections exceeds 6000 for 2 minutes.
+  This alert is triggered when the number of requests exceeds 80% for 2 minutes.
 type: STATIC
 nrql:
-  query: "FROM lighttpdStatusSample2 SELECT latest(connectionsAvg) AS 'Average Number of Connections'"
+  query: "SELECT latest(RequestAverage5s)/latest(RequestsTotal) * 100 AS 'Number of Requests (%)' FROM LighttpdStatusSample  where RequestAverage5s > 0"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE).
 valueFunction: SINGLE_VALUE
@@ -15,7 +15,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation.
-    threshold: 6000
+    threshold: 0.8
     # Time in seconds; 120 - 3600
     thresholdDuration: 120
     # How many data points must be in violation for the duration?
@@ -25,8 +25,8 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation.
-    threshold: 4000
-    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions.
+    threshold: 0.6
+    # Time in seconds; 120 - 3600
     thresholdDuration: 120
     # How many data points must be in violation for the duration?
     thresholdOccurrences: ALL
