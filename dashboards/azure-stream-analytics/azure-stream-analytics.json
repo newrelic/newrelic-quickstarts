@@ -8,12 +8,12 @@
       "description": null,
       "widgets": [
         {
-          "title": "Summary",
+          "title": "Event details",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 8,
-            "height": 3
+            "width": 4,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -26,7 +26,40 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.AMLCalloutFailedRequests`) AS 'Total Failed Function Requests', SUM(`azure.streamanalytics.streamingjobs.DeserializationError`) AS 'Total Input Deserialization Errors', SUM(`azure.streamanalytics.streamingjobs.LateInputEvents`) AS 'Total Late Input Events' , AVERAGE(`azure.streamanalytics.streamingjobs.ResourceUtilization`) AS 'Average SU (memory) Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.streamanalytics/streamingjobs'"
+                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.InputEvents`) AS 'Total Input Events',SUM(`azure.streamanalytics.streamingjobs.OutputEvents`) AS 'Total Output Events' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Resource utilization",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Average CPU % Utilization",
+                "type": null
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(`azure.streamanalytics.streamingjobs.ProcessCPUUsagePercentage`) AS 'Maximum CPU % Utilization', MAX(`azure.streamanalytics.streamingjobs.ResourceUtilization`) AS 'Maximum SU (Memory) % Utilization' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs'"
               }
             ],
             "platformOptions": {
@@ -47,15 +80,42 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Stream Analytics\nAzure Stream Analytics is a fully managed stream processing engine that is designed to analyze and process large volumes of streaming data with sub-millisecond latencies. Patterns and relationships can be identified in data that originates from a variety of input sources including applications, devices, sensors, clickstreams, and social media feeds."
+            "text": "# Azure Stream Analytics\nAzure Stream Analytics is a fully managed stream processing engine that is designed to analyze and process large volumes of streaming data with sub-millisecond latencies. Patterns and relationships can be identified in data that originates from a variety of input sources including applications, devices, sensors, clickstreams and social media feeds."
           }
         },
         {
-          "title": "Failed Function Requests",
+          "title": "Errors",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 8,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.Errors`) AS 'Total Runtime Errors', SUM(`azure.streamanalytics.streamingjobs.ConversionErrors`) AS 'Total Data Conversion Errors', SUM(`azure.streamanalytics.streamingjobs.DeserializationError`) AS 'Total Input Deserialization Errors' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Input event details",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,7 +132,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.AMLCalloutFailedRequests`) AS 'Total Failed Function Requests' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.streamanalytics/streamingjobs' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.InputEvents`) AS 'Total Input Events', SUM(`azure.streamanalytics.streamingjobs.EarlyInputEvents`) AS 'Total Early Input Events', SUM(`azure.streamanalytics.streamingjobs.LateInputEvents`) AS 'Total Late Input Events', SUM(`azure.streamanalytics.streamingjobs.InputEventsSourcesBacklogged`) AS 'Total Backlogged Input Events' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -84,16 +144,16 @@
           }
         },
         {
-          "title": "Late Input Events",
+          "title": "Output events",
           "layout": {
-            "column": 5,
+            "column": 8,
             "row": 4,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,56 +165,20 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.LateInputEvents`) AS 'Total Late Input Events' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.streamanalytics/streamingjobs' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.OutputEvents`) AS 'Total Output Events' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' FACET azure.streamanalytics.streamingjobs.LogicalName"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Input Deserialization Errors",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.DeserializationError`) AS 'Total Input Deserialization Errors' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.streamanalytics/streamingjobs' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "SU (memory) Utilization",
+          "title": "CPU utilization by node",
           "layout": {
             "column": 1,
             "row": 7,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -171,11 +195,119 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.streamanalytics.streamingjobs.ResourceUtilization`) AS 'Average SU (memory) Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.streamanalytics/streamingjobs' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT MAX(`azure.streamanalytics.streamingjobs.ProcessCPUUsagePercentage`)/100 AS 'Maximum CPU % Utilization' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' FACET azure.streamanalytics.streamingjobs.nodename TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "SU (memory) utilization by node",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(`azure.streamanalytics.streamingjobs.ResourceUtilization`)/100 AS 'Maximum SU (Memory) % Utilization' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' FACET azure.streamanalytics.streamingjobs.nodename TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Out of order events",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.streamanalytics.streamingjobs.DroppedOrAdjustedEvents`) AS 'Total Out of order Events' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' FACET azure.streamanalytics.streamingjobs.LogicalName TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
+            }
+          }
+        },
+        {
+          "title": "Watermark delay",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(`azure.streamanalytics.streamingjobs.OutputWatermarkDelaySeconds`) AS 'Maximum Watermark Delay' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.streamanalytics/streamingjobs' FACET azure.streamanalytics.streamingjobs.logicalname TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
             },
             "yAxisLeft": {
               "zero": true
