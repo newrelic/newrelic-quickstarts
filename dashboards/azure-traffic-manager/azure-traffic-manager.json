@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.trafficmanagerprofiles.ProbeAgentCurrentEndpointStateByProfileResourceId`) As 'Total Endpoint Status by Endpoint' , SUM(`azure.network.trafficmanagerprofiles.QpsByEndpoint`) AS 'Total Queries by Endpoint Returned' where collector.name='azure-monitor' and azure.resourceType='microsoft.network/trafficmanagerprofiles' "
+                "query": "FROM Metric SELECT MAX(azure.network.trafficmanagerprofiles.ProbeAgentCurrentEndpointStateByProfileResourceId) As 'Maximum Endpoint Status By Endpoint', SUM(azure.network.trafficmanagerprofiles.QpsByEndpoint) as 'Total Queries By Endpoint Returned' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/trafficmanagerprofiles'"
               }
             ],
             "platformOptions": {
@@ -55,7 +55,7 @@
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -64,7 +64,7 @@
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": false
+              "showOtherSeries": true
             },
             "legend": {
               "enabled": true
@@ -72,11 +72,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.trafficmanagerprofiles.ProbeAgentCurrentEndpointStateByProfileResourceId) AS 'Total Endpoint Status by Endpoint' where collector.name='azure-monitor' and azure.resourceType='microsoft.network/trafficmanagerprofiles' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT MAX(azure.network.trafficmanagerprofiles.ProbeAgentCurrentEndpointStateByProfileResourceId) AS 'Maximum Endpoint Status By Endpoint' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/trafficmanagerprofiles' FACET azure.network.trafficmanagerprofiles.endpointname TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
@@ -84,16 +87,16 @@
           }
         },
         {
-          "title": "Total queries by endpoint returned ",
+          "title": "Queries by endpoint returned ",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 4,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,14 +108,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.trafficmanagerprofiles.QpsByEndpoint`) AS 'Total Queries by Endpoint Returned' where collector.name='azure-monitor' and azure.resourceType='microsoft.network/trafficmanagerprofiles' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(azure.network.trafficmanagerprofiles.QpsByEndpoint) AS 'Total Queries By Endpoint Returned ' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/trafficmanagerprofiles' FACET azure.network.trafficmanagerprofiles.endpointname TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
