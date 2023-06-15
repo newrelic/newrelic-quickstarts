@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionAppliedFilesCount`) AS  'Total Files Synced' , SUM(`azure.storagesync.storagesyncservices.ServerSyncSessionResult`) AS  'Total Sync Session Result', AVERAGE(`azure.storagesync.storagesyncservices.StorageSyncBatchTransferredFileBytes`) AS  'Average Bytes synced', SUM(`azure.storagesync.storagesyncservices.StorageSyncServerHeartbeat`) AS  'Total Server Online Status', SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionPerItemErrorsCount`) AS  'Total Files not Syncing' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices'"
+                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionAppliedFilesCount`) AS  'Total Files Synced' , AVERAGE(`azure.storagesync.storagesyncservices.ServerSyncSessionResult`) AS  'Average Sync Session Result', SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionPerItemErrorsCount`) AS  'Total Files not Syncing', SUM(`azure.storagesync.storagesyncservices.StorageSyncBatchTransferredFileBytes`) AS  'Total Bytes synced' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices'"
               }
             ],
             "platformOptions": {
@@ -51,11 +51,11 @@
           }
         },
         {
-          "title": "Files synced",
+          "title": "Server online status",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,9 +72,12 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionAppliedFilesCount`) AS 'Total Files Synced' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT MAX(`azure.storagesync.storagesyncservices.StorageSyncServerHeartbeat`) AS 'Server Online Status' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' FACET azure.storagesync.storagesyncservices.servername TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
@@ -86,9 +89,9 @@
         {
           "title": "Sync session result",
           "layout": {
-            "column": 5,
+            "column": 6,
             "row": 4,
-            "width": 4,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -105,9 +108,12 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.ServerSyncSessionResult`) AS 'Total Server Sync Session Result' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT AVERAGE(`azure.storagesync.storagesyncservices.ServerSyncSessionResult`) AS 'Average Server Sync Session Result' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices'  FACET azure.storagesync.storagesyncservices.syncgroupname TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
@@ -117,40 +123,7 @@
           }
         },
         {
-          "title": "Server online status",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncServerHeartbeat`) AS 'Total Server Online Status' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Bytes synced",
+          "title": "Files synced",
           "layout": {
             "column": 1,
             "row": 7,
@@ -159,7 +132,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -171,14 +144,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.storagesync.storagesyncservices.StorageSyncBatchTransferredFileBytes`) AS 'Average Bytes Synced' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionAppliedFilesCount`) AS 'Total Files Synced' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' FACET azure.storagesync.storagesyncservices.syncgroupname TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
@@ -192,7 +162,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -204,14 +174,44 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionPerItemErrorsCount`) AS 'Total Files not syncing' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncSyncSessionPerItemErrorsCount`) AS 'Total Files not syncing' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices'  FACET azure.storagesync.storagesyncservices.syncgroupname TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Bytes synced",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.storagesync.storagesyncservices.StorageSyncBatchTransferredFileBytes`) AS 'Total Bytes Synced' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.storagesync/storagesyncservices' FACET azure.storagesync.storagesyncservices.syncgroupname TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         }
