@@ -1,6 +1,7 @@
 {
   "name": "Azure Relay",
   "description": null,
+
   "pages": [
     {
       "name": "Azure Relay",
@@ -11,7 +12,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 8,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -25,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.ActiveConnections`) AS 'Total Active Connections', SUM(`azure.relay.namespaces.ActiveListeners`) AS 'Total Active Listeners', SUM(`azure.relay.namespaces.SenderConnections-TotalRequests`) AS 'Total Sender Connections Requests', SUM(`azure.relay.namespaces.ListenerConnections-TotalRequests`) AS 'Total Listener Connections Requests', SUM(`azure.relay.namespaces.SenderDisconnects`) AS 'Total Sender Disconnects', SUM(`azure.relay.namespaces.ListenerDisconnects`) AS 'Total Listener Disconnects' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces'"
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.ActiveConnections`) AS 'Total Active Connections', SUM(`azure.relay.namespaces.ActiveListeners`) AS 'Total Active Listeners', SUM(`azure.relay.namespaces.SenderConnections-TotalRequests`) AS 'Total Sender Connection Requests', SUM(`azure.relay.namespaces.ListenerConnections-TotalRequests`) AS 'Total Listener Connection Requests' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces'"
               }
             ],
             "platformOptions": {
@@ -36,9 +37,9 @@
         {
           "title": "",
           "layout": {
-            "column": 9,
+            "column": 8,
             "row": 1,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -46,7 +47,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Relay\nAzure Relay service securely exposes services that run in corporate network to the public cloud. Services can be exposed without opening a port on corporate firewall, or making intrusive changes to corporate network infrastructure."
+            "text": "# Azure Relay\nAzure Relay service securely exposes services that run in corporate network to the public cloud. Services can be exposed without opening a port on corporate firewall or making intrusive changes to corporate network infrastructure."
           }
         },
         {
@@ -71,7 +72,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.ActiveConnections) AS 'Total Active Connections' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces'"
+                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.ActiveConnections) AS 'Total Active Connections' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -104,7 +105,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.ActiveListeners) AS 'Total Active Listeners' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces'"
+                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.ActiveListeners) AS 'Total Active Listeners' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -116,7 +117,7 @@
           }
         },
         {
-          "title": "Total requests",
+          "title": "Bytes transferred",
           "layout": {
             "column": 9,
             "row": 4,
@@ -125,7 +126,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -137,23 +138,23 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.SenderConnections-TotalRequests`) AS 'Total Sender Connections Requests', SUM(`azure.relay.namespaces.ListenerConnections-TotalRequests`) AS 'Total Listener Connections Requests' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces' "
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.BytesTransferred`) AS 'Total Bytes Transferred' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' FACET azure.relay.namespaces.entityname TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         },
         {
-          "title": "Success",
+          "title": "Sender connection details",
           "layout": {
             "column": 1,
             "row": 7,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -170,7 +171,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.SenderConnections-Success) AS 'Total Sender Connections Success', SUM(azure.relay.namespaces.ListenerConnections-Success) AS 'Total Listener Connections Success' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces' "
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.SenderConnections-TotalRequests`) AS 'Total Sender Connection Requests', SUM(`azure.relay.namespaces.SenderConnections-Success`) AS 'Total Sender Connections Success', SUM(`azure.relay.namespaces.SenderConnections-ServerError`) AS 'Total Sender Connections Server Error', SUM(`azure.relay.namespaces.SenderConnections-ClientError`) AS 'Total Sender Connections Client Error' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -182,11 +183,11 @@
           }
         },
         {
-          "title": "Server error",
+          "title": "Listener connection details",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 7,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -203,7 +204,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.SenderConnections-ServerError) AS 'Total Sender Connections Server Error', SUM(azure.relay.namespaces.ListenerConnections-ServerError) AS 'Total Listener Connections Server Error' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces' "
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.ListenerConnections-TotalRequests`) AS 'Total Listener Connection Requests', SUM(`azure.relay.namespaces.ListenerConnections-Success`) AS 'Total Listener Connections Success', SUM(`azure.relay.namespaces.ListenerConnections-ServerError`) AS 'Total Listener Connections Server Error', SUM(`azure.relay.namespaces.ListenerConnections-ClientError`) AS 'Total Listener Connections Client Error' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -215,11 +216,11 @@
           }
         },
         {
-          "title": "Disconnects",
+          "title": "Sender disconnects",
           "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
+            "column": 1,
+            "row": 10,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -236,7 +237,40 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.relay.namespaces.SenderDisconnects) AS 'Total Sender Disconnects', SUM(azure.relay.namespaces.ListenerDisconnects) AS 'Total Listener Disconnects' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.relay/namespaces' "
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.SenderDisconnects`) AS 'Total Sender Disconnects' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Listener disconnects",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.relay.namespaces.ListenerDisconnects`) AS 'Total Listener Disconnects' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.relay/namespaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {

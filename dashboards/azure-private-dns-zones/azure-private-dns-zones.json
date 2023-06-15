@@ -1,10 +1,10 @@
 {
-  "name": "Azure Private DNS Zone",
+  "name": "Azure Private DNS Zones",
   "description": null,
 
   "pages": [
     {
-      "name": "Azure Private DNS Zone",
+      "name": "Azure Private DNS Zones",
       "description": null,
       "widgets": [
         {
@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "from Metric SELECT AVERAGE(azure.network.privatednszones.RecordSetCapacityUtilization) AS 'Average Record Set Capacity Utilization', SUM(azure.network.privatednszones.RecordSetCount) AS 'Total Record Set Count', SUM(azure.network.privatednszones.VirtualNetworkLinkCount) AS 'Total Virtual Network Link Count', SUM(azure.network.privatednszones.VirtualNetworkWithRegistrationLinkCount) AS 'Total Virtual Network With Registration Link Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones'"
+                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.RecordSetCount) AS 'Total Record Set Count', SUM(azure.network.privatednszones.VirtualNetworkLinkCount) AS 'Total Virtual Network Link Count', SUM(azure.network.privatednszones.VirtualNetworkWithRegistrationLinkCount) AS 'Total Virtual Network With Registration Link Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones'"
               }
             ],
             "platformOptions": {
@@ -47,11 +47,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Private DNS Zones\nAzure Private DNS Zones provide a reliable and secure DNS service for your virtual network. It manages and resolves domain names in the virtual network without the need to configure a custom DNS solution.\n"
+            "text": "# Azure Private DNS Zones\nAzure Private DNS Zones provide a reliable and secure DNS service for your virtual network. It manages and resolves domain names in the virtual network without the need to configure a custom DNS solution."
           }
         },
         {
-          "title": "Record set capacity utilization",
+          "title": "Record set count",
           "layout": {
             "column": 1,
             "row": 3,
@@ -60,7 +60,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -72,7 +72,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.RecordSetCapacityUtilization) AS 'Average Capacity Utilization of Record Set' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones'TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.RecordSetCount) AS 'Total Record Set Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -81,7 +81,7 @@
           }
         },
         {
-          "title": "Record set count",
+          "title": "Virtual network registration link count",
           "layout": {
             "column": 5,
             "row": 3,
@@ -90,7 +90,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -102,19 +102,19 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.RecordSetCount) AS 'Total Record Set Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.VirtualNetworkWithRegistrationLinkCount) AS 'Total Virtual Network Registration Link Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Virtual network link capacity utilization",
+          "title": "Virtual network link count",
           "layout": {
             "column": 9,
             "row": 3,
@@ -123,7 +123,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -135,16 +135,19 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.VirtualNetworkLinkCapacityUtilization) AS 'Average Virtual Network Link Capacity Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.VirtualNetworkLinkCount) AS 'Total Virtual Network Link Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             }
           }
         },
         {
-          "title": "Virtual network link count",
+          "title": "Record set capacity utilization",
           "layout": {
             "column": 1,
             "row": 6,
@@ -165,11 +168,17 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.VirtualNetworkLinkCount) AS 'Total Virtual Network Link Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.RecordSetCapacityUtilization)/100 AS 'Average Capacity Utilization of Record Set' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             }
           }
         },
@@ -195,11 +204,17 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.VirtualNetworkWithRegistrationCapacityUtilization) AS 'Average Virtual Network Registration Capacity Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.VirtualNetworkWithRegistrationCapacityUtilization)/100 AS 'Average Virtual Network Registration Capacity Utilization' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             },
             "yAxisLeft": {
               "zero": true
@@ -207,7 +222,7 @@
           }
         },
         {
-          "title": "Virtual network registration link count",
+          "title": "Virtual network link capacity utilization",
           "layout": {
             "column": 9,
             "row": 6,
@@ -228,11 +243,17 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.network.privatednszones.VirtualNetworkWithRegistrationLinkCount) AS 'Total Virtual Network Registration Link Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
+                "query": "FROM Metric SELECT AVERAGE(azure.network.privatednszones.VirtualNetworkLinkCapacityUtilization)/100 AS 'Average Virtual Network Link Capacity Utilization' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.network/privatednszones' TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             }
           }
         }
