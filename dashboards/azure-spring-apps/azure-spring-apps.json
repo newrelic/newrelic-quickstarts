@@ -8,11 +8,11 @@
       "description": null,
       "widgets": [
         {
-          "title": "Summmary",
+          "title": "Usage summary",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 8,
+            "width": 3,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -20,13 +20,42 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.tomcat.global.sent) AS 'Average Data Sent', AVERAGE(azure.appplatform.spring.tomcat.global.received) AS 'Average Data Received ', SUM(azure.appplatform.spring.tomcat.global.request.total.count) AS 'Total Request ', AVERAGE(azure.appplatform.spring.tomcat.global.request.Average.time) AS 'Average Response Time ', SUM(azure.appplatform.spring.tomcat.global.error) AS 'Total Global Errors' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring'"
+                "query": " FROM Metric SELECT AVERAGE(azure.appplatform.spring.PodCpuUsage) AS 'Average App CPU Usage', AVERAGE(azure.appplatform.spring.PodMemoryUsage) AS 'Average App Memory Usage' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Bytes recieved and sent",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " FROM Metric SELECT AVERAGE(azure.appplatform.spring.PodNetworkIn) AS 'Average App Network In', AVERAGE(azure.appplatform.spring.PodNetworkOut) AS 'Average App Network Out' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring'"
               }
             ],
             "platformOptions": {
@@ -37,9 +66,9 @@
         {
           "title": "",
           "layout": {
-            "column": 9,
+            "column": 7,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -47,15 +76,15 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure spring cloud\nAzure Spring Apps makes it easy to deploy Spring Boot applications to Azure without any code changes.\nAzure Spring Apps provides lifecycle management using comprehensive monitoring and diagnostics, configuration management, service discovery, CI/CD integration, blue-green deployments and more."
+            "text": "# Azure spring Apps\nAzure Spring Apps makes it easy to deploy Spring Boot applications to Azure without any code changes. Azure Spring Apps provides lifecycle management using comprehensive monitoring and diagnostics, configuration management, service discovery, CI/CD integration, blue-green deployments and more."
           }
         },
         {
-          "title": "HTTP server errors",
+          "title": "Throughput",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,11 +101,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.appplatform.spring.tomcat.global.error) AS 'Total Global Errors' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring'"
+                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.IngressBytesSentRate) AS 'Average Throughput Out', AVERAGE(azure.appplatform.spring.IngressBytesReceivedRate) AS 'Average Throughput In' WHERE collector.name ='azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
             },
             "yAxisLeft": {
               "zero": true
@@ -84,16 +116,79 @@
           }
         },
         {
-          "title": "Data In",
+          "title": "Response time",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.tomcat.global.request.avg.time) AS 'Average Response Time' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            }
+          }
+        },
+        {
+          "title": "Tomcat request details",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.appplatform.spring.tomcat.global.request.total.count) AS 'Total Tomcat Request Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.appname TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Failed requests",
           "layout": {
             "column": 5,
-            "row": 4,
+            "row": 7,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,28 +200,31 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.tomcat.global.received) AS 'Average Data Received' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring' "
+                "query": "FROM Metric SELECT SUM(azure.appplatform.spring.IngressFailedRequests) AS 'Total Failed Requests' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.appname TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "COUNT"
             }
           }
         },
         {
-          "title": "Data Out",
+          "title": "Tomcat errors",
           "layout": {
             "column": 9,
-            "row": 4,
+            "row": 7,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -138,22 +236,55 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT  AVERAGE(azure.appplatform.spring.tomcat.global.sent) AS 'Average Data sent' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring' "
+                "query": "FROM Metric SELECT SUM(azure.appplatform.spring.tomcat.global.error) AS 'Total Tomcat Global Error' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.appname TIMESERIES AUTO"
               }
             ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "COUNT"
             }
           }
         },
         {
-          "title": "Average response time",
+          "title": "Bytes sent by host",
           "layout": {
             "column": 1,
-            "row": 7,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.IngressBytesSent) AS 'Average Bytes Sent' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.hostname"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "App memory used in bytes",
+          "layout": {
+            "column": 5,
+            "row": 10,
             "width": 4,
             "height": 3
           },
@@ -171,11 +302,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.tomcat.global.request.avg.time) AS 'Average Response Time ' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring'"
+                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.jvm.memory.used) AS 'Average App Memory Used in Bytes' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.appname Timeseries AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
             },
             "yAxisLeft": {
               "zero": true
@@ -183,16 +317,16 @@
           }
         },
         {
-          "title": "Total request",
+          "title": "Bytes received by host",
           "layout": {
-            "column": 5,
-            "row": 7,
+            "column": 9,
+            "row": 10,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
@@ -204,14 +338,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.appplatform.spring.tomcat.global.request.total.count) AS 'Total request' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.appplatform/spring'"
+                "query": "FROM Metric SELECT AVERAGE(azure.appplatform.spring.IngressBytesReceived) AS 'Average Bytes Received' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.appplatform/spring' FACET azure.appplatform.spring.hostname"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
