@@ -1,10 +1,10 @@
 {
-  "name": "Azure cloud services",
+  "name": "Azure Cloud Services",
   "description": null,
 
   "pages": [
     {
-      "name": "Azure cloud services",
+      "name": "Azure Cloud Services",
       "description": null,
       "widgets": [
         {
@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.AvailableMemoryBytes) AS 'Average Available Memory Bytes', Average(azure.compute.cloudservices.DiskReadOperations.Sec) AS 'Average Disk Read Operations', AVERAGE(azure.compute.cloudservices.NetworkInTotal) AS 'Average Network In Total', AVERAGE(azure.compute.cloudservices.PercentageCPU) AS 'Average Percentage CPU' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/cloudservices'"
+                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.AvailableMemoryBytes) AS 'Average Available Memory Bytes', Average(azure.compute.cloudservices.DiskReadOperations.Sec) AS 'Average Disk Read Operations', AVERAGE(azure.compute.cloudservices.DiskReadOperations.Sec) AS 'Average Disk Write Operations', AVERAGE(azure.compute.cloudservices.PercentageCPU) AS 'Average CPU Percentage' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices'"
               }
             ],
             "platformOptions": {
@@ -51,11 +51,11 @@
           }
         },
         {
-          "title": "Available memory bytes",
+          "title": "Percentage CPU",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,44 +72,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.AvailableMemoryBytes) AS 'Average Available Memory Bytes' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.PercentageCPU)/100 AS 'Average Percentage CPU' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Percentage CPU",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.PercentageCPU) AS 'Average Percentage CPU' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+            "units": {
+              "unit": "PERCENTAGE"
             },
             "yAxisLeft": {
               "zero": true
@@ -119,6 +89,39 @@
         {
           "title": "Network in total",
           "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.compute.cloudservices.NetworkInTotal) AS 'Total Network In Bytes', SUM(azure.compute.cloudservices.NetworkOutTotal) AS 'Total Network Out Bytes' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Available memory bytes",
+          "layout": {
             "column": 1,
             "row": 7,
             "width": 4,
@@ -138,11 +141,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.NetworkInTotal) AS 'Average Network In Total' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.AvailableMemoryBytes) AS 'Average Available Memory Bytes' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
             },
             "yAxisLeft": {
               "zero": true
@@ -150,9 +156,39 @@
           }
         },
         {
-          "title": "Disk read operations",
+          "title": "Disk read and write bytes",
           "layout": {
             "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.compute.cloudservices.DiskReadBytes`) AS 'Total Disk Read Bytes', SUM(`azure.compute.cloudservices.DiskWriteBytes`) AS 'Total Disk Write Bytes' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Disk operations per sec",
+          "layout": {
+            "column": 9,
             "row": 7,
             "width": 4,
             "height": 3
@@ -171,7 +207,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.DiskReadOperations.Sec) AS 'Average Disk Read Operations' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT AVERAGE(azure.compute.cloudservices.DiskReadOperations.Sec) AS 'Average Disk Read Operations', AVERAGE(azure.compute.cloudservices.DiskWriteOperations.Sec) AS 'Average Disk Write Operations' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.compute/cloudservices' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
