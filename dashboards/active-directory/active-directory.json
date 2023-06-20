@@ -1,0 +1,710 @@
+{
+  "name": "Active Directory",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Microsoft logo](https://i.imgur.com/K9gt3Q1.png)\n\n## Overview\n\n[Active Directory](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview) stores information about objects on the network and makes this information easy for administrators and users to find and use. Active Directory uses a structured data store as the basis for a logical, hierarchical organization of directory information.\n\n---\n\n## About this Dashboard\n\n* For information on the Active Directory Quickstart and telemetry, please visit the documentation [HERE](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/active-directory-integration/)."
+          }
+        },
+        {
+          "title": "Services Offline",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM (FROM Metric SELECT uniqueCount(entity.name) AS 'services'\nFACET hostname\nWHERE metricName = 'windows_service_state'\nAND state != 'running'\n// Filtered to the services collected by the AD config files\nAND label.primary_app = 'active_directory'\nAND hostname IN ( {{hostname}} ))\nSELECT latest(services) OR 0 AS ' '"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active Directory Services",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Reporting Time",
+                "type": "recent-relative"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  latest(timestamp) AS 'Reporting Time',\n  latest(state) AS 'Current State',\n  latest(start_mode) AS 'Start Mode'\nFACET\n  hostname AS 'Host',\n  display_name AS 'Display Name',\n  service_name AS 'Service Name',\n  run_as AS 'Service Account'\nWHERE label.primary_app = 'active_directory'\nAND hostname IN ( {{hostname}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Recent Shutdowns",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM (FROM Log SELECT uniqueCount(hostname) AS 'hosts'\nFACET hostname\nWHERE logtype = 'active_directory'\nAND EventID = 4609\nAND hostname IN ( {{hostname}} ))\nSELECT latest(hosts) OR 0 AS ' '"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Directory Replication Agent (DRA)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryPerformanceCounters SELECT\n  // Directory Replication Agent (DRA)\n  latest(inboundFullSyncObjectsRemaining) AS 'Inbound Full Sync Objects Remaining',\n  latest(draInbound) AS 'Inbound Values (DNs only)/sec',\n  latest(draOutbound) AS 'Outbound Values (DNs only)/sec',\n  latest(draPendingReplicationSync) AS 'Pending Replication Synchronizations'\nFACET hostname\nWHERE hostname IN ( {{hostname}} )\nTIMESERIES\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Replication Summary",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryReplicationPartners SELECT\n  latest(lastReplicationAttempt) AS 'Last Attempt',\n  latest(lastReplicationSuccess) AS 'Last Success'\nFACET\n  server AS 'Source',\n  partner AS 'Partner',\n  if(lastReplicationSuccess != lastReplicationAttempt, 'Failed Replication', 'Successful Replication') AS 'Current Status'\nWHERE hostname IN ( {{hostname}} )\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Processor Load",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryPerformanceCounters SELECT\n  // System Processor\n  latest(contextSwitchesPerSec) AS 'Context Switches/sec',\n  latest(processorQueueLength) AS 'Processor Queue Length'\nFACET hostname\nWHERE hostname IN ( {{hostname}} )\nTIMESERIES\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Replication Failures",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryReplicationFailures SELECT\n  latest(failureType) AS 'Type',\n  latest(failureError) AS 'Error',\n  latest(firstFailureTime) AS 'First Failure',\n  latest(failureCount) AS 'Attempts Made'\nFACET server\nWHERE hostname IN ( {{hostname}} )\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Directory Services",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryPerformanceCounters SELECT\n  // Directory Services (DS)\n  latest(directoryReadsPerSec) AS 'Directory Reads/sec',\n  latest(directoryWritesPerSec) AS 'Directory Writes/sec',\n  latest(directoryNotifyQueueSize) AS 'Notify Queue Size',\n  latest(directoryThreadsInUse) AS 'Threads In Use'\nWHERE hostname IN ( {{hostname}} )\nTIMESERIES\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Lightweight Directory Access Protocol",
+          "layout": {
+            "column": 7,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryPerformanceCounters SELECT\n  // Lightweight Directory Access Protocol (LDAP)\n  latest(ldapActiveThreads) AS 'Active Threads',\n  latest(ldapBindTime) AS 'Bind time (ms)',\n  latest(ldapClientSessions) AS 'Client Sessions',\n  latest(ldapSearchesPerSec) AS 'Searches/sec',\n  latest(ldapSuccessfulBindsPerSec) AS 'Successful Binds/sec',\n  latest(addressBookClientSessions) AS 'Address Book Client Sessions'\nFACET hostname\nWHERE hostname IN ( {{hostname}} )\nTIMESERIES\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Account Failed Logon Activity",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT\n  filter(count(*), WHERE EventID = 4625) AS 'Failed Logons',\n  filter(count(*), WHERE EventID = 4740) AS 'Account Lockouts'\nFACET hostname\nWHERE logtype = 'active_directory'\nAND hostname IN ( {{hostname}} )\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "New Account Creation Events",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT\n  filter(count(*), WHERE EventID = 4720) AS 'New User Account Created',\n  filter(count(*), WHERE EventID = 4781) AS 'New Computer Account Created'\nFACET hostname\nWHERE logtype = 'active_directory'\nAND hostname IN ( {{hostname}} )\nLIMIT 50"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Active Directory Event Logs",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT\n  hostname AS 'Host',\n  Channel,\n  EventID,\n  message AS 'Message'\nWHERE logtype = 'active_directory'\nAND hostname IN ( {{hostname}} )\nLIMIT MAX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Ingest Analysis",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## This page breaks down the various sources of Active Directory telemetry to provide transparency into your sources of data ingest. In the [Data Management Hub](https://one.newrelic.com/launcher/data-management-nerdlets.data-management-launcher) you will see the aggregate of these sums categorized into the `Infrastructure integrations` category.\n\n## *The data on this page is an **ESTIMATE**. For billing purposes, use the Data Management Hub.*"
+          }
+        },
+        {
+          "title": "Total Active Directory Telemetry Ingest (GB)",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryHealthChecks, activeDirectoryReplicationFailures, activeDirectoryReplicationPartners, Metric, Log SELECT\n  filter(bytecountestimate()/10e8, WHERE (\n    ( eventType() = 'activeDirectoryHealthChecks' ) // Performance Counters\n    OR ( eventType() = 'activeDirectoryReplicationFailures' OR eventType() = 'activeDirectoryReplicationPartners' ) // Replication Status\n    OR ( eventType() = 'Metric' AND label.primary_app = 'active_directory' ) // Windows Services\n    OR ( eventType() = 'Log' AND logtype = 'active_directory' ) // Event Logs\n    )\n  ) AS 'Last 24 Hours',\n  filter(rate(bytecountestimate()/10e8, 1 MONTH), WHERE (\n    ( eventType() = 'activeDirectoryHealthChecks' ) // Performance Counters\n    OR ( eventType() = 'activeDirectoryReplicationFailures' OR eventType() = 'activeDirectoryReplicationPartners' ) // Replication Status\n    OR ( eventType() = 'Metric' AND label.primary_app = 'active_directory' ) // Windows Services\n    OR ( eventType() = 'Log' AND logtype = 'active_directory' ) // Event Logs\n    )\n  ) AS '1 Month Projection'\nSINCE 24 HOURS AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Performance Counter Ingest (GB)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryHealthChecks SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS '1 Month Projection'\nSINCE 24 HOURS AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Performance Counter Ingest",
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryHealthChecks SELECT\n  bytecountestimate()/10e8\nFACET hostname\nSINCE 24 HOURS AGO\nTIMESERIES\nLIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Replication Status Ingest (GB)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "1 Month Projection",
+                "precision": 3,
+                "type": "decimal"
+              },
+              {
+                "name": "Last 24 Hours",
+                "precision": 3,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryReplicationFailures, activeDirectoryReplicationPartners SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS '1 Month Projection'\nSINCE 24 HOURS AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Replication Status Ingest",
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM activeDirectoryReplicationFailures, activeDirectoryReplicationPartners SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours'\nFACET hostname\nSINCE 24 HOURS AGO\nTIMESERIES\nLIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Windows Services Ingest (GB)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS '1 Month Projection'\nWHERE label.primary_app = 'active_directory'\nSINCE 24 HOURS AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Windows Services Ingest",
+          "layout": {
+            "column": 6,
+            "row": 10,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours'\nWHERE label.primary_app = 'active_directory'\nFACET hostname\nSINCE 24 HOURS AGO\nTIMESERIES\nLIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Event Log Ingest (GB)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours',\n  rate(bytecountestimate()/10e8, 1 MONTH) AS '1 Month Projection'\nWHERE logtype = 'active_directory'\nSINCE 24 HOURS AGO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Event Log Ingest",
+          "layout": {
+            "column": 6,
+            "row": 13,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Log SELECT\n  bytecountestimate()/10e8 AS 'Last 24 Hours'\nWHERE logtype = 'active_directory'\nFACET hostname\nSINCE 24 HOURS AGO\nTIMESERIES\nLIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "hostname",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM activeDirectoryPerformanceCounters, activeDirectoryReplicationPartners, activeDirectoryReplicationFailures, Metric, Log\nSELECT uniques(hostname)\nWHERE eventType() = 'activeDirectoryReplicationPartners'\nOR eventType() = 'activeDirectoryReplicationFailures'\nOR eventType() = 'activeDirectoryPerformanceCounters'\nOR (eventType() = 'Metric' AND label.primary_app = 'active_directory')\nOR (eventType() = 'Log' AND logtype = 'active_directory')\nSINCE 1 WEEK AGO\nLIMIT MAX"
+      },
+      "title": "Domain Controller",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
