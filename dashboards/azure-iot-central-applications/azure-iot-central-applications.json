@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(`azure.iotcentral.iotapps.c2d.commands.success`) AS 'Total Successful command invocations', sum(`azure.iotcentral.iotapps.deviceDataUsage`) AS 'Total Device Data Usage', sum(`azure.iotcentral.iotapps.dataExport.error`) AS 'Total Data Export Errors', sum(`azure.iotcentral.iotapps.c2d.commands.responseSize`) AS 'Total Response size of command invocations', average(`azure.iotcentral.iotapps.connectedDeviceCount`) AS 'Avg Connected Devices' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM Metric SELECT SUM(`azure.iotcentral.iotapps.provisionedDeviceCount`) AS 'Total Provisioned Devices', SUM(`azure.iotcentral.iotapps.connectedDeviceCount`) AS 'Total Connected Devices', SUM(`azure.iotcentral.iotapps.c2d.commands.success`) AS 'Total Successful Command Invocations', SUM(`azure.iotcentral.iotapps.deviceDataUsage`) AS 'Total Device Data Usage' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps'"
               }
             ],
             "platformOptions": {
@@ -47,11 +47,11 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure IoT Central Applications\nIoT Central is an IoT application platform as a service (aPaaS) that reduces the burden and cost of developing, managing, and maintaining IoT solutions. Use IoT Central to quickly evaluate your IoT scenario and assess the opportunities it can create for your business.You can quickly deploy a new IoT Central application and then customize it to your specific requirements. Application templates in Azure IoT Central are a tool to help you kickstart your IoT solution development. "
+            "text": "# Azure IoT Central Applications\nIoT Central is an IoT application platform as a service (aPaaS) that reduces the burden and cost of developing, managing, and maintaining IoT solutions. Use IoT Central to quickly evaluate your IoT scenario and assess the opportunities it can create for your business.You can quickly deploy a new IoT Central application and then customize it to your specific requirements. Application templates in Azure IoT Central are a tool to help you kickstart your IoT solution development."
           }
         },
         {
-          "title": "Successful command invocations",
+          "title": "Command invocations",
           "layout": {
             "column": 1,
             "row": 4,
@@ -72,7 +72,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.iotcentral.iotapps.c2d.commands.success) AS 'Total Successful command invocations'TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM Metric SELECT SUM(azure.iotcentral.iotapps.c2d.commands.success) AS 'Total Successful Command Invocations', SUM(azure.iotcentral.iotapps.c2d.commands.failure) AS 'Total Failed Command Invocations' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -93,7 +93,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,14 +105,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(azure.iotcentral.iotapps.c2d.commands.responseSize) AS 'Total Response Size of Command Invocations' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM Metric SELECT SUM(azure.iotcentral.iotapps.c2d.commands.responseSize) AS 'Total Response Size of Command Invocations' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         },
@@ -126,6 +126,99 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.iotcentral.iotapps.deviceDataUsage`) AS 'Total Device Data Usage' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Successful C2D and D2C",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.iotcentral.iotapps.c2d.property.read.success) AS 'Total Successful Device Property Reads', SUM(azure.iotcentral.iotapps.c2d.property.update.success) AS 'Total Successful Device Property Updates', SUM(azure.iotcentral.iotapps.d2c.property.read.success) AS 'Total Successful Device Property Reads from Devices', SUM(azure.iotcentral.iotapps.d2c.property.update.success) AS 'Total Successful Device Property Updates from Devices' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Failed C2D and D2C",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.iotcentral.iotapps.c2d.property.read.failure) AS 'Total Failed Device Property Reads', SUM(azure.iotcentral.iotapps.c2d.property.update.failure) AS 'Total Failed Device Property Updates', SUM(azure.iotcentral.iotapps.d2c.property.read.failure) AS 'Total Failed Device Property Reads from Devices', SUM(azure.iotcentral.iotapps.d2c.property.update.failure) AS 'Total Failed Device Property Updates from Devices' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total telemetry message details",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
             "id": "viz.line"
           },
           "rawConfiguration": {
@@ -138,7 +231,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM metric SELECT sum(`azure.iotcentral.iotapps.deviceDataUsage`) AS 'Total Device Data Usage' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM Metric SELECT SUM(`azure.iotcentral.iotapps.d2c.telemetry.ingress.allProtocol`) AS 'Total Telemetry Message Send Attempts', SUM(`azure.iotcentral.iotapps.d2c.telemetry.ingress.success`) AS 'Total Telemetry Messages Sent' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -152,14 +245,14 @@
         {
           "title": "Data export errors",
           "layout": {
-            "column": 1,
-            "row": 7,
+            "column": 5,
+            "row": 10,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -171,61 +264,25 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM metric SELECT sum(`azure.iotcentral.iotapps.dataExport.error`) AS 'Total Data Export Errors' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM metric SELECT SUM(`azure.iotcentral.iotapps.dataExport.error`) AS 'Total Data Export Errors' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
           "title": "Total connected devices",
           "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(`azure.iotcentral.iotapps.connectedDeviceCount`) AS 'Avg Connected Devices' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Total telemetry messages sent",
-          "layout": {
             "column": 9,
-            "row": 7,
+            "row": 10,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -237,14 +294,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(`azure.iotcentral.iotapps.d2c.telemetry.ingress.success`) AS 'Total Telemetry Messages Sent' TIMESERIES AUTO WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.iotcentral/iotapps' "
+                "query": "FROM Metric SELECT SUM(`azure.iotcentral.iotapps.connectedDeviceCount`) AS 'Total Connected Devices' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.iotcentral/iotapps' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
