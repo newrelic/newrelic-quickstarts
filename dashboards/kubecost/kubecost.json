@@ -1,0 +1,760 @@
+{
+  "name": "Kubernetes Cost Monitoring",
+  "description": null,
+  "pages": [
+    {
+      "name": "Kubecost",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total Cost",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`CPU Cost($)`) AS 'CPU Cost' FROM (FROM Metric SELECT (filter(average(kube_node_status_capacity), WHERE resource = 'cpu' AND unit = 'core') * average(node_cpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) + (average(node_gpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'CPU Cost($)' FACET node) TIMESERIES 1 hour"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`Memory Cost($)`) AS 'Memory Cost' FROM(FROM Metric SELECT (filter(average(kube_node_status_capacity), WHERE resource = 'memory' AND unit = 'byte')/1024/1024/1024 * average(node_ram_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'Memory Cost($)' FACET node) TIMESERIES 1 hour"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT sum(aphc * {{timePeriod}} * akpcb / 1024 / 1024 / 1024) AS 'Persistent Volume Cost' FROM (FROM Metric SELECT average(pv_hourly_cost) AS 'aphc', average(kube_persistentvolume_capacity_bytes) AS 'akpcb' FACET persistentvolume, instance) TIMESERIES 1 hour"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(acflb) / 1024 / 1024 / 1024 * {{localStorageGBCost}}) AS 'Container Cost($)' FROM (SELECT (average(container_fs_limit_bytes) * cardinality(container_fs_limit_bytes)) AS 'acflb' FROM Metric WHERE (NOT ((device = 'tmpfs')) AND (id = '/'))) TIMESERIES 1 hour"
+              },
+              {
+                "accountId": 0,
+                "query": "SELECT sum(rsnntbt) * {{timePeriod}} * {{egressCost}} * {{percentEgress}} AS 'Network Cost' FROM (SELECT rate(sum(node_network_transmit_bytes_total), 60 minutes) / 1024 / 1024 / 1024 AS 'rsnntbt' FROM Metric WHERE device = 'eth0' FACET instance) TIMESERIES 1 hour"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Node](https://cdn-icons-png.flaticon.com/256/5968/5968322.png)"
+          }
+        },
+        {
+          "title": "Cost by Node",
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "width": 10,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total($)",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "GPU($)",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Memory($)",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "CPU($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT latest(`CPU($)`), latest(`Memory($)`), latest(`GPU($)`), (latest(`CPU($)`) + latest(`Memory($)`) + latest(`GPU($)`)) AS 'Total($)' FROM (FROM Metric SELECT (filter(average(kube_node_status_capacity), WHERE resource = 'cpu' AND unit = 'core') * average(node_cpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'CPU($)', (filter(average(kube_node_status_capacity), WHERE resource = 'memory' AND unit = 'byte') / 1024 / 1024 / 1024 * average(node_ram_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'Memory($)', (average(node_gpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'GPU($)' FACET node) FACET node"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![CPU Cost](https://cdn-icons-png.flaticon.com/256/543/543234.png)"
+          }
+        },
+        {
+          "title": "Total CPU Cost",
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total CPU Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`CPU Cost($)`) FROM (FROM Metric SELECT (filter(average(kube_node_status_capacity), WHERE resource = 'cpu' AND unit = 'core') * average(node_cpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) + (average(node_gpu_hourly_cost) * {{timePeriod}} * (1-{{useDiscount}}/100)) AS 'CPU Cost($)' FACET node)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "CPU Utilization",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "binop",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(ciccust * siccust)/ latest(lsknsa) * 10) AS 'CPU Utilization(%)' FROM (SELECT count(iccust) AS 'ciccust' , sum(iccust) AS 'siccust', latest(sknsa) AS 'lsknsa' FROM (FROM Metric SELECT filter(irate(container_cpu_usage_seconds_total, 10 minutes), WHERE id = '/') AS 'iccust', filter(sum(kube_node_status_allocatable), WHERE resource = 'cpu' AND unit = 'core') AS 'sknsa'))"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "CPU Requests",
+          "layout": {
+            "column": 10,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bullet"
+          },
+          "rawConfiguration": {
+            "limit": 100,
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter(sum(kube_pod_container_resource_requests), WHERE resource = 'cpu' AND unit = 'core') / filter(sum(kube_node_status_allocatable), WHERE resource = 'cpu' AND unit = 'core')) * 100 AS 'CPU Requests(%)'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Memory](https://cdn-icons-png.flaticon.com/256/997/997606.png)"
+          }
+        },
+        {
+          "title": "Total Memory Cost",
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total Memory Cost ($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`Memory Cost($)`) FROM(FROM Metric SELECT (filter(average(kube_node_status_capacity), WHERE resource = 'memory' AND unit = 'byte')/1024/1024/1024 * average(node_ram_hourly_cost) * 730 * (1-{{useDiscount}}/100)) AS 'Memory Cost($)' FACET node)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "RAM Utilization",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "RAM Utilization (%)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT (filter (sum(container_memory_usage_bytes), where namespace is not null) / filter(sum(kube_node_status_allocatable), where resource = 'memory' and unit  = 'byte') * 100) AS 'RAM Utilization(%)'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "RAM Requests",
+          "layout": {
+            "column": 10,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bullet"
+          },
+          "rawConfiguration": {
+            "limit": 100,
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT filter(sum(kube_pod_container_resource_requests), WHERE resource = 'memory' AND unit = 'byte' AND namespace IS NOT NULL) / filter(sum(kube_node_status_allocatable), WHERE resource = 'memory' AND unit = 'byte') * 100 AS 'RAM Requests(%)'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Storage](https://cdn-icons-png.flaticon.com/256/689/689319.png)"
+          }
+        },
+        {
+          "title": "Total Storage Cost",
+          "layout": {
+            "column": 3,
+            "row": 13,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total Storage Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (SELECT (sum(acflb) / 1024 / 1024 / 1024 * {{localStorageGBCost}}) AS 'Container Cost($)' FROM (SELECT (average(container_fs_limit_bytes) * cardinality(container_fs_limit_bytes)) AS 'acflb' FROM Metric WHERE (NOT ((device = 'tmpfs')) AND (id = '/')))) + (SELECT sum(aphc * {{timePeriod}} * akpcb / 1024 / 1024 / 1024) AS 'Total Persistent Volume Cost($)' FROM (FROM Metric SELECT average(pv_hourly_cost) AS 'aphc', average(kube_persistentvolume_capacity_bytes) AS 'akpcb' FACET persistentvolume, instance)) AS 'Total Storage Cost($)'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Persistent Volume Cost",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total Persistent Volume Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(aphc * {{timePeriod}} * akpcb / 1024 / 1024 / 1024) AS 'Total Persistent Volume Cost($)' FROM (FROM Metric SELECT average(pv_hourly_cost) AS 'aphc', average(kube_persistentvolume_capacity_bytes) AS 'akpcb' FACET persistentvolume, instance)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Persistent Volume Breakdown",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total Persistent Volume Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(aphc * {{timePeriod}} * akpcb / 1024 / 1024 / 1024) AS 'Total Persistent Volume Cost($)' FROM (FROM Metric SELECT average(pv_hourly_cost) AS 'aphc', average(kube_persistentvolume_capacity_bytes) AS 'akpcb' FACET persistentvolume, instance) FACET persistentvolume, instance"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Stograge Utilization",
+          "layout": {
+            "column": 11,
+            "row": 13,
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Storage Utilization (%)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(skpvci + sppvca + scfub) / sum(skpvci + skpvcrrsb + scflb) * 100 AS 'Storage Utilization(%)' FROM (FROM Metric SELECT sum(kube_persistentvolumeclaim_info) AS 'skpvci', sum(pod_pvc_allocation) AS 'sppvca', filter(sum(container_fs_usage_bytes), WHERE device RLIKE '^/dev/[sv]d[a-z][1-9]$' AND id = '/') AS 'scfub', sum(kube_persistentvolumeclaim_resource_requests_storage_bytes) AS 'skpvcrrsb', filter(sum(container_fs_limit_bytes), WHERE device RLIKE '^/dev/[sv]d[a-z][1-9]$' AND id = '/') AS 'scflb')"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Container Cost",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Container Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(acflb) / 1024 / 1024 / 1024 * {{localStorageGBCost}}) AS 'Container Cost($)' FROM (SELECT (average(container_fs_limit_bytes) * cardinality(container_fs_limit_bytes)) AS 'acflb' FROM Metric WHERE (NOT ((device = 'tmpfs')) AND (id = '/')))"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Container Storage Cost Breakdown",
+          "layout": {
+            "column": 7,
+            "row": 15,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Container Cost($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT (sum(acflb) / 1024 / 1024 / 1024 * {{localStorageGBCost}} ) AS 'Container Cost($)' FROM (SELECT (average(container_fs_limit_bytes) * cardinality(container_fs_limit_bytes)) AS 'acflb' FROM Metric WHERE (NOT ((device = 'tmpfs')) AND (id = '/')) FACET instance,device)FACET instance,device"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Network](https://cdn-icons-png.flaticon.com/256/3598/3598209.png)"
+          }
+        },
+        {
+          "title": "Total Network Cost",
+          "layout": {
+            "column": 3,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Network Cost ($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(rsnntbt) * {{timePeriod}} * {{egressCost}} * {{percentEgress}} AS 'Network Cost ($)' FROM (SELECT rate(sum(node_network_transmit_bytes_total), 60 minutes) / 1024 / 1024 / 1024 AS 'rsnntbt' FROM Metric WHERE device = 'eth0' FACET instance)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Network Cost Breakdown",
+          "layout": {
+            "column": 7,
+            "row": 17,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Network Cost ($)",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(rsnntbt) * {{timePeriod}} * {{egressCost}} * {{percentEgress}} AS 'Network Cost ($)' FROM (SELECT rate(sum(node_network_transmit_bytes_total), 60 minutes) / 1024 / 1024 / 1024 AS 'rsnntbt' FROM Metric WHERE device = 'eth0' FACET instance, device)FACET instance, device"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "localStorageGBCost",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0.04"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Local Storage GB Cost",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "useDiscount",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Use Discount",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "percentEgress",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0.1"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Percent Egress",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "egressCost",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0.12"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Egress Cost",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "timePeriod",
+      "items": [
+        {
+          "title": null,
+          "value": "1"
+        },
+        {
+          "title": null,
+          "value": "3"
+        },
+        {
+          "title": null,
+          "value": "6"
+        },
+        {
+          "title": null,
+          "value": "12"
+        },
+        {
+          "title": null,
+          "value": "24"
+        },
+        {
+          "title": null,
+          "value": "72"
+        },
+        {
+          "title": null,
+          "value": "168"
+        },
+        {
+          "title": null,
+          "value": "730"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "730"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "title": "Time Period (hours)",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER"
+    }
+  ]
+}
