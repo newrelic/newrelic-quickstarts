@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.TotalLatency) AS 'Average Total Latency', SUM(azure.cdn.profiles.RequestCount) AS 'Total RequestCount', AVERAGE(azure.cdn.profiles.ByteHitRatio) AS 'Average Byte Hit Ratio'"
+                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.TotalLatency) AS 'Average Total Latency', SUM(azure.cdn.profiles.RequestCount) AS 'Total Request Count', AVERAGE(azure.cdn.profiles.ResponseSize) AS 'Average Response Size' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.cdn/profiles'"
               }
             ],
             "platformOptions": {
@@ -51,11 +51,11 @@
           }
         },
         {
-          "title": "Total latency",
+          "title": "Latency by endpoint",
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,11 +72,50 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.TotalLatency) AS 'Average Total Latency' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.cdn/profiles' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.TotalLatency) AS 'Average Total Latency(ms)' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.cdn/profiles' FACET azure.cdn.profiles.Endpoint TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Latency by HTTP status group",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.TotalLatency) AS 'Average Total Latency(ms)' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.cdn/profiles' FACET azure.cdn.profiles.HttpStatusGroup TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
             },
             "yAxisLeft": {
               "zero": true
@@ -86,14 +125,14 @@
         {
           "title": "Request count",
           "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
+            "column": 1,
+            "row": 7,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,61 +144,28 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(azure.cdn.profiles.RequestCount) AS 'Total Request Count' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.cdn/profiles' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(azure.cdn.profiles.RequestCount) AS 'Total Request Count' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.cdn/profiles' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "COUNT"
             }
           }
         },
         {
           "title": "Response size",
           "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.ResponseSize) AS 'Average Response Size' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.Cdn/profiles' TIMESERIES AUTO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Request Size",
-          "layout": {
-            "column": 1,
+            "column": 6,
             "row": 7,
-            "width": 4,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -171,14 +177,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(azure.cdn.profiles.RequestSize) AS 'Average Request Size' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.Cdn/profiles' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(azure.cdn.profiles.ResponseSize) AS 'Total Response Size' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.cdn/profiles' FACET azure.cdn.profiles.Endpoint TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         }
