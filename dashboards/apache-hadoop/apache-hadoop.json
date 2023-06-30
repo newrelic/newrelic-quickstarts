@@ -1,5 +1,5 @@
 {
-	"name": "Apache-Hadoop",
+	"name": "Apache Hadoop",
 	"description": null,
 	"pages": [
 		{
@@ -130,7 +130,7 @@
 					}
 				},
 				{
-					"title": "Remaining Disk Percent (%)",
+					"title": "Used Disk Percent (%)",
 					"layout": {
 						"column": 9,
 						"row": 1,
@@ -148,7 +148,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(PercentRemaining) AS 'Remaining Disk (%)' FROM HadoopNameNodeSampleMetrics "
+								"query": "SELECT latest(PercentUsed) AS 'Usded Disk (%)' FROM HadoopNameNodeSampleMetrics "
 							}
 						],
 						"platformOptions": {
@@ -157,11 +157,11 @@
 						"thresholds": [
 							{
 								"alertSeverity": "WARNING",
-								"value": 15
+								"value": 85
 							},
 							{
 								"alertSeverity": "CRITICAL",
-								"value": 6
+								"value": 90
 							}
 						]
 					}
@@ -185,7 +185,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(SoftwareVersion) AS 'Hadoop Version(s)' FROM HadoopNameNodeSampleMetrics"
+								"query": "SELECT latest(SoftwareVersion) AS '' FROM HadoopNameNodeSampleMetrics WHERE entityName = {{entity_name}}"
 							}
 						],
 						"platformOptions": {
@@ -388,6 +388,202 @@
 							"zero": true
 						}
 					}
+				},
+				{
+					"title": "",
+					"layout": {
+						"column": 1,
+						"row": 8,
+						"width": 12,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "# Hadoop health\nThe statistics for Heap memory, Non-Heap memory, Blocks, Files, and Threads are tracked by our New Relic Hadoop quickstart."
+					}
+				},
+				{
+					"title": "Heap Memory Statistics",
+					"layout": {
+						"column": 1,
+						"row": 9,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(MemHeapUsedM) AS 'Memory heap used MB', latest(MemHeapMaxM) AS 'Memory heap max MB', latest(MemHeapCommittedM) AS 'Memory heap committed MB' FROM HadoopNameNodeSampleMetrics TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Non Heap Memory Statistics",
+					"layout": {
+						"column": 5,
+						"row": 9,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(MemNonHeapUsedM) AS 'Memory non heap used MB', latest(MemNonHeapMaxM) AS 'Memory non heap max MB', latest(MemNonHeapCommittedM) AS 'Memory non heap committed MB' FROM HadoopNameNodeSampleMetrics TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Files Statistics",
+					"layout": {
+						"column": 9,
+						"row": 9,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(FilesTotal), latest(FilesCreated), latest(FilesDeleted), latest(FilesRenamed) FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Blocks Statistics",
+					"layout": {
+						"column": 1,
+						"row": 12,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(BlocksTotal) AS 'Blocks total', latest(BlockCapacity) AS 'Block capacity', latest(CorruptBlocks) AS 'Corrupt blocks', latest(ExcessBlocks) AS 'Excess blocks', latest(MissingBlocks) AS 'Missing blocks' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Thread Statistics",
+					"layout": {
+						"column": 5,
+						"row": 12,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(Threads), latest(ThreadsBlocked) AS 'Threads blocked', latest(ThreadsRunnable) AS 'Threads runnable', latest(ThreadsNew) AS 'Threads new', latest(ThreadsTerminated) AS 'Threads terminated', latest(ThreadsWaiting) AS 'Threads waiting' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Log Statistics",
+					"layout": {
+						"column": 9,
+						"row": 12,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(LogError) AS 'Log error', latest(LogFatal) AS 'Log fatal', latest(LogInfo) AS 'Log info', latest(LogWarn) AS 'Log warn' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
 				}
 			]
 		},
@@ -408,7 +604,7 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "# HDFS - (Hadoop Distributed File System)\nThe main distributed storage system utilised by Hadoop applications is HDFS. A NameNode, which controls the file system information, and DataNodes, which house the actual data, make up the majority of an HDFS cluster."
+						"text": "# HDFS - (Hadoop Distributed File System)\nIt is crucial to monitor essential HDFS metrics as it enables you to keep track of DFS capacity, available space, block status, and optimize data storage.\n"
 					}
 				},
 				{
@@ -727,104 +923,14 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "# Yarn Cluster\nThe processing engines needed to run applications are situated between HDFS and Apache Hadoop YARN. Containers, application coordinators, and node-level agents that keep track of processing activity on specific cluster nodes are combined with a central resource management."
-					}
-				},
-				{
-					"title": "Active Nodes",
-					"layout": {
-						"column": 1,
-						"row": 2,
-						"width": 4,
-						"height": 2
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.stacked-bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(NumActiveNMs) AS 'Active Nodes' FROM HadoopResourceManagerMetrics FACET NumActiveNMs TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Lost Node Managers",
-					"layout": {
-						"column": 5,
-						"row": 2,
-						"width": 4,
-						"height": 2
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(NumLostNMs) AS 'Lost Nodes' FROM HadoopResourceManagerMetrics FACET NumLostNMs TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Virtual Cores",
-					"layout": {
-						"column": 9,
-						"row": 2,
-						"width": 4,
-						"height": 2
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.stacked-bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(PendingVCores), latest(ReservedVCores), latest(AllocatedVCores), latest(AvailableVCores) FROM HadoopResourceManagerMetrics TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
+						"text": "# Yarn Cluster\nMonitoring the YARN cluster allows you to closely track the allocation and consumption of resources, ensuring that workloads are distributed effectively and efficiently across the cluster.\n"
 					}
 				},
 				{
 					"title": "Active Users",
 					"layout": {
 						"column": 1,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -856,7 +962,7 @@
 					"title": "Allocated Containers",
 					"layout": {
 						"column": 3,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -888,7 +994,7 @@
 					"title": "Pending Containers",
 					"layout": {
 						"column": 5,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -921,7 +1027,7 @@
 					"title": "Reserved Containers",
 					"layout": {
 						"column": 7,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -948,7 +1054,7 @@
 					"title": "Rebooted",
 					"layout": {
 						"column": 9,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -975,7 +1081,7 @@
 					"title": "Available V Cores",
 					"layout": {
 						"column": 11,
-						"row": 4,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -1004,10 +1110,70 @@
 					}
 				},
 				{
+					"title": "Active Nodes",
+					"layout": {
+						"column": 1,
+						"row": 3,
+						"width": 6,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(NumActiveNMs) AS 'Active Nodes' FROM HadoopResourceManagerMetrics FACET NumActiveNMs TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Virtual Cores",
+					"layout": {
+						"column": 7,
+						"row": 3,
+						"width": 6,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "SELECT latest(PendingVCores), latest(ReservedVCores), latest(AllocatedVCores), latest(AvailableVCores) FROM HadoopResourceManagerMetrics TIMESERIES AUTO"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
 					"title": "Allocated Memory",
 					"layout": {
 						"column": 1,
-						"row": 5,
+						"row": 6,
 						"width": 4,
 						"height": 2
 					},
@@ -1040,7 +1206,7 @@
 					"title": "Memory Usage",
 					"layout": {
 						"column": 5,
-						"row": 5,
+						"row": 6,
 						"width": 4,
 						"height": 2
 					},
@@ -1070,7 +1236,7 @@
 					"title": "Garbage Collection Time",
 					"layout": {
 						"column": 9,
-						"row": 5,
+						"row": 6,
 						"width": 4,
 						"height": 2
 					},
@@ -1099,7 +1265,7 @@
 			]
 		},
 		{
-			"name": "Applications",
+			"name": "AM",
 			"description": null,
 			"widgets": [
 				{
@@ -1115,7 +1281,7 @@
 						"id": "viz.markdown"
 					},
 					"rawConfiguration": {
-						"text": "# Applications\nThe YARN Resource Manager (RM) receives applications from clients who submit them, which is the main notion. A YarnClient object can be configured to achieve this. Once YarnClient has been launched, the client can next prepare the application's first container, which contains the ApplicationMaster (AM), and set up the application context."
+						"text": "# Application Master\nAs it allows you to keep track of App terminated, failed, pending, and running data, AM is a monitor to the Applications metrics."
 					}
 				},
 				{
@@ -1183,70 +1349,10 @@
 					}
 				},
 				{
-					"title": "AM Resource Statistics",
+					"title": "Apps Submitted",
 					"layout": {
 						"column": 5,
 						"row": 2,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.stacked-bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(AMResourceLimitMB) AS 'AM Resource limit MB', latest(AMResourceLimitVCores) AS 'AM Resource limit V cores', latest(UsedAMResourceMB) AS 'Used AM resource MB', latest(UsedAMResourceVCores) AS 'Used AM resource V cores' FROM HadoopResourceManagerMetrics TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "AM Launch Delay Avg Time",
-					"layout": {
-						"column": 9,
-						"row": 2,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(AMLaunchDelayAvgTime) AS 'Milli seconds' FROM HadoopResourceManagerMetrics TIMESERIES  "
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Apps Submitted",
-					"layout": {
-						"column": 1,
-						"row": 3,
 						"width": 2,
 						"height": 1
 					},
@@ -1277,8 +1383,8 @@
 				{
 					"title": "Apps Pending",
 					"layout": {
-						"column": 3,
-						"row": 3,
+						"column": 7,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -1310,8 +1416,8 @@
 				{
 					"title": "Apps Killed",
 					"layout": {
-						"column": 1,
-						"row": 4,
+						"column": 9,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -1343,8 +1449,8 @@
 				{
 					"title": "Apps Failed",
 					"layout": {
-						"column": 3,
-						"row": 4,
+						"column": 11,
+						"row": 2,
 						"width": 2,
 						"height": 1
 					},
@@ -1372,79 +1478,13 @@
 							}
 						]
 					}
-				}
-			]
-		},
-		{
-			"name": "Hadoop Health",
-			"description": null,
-			"widgets": [
+				},
 				{
-					"title": "Heap Memory Statistics",
+					"title": "AM Resource Statistics",
 					"layout": {
 						"column": 1,
-						"row": 1,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(MemHeapUsedM) AS 'Memory heap used MB', latest(MemHeapMaxM) AS 'Memory heap max MB', latest(MemHeapCommittedM) AS 'Memory heap committed MB' FROM HadoopNameNodeSampleMetrics TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Non Heap Memory Statistics",
-					"layout": {
-						"column": 5,
-						"row": 1,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(MemNonHeapUsedM) AS 'Memory non heap used MB', latest(MemNonHeapMaxM) AS 'Memory non heap max MB', latest(MemNonHeapCommittedM) AS 'Memory non heap committed MB' FROM HadoopNameNodeSampleMetrics TIMESERIES"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Files Statistics",
-					"layout": {
-						"column": 9,
-						"row": 1,
-						"width": 4,
+						"row": 3,
+						"width": 6,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -1461,7 +1501,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(FilesTotal), latest(FilesCreated), latest(FilesDeleted), latest(FilesRenamed) FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
+								"query": "SELECT latest(AMResourceLimitMB) AS 'AM Resource limit MB', latest(AMResourceLimitVCores) AS 'AM Resource limit V cores', latest(UsedAMResourceMB) AS 'Used AM resource MB', latest(UsedAMResourceVCores) AS 'Used AM resource V cores' FROM HadoopResourceManagerMetrics TIMESERIES AUTO"
 							}
 						],
 						"platformOptions": {
@@ -1470,11 +1510,11 @@
 					}
 				},
 				{
-					"title": "Blocks Statistics",
+					"title": "AM Launch Delay Avg Time",
 					"layout": {
-						"column": 1,
-						"row": 4,
-						"width": 4,
+						"column": 7,
+						"row": 3,
+						"width": 6,
 						"height": 3
 					},
 					"linkedEntityGuids": null,
@@ -1491,67 +1531,7 @@
 						"nrqlQueries": [
 							{
 								"accountIds": [],
-								"query": "SELECT latest(BlocksTotal) AS 'Blocks total', latest(BlockCapacity) AS 'Block capacity', latest(CorruptBlocks) AS 'Corrupt blocks', latest(ExcessBlocks) AS 'Excess blocks', latest(MissingBlocks) AS 'Missing blocks' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO"
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Thread Statistics",
-					"layout": {
-						"column": 5,
-						"row": 4,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.area"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(Threads),latest(ThreadsBlocked) AS 'Threads blocked',latest(ThreadsRunnable) AS 'Threads runnable',latest(ThreadsNew) AS 'Threads new',latest(ThreadsTerminated) AS 'Threads terminated',latest(ThreadsWaiting) AS 'Threads waiting' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO "
-							}
-						],
-						"platformOptions": {
-							"ignoreTimeRange": false
-						}
-					}
-				},
-				{
-					"title": "Log Statistics",
-					"layout": {
-						"column": 9,
-						"row": 4,
-						"width": 4,
-						"height": 3
-					},
-					"linkedEntityGuids": null,
-					"visualization": {
-						"id": "viz.stacked-bar"
-					},
-					"rawConfiguration": {
-						"facet": {
-							"showOtherSeries": false
-						},
-						"legend": {
-							"enabled": true
-						},
-						"nrqlQueries": [
-							{
-								"accountIds": [],
-								"query": "SELECT latest(LogError) AS 'Log error', latest(LogFatal) AS 'Log fatal', latest(LogInfo) AS 'Log info', latest(LogWarn) AS 'Log warn' FROM HadoopNameNodeSampleMetrics TIMESERIES AUTO "
+								"query": "SELECT latest(AMLaunchDelayAvgTime) AS 'Milli seconds' FROM HadoopResourceManagerMetrics TIMESERIES  "
 							}
 						],
 						"platformOptions": {
@@ -1566,7 +1546,7 @@
 			"description": null,
 			"widgets": [
 				{
-					"title": "CPU usage (%)",
+					"title": "CPU Usage (%)",
 					"layout": {
 						"column": 1,
 						"row": 1,
@@ -1601,7 +1581,7 @@
 					}
 				},
 				{
-					"title": "Memory usage (%)",
+					"title": "Memory Usage (%)",
 					"layout": {
 						"column": 5,
 						"row": 1,
@@ -1631,7 +1611,7 @@
 					}
 				},
 				{
-					"title": "Storage usage (%)",
+					"title": "Storage Usage (%)",
 					"layout": {
 						"column": 9,
 						"row": 1,
@@ -1754,10 +1734,26 @@
 			"description": null,
 			"widgets": [
 				{
-					"title": "Apache Hadoop Logs",
+					"title": "",
 					"layout": {
 						"column": 1,
 						"row": 1,
+						"width": 12,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "## Please choose the Apache Hadoop logtype"
+					}
+				},
+				{
+					"title": "Apache Hadoop Logs",
+					"layout": {
+						"column": 1,
+						"row": 2,
 						"width": 12,
 						"height": 4
 					},
@@ -1786,7 +1782,20 @@
 				"accountIds": [],
 				"query": "SELECT uniques(logtype) FROM Log since 1 month ago"
 			},
-			"title": "Select your log_type",
+			"title": "Select your logtype",
+			"type": "NRQL",
+			"isMultiSelection": false,
+			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "entity_name",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "SELECT uniques(entityName) FROM HadoopNameNodeSampleMetrics SINCE 3 MONTHS AGO "
+			},
+			"title": "Entity Name",
 			"type": "NRQL",
 			"isMultiSelection": false,
 			"replacementStrategy": "STRING"
