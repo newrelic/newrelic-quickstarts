@@ -684,41 +684,45 @@ icon.png
   ```
 
 ## Quickstart Preview
+⚠️  There is currently no way to preview Quickstarts locally as Jumpstart no longer owns the public I/O website (newrelic.io).
 
-Quickstart Previews are available for contributors to review their new or improved quickstarts directly from the Public I/O site! We provide two ways to view a preview:
+<details>
+  <summary>Deprecated preview steps</summary>
+    Quickstart Previews are available for contributors to review their new or improved quickstarts directly from the Public I/O site! We provide two ways to view a preview:
 
-### Local Quickstart Preview
+    ### Local Quickstart Preview
 
-- To view a local quickstart preview, you can run the command `yarn preview node-js/express` or `yarn preview catchpoint` using the _path_ to the quickstart within the `quickstarts/` directory.
-- This script needs to be run under the `utils` directory.
-- The script will run a local server for the Public I/O site to fetch files from the specified quickstart.
-- Currently this functionality is not working on the Public I/O site, but it is entirely possible to use it locally by running the older _deprecated_ version of the site [on your machine](https://github.com/newrelic/instant-observability-website#%EF%B8%8F-local-development).
-- The command line will provide a link that can be navigated to view the quickstart.
-  - In order for local quickstart preview to be enabled on the Public I/O site, there needs to be a `config.yml` file present in the quickstart directory. However, there does not need to have any content inside the file.
-  - _Only one quickstart may be served for local quickstart preview_
+    - To view a local quickstart preview, you can run the command `yarn preview node-js/express` or `yarn preview catchpoint` using the _path_ to the quickstart within the `quickstarts/` directory.
+    - This script needs to be run under the `utils` directory.
+    - The script will run a local server for the Public I/O site to fetch files from the specified quickstart.
+    - Currently this functionality is not working on the Public I/O site, but it is entirely possible to use it locally by running the older _deprecated_ version of the site [on your machine](https://github.com/newrelic/instant-observability-website#%EF%B8%8F-local-development).
+    - The command line will provide a link that can be navigated to view the quickstart.
+      - In order for local quickstart preview to be enabled on the Public I/O site, there needs to be a `config.yml` file present in the quickstart directory. However, there does not need to have any content inside the file.
+      - _Only one quickstart may be served for local quickstart preview_
 
-> Note: While working on a quickstart, changes may not be updated in the local preview automatically. If you do not see immediate changes, refresh the page to pull in recent updates.
+    > Note: While working on a quickstart, changes may not be updated in the local preview automatically. If you do not see immediate changes, refresh the page to pull in recent updates.
 
-#### Step-by-step guide to view Local Quickstart Preview
+    #### Step-by-step guide to view Local Quickstart Preview
 
-Clone down the [_deprecated_ site](https://github.com/newrelic/instant-observability-website#%EF%B8%8F-local-development) to your machine and follow the local development instructions. Once you have it up and running, continue to the steps below.
+    Clone down the [_deprecated_ site](https://github.com/newrelic/instant-observability-website#%EF%B8%8F-local-development) to your machine and follow the local development instructions. Once you have it up and running, continue to the steps below.
 
-Starting from the top level of the repository: `newrelic-quickstarts`
+    Starting from the top level of the repository: `newrelic-quickstarts`
 
-```bash
-cd utils
-yarn install
-yarn preview aws/amazon-msk
-```
+    ```bash
+    cd utils
+    yarn install
+    yarn preview aws/amazon-msk
+    ```
 
-> Note: `aws/amazon-msk` is just an example. It can be replaced with the path to any quickstart.
+    > Note: `aws/amazon-msk` is just an example. It can be replaced with the path to any quickstart.
 
-## Support
+    ## Support
 
-### Pull Request Quickstart Preview
+    ### Pull Request Quickstart Preview
 
-- Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
-- If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+    - Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
+    - If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+</details>
 
 ### Feature requests
 
