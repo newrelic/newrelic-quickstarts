@@ -684,7 +684,7 @@ icon.png
   ```
 
 ## Quickstart Preview
-⚠️  There is currently no way to preview Quickstarts locally as Jumpstart no longer owns the public I/O website (newrelic.io).
+⚠️  There is currently no way to preview Quickstarts locally.
 
 <details>
   <summary>Deprecated preview steps</summary>
