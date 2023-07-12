@@ -23,7 +23,7 @@
           }
         },
         {
-          "title": "Sendmail Service Down",
+          "title": "Sendmail Service Status",
           "layout": {
             "column": 3,
             "row": 1,
@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(value) FROM SendmailDown"
+                "query": "SELECT latest(value) as 'Service Down' FROM SendmailDown"
               }
             ],
             "platformOptions": {
@@ -56,48 +56,11 @@
           }
         },
         {
-          "title": "High Memory (%)",
+          "title": "Message Undelivered (%)",
           "layout": {
             "column": 5,
             "row": 1,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT average(host.memoryUsedPercent) FROM Metric WHERE host.hostname = {{hostname}}"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 95
-              },
-              {
-                "alertSeverity": "WARNING",
-                "value": 90
-              }
-            ]
-          }
-        },
-        {
-          "title": "Message Not Accepted for Delivery (%)",
-          "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 2,
+            "width": 3,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -117,7 +80,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT 100 - ((latest(SendmailMessageAcceptedForDelivery.value) * 100) / latest(SendmailMessageStatus.sent)) from SendmailMessageStatus, SendmailMessageAcceptedForDelivery"
+                "query": "SELECT 100 - ((latest(SendmailMessageAcceptedForDelivery.value)) / latest(SendmailMessageStatus.sent)) * 100 as '% Message Undelivered' from SendmailMessageStatus, SendmailMessageAcceptedForDelivery"
               }
             ],
             "platformOptions": {
@@ -126,11 +89,48 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 60
+                "value": 5
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 40
+                "value": 3
+              }
+            ]
+          }
+        },
+        {
+          "title": "Select your host variable - High Memory (%)",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(host.memoryUsedPercent) AS '% High Memory' FROM Metric WHERE host.hostname = {{hostname}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 95
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 90
               }
             ]
           }
@@ -138,7 +138,7 @@
         {
           "title": "Total Errors Logged",
           "layout": {
-            "column": 9,
+            "column": 11,
             "row": 1,
             "width": 2,
             "height": 2
@@ -169,38 +169,6 @@
           }
         },
         {
-          "title": "Message(s) Sent",
-          "layout": {
-            "column": 11,
-            "row": 1,
-            "width": 2,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT latest(sent) FROM SendmailMessageStatus"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "value": 0
-              }
-            ]
-          }
-        },
-        {
           "title": "",
           "layout": {
             "column": 1,
@@ -217,11 +185,11 @@
           }
         },
         {
-          "title": "Sendmail Up",
+          "title": "Recent Outages",
           "layout": {
             "column": 3,
             "row": 3,
-            "width": 2,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -232,8 +200,12 @@
             "colors": {
               "seriesOverrides": [
                 {
-                  "color": "#258104",
-                  "seriesName": "Service Up"
+                  "color": "#46d214",
+                  "seriesName": "Sendmail Up"
+                },
+                {
+                  "color": "#cd1b0e",
+                  "seriesName": "Sendmail Down"
                 }
               ]
             },
@@ -246,7 +218,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(value) as 'Service Up' FROM SendmailUp TIMESERIES AUTO "
+                "query": "SELECT latest(SendmailUp.value) as 'Sendmail Up', latest(SendmailDown.value) as 'Sendmail Down' FROM SendmailUp, SendmailDown TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -257,9 +229,9 @@
         {
           "title": "Message(s) Accepted for Delivery",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 3,
-            "width": 3,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -287,36 +259,6 @@
         {
           "title": "Message(s) Sent",
           "layout": {
-            "column": 8,
-            "row": 3,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT latest(sent) as 'Sent' FROM SendmailMessageStatus TIMESERIES AUTO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Message(s) Deferred",
-          "layout": {
             "column": 11,
             "row": 3,
             "width": 2,
@@ -333,7 +275,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(deferred) FROM SendmailMessageStatus"
+                "query": "SELECT latest(sent) FROM SendmailMessageStatus"
               }
             ],
             "platformOptions": {
@@ -341,22 +283,47 @@
             },
             "thresholds": [
               {
-                "alertSeverity": "CRITICAL",
-                "value": 5
-              },
-              {
-                "alertSeverity": "WARNING",
                 "value": 0
               }
             ]
           }
         },
         {
-          "title": "Connection Time out",
+          "title": "Message(s) Failed",
           "layout": {
             "column": 1,
             "row": 6,
-            "width": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) as 'Number of message held in user folder' FROM SendmailHeldMessage TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connection Time out",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -382,11 +349,57 @@
           }
         },
         {
+          "title": "Message(s) Sent",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(sent) as 'Sent' FROM SendmailMessageStatus TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Errors\n\nSendmail log error messages help you understand why a message wasn't sent successfully."
+          }
+        },
+        {
           "title": "Error : Host Not Found",
           "layout": {
-            "column": 4,
-            "row": 6,
-            "width": 3,
+            "column": 1,
+            "row": 10,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -414,9 +427,9 @@
         {
           "title": "SMTP Service Unreachable",
           "layout": {
-            "column": 7,
-            "row": 6,
-            "width": 3,
+            "column": 5,
+            "row": 10,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -442,16 +455,16 @@
           }
         },
         {
-          "title": "Message(s) Failed",
+          "title": "Message(s) Deferred",
           "layout": {
-            "column": 10,
-            "row": 6,
-            "width": 3,
+            "column": 9,
+            "row": 10,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -463,11 +476,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(value) as 'Number of message held in user folder' FROM SendmailHeldMessage TIMESERIES AUTO "
+                "query": "SELECT latest(deferred) FROM SendmailMessageStatus TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
             }
           }
         }
@@ -958,7 +974,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Message Not Accepted for Delivery (%)",
+          "title": "Message Undelivered (%)",
           "layout": {
             "column": 1,
             "row": 1,
@@ -976,7 +992,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT 100 - ((latest(SendmailMessageAcceptedForDelivery.value) * 100) / latest(SendmailMessageStatus.sent)) as 'Percent %' from SendmailMessageStatus, SendmailMessageAcceptedForDelivery"
+                "query": "SELECT 100 - ((latest(SendmailMessageAcceptedForDelivery.value))/ latest(SendmailMessageStatus.sent)) * 100 as '% Message Undelivered' from SendmailMessageStatus, SendmailMessageAcceptedForDelivery"
               }
             ],
             "platformOptions": {
@@ -995,7 +1011,7 @@
           }
         },
         {
-          "title": "Sendmail Service Down",
+          "title": "Sendmail Service Status",
           "layout": {
             "column": 4,
             "row": 1,
@@ -1013,7 +1029,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(value) FROM SendmailDown"
+                "query": "SELECT latest(value) as 'Service Down' FROM SendmailDown"
               }
             ],
             "platformOptions": {
@@ -1065,7 +1081,7 @@
           }
         },
         {
-          "title": "High Memory (%)",
+          "title": "Select your host variable - High Memory (%)",
           "layout": {
             "column": 10,
             "row": 1,
@@ -1083,7 +1099,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(host.memoryUsedPercent) FROM Metric WHERE host.hostname = {{hostname}}"
+                "query": "SELECT average(host.memoryUsedPercent) AS '% High Memory' FROM Metric WHERE host.hostname = {{hostname}}"
               }
             ],
             "platformOptions": {
