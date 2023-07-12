@@ -47,7 +47,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (latest(PostfixSMTPDtimedOut.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS 'SMTPD Connection Timed Out (%)' FROM PostfixSMTPDtimedOut"
+                "query": "SELECT (latest(PostfixSMTPDtimedOut.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS '% SMTPD Connection Timed Out' FROM PostfixSMTPDtimedOut"
               }
             ],
             "platformOptions": {
@@ -56,11 +56,11 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 5
+                "value": 90
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 2
+                "value": 80
               }
             ]
           }
@@ -90,7 +90,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (latest(PostfixSMTPDconnectionLost.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS 'SMTPD Connection Lost (%)' FROM PostfixSMTPDconnectionLost"
+                "query": "SELECT (latest(PostfixSMTPDconnectionLost.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS '% SMTPD Connection Lost' FROM PostfixSMTPDconnectionLost"
               }
             ],
             "platformOptions": {
@@ -99,11 +99,11 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 5
+                "value": 80
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 2
+                "value": 60
               }
             ]
           }
@@ -136,7 +136,7 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 0.9
+                "value": 0
               }
             ]
           }
@@ -264,7 +264,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(Ivalue) as '' FROM PostfixMessageInsertedinMailQ"
+                "query": "SELECT latest(Ivalue) FROM PostfixMessageInsertedinMailQ"
               }
             ],
             "platformOptions": {
@@ -296,7 +296,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(Rvalue) as '' FROM PostfixMessageRemovedFromMailQ"
+                "query": "SELECT latest(Rvalue) FROM PostfixMessageRemovedFromMailQ"
               }
             ],
             "platformOptions": {
@@ -348,7 +348,7 @@
           }
         },
         {
-          "title": "Postfix Status",
+          "title": "Recent Outages",
           "layout": {
             "column": 1,
             "row": 6,
@@ -360,6 +360,18 @@
             "id": "viz.area"
           },
           "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#58e30d",
+                  "seriesName": "Postfix Up"
+                },
+                {
+                  "color": "#e70d0d",
+                  "seriesName": "Postfix Down"
+                }
+              ]
+            },
             "facet": {
               "showOtherSeries": false
             },
@@ -369,7 +381,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(PostfixUp.value) as 'Service up', latest(PostfixDown.value) as 'Service down' FROM PostfixUp, PostfixDown TIMESERIES AUTO "
+                "query": "SELECT latest(PostfixUp.value) as 'Postfix Up', latest(PostfixDown.value) as 'Postfix Down' FROM PostfixUp, PostfixDown TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
@@ -416,7 +428,7 @@
           }
         },
         {
-          "title": "Bounced Non-delivery Notifications",
+          "title": "Bounced Non-delivery Notification",
           "layout": {
             "column": 7,
             "row": 6,
@@ -1010,10 +1022,31 @@
           }
         },
         {
-          "title": "Top Errors (Overall)",
+          "title": "Logs",
           "layout": {
             "column": 1,
             "row": 2,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT message FROM Log where logtype = {{logtype}} LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top Errors (Overall)",
+          "layout": {
+            "column": 1,
+            "row": 5,
             "width": 6,
             "height": 2
           },
@@ -1040,7 +1073,7 @@
           "title": "",
           "layout": {
             "column": 7,
-            "row": 2,
+            "row": 5,
             "width": 6,
             "height": 1
           },
@@ -1056,7 +1089,7 @@
           "title": "",
           "layout": {
             "column": 7,
-            "row": 3,
+            "row": 6,
             "width": 6,
             "height": 2
           },
@@ -1086,7 +1119,7 @@
           "title": "Message Bounce Details",
           "layout": {
             "column": 1,
-            "row": 4,
+            "row": 7,
             "width": 6,
             "height": 2
           },
@@ -1113,7 +1146,7 @@
           "title": "Top Warnings (Overall)",
           "layout": {
             "column": 7,
-            "row": 5,
+            "row": 8,
             "width": 6,
             "height": 4
           },
@@ -1140,7 +1173,7 @@
           "title": "Message Deferral Details",
           "layout": {
             "column": 1,
-            "row": 6,
+            "row": 9,
             "width": 6,
             "height": 3
           },
@@ -1161,27 +1194,6 @@
             "platformOptions": {
               "ignoreTimeRange": false
             }
-          }
-        },
-        {
-          "title": "Logs",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 12,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "logger.log-table-widget"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT message FROM Log where logtype = {{logtype}} LIMIT MAX"
-              }
-            ]
           }
         }
       ]
@@ -1565,7 +1577,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "SMTPD Connection Timed Out (%)",
+          "title": "Postfix Service Status",
           "layout": {
             "column": 1,
             "row": 1,
@@ -1583,7 +1595,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (latest(PostfixSMTPDtimedOut.value) * 100) / latest(PostfixSMTPDconnection.value) AS 'SMTPD Connection Timed Out (%)' FROM PostfixSMTPDtimedOut, PostfixSMTPDconnection"
+                "query": "SELECT latest(value) as 'Service Down' FROM PostfixDown"
               }
             ],
             "platformOptions": {
@@ -1592,17 +1604,13 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 5
-              },
-              {
-                "alertSeverity": "WARNING",
-                "value": 2
+                "value": 0
               }
             ]
           }
         },
         {
-          "title": "SMTPD Connection  Lost (%)",
+          "title": "SMTPD Connection Timed Out (%)",
           "layout": {
             "column": 5,
             "row": 1,
@@ -1620,7 +1628,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT (latest(PostfixSMTPDconnectionLost.value) * 100) / latest(PostfixSMTPDconnection.value) as 'SMTPD Connection  Lost (%)' FROM PostfixSMTPDconnection, PostfixSMTPDconnectionLost"
+                "query": "SELECT (latest(PostfixSMTPDtimedOut.value) * 100) / latest(PostfixSMTPDconnection.value) AS '% Connection Timed Out' FROM PostfixSMTPDtimedOut, PostfixSMTPDconnection"
               }
             ],
             "platformOptions": {
@@ -1629,17 +1637,17 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 5
+                "value": 90
               },
               {
                 "alertSeverity": "WARNING",
-                "value": 2
+                "value": 80
               }
             ]
           }
         },
         {
-          "title": "Postfix Service Down",
+          "title": "SMTPD Connection  Lost (%)",
           "layout": {
             "column": 9,
             "row": 1,
@@ -1657,7 +1665,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(value) as 'Postfix Service Down' FROM PostfixDown"
+                "query": "SELECT (latest(PostfixSMTPDconnectionLost.value) * 100) / latest(PostfixSMTPDconnection.value) as '% Connection Lost' FROM PostfixSMTPDconnection, PostfixSMTPDconnectionLost"
               }
             ],
             "platformOptions": {
@@ -1666,7 +1674,11 @@
             "thresholds": [
               {
                 "alertSeverity": "CRITICAL",
-                "value": 0.9
+                "value": 80
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 60
               }
             ]
           }
