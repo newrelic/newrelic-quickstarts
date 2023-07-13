@@ -1,0 +1,231 @@
+{
+    "name": "APM Transaction Analysis",
+    "description": null,
+    "permissions": "PUBLIC_READ_WRITE",
+    "pages": [
+      {
+        "name": "APM Transaction Analysis",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 9
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Transaction select percentile(duration, {{percentile}}) facet appName, name where appName in ({{app_name}}) and transactionType in ({{transaction_type}}) and transactionSubType in ({{transaction_sub_type}}) limit max"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "More examples",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Traffic Volume",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Transaction SELECT count(*) where appName in ({{app_name}}) FACET name since 1 day ago limit max"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Average duration",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Transaction SELECT average(duration) where appName in ({{app_name}}) FACET name since 1 day ago limit max"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Percentile",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Transaction SELECT percentile(duration, {{percentile}}) where appName in ({{app_name}}) FACET name since 1 day ago limit max"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "app_name",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(appName) from Transaction"
+        },
+        "title": "appName",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "percentile",
+        "items": [
+          {
+            "title": null,
+            "value": "25"
+          },
+          {
+            "title": null,
+            "value": "50"
+          },
+          {
+            "title": null,
+            "value": "75"
+          },
+          {
+            "title": null,
+            "value": "80"
+          },
+          {
+            "title": null,
+            "value": "90"
+          },
+          {
+            "title": null,
+            "value": "95"
+          },
+          {
+            "title": null,
+            "value": "99"
+          }
+        ],
+        "defaultValues": [
+          {
+            "value": {
+              "string": "50"
+            }
+          }
+        ],
+        "nrqlQuery": null,
+        "title": "percentile",
+        "type": "ENUM",
+        "isMultiSelection": false,
+        "replacementStrategy": "NUMBER"
+      },
+      {
+        "name": "transaction_type",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(transactionType) from Transaction"
+        },
+        "title": "transactionType",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "transaction_sub_type",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(transactionSubType) from Transaction"
+        },
+        "title": "transactionSubType",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
