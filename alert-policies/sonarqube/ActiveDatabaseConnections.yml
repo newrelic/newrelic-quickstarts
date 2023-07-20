@@ -3,14 +3,14 @@ name: Active Database Connections
 
 # Description and details
 description: |+
-  This alert is triggered if the database connections are below 1 for 5 minutes.
+  This alert is triggered if the database connections are below 2 for 5 minutes.
 # Type of alert
 type: STATIC
 
 # NRQL query
 nrql:
 
-  query: "SELECT IF(latest(db.connections)>0, latest(db.connections), False) AS '' FROM PostgresqlDatabaseSample WHERE displayName = 'sonarqube'"
+  query: "SELECT latest(db.connections) AS '' FROM PostgresqlDatabaseSample FACET displayName"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -19,18 +19,18 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: BELOW
     # Value that triggers a violation
-    threshold: 0.1
+    threshold: 1
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
   - priority: WARNING
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: BELOW
     # Value that triggers a violation
-    threshold: 0.9
+    threshold: 2
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
