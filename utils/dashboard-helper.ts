@@ -5,6 +5,7 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
+import { neatJSON } from 'neatjson';
 
 const regexAndWarning: [RegExp, string][] = [
   [/guid[`'"\) ]/, `\"guid\" should not be used`],
@@ -13,7 +14,7 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
   [
-    /\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/,
+    /\"accountIds\"\s*:\s*\[(?!\s*])([^\]\[]+)\]/,
     `\"accountIds\" must be set to []`,
   ],
 ];
@@ -27,6 +28,11 @@ export const checkLine = (line: string) => {
   }
   return warningsFound;
 };
+
+  export const getLines = (responseJSON: any) => {
+    // return JSON.stringify(responseJSON, null, 2).split('\n');
+    return neatJSON(responseJSON, {padding:2}).split('\n').map(line => line.replace(/,$/g, ''));
+  };
 
 const encodedNewline = '\n';
 
@@ -81,7 +87,7 @@ export const runHelper = async (
       }
       const responseJSON = await response.json();
 
-      const dashLines = JSON.stringify(responseJSON, null, 2).split('\n');
+      const dashLines = getLines(responseJSON);
 
       dashLines.forEach((line, lineNumber) => {
         const output = checkLine(line);
