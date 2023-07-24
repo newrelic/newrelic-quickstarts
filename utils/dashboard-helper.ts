@@ -10,9 +10,9 @@ import { neatJSON } from 'neatjson';
 const regexAndWarning: [RegExp, string][] = [
   [/guid[`'"\) ]/, `\"guid\" should not be used`],
   [/entityGuid/, `\"entityGuid\" should not be used`],
-  [/\"linkedEntityGuids\": (?:(?!null))/, `\"entityGuid\" should not be used`],
-  [/\"permissions\": /, `\"permissions\" field should not be used`],
-  [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
+  [/\"linkedEntityGuids\":(?:(?!null))/, `\"entityGuid\" should not be used`],
+  [/\"permissions\":/, `\"permissions\" field should not be used`],
+  [/\"accountId\":(?:(?!0))/, `\"accountId\" must be zero`],
   [
     /\"accountIds\"\s*:\s*\[(?!\s*])([^\]\[]+)\]/,
     `\"accountIds\" must be set to []`,
@@ -29,10 +29,20 @@ export const checkLine = (line: string) => {
   return warningsFound;
 };
 
-  export const getLines = (responseJSON: any) => {
-    // return JSON.stringify(responseJSON, null, 2).split('\n');
-    return neatJSON(responseJSON, {padding:2}).split('\n').map(line => line.replace(/,$/g, ''));
-  };
+export const getWarnings = (dashboardJson: any) => {
+  const dashLines = neatJSON(dashboardJson, {padding:2}).split('\n');
+  const warnings: string[] = [];
+
+  dashLines.forEach((line) => {
+    const output = checkLine(line);
+    if (output.length > 0) {
+      output.forEach((warning) =>
+        warnings.push(warning)
+      );
+    }
+  });
+  return warnings;
+}
 
 const encodedNewline = '\n';
 
@@ -68,7 +78,7 @@ export const runHelper = async (
     return false;
   }
 
-  const warnings: string[] = [];
+  let warnings: string[] = [];
 
   const files = await fetchPaginatedGHResults(new URL(prUrl).href, token);
 
@@ -87,16 +97,7 @@ export const runHelper = async (
       }
       const responseJSON = await response.json();
 
-      const dashLines = getLines(responseJSON);
-
-      dashLines.forEach((line, lineNumber) => {
-        const output = checkLine(line);
-        if (output.length > 0) {
-          output.forEach((o) =>
-            warnings.push(`| ${o} | ${dash.filename} | ${lineNumber + 1} |`)
-          );
-        }
-      });
+      warnings = getWarnings(responseJSON);
     } catch (error: any) {
       console.error('Error:', error.message);
       return false;

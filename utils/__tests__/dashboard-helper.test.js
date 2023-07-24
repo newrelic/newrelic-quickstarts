@@ -4,6 +4,7 @@ import {
   createWarningComment,
   runHelper,
   getLines,
+  getWarnings,
 } from '../dashboard-helper';
 import * as ghHelpers from '../lib/github-api-helpers';
 import * as core from '@actions/core';
@@ -20,90 +21,56 @@ jest.mock('../lib/github-api-helpers', () => {
 });
 jest.mock('node-fetch');
 
-const testJson = {
-  "name": "Azure Disk Storage",
-  "description": null,
-  "pages": [
-    {
-      "name": "Azure Disk Storage",
-      "description": null,
-      "widgets": [
-        {
-          "title": "Summary",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 8,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [
-                  31415
-                ],
-                "query": " FROM Metric SELECT average(azure.compute.disks.CompositeDiskReadBytes.sec) AS 'Average Composite Disk Read Bytes', average(azure.compute.disks.CompositeDiskReadOperations.sec) AS 'Average Composite Disk Read Operations', average(azure.compute.disks.CompositeDiskWriteBytes.sec) AS 'Average Composite Disk Write Bytes', average(azure.compute.disks.CompositeDiskWriteOperations.sec) AS 'Average Composite Disk Write Operations', average(azure.compute.disks.DiskPaidBurstIOPS) AS 'Average Disk Paid Burst IOPS' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.compute/disks' "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-      ]
-    }
-  ],
-  "variables": []
-}
-
 describe('dashboard-helper', () => {
-  describe('checkLine', () => {
+  describe('getWarnings', () => {
     test('handles empty string input', () => {
-      expect(checkLine('')).toHaveLength(0);
+      expect(getWarnings('')).toHaveLength(0);
     });
 
     test('finds guid', () => {
-      expect(checkLine(`(entity.guid)`)).toHaveLength(1);
+      expect(getWarnings(`(entity.guid)`)).toHaveLength(1);
     });
 
     test('finds entityGuid', () => {
-      expect(checkLine(`entityGuid`)).toHaveLength(1);
+      expect(getWarnings({'entityGuid': 1234})).toHaveLength(1);
     });
 
     test('finds linkedEntityGuids', () => {
-      expect(checkLine(`"linkedEntityGuids": 123456`)).toHaveLength(1);
+      expect(getWarnings({"linkedEntityGuids":123456})).toHaveLength(1);
     });
 
     test('does not find null linkedEntityGuids', () => {
-      expect(checkLine(`"linkedEntityGuids": null`)).toHaveLength(0);
+      expect(getWarnings({"linkedEntityGuids":null})).toHaveLength(0);
     });
 
     test('finds permissions field', () => {
-      expect(checkLine(`"permissions": test`)).toHaveLength(1);
+      expect(getWarnings({"permissions":test})).toHaveLength(1);
     });
 
     test('finds accountId', () => {
-      expect(checkLine(`"accountId": 123456`)).toHaveLength(1);
+      expect(getWarnings({"accountId":123456})).toHaveLength(1);
     });
 
     test('does not find accountId equal to zero', () => {
-      expect(checkLine(`"accountId": 0`)).toHaveLength(0);
+      expect(getWarnings({"accountId":0})).toHaveLength(0);
     });
 
     test('finds accountIds', () => {
-      expect(checkLine(`"accountIds": [  31415  ]`)).toHaveLength(1);
+      expect(getWarnings({"accountIds":[  31415  ]})).toHaveLength(1);
     });
 
     test('does not find accountIds equal to []', () => {
-      expect(checkLine(`"accountIds": []`)).toHaveLength(0);
+      expect(getWarnings({"accountIds":[]})).toHaveLength(0);
     });
+
+    test('finds warnings across multiple lines', () => {
+      const multiLine = {
+        "accountIds": [ 
+          12345678 
+        ],
+      }
+      expect(getWarnings(multiLine)).toHaveLength(1);
+    });    
   });
 
   describe('createWarningComment', () => {
@@ -114,21 +81,6 @@ describe('dashboard-helper', () => {
       expect(testComment).toContain(
         '### The PR checks have run and found the following warnings:'
       );
-    });
-  });
-
-  describe('getLines', () => {
-    test('finds accountIds across multiple lines', () => {
-      // const multiLine = {"accountIds": [ 12345678 ]}
-      console.debug('Got here');
-      const lines = getLines(testJson);
-      console.debug("lines: ", lines);
-      const warnings = [];
-      for (const line of lines) {
-        console.debug(line);
-        warnings.push(...checkLine(line));
-      }
-      expect(warnings).toHaveLength(1);
     });
   });
 
@@ -164,6 +116,7 @@ describe('dashboard-helper', () => {
       });
 
       const output = await runHelper('http://localhost', 'token');
+      console.debug('output: ', output)
       expect(output).toBe(true);
       expect(fetch).toHaveBeenCalledWith(
         'raw-url/dashboards/cool-dash/cool-dash.json',
