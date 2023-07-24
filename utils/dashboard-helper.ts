@@ -51,7 +51,7 @@ export const createWarningComment = (warnings: string[]) => {
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
   ];
 
-  const tableHeader = `| Warning | Filepath | Line # | ${encodedNewline}| --- | --- | --- | `;
+  const tableHeader = `| Warning | Filepath | ${encodedNewline}| --- | --- | `;
   commentMessage.push(tableHeader);
 
   warnings.forEach((w) => commentMessage.push(w));
@@ -97,7 +97,10 @@ export const runHelper = async (
       }
       const responseJSON = await response.json();
 
-      warnings = getWarnings(responseJSON);
+      const output = getWarnings(responseJSON);
+      output.forEach((o) =>
+        warnings.push(`| ${o} | ${dash.filename} |`)
+      );
     } catch (error: any) {
       console.error('Error:', error.message);
       return false;

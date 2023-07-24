@@ -75,7 +75,7 @@ describe('dashboard-helper', () => {
 
   describe('createWarningComment', () => {
     test('creates comment', () => {
-      const warnings = ['test string | test file | test line'];
+      const warnings = ['test string | test file'];
       const testComment = createWarningComment(warnings);
       expect(testComment).toContain(warnings[0]);
       expect(testComment).toContain(
@@ -124,7 +124,7 @@ describe('dashboard-helper', () => {
       );
       expect(core.setOutput).toHaveBeenCalledWith(
         'comment',
-        '### The PR checks have run and found the following warnings:\n\n| Warning | Filepath | Line # | \n| --- | --- | --- | \n| "permissions" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |\n\nReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. \n'
+        '### The PR checks have run and found the following warnings:\n\n| Warning | Filepath | \n| --- | --- | \n| "permissions" field should not be used | dashboards/cool-dash/cool-dash.json |\n\nReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. \n'
       );
     });
 
