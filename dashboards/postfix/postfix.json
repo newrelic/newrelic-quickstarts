@@ -1,0 +1,1610 @@
+{
+  "name": "Postfix",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Postfix logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdFCHLUmxMKFYGZz8WtfWPQ6e022rAm5lEFxU39cIZigy4KU_wS-NWVjjVWGwqwzx1gY8&usqp=CAU)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(if(host='running','Up','Down')) as 'Server status' FROM (select latest(hostStatus) as 'host' FROM SystemSample WHERE entityName = {{ hostname }})"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "value": 0.9
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": -0.1
+              },
+              {
+                "alertSeverity": "WARNING"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Postfix Service Status",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) as 'Postfix service status' FROM PostfixUp"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "value": 0.9
+              }
+            ]
+          }
+        },
+        {
+          "title": "Connection Lost(%)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Connection Timed Out (%)",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (latest(PostfixSMTPDconnectionLost.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS '(%) SMTPD connection lost' FROM PostfixSMTPDconnectionLost"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 90
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 80
+              }
+            ]
+          }
+        },
+        {
+          "title": "Connection  Lost (%)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Connection  Lost (%)",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (latest(PostfixSMTPDtimedOut.value) * 100) / (SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection) AS '(%) SMTPD connection timed out' FROM PostfixSMTPDtimedOut"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 80
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 60
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) as 'bounced non-delivery notification' FROM PostfixBounceNondeliveryNotification"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 3
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Message(s) Overview",
+          "layout": {
+            "column": 3,
+            "row": 2,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(metricValue) FROM PostfixGrandTotals FACET message"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) AS 'SASL authentication failed' FROM PostfixSASLauthFailed"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 3
+              },
+              {
+                "alertSeverity": "WARNING",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Message(s) Removed from Mail Queue",
+          "layout": {
+            "column": 11,
+            "row": 2,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Rvalue) as 'message(s) removed from mailq' FROM PostfixMessageRemovedFromMailQ"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "**About**\n\nInstrument your application with New Relic - [Add Data](https://docs.newrelic.com/)\n\nUnable to find data in your dashboard? - [Troubleshoot here](\nhttps://docs.newrelic.com)\n\nFollow New Relic [Postfix documentation](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/postfix-monitoring-integration) to instrument Postfix.\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=Postfix) here and let us know how we can improve it for you.\n"
+          }
+        },
+        {
+          "title": "Bytes Received Vs Delivered",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(metricValue) FROM PostfixMessageBytes FACET messageBytes"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Recent Outages",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#58e30d",
+                  "seriesName": "Postfix Up"
+                },
+                {
+                  "color": "#e70d0d",
+                  "seriesName": "Postfix Down"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(PostfixUp.value) as 'Postfix Up', latest(PostfixDown.value) as 'Postfix Down' FROM PostfixUp, PostfixDown TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "SASL Authentication Failed",
+          "layout": {
+            "column": 4,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#c93636",
+                  "seriesName": "Smtp Authfailed Count"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) FROM PostfixSASLauthFailed TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Bounced Non-Delivery Notification",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#cb2525",
+                  "seriesName": "Value"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) FROM PostfixBounceNondeliveryNotification TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Message(s) Held",
+          "layout": {
+            "column": 10,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) AS 'Held - Temporarily suspended messages from delivery.' FROM PostfixHeldMessage TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Message Traffic Report",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Message Per-Day Traffic Summary",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(received), latest(delivered),latest(deferred), latest(bounced), latest(rejected) from PostfixMessageTrafficPerDay FACET date"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Message Per-Hour Report - (GMT-08:00) Pacific Time (US & Canada)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(received.perhour) As 'Received', latest(delivered.perhour) As 'Delivered',   latest(deferred.perhour) As 'Deferred', latest(bounced.perhour) As 'Bounced',latest(rejected.perhour) As 'Rejected' FROM PostfixMessagePerHourReport  LIMIT 25 facet time AS 'Hours' order by average(timestamp)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Email Delivery Process",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "#### Step 1 : \n#### Pick up Process"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 2,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Arrow](https://www.freeiconspng.com/uploads/blue-arrow-png-23.png)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "#### Step 2 : \n#### Clean up Process"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Arrow](https://www.freeiconspng.com/uploads/blue-arrow-png-23.png)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "#### Step 3 : \n#### Message(s) Inserted into Mail Queue"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Arrow](https://www.freeiconspng.com/uploads/blue-arrow-png-23.png)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "#### Step 4 : \n#### Message(s) Handled by the SMTP Process"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Arrow](https://www.freeiconspng.com/uploads/blue-arrow-png-23.png)"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "#### Step 5 : \n#### Message(s) Removed from Mail Queue"
+          }
+        },
+        {
+          "title": "Step 1 : Pick up Process",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(PICKUPvalue) AS 'Pickup process to ensure timely delivery of email messages.' FROM PostfixEmailDeliveryProcess TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Step 2 : Clean up Process",
+          "layout": {
+            "column": 7,
+            "row": 2,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(CLEANUPvalue) AS 'Emails are sanitized by analyzing the headers, content, and attachments before passing to the next level.' FROM PostfixEmailDeliveryProcess TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Queue Monitoring\nMonitoring the Postfix mail queue involves keeping a close check on it and scanning for any anomalies or deviations. There are several ways to track delivery, including looking at the queue size, mail delivery logs, the state of the delivery process, and the server's resources."
+          }
+        },
+        {
+          "title": "Step 3 : Message(s) Inserted into Mail Queue",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Ivalue) AS 'Temporary storage where emails are stored until they can be processed/delivered.' FROM PostfixMessageInsertedinMailQ TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Step 4 : Message(s) Handled by the SMTP Process",
+          "layout": {
+            "column": 6,
+            "row": 6,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(BOUNCEDmsg) AS 'Bounced',latest(SENTmsg) AS 'Sent', latest(DEFERREDmsg) AS 'Deferred' FROM PostfixMessageHandledBySMTP"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Step 5 : Message(s) Removed from Mail Queue",
+          "layout": {
+            "column": 8,
+            "row": 6,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Rvalue) AS 'After the message(s) are processed or delivered, they can be removed from the queue.' FROM PostfixMessageRemovedFromMailQ TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Header Info",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Sender(s) and Recipient(s) with Host(s)/Domain(s)\nFind detailed insights about headers that convey important information about the email’s origin and destination."
+          }
+        },
+        {
+          "title": "Message Delivery Host/Domain",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(sentCount), latest(bytesDelivered), latest(defers), latest(avgDaily), latest(maxDaily) FROM  PostfixHostSummary FACET host"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Recipients by Message Count",
+          "layout": {
+            "column": 8,
+            "row": 2,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(recipient.msgCount) FROM PostfixSenderRecipientMessageCount FACET recipients"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Messages Received Host/Domain",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(msgCount) as 'Messages Received', latest(bytesReceived) FROM PostfixHostSummary FACET hostDetail"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Senders by Message Count",
+          "layout": {
+            "column": 8,
+            "row": 5,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(sender.msgCount) FROM PostfixSenderRecipientMessageCount FACET senders"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Logs - Errors & Warnings\n\nPostfix provides robust logging capabilities, allowing administrators to track and monitor email traffic, diagnose issues, and ensure smooth mail delivery."
+          }
+        },
+        {
+          "title": "Logs (Select your appropriate log variable)",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT message FROM Log where logtype = {{logtype}} LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top Errors (Overall)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Fatal.msgCount) AS 'Message Count', latest(fatalMessage) AS 'Error Message(s)' FROM PostfixErrorMessage "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Daemon Messages with Number of Occurrences\nA daemon is a background process that runs continuously to perform specific tasks & activities for Postfix service."
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(daemon.msgCount) as 'Daemon Messages' FROM PostfixDaemonMessage FACET daemonMessage"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Message Bounce Details",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Bounce.msgCount), latest(bounceMessage) FROM PostfixBounceMessage"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top Warnings (Overall)",
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(Warning.msgCount) FROM PostfixWarningMessage FACET warningMessage"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Message Deferral Details",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(deferral.msgCount) from PostfixDeferralMessage FACET deferralMessage"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Connections",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Connection(s) with Postfix Service\nConnection event are logged if other mail services connect to or disconnect from the Postfix service."
+          }
+        },
+        {
+          "title": "SMTPD Connection(s)",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) as 'Total Connections' FROM PostfixSMTPDconnection TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "SMTPD Disconnection(s)",
+          "layout": {
+            "column": 5,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) as 'Total Disconnections' FROM PostfixSMTPDdisconnection TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connection(s)",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(PostfixSMTPDtimedOut.value) AS 'Connection(s) Timed Out', latest(PostfixSMTPDconnectionLost.value) AS 'Connection(s) Lost' FROM PostfixSMTPDtimedOut, PostfixSMTPDconnectionLost TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "SMTP Connection(s)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) AS 'Total connections' FROM PostfixSMTPconnection TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "SMTP Disconnection(s)",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(value) AS 'Total Disconnections' FROM PostfixSMTPdisconnection TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure Monitoring",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Infrastructure Monitoring\n\nUse New Relic infrastructure agent to track host-related information in real time. Whether it is operating on dedicated servers, in the cloud, or in containers, the full infrastructure can be observed."
+          }
+        },
+        {
+          "title": "CPU Usage (%)",
+          "layout": {
+            "column": 1,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(host.cpuPercent) AS 'CPU Usage (%)', latest(host.cpuIdlePercent) AS 'CPU Idle (%)' WHERE host.hostname = {{hostname}} TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Memory Usage (%)",
+          "layout": {
+            "column": 5,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(host.memoryUsedPercent) AS 'Memory Used (%)', latest(host.memoryFreePercent) AS 'Memory Free (%)' WHERE host.hostname = {{hostname}} TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Storage Usage (%)",
+          "layout": {
+            "column": 9,
+            "row": 2,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(host.disk.usedPercent) AS 'Storage Used (%)', latest(host.disk.freePercent) AS 'Storage Free (%)' WHERE host.hostname = {{hostname}} TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network Traffic",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(host.net.transmitBytesPerSecond) AS 'Transmit bytes per second', average(host.net.receiveBytesPerSecond) AS 'Receive bytes per second' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Load Average",
+          "layout": {
+            "column": 4,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(host.loadAverageOneMinute) as '1 minute', average(host.loadAverageFiveMinute) AS '5 minutes', average(host.loadAverageFifteenMinute) AS '15 minutes' FROM Metric WHERE host.hostname = {{hostname}} TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Processes Running",
+          "layout": {
+            "column": 8,
+            "row": 5,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(host.process.cpuPercent) as 'CPU %', latest(host.process.threadCount) as 'Threads' FROM Metric WHERE host.hostname = {{hostname}} FACET processId, processDisplayName ORDER BY cpuPercent asc LIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "hostname",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(entity.name) FROM Metric since 2 weeks ago"
+      },
+      "title": "Select your host",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "logtype",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(logtype) FROM Log since 3 months ago"
+      },
+      "title": "Select your logtype",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
