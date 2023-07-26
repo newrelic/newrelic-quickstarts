@@ -78,7 +78,7 @@ export const runHelper = async (
     return false;
   }
 
-  let warnings: string[] = [];
+  const warningMessages: string[] = [];
 
   const files = await fetchPaginatedGHResults(new URL(prUrl).href, token);
 
@@ -97,9 +97,9 @@ export const runHelper = async (
       }
       const responseJSON = await response.json();
 
-      const output = getWarnings(responseJSON);
-      output.forEach((o) =>
-        warnings.push(`| ${o} | ${dash.filename} |`)
+      const warnings = getWarnings(responseJSON);
+      warnings.forEach((o) =>
+        warningMessages.push(`| ${o} | ${dash.filename} |`)
       );
     } catch (error: any) {
       console.error('Error:', error.message);
@@ -107,9 +107,9 @@ export const runHelper = async (
     }
   }
 
-  if (warnings.length > 0) {
-    console.log('Found warnings:', warnings);
-    const warningComment = createWarningComment(warnings);
+  if (warningMessages.length > 0) {
+    console.log('Found warnings:', warningMessages);
+    const warningComment = createWarningComment(warningMessages);
     core.setOutput('comment', warningComment);
   }
 

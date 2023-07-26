@@ -116,7 +116,6 @@ describe('dashboard-helper', () => {
       });
 
       const output = await runHelper('http://localhost', 'token');
-      console.debug('output: ', output)
       expect(output).toBe(true);
       expect(fetch).toHaveBeenCalledWith(
         'raw-url/dashboards/cool-dash/cool-dash.json',
