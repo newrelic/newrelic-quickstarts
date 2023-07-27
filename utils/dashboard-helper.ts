@@ -5,16 +5,15 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import { neatJSON } from 'neatjson';
 
 const regexAndWarning: [RegExp, string][] = [
   [/guid[`'"\) ]/, `\"guid\" should not be used`],
   [/entityGuid/, `\"entityGuid\" should not be used`],
-  [/\"linkedEntityGuids\":(?:(?!null))/, `\"entityGuid\" should not be used`],
-  [/\"permissions\":/, `\"permissions\" field should not be used`],
-  [/\"accountId\":(?:(?!0))/, `\"accountId\" must be zero`],
+  [/\"linkedEntityGuids\": (?:(?!null))/, `\"entityGuid\" should not be used`],
+  [/\"permissions\": /, `\"permissions\" field should not be used`],
+  [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
   [
-    /\"accountIds\"\s*:\s*\[(?!\s*])([^\]\[]+)\]/,
+    /\"accountIds\": \"\[(?!\s*])([^\]\[]+)\]\"/,
     `\"accountIds\" must be set to []`,
   ],
 ];
@@ -30,7 +29,12 @@ export const checkLine = (line: string) => {
 };
 
 export const getWarnings = (dashboardJson: any) => {
-  const dashLines = neatJSON(dashboardJson, {padding:2}).split('\n');
+  const dashLines = JSON.stringify(dashboardJson, (k, v) => {
+    if (Array.isArray(v)) {
+      return JSON.stringify(v)
+    }
+    return v
+  }, 2).split('\n');
   const warnings: string[] = [];
 
   dashLines.forEach((line) => {

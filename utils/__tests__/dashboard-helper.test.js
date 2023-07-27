@@ -44,7 +44,7 @@ describe('dashboard-helper', () => {
     });
 
     test('finds permissions field', () => {
-      expect(getWarnings({"permissions":test})).toHaveLength(1);
+      expect(getWarnings({"permissions": 'test'})).toHaveLength(1);
     });
 
     test('finds accountId', () => {
