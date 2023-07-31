@@ -3,6 +3,8 @@ import {
   checkLine,
   createWarningComment,
   runHelper,
+  getLines,
+  getWarnings,
 } from '../dashboard-helper';
 import * as ghHelpers from '../lib/github-api-helpers';
 import * as core from '@actions/core';
@@ -20,51 +22,60 @@ jest.mock('../lib/github-api-helpers', () => {
 jest.mock('node-fetch');
 
 describe('dashboard-helper', () => {
-  describe('checkLine', () => {
+  describe('getWarnings', () => {
     test('handles empty string input', () => {
-      expect(checkLine('')).toHaveLength(0);
+      expect(getWarnings('')).toHaveLength(0);
     });
 
     test('finds guid', () => {
-      expect(checkLine(`(entity.guid)`)).toHaveLength(1);
+      expect(getWarnings(`(entity.guid)`)).toHaveLength(1);
     });
 
     test('finds entityGuid', () => {
-      expect(checkLine(`entityGuid`)).toHaveLength(1);
+      expect(getWarnings({'entityGuid': 1234})).toHaveLength(1);
     });
 
     test('finds linkedEntityGuids', () => {
-      expect(checkLine(`"linkedEntityGuids": 123456`)).toHaveLength(1);
+      expect(getWarnings({"linkedEntityGuids":123456})).toHaveLength(1);
     });
 
     test('does not find null linkedEntityGuids', () => {
-      expect(checkLine(`"linkedEntityGuids": null`)).toHaveLength(0);
+      expect(getWarnings({"linkedEntityGuids":null})).toHaveLength(0);
     });
 
     test('finds permissions field', () => {
-      expect(checkLine(`"permissions": test`)).toHaveLength(1);
+      expect(getWarnings({"permissions": 'test'})).toHaveLength(1);
     });
 
     test('finds accountId', () => {
-      expect(checkLine(`"accountId": 123456`)).toHaveLength(1);
+      expect(getWarnings({"accountId":123456})).toHaveLength(1);
     });
 
     test('does not find accountId equal to zero', () => {
-      expect(checkLine(`"accountId": 0`)).toHaveLength(0);
+      expect(getWarnings({"accountId":0})).toHaveLength(0);
     });
 
     test('finds accountIds', () => {
-      expect(checkLine(`"accountIds": [ 0 ]`)).toHaveLength(1);
+      expect(getWarnings({"accountIds":[  31415  ]})).toHaveLength(1);
     });
 
     test('does not find accountIds equal to []', () => {
-      expect(checkLine(`"accountIds": []`)).toHaveLength(0);
+      expect(getWarnings({"accountIds":[]})).toHaveLength(0);
     });
+
+    test('finds warnings across multiple lines', () => {
+      const multiLine = {
+        "accountIds": [ 
+          12345678 
+        ],
+      }
+      expect(getWarnings(multiLine)).toHaveLength(1);
+    });    
   });
 
   describe('createWarningComment', () => {
     test('creates comment', () => {
-      const warnings = ['test string | test file | test line'];
+      const warnings = ['test string | test file'];
       const testComment = createWarningComment(warnings);
       expect(testComment).toContain(warnings[0]);
       expect(testComment).toContain(
@@ -112,7 +123,7 @@ describe('dashboard-helper', () => {
       );
       expect(core.setOutput).toHaveBeenCalledWith(
         'comment',
-        '### The PR checks have run and found the following warnings:\n\n| Warning | Filepath | Line # | \n| --- | --- | --- | \n| "permissions" field should not be used | dashboards/cool-dash/cool-dash.json | 2 |\n\nReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. \n'
+        '### The PR checks have run and found the following warnings:\n\n| Warning | Filepath | \n| --- | --- | \n| "permissions" field should not be used | dashboards/cool-dash/cool-dash.json |\n\nReference the [Contributing Docs for Dashboards](https://github.com/newrelic/newrelic-quickstarts/blob/main/CONTRIBUTING.md#dashboards) for more information. \n'
       );
     });
 
