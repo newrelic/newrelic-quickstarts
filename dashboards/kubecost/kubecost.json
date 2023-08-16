@@ -40,7 +40,7 @@
             },
             "nrqlQueries": [
               {
-"accountIds": [},
+"accountIds": [],
                 "query": "SELECT sum(`Total Cost($)`) AS 'Total Monthly Cost' \nFROM \n (\n  FROM Metric SELECT \n    (SELECT sum(`total_node_cost`) FROM (FROM Metric SELECT (average(kube_node_status_capacity_cpu_cores) * average(node_cpu_hourly_cost) * 730 + average(node_gpu_hourly_cost) * 730 + average(kube_node_status_capacity_memory_bytes)/1024/1024/1024 * average(node_ram_hourly_cost) * 730) AS 'total_node_cost' FACET node))\n   + \n    (SELECT (sum(acflb) / 1024 / 1024 / 1024 * {{localStorageGBCost}}) AS 'Container Cost($)' FROM (SELECT (average(container_fs_limit_bytes) * cardinality(container_fs_limit_bytes)) AS 'acflb' FROM Metric WHERE (NOT ((device = 'tmpfs')) AND (id = '/')))) + (SELECT sum(aphc * {{timePeriod}} * akpcb / 1024 / 1024 / 1024) AS 'Total Persistent Volume Cost($)' FROM (FROM Metric SELECT average(pv_hourly_cost) AS 'aphc', average(kube_persistentvolume_capacity_bytes) AS 'akpcb' FACET persistentvolume, instance))\n  AS 'Total Cost($)'\n)"
               }
             ],
