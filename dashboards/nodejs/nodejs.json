@@ -231,39 +231,12 @@
           }
         },
         {
-          "title": "Instance Connection",
+          "title": "Total Errors",
           "layout": {
             "column": 1,
             "row": 5,
             "width": 2,
             "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Instance/connects` FROM Metric WHERE metricTimesliceName = 'Instance/connects' AND appName = {{appName_nodejs}}"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Total Errors",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 2,
-            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -285,9 +258,45 @@
           }
         },
         {
+          "title": "Web Response Time",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(apm.service.transaction.duration * 1000) AS 'Response time' FROM Metric WHERE transactionType = 'Web' AND appName IN ({{appName_nodejs}}) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
           "title": "Segment Names",
           "layout": {
-            "column": 3,
+            "column": 4,
             "row": 7,
             "width": 4,
             "height": 3
@@ -317,7 +326,7 @@
         {
           "title": "Web Transaction Time ",
           "layout": {
-            "column": 7,
+            "column": 8,
             "row": 7,
             "width": 3,
             "height": 3
@@ -348,38 +357,29 @@
           }
         },
         {
-          "title": "Web Response Time",
+          "title": "Instance Connection",
           "layout": {
-            "column": 10,
+            "column": 11,
             "row": 7,
-            "width": 3,
+            "width": 2,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(apm.service.transaction.duration * 1000) AS 'Response time' FROM Metric WHERE transactionType = 'Web' AND appName IN ({{appName_nodejs}}) TIMESERIES "
+                "query": "SELECT average(newrelic.timeslice.value) * 1000 AS `Instance/connects` FROM Metric WHERE metricTimesliceName = 'Instance/connects' AND appName = {{appName_nodejs}}"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
@@ -961,39 +961,28 @@
       "description": null,
       "widgets": [
         {
-          "title": "Log Types (click on the logtype name to filter)",
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 12,
+            "height": 1
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT count(*) FROM Log FACET logtype  "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
+            "text": "## Choose variable\nSelect your appropriate **logtype** variable(s) to display the related logs."
           }
         },
         {
           "title": "Logs",
           "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 8,
-            "height": 3
+            "column": 1,
+            "row": 2,
+            "width": 12,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -1003,7 +992,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT * FROM Log WHERE logtype = {{log_type}} "
+                "query": "SELECT * FROM Log WHERE logtype = {{log_type}}"
               }
             ]
           }
@@ -1034,6 +1023,19 @@
         "query": "SELECT uniques(entity.name) FROM Metric since 1 weeks ago"
       },
       "title": "Select Your Host Name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "log_type",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(logtype) FROM Log  since 1 month ago"
+      },
+      "title": "Select your logtype",
       "type": "NRQL",
       "isMultiSelection": true,
       "replacementStrategy": "STRING"
