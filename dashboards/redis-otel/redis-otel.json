@@ -1,0 +1,491 @@
+{
+  "name": "Redis OTel Quickstart",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Redis OTel Proposal",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Redis logo](https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Logo-redis.svg/300px-Logo-redis.svg.png?20210820223643)\n\n### Overview\n[Redis](https://redis.io/) is an in-memory data structure store, used as a database, cache, and message broker. Redis allows you to achieve high performance by keeping your data in memory, but also offers durability options. Its support for a variety of data structures, such as strings, hashes, sets, and lists, has made Redis a versatile tool suitable for a vast number of use cases.\n\n- - -\n### About this Dashboard\n\n- For information on the prerequisites for this dashboard, please visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/redis/redis-monitoring-integration-new/).\n- For more information on how to send telemetry data to New Relic using OTEL, visit the documentation [here](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/collector/collector-configuration-examples/opentelemetry-collector-redis/).\n"
+          }
+        },
+        {
+          "title": "Comands per second",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT rate(sum(redis.commands.processed), 1 second) AS 'Commands with rate' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) SINCE 1 day ago TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Clients",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.clients.connected) AS 'Connected', average(redis.clients.blocked)  AS 'Blocked' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Memory used",
+          "layout": {
+            "column": 3,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.memory.used) as 'Bytes' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Network I/O",
+          "layout": {
+            "column": 8,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT rate(sum(redis.net.input), 1 second) AS 'Input bytes/s', rate(sum(redis.net.output), 1 second) AS  'Output Bytes/s' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Overview",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 2,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Max clients connected",
+                "type": null
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric \nSELECT\nrate(sum(redis.commands.processed), 1 second) AS 'Commands per second',\naverage(redis.clients.connected) AS 'Clients connected',\naverage(redis.clients.blocked) AS 'Clients blocked',\naverage(redis.memory.used) as 'Memory used', \naverage(redis.connections.received) AS 'Connections received',\naverage(redis.connections.rejected) AS 'Connections rejected'\nWHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}})\ncompare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU time by state per second",
+          "layout": {
+            "column": 3,
+            "row": 7,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT rate(sum(redis.cpu.time), 1 second) AS 'CPU time' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) FACET state TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Expired and Evicted Keys",
+          "layout": {
+            "column": 8,
+            "row": 7,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.keys.expired) AS 'Expired', average(redis.key.evicted) AS 'Evicted' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Connections",
+          "layout": {
+            "column": 3,
+            "row": 10,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.connections.received) AS 'Received', average(redis.connections.rejected)  AS 'Rejected' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Keys",
+          "layout": {
+            "column": 8,
+            "row": 10,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.db.keys) AS 'Keys' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Keyspaces hits",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 2,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT (average(redis.keyspace.misses) + average(redis.keyspace.hits))/average(redis.keyspace.hits) AS 'Rate', average(redis.keyspace.hits) AS 'Hits', average(redis.keyspace.misses) AS 'Misses' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) compare with 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Keyspace hits and misses",
+          "layout": {
+            "column": 3,
+            "row": 13,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.keyspace.hits) AS 'Hits' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES "
+              },
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.keyspace.misses) AS 'Misses' TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Keys per DB",
+          "layout": {
+            "column": 8,
+            "row": 13,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.db.keys) AS 'Total',  \naverage(redis.db.expires) AS 'With expiration',\naverage(redis.db.avg_ttl) AS 'Average TTL'\nWHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}})\nfacet db"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Changes since last save",
+          "layout": {
+            "column": 3,
+            "row": 16,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  2762945
+                ],
+                "query": "FROM Metric SELECT average(redis.rdb.changes_since_last_save) AS 'rdb changes' WHERE newrelic.redis.instance_name IN ({{newrelic_redis_instance_name}}) TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "newrelic_redis_instance_name",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        },
+        {
+          "value": {
+            "string": "7.0.12"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [
+          2762945
+        ],
+        "query": "FROM Metric SELECT uniques(newrelic.redis.instance_name) LIMIT MAX"
+      },
+      "title": "Redis Instances",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
