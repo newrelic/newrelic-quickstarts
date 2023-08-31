@@ -1,0 +1,300 @@
+{
+    "name": "Sample Dashboard - GitHub Repo Monitoring",
+    "description": null,
+    "pages": [
+      {
+        "name": "GitHub Monitoring",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 1,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/GitHub_Mark.png/246px-GitHub_Mark.png)\n# GitHub Repo Monitoring\nIncludes commits, pull requests, merges, actions, deployments, and more.\n\nFilter by Repository name to narrow down the data!"
+            }
+          },
+          {
+            "title": "Repository Summary",
+            "layout": {
+              "column": 2,
+              "row": 1,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT latest(repository.open_issues_count), latest(repository.watchers_count), latest(repository.forks_count), latest(repository.stargazers_count)\nFROM Log WHERE repository.git_url IS NOT NULL FACET repository.full_name SINCE 1 MONTH AGO LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Workflow Summary",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT repository.full_name, workflow_job.workflow_name, workflow_job.name, workflow_job.status, workflow_job.conclusion, workflow_job.run_attempt\nFROM Log WHERE workflow_job.workflow_name IS NOT NULL SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Commit Summary",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 7,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT repository.full_name, head_commit.modified, head_commit.message, head_commit.author.username, head_commit.author.email\nFROM Log WHERE head_commit.message IS NOT NULL SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Job Summary",
+            "layout": {
+              "column": 8,
+              "row": 5,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(workflow_job.workflow_name)\nFROM Log WHERE workflow_job.workflow_name IS NOT NULL FACET workflow_job.name, workflow_job.status SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Job Status Summary",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(workflow_job.conclusion) FROM Log WHERE workflow_job.conclusion !='null' FACET workflow_job.conclusion SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Issue Summary",
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "width": 8,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(issue.comments) FROM Log WHERE issue.title IS NOT NULL FACET issue.title, action, issue.state, issue.body, issue.user.login, comment.reactions.total_count SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Deployment Frequency",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(workflow_job.conclusion) AS 'Deployment Frequency' FROM Log\nWHERE repository.git_url IS NOT NULL AND workflow_job.status='completed'\nSINCE 1 MONTH AGO COMPARE WITH 1 MONTH AGO TIMESERIES 1 DAY"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Average Workflow Duration (minutes)",
+            "layout": {
+              "column": 5,
+              "row": 12,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "WITH \n  aparse(workflow_job.started_at, '*-*-*T*:*:*Z') AS (year1, month1, day1, hour1, minute1, second1) , \nnumeric(month1) - 1 as month1Num,floor((if(month1Num >= 2, numeric(year1), numeric(year1) - 1) - 1970)/4)* 24 * 60 * 60  as leaps1, \nif(month1Num = 1 ,31,\n if(month1Num = 2,59,\n  if(month1Num = 3, 90,\n   if(month1Num = 4,120,\n    if(month1Num = 5,151, \n     if(month1Num = 6,181,\n      if(month1Num = 7,212,\n       if(month1Num = 8,243,\n        if(month1Num = 9,273,\n         if(month1Num = 10,304,\n          if(month1Num = 11,334,\n           if(month1Num = 12,365, 0\n)))))))))))) as month1NumDays,\n((numeric(year1) - 1970) * 365 * 24 * 60 * 60) \n+ (month1NumDays * 24 * 60 * 60) \n+ (numeric(day1) - 1) * 24 * 60 * 60 \n+ ((numeric(hour1)) * 3600) \n+ (numeric(minute1)) * 60 \n+ numeric(second1) \n+ leaps1 as start_time, \n  aparse(workflow_job.completed_at, '*-*-*T*:*:*Z') AS (year2, month2, day2, hour2, minute2, second2) , \nnumeric(month2) - 1 as month2Num,floor((if(month2Num >= 2, numeric(year2), numeric(year2) - 1) - 1970)/4)* 24 * 60 * 60  as leaps2, \nif(month2Num = 1 ,31,\n if(month2Num = 2,59,\n  if(month2Num = 3, 90,\n   if(month2Num = 4,120,\n    if(month2Num = 5,151, \n     if(month2Num = 6,181,\n      if(month2Num = 7,212,\n       if(month2Num = 8,243,\n        if(month2Num = 9,273,\n         if(month2Num = 10,304,\n          if(month2Num = 11,334,\n           if(month2Num = 12,365, 0\n)))))))))))) as month2NumDays,\n((numeric(year2) - 1970) * 365 * 24 * 60 * 60) \n+ (month2NumDays * 24 * 60 * 60) \n+ (numeric(day2) - 1) * 24 * 60 * 60 \n+ ((numeric(hour2)) * 3600) \n+ (numeric(minute2)) * 60 \n+ numeric(second2) \n+ leaps2 as finish_time\n\nSELECT average(finish_time-start_time)/60 FROM Log \nWHERE workflow_job.status = 'completed'\nFACET workflow_job.conclusion SINCE 1 MONTH AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Pipelines for last month",
+            "layout": {
+              "column": 9,
+              "row": 12,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "colors": {
+                "seriesOverrides": [
+                  {
+                    "color": "#00c080",
+                    "seriesName": "success"
+                  },
+                  {
+                    "color": "#0080c0",
+                    "seriesName": "all"
+                  }
+                ]
+              },
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(workflow_job.name) AS 'success' FROM Log WHERE workflow_job.name IS NOT NULL\nAND workflow_job.conclusion = 'success' SINCE 1 MONTH AGO TIMESERIES"
+                },
+                {
+                  "accountIds": 0,
+                  "query": "SELECT count(workflow_job.name) AS 'all' FROM Log WHERE workflow_job.name IS NOT NULL\nAND workflow_job.conclusion != 'null' SINCE 1 MONTH AGO TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
