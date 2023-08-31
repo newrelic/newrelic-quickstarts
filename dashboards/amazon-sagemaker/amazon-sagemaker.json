@@ -3,13 +3,28 @@
   "description": null,
   "pages": [
     {
-      "name": "SageMaker",
+      "name": "Endpoint Invocation Metrics",
       "description": null,
       "widgets": [
         {
-          "title": "Total Invocations",
+          "title": "",
           "layout": {
             "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon SageMaker\nAmazon SageMaker is a fully managed machine learning service. With Amazon SageMaker, data scientists and developers can quickly build and train machine learning models, and then deploy them into a production-ready hosted environment."
+          }
+        },
+        {
+          "title": "Total invocations",
+          "layout": {
+            "column": 3,
             "row": 1,
             "width": 2,
             "height": 2
@@ -24,7 +39,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(`aws.sagemaker.Invocations`) as 'Total Invocations'FROM Metric"
+                "query": "SELECT sum(`aws.sagemaker.Invocations`) from Metric where aws.Namespace = 'AWS/SageMaker' and aws.sagemaker.FeatureGroupName is null"
               }
             ],
             "platformOptions": {
@@ -33,7 +48,134 @@
           }
         },
         {
-          "title": "Sagemaker Total and per instance Invocations",
+          "title": "Invocation errors",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#00ff08",
+                  "seriesName": "4XX Errors"
+                },
+                {
+                  "color": "#66b2f4",
+                  "seriesName": "5XX Errors"
+                },
+                {
+                  "color": "#ff7961",
+                  "seriesName": "Model Errors"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`aws.sagemaker.Invocation4XXErrors`) as '4XX Errors', sum(`aws.sagemaker.Invocation5XXErrors`) as '5XX Errors', sum(`aws.sagemaker.InvocationModelErrors`) as 'Model Errors' FROM Metric TIMESERIES auto facet `aws.sagemaker.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average latency",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 5
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws.sagemaker.ModelLatency`) / 1000 as 'Model Latency', average(`aws.sagemaker.OverheadLatency`)/1000 as 'Overhead Latency' FROM Metric TIMESERIES auto facet `aws.sagemaker.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            }
+          }
+        },
+        {
+          "title": "Sagemaker per instance invocations",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 5
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(`aws.sagemaker.InvocationsPerInstance`) as 'Invocations per Instance' FROM Metric TIMESERIES auto facet `aws.sagemaker.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Endpoint Instance Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon SageMaker Inference Endpoints\nAmazon SageMaker Inference Endpoints are a powerful tool to deploy your machine learning models in the cloud and make predictions on new data at scale."
+          }
+        },
+        {
+          "title": "Cpu utilization by endpoints (%)",
           "layout": {
             "column": 3,
             "row": 1,
@@ -53,7 +195,607 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(`aws.sagemaker.Invocations`) as 'Total Invocations', sum(`aws.sagemaker.InvocationsPerInstance`) as 'Invocations per Instance' FROM Metric TIMESERIES"
+                "query": "SELECT average(`aws..aws.sagemaker.endpoints.CPUUtilization`) as 'CPU Utilized by Endpoints' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.endpoints.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        },
+        {
+          "title": "Memory utilization by endpoints (%)",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.endpoints.MemoryUtilization`) as 'Memory Utilization by Endpoints' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.endpoints.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Disk utilization by endpoints (%)",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.endpoints.DiskUtilization`) as 'Disk Utilization by Endpoints' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.endpoints.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Gpu utilization by endpoints (%)",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.endpoints.GPUUtilization`) as 'GPU Utilization by Endpoints' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.endpoints.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Gpu memory utilization by endpoints (%)",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.endpoints.GPUMemoryUtilization`) as 'GPU Memory Utilization by Endpoints' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.endpoints.EndpointName`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Training Jobs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon SageMaker Model Training\nAmazon SageMaker Model Training is a fully managed capability that spins up instances for every job, trains a model, runs and then spins down instances after the job. You’re only billed for the duration of the job down to the second. "
+          }
+        },
+        {
+          "title": "Training jobs errors",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#00ff08",
+                  "seriesName": "4XX Errors"
+                },
+                {
+                  "color": "#66b2f4",
+                  "seriesName": "5XX Errors"
+                },
+                {
+                  "color": "#ff7961",
+                  "seriesName": "Model Errors"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select sum(`aws..aws.sagemaker.trainingjobs.train:error`) as 'Training Jobs Errors' TIMESERIES auto "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cpu utilization by training jobs (%)",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.trainingjobs.CPUUtilization`) as 'CPU Utilized by Training Jobs' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.trainingjobs.Host`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        },
+        {
+          "title": "Memory utilization by training jobs (%)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.trainingjobs.MemoryUtilization`) as 'Memory Utilization by Training Jobs' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.trainingjobs.Host`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Disk utilization by training jobs (%)",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.trainingjobs.DiskUtilization`) as 'Disk Utilization by Training Jobs' FROM Metric facet `aws..aws.sagemaker.trainingjobs.Host`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Gpu utilization by training jobs (%)",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.trainingjobs.GPUUtilization`) as 'GPU Utilized by Training Jobs' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.trainingjobs.Host`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        },
+        {
+          "title": "Gpu memory utilization by training jobs (%)",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT average(`aws..aws.sagemaker.trainingjobs.GPUMemoryUtilization`) as 'GPU Memory Utilized by Training Jobs' FROM Metric TIMESERIES auto facet `aws..aws.sagemaker.trainingjobs.Host`"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feature Store",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon SageMaker Feature Store \nAmazon SageMaker Feature Store is a fully managed, purpose-built repository to store, share, and manage features for machine learning (ML) models. "
+          }
+        },
+        {
+          "title": "Invocations",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": " \nSELECT sum(`aws.sagemaker.Invocations`) from Metric where aws.Namespace = 'AWS/SageMaker' and aws.sagemaker.FeatureGroupName is not null "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1000000000000
+              }
+            ]
+          }
+        },
+        {
+          "title": "Consumed Read Requests Units",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select sum(`aws.sagemaker.ConsumedReadRequestsUnits`)  as 'Consumed Read Requests Units'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Operation errors",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#00ff08",
+                  "seriesName": "4XX Errors"
+                },
+                {
+                  "color": "#66b2f4",
+                  "seriesName": "5XX Errors"
+                },
+                {
+                  "color": "#ff7961",
+                  "seriesName": "Model Errors"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT count(`aws.sagemaker.Operation4XXErrors`) as 'Operation 4XX Errors', count(`aws.sagemaker.Operation5XXErrors`) as 'Operation 5XX Errors' FROM Metric TIMESERIES auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latency (microseconds)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select average(`aws.sagemaker.Latency`)  as 'Latency' timeseries auto"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Throttled requests",
+          "layout": {
+            "column": 3,
+            "row": 2,
+            "width": 2,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select sum(`aws.sagemaker.ThrottledRequests`)  as 'Throttled Requests'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": -1
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 5,
+            "row": 2,
+            "width": 2,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select sum(`aws.sagemaker.ConsumedWriteRequestsUnits`) as 'Consumed Write Requests Units' "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bias Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon SageMaker Data Bias Metrics\nTo identify bias in the data before expending resources to train models on it, SageMaker Clarify provides data bias metrics that you can compute on raw datasets before training. All of the pretraining metrics are model-agnostic because they do not depend on model outputs and so are valid for any model. "
+          }
+        },
+        {
+          "title": "Total violations",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 10,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric select count(`aws.sagemaker.endpoints.biasmetrics.total_number_of_violations`) AS 'Total Violations' TIMESERIES AUTO facet `aws.sagemaker.endpoints.biasmetrics.Endpoint`"
               }
             ],
             "platformOptions": {
@@ -64,187 +806,52 @@
         {
           "title": "",
           "layout": {
-            "column": 8,
-            "row": 1,
-            "width": 5,
-            "height": 2
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 1
           },
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Amazon SageMaker\nAmazon SageMaker is a fully managed machine learning service. With Amazon SageMaker, data scientists and developers can quickly build and train machine learning models, and then deploy them into a production-ready hosted environment."
+            "text": "# Average Pre-training Bias"
           }
         },
         {
-          "title": "Average CPU Utilization by Endpoints and Training Jobs",
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Average Post-training Bias"
+          }
+        },
+        {
+          "title": "",
           "layout": {
             "column": 1,
-            "row": 3,
-            "width": 4,
-            "height": 3
+            "row": 4,
+            "width": 6,
+            "height": 4
           },
           "visualization": {
-            "id": "viz.area"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`aws..aws.sagemaker.endpoints.CPUUtilization`) as 'CPU Utilized by Endpoints', average(`aws..aws.sagemaker.trainingjobs.CPUUtilization`) as 'CPU Utilized by Training Jobs' FROM Metric TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "PERCENTAGE"
-            }
-          }
-        },
-        {
-          "title": "Average Memory Utilization by Endpoints and training jobs",
-          "layout": {
-            "column": 5,
-            "row": 3,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(`aws..aws.sagemaker.endpoints.MemoryUtilization`) as 'Memory Utilization by Endpoints', average(`aws..aws.sagemaker.trainingjobs.MemoryUtilization`) as 'Memory Utilization by Training Jobs' FROM Metric TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "PERCENTAGE"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Disk Utilization by Endpoints and Training Jobs",
-          "layout": {
-            "column": 9,
-            "row": 3,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.stacked-bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(`aws..aws.sagemaker.endpoints.DiskUtilization`) as 'Disk Utilization by Endpoints', average(`aws..aws.sagemaker.trainingjobs.DiskUtilization`) as 'Disk Utilization by Training Jobs' FROM Metric TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "PERCENTAGE"
-            }
-          }
-        },
-        {
-          "title": "Average Latency",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(`aws.sagemaker.ModelLatency`)/1000 as 'Model Latency', average(`aws.sagemaker.OverheadLatency`) as 'Overhead Latency' FROM Metric TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "MS"
-            }
-          }
-        },
-        {
-          "title": "Training Jobs Errors",
-          "layout": {
-            "column": 5,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "colors": {
-              "seriesOverrides": [
-                {
-                  "color": "#00ff08",
-                  "seriesName": "4XX Errors"
-                },
-                {
-                  "color": "#66b2f4",
-                  "seriesName": "5XX Errors"
-                },
-                {
-                  "color": "#ff7961",
-                  "seriesName": "Model Errors"
-                }
-              ]
-            },
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "FROM Metric select sum(`aws..aws.sagemaker.trainingjobs.train:error`) as 'Training Jobs Errors' TIMESERIES auto"
+                "query": "FROM Metric select average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_KS`) AS 'Kolmogorov-Smirnov (KS)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_JS`) as 'Jensen-Shannon Divergence (JS)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_LP`) as 'Lp-norm (LP)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DPL`) as 'Difference in Proportions of Labels (DPL)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_KL`) AS 'Kullback-Leibler Divergence (KL)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_CI`) as 'Class Imbalance (CI)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_TVD`) as 'Total Variation Distance (TVD)' facet `aws.sagemaker.endpoints.biasmetrics.Endpoint`"
               }
             ],
             "platformOptions": {
@@ -253,121 +860,33 @@
           }
         },
         {
-          "title": "Invocation Errors",
+          "title": "",
           "layout": {
-            "column": 9,
-            "row": 6,
-            "width": 4,
-            "height": 3
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 4
           },
           "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "colors": {
-              "seriesOverrides": [
-                {
-                  "color": "#00ff08",
-                  "seriesName": "4XX Errors"
-                },
-                {
-                  "color": "#66b2f4",
-                  "seriesName": "5XX Errors"
-                },
-                {
-                  "color": "#ff7961",
-                  "seriesName": "Model Errors"
-                }
-              ]
-            },
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(`aws.sagemaker.Invocation4XXErrors`) as '4XX Errors', sum(`aws.sagemaker.Invocation5XXErrors`) as '5XX Errors', sum(`aws.sagemaker.InvocationModelErrors`) as 'Model Errors' FROM Metric TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Average GPU Memory Utilization by Endpoints",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`aws..aws.sagemaker.endpoints.GPUMemoryUtilization`) as 'GPU Memory Utilization by Endpoints' FROM Metric TIMESERIES "
+                "query": "FROM Metric select average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_RD`) AS 'Recall Difference (RD)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DRR`) as 'Difference in Rejection Rates (DRR)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_GE`) AS 'Generalized entropy (GE)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_SD`) AS 'Specificity difference (SD)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_TE`) AS 'Treatment Equality (TE)',average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_FT`) AS 'Counterfactual Fliptest (FT)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_AD`) AS 'Accuracy Difference (AD)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DPPL`) AS 'Difference in Positive Proportions in Predicted Labels (DPPL)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DCR`) as 'Difference in Conditional Rejection (DCR)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DI`) AS 'Disparate Impact (DI)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DAR`) AS 'Difference in Acceptance Rates (DAR)', average(`aws.sagemaker.endpoints.biasmetrics.bias_metric_DCA`) as 'Difference in Conditional Acceptance (DCAcc)' facet `aws.sagemaker.endpoints.biasmetrics.Endpoint`"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "PERCENTAGE"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average GPU Utilization by Endpoints",
-          "layout": {
-            "column": 5,
-            "row": 9,
-            "width": 4,
-            "height": 3
-          },
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT average(`aws..aws.sagemaker.endpoints.GPUUtilization`) as 'GPU Utilization by Endpoints' FROM Metric TIMESERIES "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "PERCENTAGE"
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         }
       ]
     }
-  ]
+  ],
+  "variables": []
 }
