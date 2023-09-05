@@ -1,7 +1,10 @@
 name: Pinecone Request Latency
 
 description: |+
-  This alert is triggered when the request latency is exceeds 100ms for 5 minutes
+  - This metric illustrates the server-side processing latency distribution for
+  Pinecone data plane calls
+  - An alert is triggered if the 50th percentile exceeds 100 ms
+  - Resolution: If it surpasses 100 ms, we need to add another replica
 type: STATIC
 nrql:
   query: "FROM Metric SELECT percentile(pinecone_request_latency_seconds, 50) * 1000 as 'requests latency' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' LIMIT MAX"
@@ -24,4 +27,3 @@ terms:
 # Duration after which a violation automatically closes
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
 violationTimeLimitSeconds: 86400
-
