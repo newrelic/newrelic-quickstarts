@@ -155,6 +155,16 @@ describe('Quickstart', () => {
       expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
+
+    test('Returns keywords as empty array if no keywords are provided', async () => {
+      const qs = new Quickstart(
+        'quickstarts/mock-quickstart-11/config.yml',
+        MOCK_FILES_BASEPATH
+      );
+      const variables = await qs.getMutationVariables(true);
+
+      expect(variables.quickstartMetadata.keywords).toEqual([]);
+    });
   });
 
   describe('validate', () => {
@@ -187,7 +197,7 @@ describe('Quickstart', () => {
     test('Returns all quickstarts in directory', () => {
       const quickstarts = Quickstart.getAll(MOCK_FILES_BASEPATH);
 
-      expect(quickstarts).toHaveLength(10);
+      expect(quickstarts).toHaveLength(11);
     });
 
     test('Handles no quickstarts in directory', () => {
