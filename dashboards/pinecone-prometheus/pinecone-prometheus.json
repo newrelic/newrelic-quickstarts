@@ -1,0 +1,496 @@
+{
+	"name": "Pinecone Prometheus",
+	"description": "Monitoring for Prometheus Remote Write. Displays Prometheus server statistics, resulting metric cardinality and any errors during ingest.",
+	"pages": [
+		{
+			"name": "Pinecone Monitoring Staging Metrics",
+			"description": null,
+			"widgets": [
+				{
+					"title": "",
+					"layout": {
+						"column": 1,
+						"row": 1,
+						"width": 2,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "![Logo](https://www.finsmes.com/wp-content/uploads/2023/04/Pinecone.png)"
+					}
+				},
+				{
+					"title": "",
+					"layout": {
+						"column": 3,
+						"row": 1,
+						"width": 6,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "## Choose variable\nSelect your appropriate \"index name\" variable(s) to display the related metrics."
+					}
+				},
+				{
+					"title": "Metrics",
+					"layout": {
+						"column": 9,
+						"row": 1,
+						"width": 4,
+						"height": 6
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT cardinality(metricName) WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' and metricName   LIKE 'pinecone_%' FACET metricName  LIMIT MAX WHERE index_name = {{index_name}}"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "",
+					"layout": {
+						"column": 1,
+						"row": 2,
+						"width": 2,
+						"height": 5
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "\n\n**About**\n\nInstrument your application with New Relic - [Add Data](https://one.newrelic.com/marketplace?account=3510613).\n\n[Please rate this dashboard](https://docs.google.com/forms/d/e/1FAIpQLSclR38J8WbbB2J1tHnllKUkzWZkJhf4SrJGyavpMd4t82NjnQ/viewform?usp=pp_url&entry.1615922415=Pinecone) here and let us know how we can improve it for you.\n\n##### Troubleshooting\n\nIf you don't see data, you may not be [configuring Prometheus to monitor itself](https://prometheus.io/docs/prometheus/latest/getting_started/#configuring-prometheus-to-monitor-itself). You should also check the '_New Relic Usage and Errors_' tab to look for any errors reported there. \n\nIn Prometheus, data from the write-ahead log (WAL) is sharded across in-memory queues before being sent to remote endpoints. Resource utilization is governed by the number of shards, number of samples per shard, and number of samples sent per request to an endpoint. For more information, consult the documentation on [remote write tuning](https://prometheus.io/docs/practices/remote_write/) .\n\n\n"
+					}
+				},
+				{
+					"title": "Pinecone Requests Latency",
+					"layout": {
+						"column": 3,
+						"row": 2,
+						"width": 2,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT percentile(pinecone_request_latency_seconds, 50)*1000 as 'requests latency' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' LIMIT MAX "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"thresholds": [
+							{
+								"alertSeverity": "CRITICAL",
+								"value": 100
+							}
+						]
+					}
+				},
+				{
+					"title": "Pinecone Index Fullness",
+					"layout": {
+						"column": 5,
+						"row": 2,
+						"width": 2,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT average(pinecone_index_fullness) AS '(%) index fullness ' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' LIMIT MAX "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"thresholds": [
+							{
+								"alertSeverity": "CRITICAL",
+								"value": 0.8
+							}
+						]
+					}
+				},
+				{
+					"title": "Pinecone Requests Errors",
+					"layout": {
+						"column": 7,
+						"row": 2,
+						"width": 2,
+						"height": 1
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.billboard"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT latest(pinecone_request_error_count_total) AS 'request errors' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' LIMIT MAX"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"thresholds": [
+							{
+								"alertSeverity": "CRITICAL",
+								"value": 1
+							}
+						]
+					}
+				},
+				{
+					"title": "",
+					"layout": {
+						"column": 3,
+						"row": 3,
+						"width": 6,
+						"height": 4
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.markdown"
+					},
+					"rawConfiguration": {
+						"text": "# Pinecone Monitoring Metrics\n\n## Here, we emphasize the 3 most critical metrics for evaluating the health of the Pinecone production index named [dense-vector-db-production](https://app.pinecone.io/organizations/-NRORI8HU5uzlvL17i2s/projects/us-east-1-aws:e01c809/indexes/dense-vector-db-production):\n\n1. **pinecone_request_latency_seconds**:\n  - This metric illustrates the server-side processing latency distribution for Pinecone data plane calls.\n  - An alert is triggered if the 50th percentile exceeds 100 ms. If it surpasses 100 ms, we need to add another replica.\n\n2. **pinecone_index_fullness**:\n  - This metric indicates the index's fullness on a scale from 0 to 1.\n  - An alert is triggered if the value exceeds the 80% threshold. If it surpasses 80%, we need to add another replica or increase the pod size.\n\n3. **pinecone_request_error_count_total**:\n  - This metric displays the total count of data plane calls executed by clients that resulted in errors.\n  - An alert is triggered if the value exceeds 0."
+					}
+				},
+				{
+					"title": "Total Pinecone Rrequest Errors",
+					"layout": {
+						"column": 1,
+						"row": 7,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT sum(pinecone_request_error_count_total) AS 'request errors' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Indexes",
+					"layout": {
+						"column": 5,
+						"row": 7,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT count(index_name) WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' facet index_name LIMIT MAX"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Total Pinecone Requests",
+					"layout": {
+						"column": 9,
+						"row": 7,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT sum(pinecone_request_count_total) AS 'pinecone requests' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Pinecone Avg Index Fullness",
+					"layout": {
+						"column": 1,
+						"row": 10,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT average(pinecone_index_fullness) AS 'pinecone index fullness' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Pinecone Vector Count",
+					"layout": {
+						"column": 5,
+						"row": 10,
+						"width": 3,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT  sum(pinecone_vector_count) AS 'pinecone vector count' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Timeseries by Metric",
+					"layout": {
+						"column": 8,
+						"row": 10,
+						"width": 5,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT sum(pinecone_request_latency_seconds) AS 'request latency seconds',sum(pinecone_index_fullness) AS 'index fullness',sum(pinecone_request_count_total) AS 'total request count',sum(pinecone_request_latency_seconds_count) AS 'request latency seconds count',sum(pinecone_request_latency_seconds_sum) AS 'request latency seconds sum',sum(pinecone_vector_count) AS 'vector count' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES "
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Pinecone Rrequest Latency (seconds)",
+					"layout": {
+						"column": 1,
+						"row": 13,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.line"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT percentile(pinecone_request_latency_seconds,50,75,95,99) AS 'request latency seconds' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES minutes"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						},
+						"yAxisLeft": {
+							"zero": true
+						}
+					}
+				},
+				{
+					"title": "Pinecone Request Latency seconds Count",
+					"layout": {
+						"column": 5,
+						"row": 13,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.stacked-bar"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT sum(pinecone_request_latency_seconds_count) AS 'request latency seconds count' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				},
+				{
+					"title": "Pinecone Request Latency seconds Sum",
+					"layout": {
+						"column": 9,
+						"row": 13,
+						"width": 4,
+						"height": 3
+					},
+					"linkedEntityGuids": null,
+					"visualization": {
+						"id": "viz.area"
+					},
+					"rawConfiguration": {
+						"facet": {
+							"showOtherSeries": false
+						},
+						"legend": {
+							"enabled": true
+						},
+						"nrqlQueries": [
+							{
+								"accountIds": [],
+								"query": "FROM Metric SELECT sum(pinecone_request_latency_seconds_sum) AS 'request latency seconds sum' WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus' WHERE index_name = {{index_name}} LIMIT MAX TIMESERIES"
+							}
+						],
+						"platformOptions": {
+							"ignoreTimeRange": false
+						}
+					}
+				}
+			]
+		}
+	],
+	"variables": [
+		{
+			"name": "index_name",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "FROM Metric SELECT uniques(index_name) WHERE instrumentation.name = 'remote-write' and instrumentation.provider = 'prometheus'"
+			},
+			"title": "Select your index",
+			"type": "NRQL",
+			"isMultiSelection": false,
+			"replacementStrategy": "STRING"
+		}
+	]
+}
