@@ -173,7 +173,7 @@ class Quickstart {
           description: doc.description,
         })),
       icon: icon && this._constructIconUrl(icon),
-      keywords: keywords,
+      keywords: keywords ?? [],
       sourceUrl: Component.getAssetSourceUrl(
         Component.removeBasePath(path.dirname(this.configPath), this.basePath)
       ),
