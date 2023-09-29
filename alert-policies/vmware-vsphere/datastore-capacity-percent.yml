@@ -1,0 +1,19 @@
+name: vSphere Datastore high Capacity Utilization
+description: |+
+  This alert fires when a vSphere Datastore has capacity utilization % > 90 for longer than 10 minutes.
+type: STATIC
+nrql:
+  query: "FROM VSphereDatastoreSample SELECT ((max(capacity) - max(freeSpace)) / max(capacity)) * 100 FACET datacenterName, name, displayName"
+valueFunction: SINGLE_VALUE 
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 90
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+signal:
+  aggregationDelay: 120
+  aggregationMethod: EVENT_FLOW
+  aggregationWindow: 60
+
+violationTimeLimitSeconds: 259200
