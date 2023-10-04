@@ -1,0 +1,1184 @@
+{
+    "name": "F5 BIG-IP",
+    "description": null,
+    "pages": [
+      {
+        "name": "Overview",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![f5 logo](https://newrelic.com/sites/default/files/quickstarts/images/icons/f5--logo.svg)\n\n### Overview\n[f5 BIG-IP](https://www.f5.com/products/big-ip-services) is a set of application delivery products that work together to ensure high availability, improved performance, application security, and access control.\n- - -\n### About this Dashboard\n- For more information on how to instrument your f5 environment, visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/f5-monitoring-integration/#install)."
+            }
+          },
+          {
+            "title": "F5 Systems",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Memory %",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "CPU System %",
+                  "precision": 2,
+                  "type": "decimal"
+                },
+                {
+                  "name": "CPU User %",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpSystemSample SELECT\n  latest(system.cpuUserUtilization) AS 'CPU User %',\n  latest(system.cpuSystemUtilization) AS 'CPU System %',\n  ( latest(system.memoryUsedInBytes) / latest(system.memoryTotalInBytes) )*100 AS 'Memory %'\nFACET url AS 'F5 System'\nWHERE displayName IN ( {{f5_system}} )\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Unhealthy Objects",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Virtual Servers",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Pool Members",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Pools",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Nodes",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample, F5BigIpPoolSample, F5BigIpPoolMemberSample, F5BigIpVirtualServerSample SELECT\n  filter(uniqueCount(entityGuid), WHERE eventType() = 'F5BigIpNodeSample' AND (node.enabled != 1 OR node.availabilityState != 2 OR node.monitorStatus != 2 OR node.sessionStatus != 1 ) AND (reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ))) AS 'Nodes',\n  filter(uniqueCount(entityGuid), WHERE eventType() = 'F5BigIpPoolSample' AND (pool.enabled != 1 OR pool.availabilityState != 2 ) AND (reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_pool}} ))) AS 'Pools',\n  filter(uniqueCount(entityGuid), WHERE eventType() = 'F5BigIpPoolMemberSample' AND member.statusReason NOT IN ('Pool member is available', 'The DNS server(s) are available') AND (aparse(url,'%//*') IN ( {{f5_system}} ) AND poolName IN ( {{f5_pool}} ) AND displayName IN ( {{f5_pool_member}} ))) AS 'Pool Members',\n  filter(uniqueCount(entityGuid), WHERE eventType() = 'F5BigIpVirtualServerSample' AND virtualserver.statusReason NOT IN ('The virtual server is available') AND (reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ))) AS 'Virtual Servers'\nCOMPARE WITH 1 DAY AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "CPU User %",
+            "layout": {
+              "column": 4,
+              "row": 4,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpSystemSample SELECT\n  average(system.cpuUserUtilization) AS 'CPU User %'\nFACET displayName AS 'F5 System'\nWHERE displayName IN ( {{f5_system}} )\nTIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "CPU System %",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpSystemSample SELECT\n  average(system.cpuSystemUtilization) AS 'CPU System %'\nFACET displayName AS 'F5 System'\nWHERE displayName IN ( {{f5_system}} )\nTIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          },
+          {
+            "title": "Memory %",
+            "layout": {
+              "column": 10,
+              "row": 4,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpSystemSample SELECT\n  ( average(system.memoryUsedInBytes) / average(system.memoryTotalInBytes) )*100 AS 'Memory %'\nFACET displayName AS 'F5 System'\nWHERE displayName IN ( {{f5_system}} )\nTIMESERIES\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "max": 100,
+                "min": 0,
+                "zero": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Nodes",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![f5 logo](https://newrelic.com/sites/default/files/quickstarts/images/icons/f5--logo.svg)\n\n### Nodes\nA [node](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ltm-concepts-11-5-1/5.html) is a logical object on the BIG-IP® Local Traffic Manager™ system that identifies the IP address of a physical resource on the network. You can explicitly create a node, or you can instruct Local Traffic Manager (LTM®) to automatically create one when you add a pool member to a load balancing pool.\n\nThe difference between a node and a pool member is that a node is designated by the device’s IP address only (`10.10.10.10`), while designation of a pool member includes an IP address and a service (such as `10.10.10:8`)."
+            }
+          },
+          {
+            "title": "Nodes with Health Problems",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT\n  if(latest(node.enabled) = 0, 'Disabled', 'Enabled') AS 'Enabled State',\n  if(latest(node.availabilityState) = 2, 'Online', if(latest(node.availabilityState) = 0, 'Offline', 'Unknown')) AS 'Availability State',\n  if(latest(node.monitorStatus) = 2, 'Up', if(latest(node.monitorStatus) = 0, 'Down', 'Unchecked')) AS 'Health Monitor Status',\n  if(latest(node.sessionStatus) = 0, 'Disabled', 'Enabled') AS 'Session Status',\n  latest(node.statusReason) AS 'Status Reason'\nWHERE (\n  node.enabled != 1 OR\n  node.availabilityState != 2 OR\n  node.monitorStatus != 2 OR\n  node.sessionStatus != 1\n  )\nAND reportingEndpoint IN ( {{f5_system}} )\nAND displayName IN ( {{f5_node}} )\nFACET\n  reportingEndpoint AS 'System',\n  displayName AS 'Node'\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Active Connections and Sessions",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Sessions",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Client Connections",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT latest(node.connections) AS 'Client Connections', latest(node.sessions) AS 'Sessions' WHERE (node.connections > 0 OR node.sessions > 0) AND reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Connections per Second",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT average(node.connectionsPerSecond) AS 'Connections/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Requests per Second",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT average(node.requestsPerSecond) AS 'Requests/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Receive bps",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT average(node.inDataInBytesPerSecond) AS 'Rx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 10 Transmit bps",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpNodeSample SELECT average(node.outDataInBytesPerSecond) AS 'Tx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_node}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Pools",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![f5 logo](https://newrelic.com/sites/default/files/quickstarts/images/icons/f5--logo.svg)\n\n### Pools\nA [pool](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ltm-concepts-11-5-1/6.html#conceptid) is a logical set of devices, such as web servers, that you group together to receive and process traffic. Instead of sending client traffic to the destination IP address specified in the client request, Local Traffic Manager™ sends the request to any of the servers that are members of that pool. This helps to efficiently distribute the load on your server resources."
+            }
+          },
+          {
+            "title": "Pools with Health Problems",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolSample SELECT\n  if(latest(pool.enabled) = 0, 'Disabled', 'Enabled') AS 'Enabled State',\n  if(latest(pool.availabilityState) = 2, 'Online', if(latest(pool.availabilityState) = 0, 'Offline', 'Unknown')) AS 'Availability State',\n  latest(pool.statusReason) AS 'Status Reason'\nWHERE (\n  pool.enabled != 1 OR\n  pool.availabilityState != 2\n  )\nAND reportingEndpoint IN ( {{f5_system}} )\nAND displayName IN ( {{f5_pool}} )\nFACET\n  reportingEndpoint AS 'System',\n  displayName AS 'Pool'\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Active Connections and Sessions",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Application Sessions",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Client Connections",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Active Members",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolSample SELECT latest(pool.activeMembers) AS 'Active Members', latest(pool.connections) AS 'Client Connections', latest(pool.sessions) AS 'Application Sessions' WHERE (pool.activeMembers > 0 OR pool.connections > 0 OR pool.sessions > 0) AND reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_pool}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Requests per Second",
+            "layout": {
+              "column": 7,
+              "row": 5,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolSample SELECT average(pool.requestsPerSecond) AS 'Requests/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_pool}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Receive bps",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolSample SELECT average(pool.outDataInBytesPerSecond) AS 'Tx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_pool}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 10 Transmit bps",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolSample SELECT average(pool.inDataInBytesPerSecond) AS 'Rx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_pool}} ) FACET reportingEndpoint AS 'System', displayName AS 'Node' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Pool Members",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![f5 logo](https://newrelic.com/sites/default/files/quickstarts/images/icons/f5--logo.svg)\n\n### Pool Members\nA [pool member](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ltm-concepts-11-5-1/6.html#conceptid) is a logical object that represents a physical node (server), on the network. You then associate the pool with a virtual server on the BIG-IP® system. Once you have assigned a pool to a virtual server, Local Traffic Manager (LTM®) directs traffic coming into the virtual server to a member of that pool. An individual pool member can belong to one or multiple pools, depending on how you want to manage your network traffic."
+            }
+          },
+          {
+            "title": "Active Connections and Sessions",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 9,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Application Sessions",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Client Connections",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Active Members",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolMemberSample SELECT latest(member.connections) AS 'Client Connections', latest(member.sessions) AS 'Application Sessions' WHERE (member.connections > 0 OR member.sessions > 0) AND aparse(url,'%//*') IN ( {{f5_system}} ) AND poolName IN ( {{f5_pool}} ) AND displayName IN ( {{f5_pool_member}} ) FACET aparse(url, '%//*') AS 'System', poolName AS 'Pool', displayName AS 'Member' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Pool Members with Health Problems",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Application Sessions",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Client Connections",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Active Members",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolMemberSample SELECT\n  if(latest(member.enabled) = 0, 'Disabled', 'Enabled') AS 'Enabled State',\n  if(latest(member.state) = 0, 'Down', 'Up') AS 'Member State',\n  if(latest(member.availabilityState) = 2, 'Online', if(latest(member.availabilityState) = 0, 'Offline', 'Unknown')) AS 'Availability State',\n  if(latest(member.monitorStatus) = 2, 'Up', if(latest(member.monitorStatus) = 0, 'Down', 'Unchecked')) AS 'Health Monitor Status',\n  if(latest(member.sessionStatus) = 0, 'Disabled', 'Enabled') AS 'Session Status',\n  latest(member.statusReason) AS 'Status Reason'\nWHERE member.statusReason NOT IN ('Pool member is available', 'The DNS server(s) are available')\nAND aparse(url,'%//*') IN ( {{f5_system}} )\nAND poolName IN ( {{f5_pool}} )\nAND displayName IN ( {{f5_pool_member}} )\nFACET\n  aparse(url, '%//*') AS 'System',\n  poolName AS 'Pool',\n  displayName AS 'Member'\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Requests per Second",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolMemberSample SELECT average(member.requestsPerSecond) AS 'Requests/sec' WHERE aparse(url,'%//*') IN ( {{f5_system}} ) AND poolName IN ( {{f5_pool}} ) AND displayName IN ( {{f5_pool_member}} ) FACET aparse(url, '%//*') AS 'System', poolName AS 'Pool', displayName AS 'Member' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Receive bps",
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolMemberSample SELECT average(member.inDataInBytesPerSecond) AS 'Rx bps' WHERE aparse(url,'%//*') IN ( {{f5_system}} ) AND poolName IN ( {{f5_pool}} ) AND displayName IN ( {{f5_pool_member}} ) FACET aparse(url, '%//*') AS 'System', poolName AS 'Pool', displayName AS 'Member' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 10 Transmit bps",
+            "layout": {
+              "column": 9,
+              "row": 9,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpPoolMemberSample SELECT average(member.outDataInBytesPerSecond) AS 'Tx bps' WHERE aparse(url,'%//*') IN ( {{f5_system}} ) AND poolName IN ( {{f5_pool}} ) AND displayName IN ( {{f5_pool_member}} ) FACET aparse(url, '%//*') AS 'System', poolName AS 'Pool', displayName AS 'Member' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Virtual Servers",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![f5 logo](https://newrelic.com/sites/default/files/quickstarts/images/icons/f5--logo.svg)\n\n### Virtual Servers\nA [virtual server](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ltm-concepts-11-5-1/3.html#conceptid) is a traffic-management object on the BIG-IP system that is represented by an IP address and a service. Clients on an external network can send application traffic to a virtual server, which then directs the traffic according to your configuration instructions. Virtual servers typically direct traffic to a pool of servers on an internal network, by translating the destination IP address in each packet to a pool member address."
+            }
+          },
+          {
+            "title": "Active Usage by Connection Limit",
+            "layout": {
+              "column": 4,
+              "row": 1,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Client Connections",
+                  "type": "decimal"
+                },
+                {
+                  "name": "Usage %",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT\n  latest(virtualserver.usageRatio) * 100 AS 'Usage %',\n  latest(virtualserver.connections) AS 'Client Connections'\nWHERE (virtualserver.usageRatio > 0 OR virtualserver.connections > 0)\nAND reportingEndpoint IN ( {{f5_system}} )\nAND displayName IN ( {{f5_virtual_server}} )\nFACET\n  reportingEndpoint AS 'System',\n  displayName AS 'Virtual Server'\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Slow Killed Connections per Second",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT max(virtualserver.slowKilledPerSecond) AS 'Slow Killed/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ) FACET reportingEndpoint AS 'System', displayName AS 'Virtual Server' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Virtual Servers with Health Problems",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT\n  if(latest(virtualserver.enabled) = 0, 'Disabled', 'Enabled') AS 'Enabled State',\n  latest(virtualserver.cmpEnableMode) AS 'CMP Mode',\n  if(latest(virtualserver.availabilityState) = 2, 'Online', if(latest(virtualserver.availabilityState) = 0, 'Offline', 'Unknown')) AS 'Availability State',\n  if(latest(virtualserver.monitorStatus) = 2, 'Up', if(latest(virtualserver.monitorStatus) = 0, 'Down', 'Unchecked')) AS 'Health Monitor Status',\n  if(latest(virtualserver.sessionStatus) = 0, 'Disabled', 'Enabled') AS 'Session Status',\n  latest(virtualserver.statusReason) AS 'Status Reason'\nWHERE virtualserver.statusReason NOT IN ('The virtual server is available')\nAND reportingEndpoint IN ( {{f5_system}} )\nAND displayName IN ( {{f5_virtual_server}} )\nFACET\n reportingEndpoint AS 'System',\n displayName AS 'Virtual Server'\nLIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Connections per Second",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT average(virtualserver.clientsideConnectionsPerSecond) AS 'Connections/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ) FACET reportingEndpoint AS 'System', displayName AS 'Virtual Server' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Requests per Second",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT average(virtualserver.requestsPerSecond) AS 'Requests/sec' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ) FACET reportingEndpoint AS 'System', displayName AS 'Virtual Server' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top 10 Receive bps",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT average(virtualserver.inDataInBytesPerSecond) AS 'Rx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ) FACET reportingEndpoint AS 'System', displayName AS 'Virtual Server' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top 10 Transmit bps",
+            "layout": {
+              "column": 7,
+              "row": 13,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM F5BigIpVirtualServerSample SELECT average(virtualserver.outDataInBytesPerSecond) AS 'Tx bps' WHERE reportingEndpoint IN ( {{f5_system}} ) AND displayName IN ( {{f5_virtual_server}} ) FACET reportingEndpoint AS 'System', displayName AS 'Virtual Server' TIMESERIES LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "BITS_PER_SECOND"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "f5_system",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM F5BigIpSystemSample SELECT uniques(displayName, 2000) SINCE 1 WEEK AGO"
+        },
+        "title": "F5 System",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "f5_node",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM F5BigIpNodeSample SELECT uniques(displayName, 2000) SINCE 1 WEEK AGO"
+        },
+        "title": "F5 Node",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "f5_pool",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM F5BigIpPoolSample SELECT uniques(displayName, 2000) SINCE 1 WEEK AGO"
+        },
+        "title": "F5 Pool",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "f5_pool_member",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM F5BigIpPoolMemberSample SELECT uniques(displayName, 2000) SINCE 1 WEEK AGO"
+        },
+        "title": "F5 Pool Member",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "f5_virtual_server",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM F5BigIpVirtualServerSample SELECT uniques(displayName, 2000) SINCE 1 WEEK AGO"
+        },
+        "title": "F5 Virtual Server",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
