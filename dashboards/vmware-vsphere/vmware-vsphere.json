@@ -1,0 +1,1742 @@
+{
+  "name": "VMware vSphere Integration",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Overview\n[VMware vSphere](https://www.vmware.com/products/vsphere.html) is a suite of virtualization solutions that includes vCenter, ESXi, vRealized Operations, and more. The core ability of vSphere is the centralized management of your virtual machines and virtual environment.\n- - -\n### About this Dashboard\n- For more information on how to instrument your vSphere environment, visit the documentation [here](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/vmware-vsphere-monitoring-integration/).\n- ***\"No chart data available\"*** indicates that there are no items found where `overallStatus != 'green'`"
+          }
+        },
+        {
+          "title": "Datacenters with Health Issues",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET datacenterName AS 'Datacenter Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus!= 'green'\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Clusters with Health Issues",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET concat(datacenterName, ' - ', capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')) AS 'Cluster Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus != 'green'\nAND capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Hosts with Health Issues",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET\n  concat(datacenterName, ' - ', clusterName, ' - ', hypervisorHostname) AS 'Host Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus != 'green'\nAND hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Datastores with Health Issues",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatastoreSample SELECT\n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET\n  concat(datacenterName, ' - ', name) AS 'Datastore Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus != 'green'\nAND name IN ( {{datastore}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Resource Pools with Health Issues",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT \n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET\n  concat(datacenterName, ' - ', clusterName , ' - ', resourcePoolName) AS 'Resource Pool Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus != 'green'\nAND resourcePoolName IN ( {{resourcepool}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Virtual Machines with Health Issues",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT \n  uniqueCount(entityGuid) AS 'Total Resources'\nFACET\n  concat(datacenterName, ' - ', clusterName , ' - ', vmConfigName) AS 'VM Config Name', upper(overallStatus) AS 'Current Status'\nWHERE overallStatus != 'green'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Datacenters",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Datacenters\nA [virtual data center](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is an aggregation of all the different types of objects used to work in virtual infrastructure. Within each data center, there are four separate hierarchies.\n * Virtual machines (and templates)\n * Hosts (and clusters)\n * Networks\n * Datastores"
+          }
+        },
+        {
+          "title": "Datacenter Summary",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "CPU Cores",
+                "type": "decimal"
+              },
+              {
+                "name": "VM Count",
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Bytes",
+                "type": "decimal"
+              },
+              {
+                "name": "Datastore Size",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  latest(clusters) AS 'Cluster Count',\n  latest(hostCount) AS 'Host Count',\n  latest(vmCount) AS 'VM Count',\n  latest(cpu.cores) AS 'CPU Cores',\n  latest(mem.size) AS 'Memory Bytes',\n  latest(datastores) AS 'Datastore Count',\n  latest(datastore.totalGiB) AS 'Datastore Size',\n  latest(networks) AS 'Network Count',\n  latest(resourcePools) AS 'Resource Pool Count'\nFACET datacenterName\nWHERE datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Current Utilization",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Disk %",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Memory %",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "CPU %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  latest(cpu.overallUsagePercentage) AS 'CPU %',\n  latest(mem.usagePercentage) AS 'Memory %',\n  ( latest(datastore.totalUsedGiB) / latest(datastore.totalGiB) ) * 100 AS 'Disk %'\nFACET datacenterName\nWHERE datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU % Utilization",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  average(cpu.overallUsagePercentage) AS 'CPU %'\nFACET datacenterName\nWHERE datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Memory % Utilization",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  average(mem.usagePercentage) AS 'Memory %'\nFACET datacenterName\nWHERE datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Disk % Utilization",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatacenterSample SELECT\n  ( average(datastore.totalUsedGiB) / average(datastore.totalGiB) ) * 100 AS 'Disk %'\nFACET datacenterName\nWHERE datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clusters",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Clusters\nA [cluster](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is a collection of ESXi hosts and associated virtual machines intended to work together as a unit. When you add a host to a cluster, the host’s resources become part of the cluster’s resources. vCenter Server manages the resources of all hosts in a cluster as one unit."
+          }
+        },
+        {
+          "title": "Cluster Summary",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "CPU Cores",
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Effective Bytes",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  latest(hosts) AS 'Total Hosts',\n  latest(effectiveHosts) AS 'Effective Hosts',\n  latest(cpu.cores) AS 'CPU Cores',\n  latest(mem.effectiveSize) AS 'Memory Effective Bytes'\nFACET\n  datacenterName AS 'Datacenter',\n  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') AS 'Cluster'\nWHERE capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Hosts Available %",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  ( latest(effectiveHosts) / latest(hosts) ) * 100 AS 'Hosts Available %'\nFACET concat(datacenterName, ' - ', capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')) AS Cluster\nWHERE capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 90
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 75
+              }
+            ]
+          }
+        },
+        {
+          "title": "Host Count",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  max(hosts)\nFACET concat(datacenterName, ' - ', capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')) AS Cluster\nWHERE capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Hosts in Maintenance",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  max(hosts) - max(effectiveHosts)\nFACET concat(datacenterName, ' - ', clusterName, ' - ', capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)')) AS Cluster\nWHERE clusterName IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "DRS Settings",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  latest(drsConfig.enabled) OR ' ' AS 'Enabled',\n  latest(drsConfig.defaultVmBehavior) AS 'Default VM Behavior',\n  latest(drsConfig.vmotionRate) AS 'vMotion Rate',\n  latest(drsConfig.enableVmBehaviorOverrides) AS 'Enable VM Behavior Overrides'\nFACET\n  datacenterName AS 'Datacenter',\n  clusterName AS 'Cluster',\n  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') AS 'Display Name'\nWHERE clusterName IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HA DAS Settings",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereClusterSample SELECT\n  latest(dasConfig.enabled) OR ' ' AS 'Enabled',\n  latest(dasConfig.hostMonitoring) AS 'Host Monitoring',\n  latest(dasConfig.vmMonitoring) AS 'VM Monitoring',\n  latest(dasConfig.admissionControlEnabled) AS 'Admission Control Enabled',\n  latest(dasConfig.hbDatastoreCandidatePolicy) AS 'HB Datastore Candidate Policy',\n  latest(dasConfig.isolationResponse) AS 'Isolation Response',\n  latest(dasConfig.restartPriority) AS 'rRstart Priority',\n  latest(dasConfig.restartPriorityTimeout) AS 'Restart Priority Timeout',\n  latest(dasConfig.vmComponentProtecting) AS 'VM Component Protecting' //\nFACET\n  datacenterName AS 'Datacenter',\n  clusterName AS 'Cluster',\n  capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)') AS 'Display Name'\nWHERE clusterName IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hosts",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Hosts\nA [host](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is the physical computer on which ESXi is installed. All virtual machines run on hosts or clusters."
+          }
+        },
+        {
+          "title": "Current Utilization %",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory %",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "CPU %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  latest(cpu.percent) AS 'CPU %',\n  ( latest(mem.usage) / latest(mem.size) ) * 100 AS 'Memory %'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  hypervisorHostname AS 'Host'\nWHERE hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "VM Count",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  max(vmCount)\nFACET\n  concat(datacenterName, ' - ', lower(clusterName), ' - ', hypervisorHostname) AS 'Host'\nWHERE hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU Usage %",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  average(cpu.percent) AS 'CPU %'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName), ' - ', hypervisorHostname) AS 'Host'\nWHERE hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Memory Usage %",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  (average(mem.usage) / average(mem.size)) * 100 AS 'Memory %'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName), ' - ', hypervisorHostname) AS 'Host'\nWHERE hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Host Summary",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Size",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereHostSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  latest(powerState) AS 'Power State',\n  latest(connectionState) AS 'Connection State',\n  latest(vmCount) AS 'VM Count',\n  latest(cpu.cores) AS 'CPU Cores',\n  latest(mem.size) AS 'Memory Size',\n  latest(inMaintenanceMode) AS 'Maintenance Mode',\n  latest(inQuarantineMode) AS 'Quarantine Mode',\n  latest(standbyMode) AS 'Standby Mode',\n  latest(bootTime) AS 'Boot Time'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  hypervisorHostname AS 'Host'\nWHERE hypervisorHostname IN ( {{host}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Datastores",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Datastores\nA [datastore](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is a virtual representation of physical storage resources in the data center. A datastore is the storage location for virtual machine files. In an on-premises SDDC, these physical storage resources can come from the local SCSI disk of the ESXi host, the Fibre Channel SAN disk arrays, the iSCSI SAN disk arrays, or Network Attached Storage (NAS) arrays. For both on-premises and cloud SDDCs, vSAN datastores hide the idiosyncrasies of the underlying physical storage and present a uniform model for the storage resources required by virtual machines. "
+          }
+        },
+        {
+          "title": "Datastore Summary",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "VM Count",
+                "type": "decimal"
+              },
+              {
+                "name": "Uncommitted (GiB)",
+                "type": "decimal"
+              },
+              {
+                "name": "Free (GiB)",
+                "type": "decimal"
+              },
+              {
+                "name": "Capacity (GiB)",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatastoreSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  latest(accessible) AS 'Accessible',\n  latest(capacity) AS 'Capacity (GiB)',\n  latest(freeSpace) AS 'Free (GiB)',\n  latest(uncommitted) AS 'Uncommitted (GiB)',\n  latest(fileSystemType) AS 'File System Type',\n  latest(vmCount) AS 'VM Count'\nFACET\n  datacenterName AS 'Datacenter',\n  name AS 'Datastore'\nWHERE name IN ( {{datastore}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Used Space %",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Used %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatastoreSample SELECT\n  ((latest(capacity) - latest(freeSpace)) / latest(capacity)) * 100 AS 'Used %'\nFACET\n  datacenterName AS 'Datacenter',\n  name AS 'Datastore'\nWHERE name IN ( {{datastore}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Space Usage %",
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereDatastoreSample SELECT\n  ((latest(capacity) - latest(freeSpace)) / latest(capacity)) * 100 AS 'Used %'\nFACET\n  concat(datacenterName, ' - ', name) AS 'Datastore'\nWHERE name IN ( {{datastore}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resource Pools",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Overview\nA [resource pool](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is used to compartmentalize the CPU and memory resources of a host or cluster. Virtual machines run in, and draw their resources from, resource pools."
+          }
+        },
+        {
+          "title": "Resource Pool Summary",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "VM Count",
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Swapped",
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Ballooned",
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Usage %",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "CPU Usage %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  ( latest(cpu.overallUsage) / latest(cpu.totalMHz) * 100 ) AS 'CPU Usage %',\n  ( latest(mem.usage) / latest(mem.size) ) * 100 AS 'Memory Usage %',\n  latest(mem.ballooned) AS 'Memory Ballooned',\n  latest(mem.swapped) AS 'Memory Swapped',\n  latest(vmCount) AS 'VM Count'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool'\nWHERE resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Current CPU Used %",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "CPU %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  ( latest(cpu.overallUsage) / latest(cpu.totalMHz) * 100 ) AS 'CPU %'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool'\nWHERE resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pool CPU Usage %",
+          "layout": {
+            "column": 6,
+            "row": 4,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  ( latest(cpu.overallUsage) / latest(cpu.totalMHz) * 100 ) AS 'CPU Usage %'\nFACET concat(datacenterName, ' - ', lower(clusterName), ' - ', resourcePoolName) AS 'Resource Pool Name'\nWHERE resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Current Memory Used %",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  ( latest(mem.usage) / latest(mem.size) ) * 100 AS 'Memory %'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool'\nWHERE resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pool Memory Usage %",
+          "layout": {
+            "column": 6,
+            "row": 7,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  ( latest(mem.usage) / latest(mem.size) ) * 100 AS 'Memory %'\nFACET concat(datacenterName, ' - ', lower(clusterName), ' - ', resourcePoolName) AS 'Resource Pool Name'\nWHERE resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Current Memory Ballooned",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  latest(mem.ballooned) AS 'Memory Ballooned'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool'\nWHERE mem.ballooned > 0\nAND resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pool Memory Ballooned",
+          "layout": {
+            "column": 6,
+            "row": 10,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  latest(mem.ballooned) AS 'Memory Ballooned'\nFACET concat(datacenterName, ' - ', lower(clusterName), ' - ', resourcePoolName) AS 'Resource Pool Name'\nWHERE mem.ballooned > 0\nAND resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current Memory Swapped",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  latest(mem.swapped) AS 'Memory Swapped'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool'\nWHERE mem.swapped > 0\nAND resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pool Memory Swapped",
+          "layout": {
+            "column": 6,
+            "row": 13,
+            "width": 7,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereResourcePoolSample SELECT\n  latest(mem.swapped) AS 'Memory Swapped'\nFACET concat(datacenterName, ' - ', lower(clusterName), ' - ', resourcePoolName) AS 'Resource Pool Name'\nWHERE mem.swapped > 0\nAND resourcePoolName IN ( {{resourcepool}} )\nAND datacenterName IN ( {{datacenter}} )\nAND lower(clusterName) IN ( {{cluster}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Virtual Machines",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": " ![VMware logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Vmware.svg/320px-Vmware.svg.png)\n\n### Overview\nA [virtual machine](https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-4D4B3DF2-D033-4782-A030-3C3600DE5A7F.html) is a virtualized computer environment in which a guest operating system and associated application software can run. Multiple virtual machines can operate on the same managed host machine concurrently. "
+          }
+        },
+        {
+          "title": "Virtual Machine Summary",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Disk Committed (GiB)",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Memory Size (GiB)",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  latest(overallStatus) AS 'Overall Status',\n  latest(powerState) AS 'Power State',\n  latest(connectionState) AS 'Connection State',\n  latest(cpu.cores) AS 'CPU Cores',\n  latest(mem.size) AS 'Memory Size (GiB)',\n  latest(disk.totalMiB) / 1024 AS 'Disk Committed (GiB)',\n  latest(ipAddress) AS 'IP Address'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  resourcePoolName AS 'Resource Pool',\n  vmConfigName AS 'VM Name'\nWHERE vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Current Host CPU Used %",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "CPU %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  latest(cpu.hostUsagePercent) AS 'CPU %'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  vmConfigName AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Host CPU Usage %",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  average(cpu.hostUsagePercent) AS 'CPU %'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName) , ' - ', vmConfigName) AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "max": 100,
+              "min": 0,
+              "zero": false
+            }
+          }
+        },
+        {
+          "title": "Host CPU Consumed MHZ",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  average(cpu.overallUsage)\nFACET\n  concat(datacenterName, ' - ', lower(clusterName) , ' - ', vmConfigName) AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current Memory Used %",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory %",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  (latest(mem.usage)/latest(mem.size))*100 AS 'Memory %'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  vmConfigName AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Host Memory Usage %",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  (average(mem.usage)/average(mem.size))*100 AS 'Memory %'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName) , ' - ', vmConfigName) AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current Memory Ballooned",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  latest(mem.balloned OR mem.ballooned) AS 'Memory Ballooned'\nFACET\n  datacenterName AS 'Datacenter',\n  clusterName AS 'Cluster',\n  vmConfigName AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND mem.balloned OR mem.ballooned > 0\nAND vmConfigName IN ( {{vm}} )\nAND clusterName IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Host Memory Ballooned",
+          "layout": {
+            "column": 7,
+            "row": 10,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  max(mem.balloned OR mem.ballooned) AS 'Memory Ballooned'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName) , ' - ', vmConfigName) AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND mem.balloned OR mem.ballooned > 0\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current Memory Swapped",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  latest(mem.swapped) AS 'Memory Swapped'\nFACET\n  datacenterName AS 'Datacenter',\n  lower(clusterName) AS 'Cluster',\n  vmConfigName AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND mem.swapped > 0\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Host Memory Swapped",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM VSphereVmSample SELECT\n  max(mem.swapped) AS 'Memory Swapped'\nFACET\n  concat(datacenterName, ' - ', lower(clusterName) , ' - ', vmConfigName) AS 'VM Name'\nWHERE powerState = 'poweredOn'\nAND mem.swapped > 0\nAND vmConfigName IN ( {{vm}} )\nAND lower(clusterName) IN ( {{cluster}} )\nAND datacenterName IN ( {{datacenter}} )\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "datacenter",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereDatacenterSample SELECT uniques(datacenterName, 2000) SINCE 7 DAYS AGO"
+      },
+      "title": "Datacenter",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "cluster",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereClusterSample, VSphereDatacenterSample, VSphereHostSample, VSphereResourcePoolSample, VSphereVmSample SELECT uniques(lower(clusterName) OR capture(displayName, r'vsphere-cluster:.*:(?P<cluster>.*)'), 2000) SINCE 7 DAYS AGO"
+      },
+      "title": "Cluster",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "host",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereHostSample SELECT uniques(hypervisorHostname, 2000) SINCE 7 DAYS AGO"
+      },
+      "title": "Host",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "datastore",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereDatastoreSample SELECT uniques(name, 2000) SINCE 7 DAYS AGO"
+      },
+      "title": "Datastore",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "resourcepool",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereResourcePoolSample SELECT uniques(resourcePoolName) SINCE 7 DAYS AGO LIMIT 2000"
+      },
+      "title": "Resource Pool",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "vm",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM VSphereVmSample SELECT uniques(vmConfigName, 2000) SINCE 7 DAYS AGO"
+      },
+      "title": "Virtual Machine",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
