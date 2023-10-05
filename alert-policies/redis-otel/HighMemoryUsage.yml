@@ -1,0 +1,40 @@
+name: Memory utilization is too high
+
+# Description and details
+description: |
+  This alert is triggered when the memory utilization exceeds 90%. Please ensure the `redis.maxmemory` metric from the Redis receiver is enabled for this alert to function correctly.
+
+# Type of alert: BASELINE | STATIC
+type: STATIC
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT (max(redis.memory.used)/max(redis.maxmemory))*100"
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 90
+    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 85
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
