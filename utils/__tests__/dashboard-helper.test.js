@@ -66,7 +66,9 @@ describe('dashboard-helper', () => {
     test('finds warnings across multiple lines', () => {
       const multiLine = {
         "accountIds": [ 
-          12345678 
+          12345678,
+          3456,
+          12, 
         ],
       }
       expect(getWarnings(multiLine)).toHaveLength(1);
