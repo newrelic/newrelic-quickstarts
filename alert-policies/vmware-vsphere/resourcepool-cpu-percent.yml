@@ -1,0 +1,19 @@
+name: vSphere Resource Pool high CPU Utilization
+description: |+
+  This alert fires when a vSphere Resource Pool has a CPU utilization % > 90 for longer than 5 minutes.
+type: STATIC
+nrql:
+  query: "FROM VSphereResourcePoolSample SELECT (max(cpu.overallUsage) / max(cpu.totalMHz)) * 100 FACET datacenterName, clusterName, resourcePoolName"
+valueFunction: SINGLE_VALUE 
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 90
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+signal:
+  aggregationDelay: 120
+  aggregationMethod: EVENT_FLOW
+  aggregationWindow: 60
+
+violationTimeLimitSeconds: 259200
