@@ -12,7 +12,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 8,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -26,7 +26,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.synapse.workspaces.BuiltinSqlPoolDataProcessedBytes`) AS 'Average Data Processed', SUM(`azure.synapse.workspaces.SQLStreamingConversionErrors`) AS 'Total Data Conversion Errors', AVEREAGE(`azure.synapse.workspaces.IntegrationLinkProcessingLatencyInSeconds`) AS 'Average Link Latency', AVERAGE(`azure.synapse.workspaces.SQLStreamingResourceUtilization`) AS 'Average Resource Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces'"
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.BuiltinSqlPoolDataProcessedBytes`) AS 'Total Data Processed', SUM(`azure.synapse.workspaces.BuiltinSqlPoolRequestsEnded`) AS 'Total Requests Ended', SUM(`azure.synapse.workspaces.IntegrationPipelineRunsEnded`) AS 'Total Pipeline Runs Ended', SUM(`azure.synapse.workspaces.IntegrationActivityRunsEnded`) AS 'Total Activity Runs Ended' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces'"
               }
             ],
             "platformOptions": {
@@ -37,9 +37,9 @@
         {
           "title": "",
           "layout": {
-            "column": 9,
+            "column": 8,
             "row": 1,
-            "width": 4,
+            "width": 5,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -47,53 +47,20 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Synapse Analytics\nAzure Synapse Analytics is an enterprise analytics service that accelerates time to insight across data warehouses and big data systems. It brings together the best of SQL technologies used in enterprise data warehousing, Apache Spark technologies for big data, and Azure Data Explorer for log and time series analytics."
-          }
-        },
-        {
-          "title": "Data conversion errors",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM  Metric SELECT SUM(`azure.synapse.workspaces.SQLStreamingConversionErrors`) AS 'Total Data Conversion Errors' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
+            "text": "# Azure Synapse Analytics\nAzure Synapse Analytics is an enterprise analytics service that accelerates time to insight across data warehouses and big data systems. It brings together the best of SQL technologies used in enterprise data warehousing, Apache Spark technologies for big data and Azure Data Explorer for log and time series analytics."
           }
         },
         {
           "title": "Data processed",
           "layout": {
-            "column": 5,
+            "column": 1,
             "row": 4,
-            "width": 4,
+            "width": 7,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "facet": {
@@ -105,52 +72,55 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.synapse.workspaces.BuiltinSqlPoolDataProcessedBytes`) AS 'Average Data Processed' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.BuiltinSqlPoolDataProcessedBytes`) AS 'Total Data Processed' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Resource utilization",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.synapse.workspaces.SQLStreamingResourceUtilization`) AS 'Average Resource Utilization' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO "
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
+            "units": {
+              "unit": "BYTES"
             }
           }
         },
         {
           "title": "Link latency",
+          "layout": {
+            "column": 8,
+            "row": 4,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT MAX(`azure.synapse.workspaces.IntegrationLinkProcessingLatencyInSeconds`) AS 'Maximum Link Latency' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Login attempts",
           "layout": {
             "column": 1,
             "row": 7,
@@ -171,7 +141,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.synapse.workspaces.IntegrationLinkProcessingLatencyInSeconds`) AS 'Average Link Latency' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO "
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.BuiltinSqlPoolLoginAttempts`) AS 'Total Login Attempts' WHERE collector.name = 'azure-monitor' and azure.resourceType = 'microsoft.synapse/workspaces' FACET azure.synapse.workspaces.result TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -179,6 +149,168 @@
             },
             "yAxisLeft": {
               "zero": true
+            }
+          }
+        },
+        {
+          "title": "Pipeline runs ended",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.IntegrationPipelineRunsEnded`) AS 'Total Pipelines Runs Ended' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' FACET azure.synapse.workspaces.Pipeline TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests ended",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.BuiltinSqlPoolRequestsEnded`) AS 'Total Requests Ended' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' FACET azure.synapse.workspaces.result TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Link processed data volume",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.IntegrationLinkProcessedDataVolume`) AS 'Total Link Processed Data Volume' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' TIMESERIES AUTO"
+              }
+            ],
+            "nullValues": {
+              "nullValue": "zero"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            }
+          }
+        },
+        {
+          "title": "Activity runs ended",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.IntegrationActivityRunsEnded`) AS 'Total Activity Runs Ended' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' FACET azure.synapse.workspaces.ActivityType TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Trigger runs ended",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.synapse.workspaces.IntegrationTriggerRunsEnded`) AS 'Total Trigger Runs Ended' WHERE collector.name = 'azure-monitor' AND azure.resourceType = 'microsoft.synapse/workspaces' FACET azure.synapse.workspaces.Trigger TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
         }

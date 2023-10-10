@@ -13,7 +13,7 @@ const regexAndWarning: [RegExp, string][] = [
   [/\"permissions\": /, `\"permissions\" field should not be used`],
   [/\"accountId\": (?:(?!0))/, `\"accountId\" must be zero`],
   [
-    /\"accountIds\"\s*:\s\[(?!\s*])([^\]\[]+)\]/,
+    /\"accountIds\": \"\[(?!\s*])([^\]\[]+)\]\"/,
     `\"accountIds\" must be set to []`,
   ],
 ];
@@ -28,6 +28,26 @@ export const checkLine = (line: string) => {
   return warningsFound;
 };
 
+export const getWarnings = (dashboardJson: any) => {
+  const dashLines = JSON.stringify(dashboardJson, (k, v) => {
+    if (Array.isArray(v)) {
+      return JSON.stringify(v)
+    }
+    return v
+  }, 2).split('\n');
+  const warnings: string[] = [];
+
+  dashLines.forEach((line) => {
+    const output = checkLine(line);
+    if (output.length > 0) {
+      output.forEach((warning) =>
+        warnings.push(warning)
+      );
+    }
+  });
+  return warnings;
+}
+
 const encodedNewline = '\n';
 
 export const createWarningComment = (warnings: string[]) => {
@@ -35,7 +55,7 @@ export const createWarningComment = (warnings: string[]) => {
     `### The PR checks have run and found the following warnings:${encodedNewline}`,
   ];
 
-  const tableHeader = `| Warning | Filepath | Line # | ${encodedNewline}| --- | --- | --- | `;
+  const tableHeader = `| Warning | Filepath | ${encodedNewline}| --- | --- | `;
   commentMessage.push(tableHeader);
 
   warnings.forEach((w) => commentMessage.push(w));
@@ -62,7 +82,7 @@ export const runHelper = async (
     return false;
   }
 
-  const warnings: string[] = [];
+  const warningMessages: string[] = [];
 
   const files = await fetchPaginatedGHResults(new URL(prUrl).href, token);
 
@@ -81,25 +101,19 @@ export const runHelper = async (
       }
       const responseJSON = await response.json();
 
-      const dashLines = JSON.stringify(responseJSON, null, 2).split('\n');
-
-      dashLines.forEach((line, lineNumber) => {
-        const output = checkLine(line);
-        if (output.length > 0) {
-          output.forEach((o) =>
-            warnings.push(`| ${o} | ${dash.filename} | ${lineNumber + 1} |`)
-          );
-        }
-      });
+      const warnings = getWarnings(responseJSON);
+      warnings.forEach((o) =>
+        warningMessages.push(`| ${o} | ${dash.filename} |`)
+      );
     } catch (error: any) {
       console.error('Error:', error.message);
       return false;
     }
   }
 
-  if (warnings.length > 0) {
-    console.log('Found warnings:', warnings);
-    const warningComment = createWarningComment(warnings);
+  if (warningMessages.length > 0) {
+    console.log('Found warnings:', warningMessages);
+    const warningComment = createWarningComment(warningMessages);
     core.setOutput('comment', warningComment);
   }
 
