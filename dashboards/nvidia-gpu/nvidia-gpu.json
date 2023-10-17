@@ -1,0 +1,201 @@
+{
+    "name": "Nvidia GPU Monitoring",
+    "description": null,
+    "permissions": "PUBLIC_READ_WRITE",
+    "pages": [
+      {
+        "name": "Nvidia GPU Monitoring",
+        "description": null,
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 1,
+              "width": 4
+            },
+            "title": "",
+            "rawConfiguration": {
+              "text": "[![NVIDIA SMI](https://logos-download.com/wp-content/uploads/2016/10/Nvidia_logo.png)](https://developer.nvidia.com/nvidia-system-management-interface)\n"
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Current Clock Speeds",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT latest(clocks.current.memory.MHz) as 'Memory MHz', latest(clocks.current.graphics.MHz) as 'Graphics MHz', latest(clocks.current.video.MHz) as 'Video MHz', latest(clocks.current.sm.MHz) as 'SM MHz' "
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Current Clock MHz",
+            "rawConfiguration": {
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT latest(clocks.current.memory.MHz) as 'Memory MHz', latest(clocks.current.graphics.MHz) as 'Graphics MHz', latest(clocks.current.video.MHz) as 'Video MHz', latest(clocks.current.sm.MHz) as 'SM MHz' TIMESERIES"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "height": 2,
+              "width": 4
+            },
+            "title": "Select GPU",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT latest(name) FACET pci.device_id, hostname "
+                }
+              ]
+            },
+            "linkedEntityGuids": [
+              "MTA2MTA3NHxWSVp8REFTSEJPQVJEfDIyOTkzMTk"
+            ]
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Temps",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT  latest(temperature.gpu) as 'GPU Temp', latest(temperature.memory) as 'Memory Temp', latest(fan.speed.percent) as 'Fan speed %'"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 3,
+              "row": 4,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Power Usage",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT latest(power.draw.watts) as 'Power Draw Watts', latest(`power.limit.watts`) as 'Power Limit Watts', latest(power.draw.watts)/latest(`power.limit.watts`) * 100 as 'Power usage %'"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "height": 3,
+              "width": 2
+            },
+            "title": "Memory Usage",
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT  latest(memory.free.MiB) as 'Memory Free MiB', latest(memory.used.MiB) as 'Memory Used MiB', latest(memory.total.MiB) as 'Memory Total MiB'"
+                }
+              ],
+              "thresholds": []
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "height": 3,
+              "width": 6
+            },
+            "title": "Utilization",
+            "rawConfiguration": {
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 123,
+                  "query": "FROM NvidiaGpuSample SELECT latest(memory.used.MiB/memory.total.MiB) * 100 as 'Memory Used %', latest(utilization.gpu.percent) as 'GPU Utilization %', latest(power.draw.watts)/latest(`power.limit.watts`)*100 as 'Power Usage %', latest(fan.speed.percent) as 'Fan Speed %' TIMESERIES"
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
