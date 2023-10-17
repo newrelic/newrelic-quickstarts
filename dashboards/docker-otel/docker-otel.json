@@ -1,0 +1,762 @@
+{
+  "name": "Docker (OpenTelemetry)",
+  "description": null,
+  "pages": [
+    {
+      "name": "otel/container-entity",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Docker Logo](https://raw.githubusercontent.com/docker-library/docs/c350af05d3fac7b5c3f6327ac82fe4d990d8729c/docker/logo.png)\n\n### Overview\n[Docker](https://www.docker.com/)  is an open platform for developing, shipping, and running applications. Docker enables you to separate your applications from your infrastructure so you can deliver software quickly. With Docker, you can manage your infrastructure in the same ways you manage your applications. By taking advantage of Docker’s methodologies for shipping, testing, and deploying code quickly, you can significantly reduce the delay between writing code and running it in production.\n\n- - -\n### About this Dashboard\n\n- For information on the prerequisites for this dashboard, please visit the documentation [here](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/collector/collector-configuration-examples/opentelemetry-collector-docker/).\n- For more information on how to send telemetry data to New Relic using OTEL, visit the documentation [here](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/collector/collector-configuration-examples/opentelemetry-collector-docker/)\n\n\n\n"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# CPU"
+          }
+        },
+        {
+          "title": "CPU utlization (%)",
+          "layout": {
+            "column": 4,
+            "row": 2,
+            "width": 4,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(container.cpu.percent) OR max(container.cpu.utilization) AS 'CPU percent' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CPU usage (cores)",
+          "layout": {
+            "column": 8,
+            "row": 2,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(container.cpu.usage.total)/1E9,1 second) AS 'CPU usage' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CPU limits",
+          "layout": {
+            "column": 11,
+            "row": 2,
+            "width": 2,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`container.cpu.limit`) OR '-' AS 'CPU Limit' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name AS 'Container Name' LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "CPU throttling (%)",
+          "layout": {
+            "column": 8,
+            "row": 5,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(container.cpu.throttling_data.throttled_periods)/sum(container.cpu.throttling_data.periods)* 100 AS 'CPU throttling' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Overview",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(host.id) AS 'Hosts', uniqueCount(container.id) AS 'Containers', uniqueCount(container.image.name) AS 'Images' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 8,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Memory"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Storage"
+          }
+        },
+        {
+          "title": "Memory utilization (%)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(container.memory.percent) AS 'Memory percent' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Memory limits",
+          "layout": {
+            "column": 4,
+            "row": 9,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Memory Limit",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`container.memory.usage.limit`) OR '-' AS 'Memory Limit' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name AS 'Container Name' LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Memory usage (bytes)",
+          "layout": {
+            "column": 6,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(container.memory.usage.total) AS 'Memory usage' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Storage usage (bytes/sec)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " FROM Metric SELECT rate(sum(container.blockio.io_service_bytes_recursive),1 second) WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 8,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Network"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Other"
+          }
+        },
+        {
+          "title": "Network traffic sent (bytes/sec)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(container.network.io.usage.tx_bytes),1 second) AS 'Transmit' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name, interface TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Network traffic received (bytes/sec)",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(container.network.io.usage.rx_bytes),1 second) AS 'Receive' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name, interface TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Containers restarted (%)",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 1,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentage(uniqueCount(container.id) , WHERE container.restarts > 0 )  WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Container restarts",
+          "layout": {
+            "column": 10,
+            "row": 13,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(container.restarts),1 minute) AS 'Restarts' WHERE container.restarts>0 AND host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Network dropped (packets/sec)",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(container.network.io.usage.tx_dropped), 1 second) AS 'Transmit',rate(sum(container.network.io.usage.rx_dropped),1 second) AS 'Receive' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network packet error (%)",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(container.network.io.usage.tx_errors)/sum(container.network.io.usage.tx_packets)*100 AS 'Transmit',sum(container.network.io.usage.rx_errors)/sum(container.network.io.usage.rx_packets)*100 AS 'Receive' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pids",
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(container.pids.count) AS 'Pids' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.name TIMESERIES AUTO LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Images"
+          }
+        },
+        {
+          "title": "Image Usage",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(container.id) AS 'Containers' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.image.name  AS 'Image' LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average CPU utilization per image (%)",
+          "layout": {
+            "column": 5,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(container.cpu.percent) OR average(container.cpu.utilization) AS 'CPU Usage' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.image.name  AS 'Image' TIMESERIES AUTO  LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average memory utilization per image (%)",
+          "layout": {
+            "column": 9,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(container.memory.percent) AS 'CPU Usage' WHERE host.id IN ({{select_host}}) AND container.name IN ({{select_container}}) AND container.image.name IN ({{select_image}}) FACET container.image.name  AS 'Image' TIMESERIES AUTO  LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "select_host",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(host.id) WHERE otel.library.name='otelcol/dockerstatsreceiver' LIMIT MAX"
+      },
+      "title": "Host",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_container",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(container.name) WHERE otel.library.name='otelcol/dockerstatsreceiver' LIMIT MAX"
+      },
+      "title": "Container",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "select_image",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(container.image.name) WHERE otel.library.name='otelcol/dockerstatsreceiver' LIMIT MAX"
+      },
+      "title": "Image",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
