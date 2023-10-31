@@ -1,11 +1,11 @@
-name: High Model Invocation Errors
+name: High GPU Memory Utilization
 
 description: |+
-  This alert is triggered when Model Invocation errors are above 100 in 10 minutes.
+  This alert is triggered when the Nvidia GPU memory utilization is above 90%.
 
 type: STATIC
 nrql:
-  query: "SELECT sum(`aws.sagemaker.InvocationModelErrors`) as 'Query' FROM Metric"
+  query: "SELECT latest(utilization.memory.percent) FROM NvidiaGpuSample"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -16,9 +16,9 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 100
+    threshold: 90
     # Time in seconds; 120 - 3600
-    thresholdDuration: 600
+    thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
