@@ -1,0 +1,322 @@
+{
+    "name": "Apdex Optimizer",
+    "description": null,
+    "pages": [
+      {
+        "name": "Apdex Optimizer",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Transaction Apdex Breakdown",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT filter(count(*), WHERE apdexPerfZone = 'S') as 'Satisfied', filter(count(*), WHERE apdexPerfZone = 'T') as 'Tolerating', filter(count(*), WHERE apdexPerfZone = 'F') as 'Frustrated' FROM Transaction SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Apdex Score",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT apdex(duration) from Transaction  TIMESERIES  facet appName since 1 day ago LIMIT 50"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Transaction Apdex Breakdown",
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT  filter(count(*),WHERE transactionType IS NOT NULL ) as 'All Transactions',filter(count(*), WHERE apdexPerfZone = 'S') as 'Satisfied', filter(count(*), WHERE apdexPerfZone = 'T') as 'Tolerating', filter(count(*), WHERE apdexPerfZone = 'F') as 'Frustrated' FROM Transaction facet appName  since 1 day ago limit 50"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Suggested APM ApdexT",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT percentile(duration, 90) as 'Suggested Apdex' FROM Transaction SINCE 1 DAY ago limit 1"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "\n## Addtional Resources\n\n* **Nerdpack**  [nr1-apdex-optimizer](https://github.com/newrelic/nr1-apdex-optimizer)\n* **Automated Apdex Thresholds** [automated-apdex-thresholds](https://github.com/newrelic-experimental/automated-apdex-thresholds)\n\n"
+            }
+          },
+          {
+            "title": "Choose APM Application? Filterable",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg duration",
+                  "precision": 4,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": " \n\nSELECT count(*), apdex(duration) as 'Apdex Score', average(duration) FROM Transaction FACET appName since 1 day ago limit 200"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Choose Transaction?",
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg duration",
+                  "precision": 5,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*), apdex(duration) as 'Apdex Score', average(duration) FROM Transaction FACET name  since 1 day ago limit 200"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Choose Status Code?",
+            "layout": {
+              "column": 9,
+              "row": 5,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) FROM Transaction FACET  http.statusCode  LIMIT 50 SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "### Recommendations \n________"
+            }
+          },
+          {
+            "title": "Application Apdex T Value Recommendation",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 6,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg duration",
+                  "precision": 3,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*),percentile(duration, 70, 80, 90, 95),apdex(duration) as 'Apdex Score', average(duration) FROM Transaction FACET appName since 1 day ago limit 200"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Transaction Apdex Values Das",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 6,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Avg duration",
+                  "precision": 4,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*),percentile(duration, 70, 80, 92, 96),apdex(duration) as 'Apdex Score', average(duration) FROM Transaction FACET name since 1 day ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
