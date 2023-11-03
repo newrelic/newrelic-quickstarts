@@ -1,0 +1,29 @@
+name: Max Connection Errors per Second
+
+description: |+
+  This alert is triggered when there are greater than 1 errors against the max_connections limit in a 5 minute window, which indicates you have requests to your MySQL instance that are failing to connect.
+  This setting's default is 501, but can vary based on the underlying resources available to your instance. You can review your current max_connections limit with this query:
+  SHOW VARIABLES LIKE 'max_connections';
+
+type: STATIC
+nrql:
+  query: "FROM MysqlSample SELECT max(net.connectionErrorsMaxConnectionsPerSecond) FACET displayName"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 1
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
