@@ -51,8 +51,9 @@
 ### Nr1CatalogInstallAlertPolicyTemplateResult
 
 Information about the mutation result when installing an alert policy template * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -75,8 +76,9 @@ Information about the mutation result when installing an alert policy template *
 <td>
 
 The template that was used for the installation * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -90,8 +92,9 @@ The template that was used for the installation * [#help-nr1-dev-experience](htt
 <td>
 
 An outline of the created alert policy * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -105,8 +108,9 @@ An outline of the created alert policy * [#help-nr1-dev-experience](https://newr
 ### Nr1CatalogInstallDashboardTemplateResult
 
 Information about the mutation result when installing a dashboard template * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -129,8 +133,9 @@ Information about the mutation result when installing a dashboard template * [#h
 <td>
 
 An outline of the created dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -144,8 +149,9 @@ An outline of the created dashboard * [#help-nr1-dev-experience](https://newreli
 <td>
 
 The template that was used for the installation * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -159,8 +165,9 @@ The template that was used for the installation * [#help-nr1-dev-experience](htt
 ### Nr1CatalogInstallPlan
 
 An installer that uses install plan steps * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -183,8 +190,9 @@ An installer that uses install plan steps * [#help-nr1-dev-experience](https://n
 <td>
 
 The list of install plan steps necessary to execute the installation of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -198,8 +206,9 @@ The list of install plan steps necessary to execute the installation of the quic
 <td>
 
 The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -213,8 +222,9 @@ The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/ar
 ### Nr1CatalogInstallPlanStep
 
 Information pertaining to a specific step in the installation plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -237,8 +247,9 @@ Information pertaining to a specific step in the installation plan * [#help-nr1-
 <td>
 
 A short form description for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -252,8 +263,9 @@ A short form description for the install plan step * [#help-nr1-dev-experience](
 <td>
 
 The human-readable name for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -267,8 +279,9 @@ The human-readable name for the install plan step * [#help-nr1-dev-experience](h
 <td>
 
 Provides context about how the fallback install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -282,8 +295,9 @@ Provides context about how the fallback install plan step should proceed * [#hel
 <td>
 
 Used as a heading for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -297,8 +311,9 @@ Used as a heading for the install plan step * [#help-nr1-dev-experience](https:/
 <td>
 
 The unique identifier for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -312,8 +327,9 @@ The unique identifier for the install plan step * [#help-nr1-dev-experience](htt
 <td>
 
 Provides context about how the primary install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -327,8 +343,9 @@ Provides context about how the primary install plan step should proceed * [#help
 <td>
 
 Provides context about where the install will occur * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -342,8 +359,9 @@ Provides context about where the install will occur * [#help-nr1-dev-experience]
 ### Nr1CatalogInstallPlanTarget
 
 Represents the location of an install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -366,8 +384,9 @@ Represents the location of an install * [#help-nr1-dev-experience](https://newre
 <td>
 
 Provides context on the location the install will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -381,8 +400,9 @@ Provides context on the location the install will take place * [#help-nr1-dev-ex
 <td>
 
 Provides context for the operating system that will be targeted * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -396,8 +416,9 @@ Provides context for the operating system that will be targeted * [#help-nr1-dev
 <td>
 
 Provides context for the type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -411,8 +432,9 @@ Provides context for the type of installation that will take place * [#help-nr1-
 ### Nr1CatalogQuickstart
 
 Information about the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -435,8 +457,9 @@ Information about the quickstart * [#help-nr1-dev-experience](https://newrelic.s
 <td>
 
 Determines if this is a featured quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -450,8 +473,9 @@ Determines if this is a featured quickstart * [#help-nr1-dev-experience](https:/
 <td>
 
 The unique identifier for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -465,8 +489,9 @@ The unique identifier for the quickstart * [#help-nr1-dev-experience](https://ne
 <td>
 
 Metadata associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -480,8 +505,9 @@ Metadata associated with the quickstart * [#help-nr1-dev-experience](https://new
 <td>
 
 Specifies the URL where the source definition for the quickstart can be found * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -495,8 +521,9 @@ Specifies the URL where the source definition for the quickstart can be found * 
 <td>
 
 Level of support expected for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -510,8 +537,9 @@ Level of support expected for the quickstart * [#help-nr1-dev-experience](https:
 ### Nr1CatalogQuickstartAlert
 
 Information about an alert in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -534,8 +562,9 @@ Information about an alert in a quickstart * [#help-nr1-dev-experience](https://
 <td>
 
 The unique identifier for the alert * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -555,8 +584,9 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 <td>
 
 Metadata associated with the alert * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -576,8 +606,9 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 ### Nr1CatalogQuickstartAlertCondition
 
 Information about an alert condition in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -600,8 +631,9 @@ Information about an alert condition in a quickstart * [#help-nr1-dev-experience
 <td>
 
 The unique identifier for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -615,8 +647,9 @@ The unique identifier for the alert condition * [#help-nr1-dev-experience](https
 <td>
 
 Metadata associated with the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -630,8 +663,9 @@ Metadata associated with the alert condition * [#help-nr1-dev-experience](https:
 ### Nr1CatalogQuickstartAlertConditionMetadata
 
 Metadata associated with the alert condition in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -654,8 +688,9 @@ Metadata associated with the alert condition in a quickstart * [#help-nr1-dev-ex
 <td>
 
 A short form description for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -669,8 +704,9 @@ A short form description for the alert condition * [#help-nr1-dev-experience](ht
 <td>
 
 The human-readable name for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -684,8 +720,9 @@ The human-readable name for the alert condition * [#help-nr1-dev-experience](htt
 <td>
 
 Determines the type of alert condition that will be created * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -699,8 +736,9 @@ Determines the type of alert condition that will be created * [#help-nr1-dev-exp
 ### Nr1CatalogQuickstartAlertMetadata
 
 Metadata associated with the alert in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -723,8 +761,9 @@ Metadata associated with the alert in a quickstart * [#help-nr1-dev-experience](
 <td>
 
 A short form description for the alert. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -744,8 +783,9 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 <td>
 
 The human-readable name for the alert. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -765,8 +805,9 @@ This field is no longer supported. Please use Nr1CatalogQuickstartAlertCondition
 ### Nr1CatalogQuickstartDashboard
 
 Information about a dashboard in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -789,8 +830,9 @@ Information about a dashboard in a quickstart * [#help-nr1-dev-experience](https
 <td>
 
 The unique identifier for the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -804,8 +846,9 @@ The unique identifier for the dashboard * [#help-nr1-dev-experience](https://new
 <td>
 
 Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -819,8 +862,9 @@ Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newr
 ### Nr1CatalogQuickstartDashboardMetadata
 
 Metadata associated with the dashboard in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -843,8 +887,9 @@ Metadata associated with the dashboard in a quickstart * [#help-nr1-dev-experien
 <td>
 
 A short form description for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -858,8 +903,9 @@ A short form description for the dashboard. * [#help-nr1-dev-experience](https:/
 <td>
 
 The human-readable name for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -873,8 +919,9 @@ The human-readable name for the dashboard. * [#help-nr1-dev-experience](https://
 <td>
 
 A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -888,8 +935,9 @@ A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-expe
 ### Nr1CatalogQuickstartDocumentation
 
 Information about a documentation component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -912,8 +960,9 @@ Information about a documentation component in a quickstart * [#help-nr1-dev-exp
 <td>
 
 Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -927,8 +976,9 @@ Metadata associated with the dashboard * [#help-nr1-dev-experience](https://newr
 ### Nr1CatalogQuickstartDocumentationMetadata
 
 Metadata associated with the documentation component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -951,8 +1001,9 @@ Metadata associated with the documentation component in a quickstart * [#help-nr
 <td>
 
 A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -966,8 +1017,9 @@ A short form description for the documentation component. * [#help-nr1-dev-exper
 <td>
 
 The human-readable name for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -981,8 +1033,9 @@ The human-readable name for the documentation component. * [#help-nr1-dev-experi
 <td>
 
 The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -996,8 +1049,9 @@ The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/ar
 ### Nr1CatalogQuickstartInstallPlan
 
 Information about an install plan component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1020,8 +1074,9 @@ Information about an install plan component in a quickstart * [#help-nr1-dev-exp
 <td>
 
 Metadata associated with the install plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1041,8 +1096,9 @@ This field is no longer supported. Please use installer instead.
 ### Nr1CatalogQuickstartInstallPlanMetadata
 
 Metadata associated with the install plan in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1065,8 +1121,9 @@ Metadata associated with the install plan in a quickstart * [#help-nr1-dev-exper
 <td>
 
 A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1086,8 +1143,9 @@ This field is no longer supported. Please use installer instead.
 <td>
 
 The human-readable name for the install plan component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1107,8 +1165,9 @@ This field is no longer supported. Please use installer instead.
 ### Nr1CatalogQuickstartMetadata
 
 Metadata associated with the quickstart that is available in New Relic I/O * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1131,8 +1190,9 @@ Metadata associated with the quickstart that is available in New Relic I/O * [#h
 <td>
 
 Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1146,8 +1206,9 @@ Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.c
 <td>
 
 The list of categories for filtering, searching, and grouping associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1161,8 +1222,9 @@ The list of categories for filtering, searching, and grouping associated with th
 <td>
 
 The list of category terms associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1176,8 +1238,9 @@ The list of category terms associated with the quickstart * [#help-nr1-dev-exper
 <td>
 
 The list of data sources associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1191,8 +1254,9 @@ The list of data sources associated with the quickstart * [#help-nr1-dev-experie
 <td>
 
 A short form description for the quickstart. Used throughout the platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1206,8 +1270,9 @@ A short form description for the quickstart. Used throughout the platform when d
 <td>
 
 The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1221,8 +1286,9 @@ The human-readable name for the quickstart. Used throughout the New Relic One pl
 <td>
 
 The corresponding icon for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1231,18 +1297,25 @@ The corresponding icon for the quickstart * [#help-nr1-dev-experience](https://n
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>installer</strong></td>
+<td colspan="2" valign="top"><strong>installer</strong> ⚠️</td>
 <td valign="top"><a href="#nr1cataloginstaller">Nr1CatalogInstaller</a></td>
 <td>
 
 Information about how a quickstart is installed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
 
 
+<p>⚠️ <strong>DEPRECATED</strong></p>
+<blockquote>
+
+This field is in a deprecation period. Please refer to `dataSources` for how a quickstart is installed.
+
+</blockquote>
 </td>
 </tr>
 <tr>
@@ -1251,8 +1324,9 @@ Information about how a quickstart is installed * [#help-nr1-dev-experience](htt
 <td>
 
 A list of keywords for filtering and searching * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1266,8 +1340,9 @@ A list of keywords for filtering and searching * [#help-nr1-dev-experience](http
 <td>
 
 List of components in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1281,8 +1356,9 @@ List of components in a quickstart * [#help-nr1-dev-experience](https://newrelic
 <td>
 
 The URL friendly name of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1296,8 +1372,9 @@ The URL friendly name of the quickstart * [#help-nr1-dev-experience](https://new
 <td>
 
 A short summary detailing the functionality of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1311,8 +1388,9 @@ A short summary detailing the functionality of the quickstart * [#help-nr1-dev-e
 ### Nr1CatalogQuickstartsListing
 
 Paginated information about Quickstarts * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1335,8 +1413,9 @@ Paginated information about Quickstarts * [#help-nr1-dev-experience](https://new
 <td>
 
 Cursor used to fetch the next set of results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1350,8 +1429,9 @@ Cursor used to fetch the next set of results * [#help-nr1-dev-experience](https:
 <td>
 
 The list of quickstart results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1365,8 +1445,9 @@ The list of quickstart results * [#help-nr1-dev-experience](https://newrelic.sla
 <td>
 
 The total number of quickstart results * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -1382,8 +1463,9 @@ The total number of quickstart results * [#help-nr1-dev-experience](https://newr
 ### Nr1CatalogInstallDirectiveInput
 
 Set of attributes which represent how an install takes place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1405,8 +1487,9 @@ Set of attributes which represent how an install takes place * [#help-nr1-dev-ex
 <td>
 
 Link information for this directive. Cannot be used with a nerdlet directive. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1420,8 +1503,9 @@ Link information for this directive. Cannot be used with a nerdlet directive. * 
 <td>
 
 Nerdlet information for this directive. Cannot be used with a link directive. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1435,8 +1519,9 @@ Nerdlet information for this directive. Cannot be used with a link directive. * 
 ### Nr1CatalogInstallPlanDirectiveInput
 
 Set of attributes which represent how an install takes place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1458,8 +1543,9 @@ Set of attributes which represent how an install takes place * [#help-nr1-dev-ex
 <td>
 
 Value that pairs with the mode to enable the installation step. Supported values are a recipe_name, nerdlet_id, or a link * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1473,8 +1559,9 @@ Value that pairs with the mode to enable the installation step. Supported values
 <td>
 
 Link information for this directive. Cannot be used with nerdlet or targeted directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1488,8 +1575,9 @@ Link information for this directive. Cannot be used with nerdlet or targeted dir
 <td>
 
 The type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1503,8 +1591,9 @@ The type of installation that will take place * [#help-nr1-dev-experience](https
 <td>
 
 Nerdlet information for this directive. Cannot be used with link or targeted directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1518,8 +1607,9 @@ Nerdlet information for this directive. Cannot be used with link or targeted dir
 <td>
 
 Targeted information for this directive. Cannot be used with link or nerdlet directives. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1533,8 +1623,9 @@ Targeted information for this directive. Cannot be used with link or nerdlet dir
 ### Nr1CatalogInstallPlanStepInput
 
 Metadata associated with a specific step in the install plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1556,8 +1647,9 @@ Metadata associated with a specific step in the install plan * [#help-nr1-dev-ex
 <td>
 
 A short form description for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1571,8 +1663,9 @@ A short form description for the install plan step * [#help-nr1-dev-experience](
 <td>
 
 The human-readable name for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1586,8 +1679,9 @@ The human-readable name for the install plan step * [#help-nr1-dev-experience](h
 <td>
 
 Provides context about how the fallback install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1601,8 +1695,9 @@ Provides context about how the fallback install plan step should proceed * [#hel
 <td>
 
 Used as a heading for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1616,8 +1711,9 @@ Used as a heading for the install plan step * [#help-nr1-dev-experience](https:/
 <td>
 
 The unique identifier for the install plan step * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1631,8 +1727,9 @@ The unique identifier for the install plan step * [#help-nr1-dev-experience](htt
 <td>
 
 Provides context about how the primary install plan step should proceed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1646,8 +1743,9 @@ Provides context about how the primary install plan step should proceed * [#help
 <td>
 
 Provides context about where the install will occur * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1661,8 +1759,9 @@ Provides context about where the install will occur * [#help-nr1-dev-experience]
 ### Nr1CatalogInstallPlanTargetInput
 
 Represents the location of an install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1684,8 +1783,9 @@ Represents the location of an install * [#help-nr1-dev-experience](https://newre
 <td>
 
 Provides context on the location the install will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1699,8 +1799,9 @@ Provides context on the location the install will take place * [#help-nr1-dev-ex
 <td>
 
 Operating system for the install * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1714,8 +1815,9 @@ Operating system for the install * [#help-nr1-dev-experience](https://newrelic.s
 <td>
 
 Provides context for the type of installation that will take place * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1729,8 +1831,9 @@ Provides context for the type of installation that will take place * [#help-nr1-
 ### Nr1CatalogQuickstartMetadataAlertConditionInput
 
 Metadata associated with the alert condition in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1752,8 +1855,9 @@ Metadata associated with the alert condition in this quickstart * [#help-nr1-dev
 <td>
 
 A short form description for the alert condition. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1767,8 +1871,9 @@ A short form description for the alert condition. * [#help-nr1-dev-experience](h
 <td>
 
 The human-readable name for the alert condition. Used throughout the New Relic One platform when displaying the alert condition. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1782,8 +1887,9 @@ The human-readable name for the alert condition. Used throughout the New Relic O
 <td>
 
 The raw JSON configuration for the alert condition * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1797,8 +1903,9 @@ The raw JSON configuration for the alert condition * [#help-nr1-dev-experience](
 <td>
 
 The source of the alert configuration * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1812,8 +1919,9 @@ The source of the alert configuration * [#help-nr1-dev-experience](https://newre
 <td>
 
 Determines the type of alert condition that will be created * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1827,8 +1935,9 @@ Determines the type of alert condition that will be created * [#help-nr1-dev-exp
 ### Nr1CatalogQuickstartMetadataDashboardInput
 
 Metadata associated with the dashboard in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1850,8 +1959,9 @@ Metadata associated with the dashboard in this quickstart * [#help-nr1-dev-exper
 <td>
 
 A short form description for the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1865,8 +1975,9 @@ A short form description for the dashboard. * [#help-nr1-dev-experience](https:/
 <td>
 
 The human-readable name for the dashboard. Used throughout the New Relic One platform when displaying the dashboard. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1880,8 +1991,9 @@ The human-readable name for the dashboard. Used throughout the New Relic One pla
 <td>
 
 The raw JSON configuration for the dashboard * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1895,8 +2007,9 @@ The raw JSON configuration for the dashboard * [#help-nr1-dev-experience](https:
 <td>
 
 A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1910,8 +2023,9 @@ A list of previews for the dashboard, such as screenshots. * [#help-nr1-dev-expe
 <td>
 
 The source of the dashboard configuration * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1925,8 +2039,9 @@ The source of the dashboard configuration * [#help-nr1-dev-experience](https://n
 ### Nr1CatalogQuickstartMetadataDocumentationInput
 
 Metadata associated with the documentation in this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1948,8 +2063,9 @@ Metadata associated with the documentation in this quickstart * [#help-nr1-dev-e
 <td>
 
 A short form description for the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1963,8 +2079,9 @@ A short form description for the documentation component. * [#help-nr1-dev-exper
 <td>
 
 The human-readable name for the documentation component. Used throughout the New Relic One platform when displaying the documentation component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1978,8 +2095,9 @@ The human-readable name for the documentation component. Used throughout the New
 <td>
 
 The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -1993,8 +2111,9 @@ The documentation URL * [#help-nr1-dev-experience](https://newrelic.slack.com/ar
 ### Nr1CatalogQuickstartMetadataInput
 
 Metadata associated with the quickstart that will be available in New Relic Instant Observability * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2016,8 +2135,9 @@ Metadata associated with the quickstart that will be available in New Relic Inst
 <td>
 
 A list of alert condition components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2031,8 +2151,9 @@ A list of alert condition components that are included in the quickstart * [#hel
 <td>
 
 Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2046,8 +2167,9 @@ Authors for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.c
 <td>
 
 The list of category terms associated with the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2061,8 +2183,9 @@ The list of category terms associated with the quickstart * [#help-nr1-dev-exper
 <td>
 
 A list of dashboard components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2076,8 +2199,9 @@ A list of dashboard components that are included in the quickstart * [#help-nr1-
 <td>
 
 A list of data source ids corresponding to the data sources associated with this quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2091,8 +2215,9 @@ A list of data source ids corresponding to the data sources associated with this
 <td>
 
 A short form description for the quickstart. Used throughout the platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2106,8 +2231,9 @@ A short form description for the quickstart. Used throughout the platform when d
 <td>
 
 The human-readable name for the quickstart. Used throughout the New Relic One platform when displaying the quickstart. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2121,8 +2247,9 @@ The human-readable name for the quickstart. Used throughout the New Relic One pl
 <td>
 
 A list of documentation components that are included in the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2136,8 +2263,9 @@ A list of documentation components that are included in the quickstart * [#help-
 <td>
 
 The public url of an icon for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2151,8 +2279,9 @@ The public url of an icon for the quickstart * [#help-nr1-dev-experience](https:
 <td>
 
 A list of install plan step ids corresponding to the steps of the installation plan * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2166,8 +2295,9 @@ A list of install plan step ids corresponding to the steps of the installation p
 <td>
 
 A list of keywords for filtering and searching * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2181,8 +2311,9 @@ A list of keywords for filtering and searching * [#help-nr1-dev-experience](http
 <td>
 
 The URL friendly name for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2196,8 +2327,9 @@ The URL friendly name for the quickstart * [#help-nr1-dev-experience](https://ne
 <td>
 
 Specifies the URL where the source definition for the quickstart can be found * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2211,8 +2343,9 @@ Specifies the URL where the source definition for the quickstart can be found * 
 <td>
 
 A short summary detailing the functionality of the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2226,8 +2359,9 @@ A short summary detailing the functionality of the quickstart * [#help-nr1-dev-e
 <td>
 
 Level of support for the quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(flag:`DevEx/nrio_mutations`)
 
@@ -2243,8 +2377,9 @@ Level of support for the quickstart * [#help-nr1-dev-experience](https://newreli
 ### Nr1CatalogInstallPlanDestination
 
 Possible destinations for the install plan target * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2303,8 +2438,9 @@ Unknown install - special case when the target where the install takes place is 
 ### Nr1CatalogInstallPlanDirectiveMode
 
 Possible modes for an install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2347,8 +2483,9 @@ Directs the installation toward a specific target
 ### Nr1CatalogInstallPlanOperatingSystem
 
 Possible types for the install plan operating system * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2391,8 +2528,9 @@ Windows operating system
 ### Nr1CatalogInstallPlanTargetType
 
 Possible types for the install plan target * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2443,8 +2581,9 @@ Unknown install - special case when the target where the install takes place is 
 ### Nr1CatalogInstallerType
 
 Type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2471,8 +2610,9 @@ Install plan
 ### Nr1CatalogQuickstartAlertConditionType
 
 Possible types of configured alert conditions * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2524,8 +2664,9 @@ A static alert condition
 ### Nr1CatalogInstallPlanDirective
 
 Information about an install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2548,8 +2689,9 @@ Information about an install plan directive * [#help-nr1-dev-experience](https:/
 <td>
 
 The mode of the install plan directive * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2563,8 +2705,9 @@ The mode of the install plan directive * [#help-nr1-dev-experience](https://newr
 ### Nr1CatalogInstaller
 
 Information about how a quickstart is installed * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2587,8 +2730,9 @@ Information about how a quickstart is installed * [#help-nr1-dev-experience](htt
 <td>
 
 The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2602,8 +2746,9 @@ The type of installer * [#help-nr1-dev-experience](https://newrelic.slack.com/ar
 ### Nr1CatalogQuickstartComponent
 
 Information about a component in a quickstart * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2626,8 +2771,9 @@ Information about a component in a quickstart * [#help-nr1-dev-experience](https
 <td>
 
 Metadata associated with the quickstart component * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2641,8 +2787,9 @@ Metadata associated with the quickstart component * [#help-nr1-dev-experience](h
 ### Nr1CatalogQuickstartComponentMetadata
 
 Information related to the metadata attached to a quickstart component * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2665,8 +2812,9 @@ Information related to the metadata attached to a quickstart component * [#help-
 <td>
 
 A short form description for the quickstart component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
@@ -2680,8 +2828,9 @@ A short form description for the quickstart component. * [#help-nr1-dev-experien
 <td>
 
 The human-readable name for the quickstart component. * [#help-nr1-dev-experience](https://newrelic.slack.com/archives/CPE597DNY)
+ * Team ID: No team ID provided
 
-* No repo link provided
+* [catalog-service-elixir repo](https://source.datanerd.us/nr1-dev-experience/catalog-service-elixir)
 
  * visibility(customer)
 
