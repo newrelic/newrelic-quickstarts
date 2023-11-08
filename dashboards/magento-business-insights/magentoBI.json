@@ -149,7 +149,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT percentage(count(result), where result = 'FAILED') as 'Downtime (%)' from SyntheticCheck since  this month "
+				  "query": "SELECT percentage(count(result), where result = 'FAILED' and monitorName in ({{Monitor}})) as 'Downtime (%)' from SyntheticCheck since  this month "
 				}
 			  ],
 			  "platformOptions": {
@@ -248,7 +248,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT average(duration) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue per second' FROM MYSQLRevenuePerMonthAndYear WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED' facet monthOf(timestamp)"
+				  "query": "SELECT average(duration/1000) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue per second' FROM MYSQLRevenuePerMonthAndYear WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED' and monitorName IN ({{Monitor}}) facet monthOf(timestamp)"
 				}
 			  ],
 			  "platformOptions": {
@@ -335,7 +335,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT average(duration) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue per second' FROM MYSQLRevenuePerMonthAndYear WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED' facet dateOf(timestamp)"
+				  "query": "SELECT average(duration/1000) * (SELECT (latest(AverageRevenue) / 365) / 86400 AS 'Average Revenue per second' FROM MYSQLRevenuePerMonthAndYear WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED'and monitorName IN ({{Monitor}}) facet dateOf(timestamp)"
 				}
 			  ],
 			  "platformOptions": {
@@ -744,7 +744,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": " SELECT average(duration) * (SELECT (LATEST(AverageNumberOfOrders)/365) FROM MYSQLOrdersAverage  WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED' facet monthOf(timestamp)"
+				  "query": " SELECT average(duration/1000) * (SELECT (LATEST(AverageNumberOfOrders)/365) FROM MYSQLOrdersAverage  WHERE Year IN ({{Year}})) from SyntheticCheck where result = 'FAILED'and monitorName IN ({{Monitor}}) facet monthOf(timestamp)"
 				}
 			  ],
 			  "platformOptions": {
@@ -786,7 +786,7 @@
 			}
 		  },
 		  {
-			"title": "New Customers",
+			"title": "New Customers in Last One Month",
 			"layout": {
 			  "column": 3,
 			  "row": 1,
@@ -912,7 +912,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "FROM MYSQLSalesOrderByUnregisteredCustomers2 SELECT latest(`Total Order Ids`) AS 'Number of Orders', latest(`Grand Total Sum`) AS 'Grand Total ($)'"
+				  "query": "FROM MYSQLSalesOrderByUnregisteredCustomersSummary SELECT latest(`Total Order Ids`) AS 'Number of Orders', latest(`Grand Total Sum`) AS 'Grand Total ($)'"
 				}
 			  ],
 			  "platformOptions": {
@@ -2819,8 +2819,8 @@
 			  },
 			  "nrqlQueries": [
 				{
-				  "accountId": 0,
-				  "query": "SELECT count(*) FROM SyntheticRequest WHERE result = 'FAILED'"
+				  "accountIds": [],
+				  "query": "SELECT count(*) FROM SyntheticRequest WHERE result = 'FAILED'and monitorName IN ({{Monitor}})"
 				}
 			  ],
 			  "platformOptions": {
@@ -2852,8 +2852,8 @@
 			  },
 			  "nrqlQueries": [
 				{
-				  "accountId": 0,
-				  "query": "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
+				  "accountIds": [],
+				  "query": "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'and monitorName IN ({{Monitor}})"
 				}
 			  ],
 			  "platformOptions": {
@@ -2889,7 +2889,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT average(duration) from SyntheticCheck facet locationLabel timeseries"
+				  "query": "SELECT average(duration/1000) from SyntheticCheck where monitorName IN ({{Monitor}}) facet locationLabel timeseries "
 				}
 			  ],
 			  "platformOptions": {
@@ -2918,8 +2918,8 @@
 			  },
 			  "nrqlQueries": [
 				{
-				  "accountId": 0,
-				  "query": "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED' facet locationLabel"
+				  "accountIds": [],
+				  "query": "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED' and monitorName IN ({{Monitor}}) facet locationLabel"
 				}
 			  ],
 			  "platformOptions": {
@@ -2965,7 +2965,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT latest(duration) from SyntheticCheck where result = 'FAILED' since 12 month ago until today facet monthOf(timestamp) TIMESERIES"
+				  "query": "SELECT latest(duration/1000) from SyntheticCheck where result = 'FAILED' and monitorName in ({{Monitor}}) since 12 month ago until today facet monthOf(timestamp) TIMESERIES"
 				}
 			  ],
 			  "platformOptions": {
@@ -3397,7 +3397,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT count(*) from SyntheticRequest facet domain TIMESERIES auto"
+				  "query": "SELECT count(*) from SyntheticRequest where monitorName in ({{Monitor}})facet domain TIMESERIES auto"
 				}
 			  ],
 			  "platformOptions": {
@@ -3427,7 +3427,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "SELECT latest(duration) from SyntheticRequest facet contentType TIMESERIES"
+				  "query": "SELECT latest(duration/1000) from SyntheticRequest where monitorName in ({{Monitor}}) facet contentType TIMESERIES"
 				}
 			  ],
 			  "platformOptions": {
@@ -3484,7 +3484,7 @@
 			  "nrqlQueries": [
 				{
 				  "accountIds": [],
-				  "query": "select average(duration) from SyntheticRequest facet domain limit 10"
+				  "query": "select average(duration/1000) from SyntheticRequest facet domain limit 10"
 				}
 			  ],
 			  "platformOptions": {
@@ -5397,6 +5397,25 @@
 		"type": "ENUM",
 		"isMultiSelection": true,
 		"replacementStrategy": "NUMBER"
+	  },
+	  {
+		"name": "Monitor",
+		"items": null,
+		"defaultValues": [
+		  {
+			"value": {
+			  "string": "Magento2_v2 Availability"
+			}
+		  }
+		],
+		"nrqlQuery": {
+		  "accountIds": [],
+		  "query": "SELECT uniques(monitorName) from SyntheticCheck,SyntheticRequest since 1 month ago"
+		},
+		"title": "Monitor",
+		"type": "NRQL",
+		"isMultiSelection": true,
+		"replacementStrategy": "STRING"
 	  }
 	]
   }
