@@ -1,0 +1,874 @@
+{
+	"name": "Golden signals dashboard",
+	"description": "Dashboard to monitor golden signals across APM, Infrastructure, Synthetics, Browser and Mobile with template variables to dynamically filter widgets.",
+	"pages": [{
+		"name": "Golden signals dashboard",
+		"description": null,
+		"widgets": [{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 1,
+					"width": 12,
+					"height": 2
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Golden Signals\n#### Monitoring the golden signals allows you to quickly see an overview of the health of your application.\n\n- [NerdGraph tutorial: View and configure an entity's golden metrics](https://docs.newrelic.com/docs/apis/nerdgraph/examples/golden-metrics-entities-nerdgraph-api-tutorial/)\n- [Why you need to monitor the four golden signals](https://newrelic.com/blog/best-practices/monitoring-golden-signals)\n- Databyte - [Configure the Golden Metric Charts in Workloads](https://www.youtube.com/watch?v=3JSb68Gdhlg)\n"
+				}
+			},
+			{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 3,
+					"width": 12,
+					"height": 1
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Application Performance \n"
+				}
+			},
+			{
+				"title": "Response time (ms)",
+				"layout": {
+					"column": 1,
+					"row": 4,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.apm.application.responseTimeMs) AS 'Response Time Ms' FROM Metric WHERE appName in ({{appname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Throughput",
+				"layout": {
+					"column": 5,
+					"row": 4,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT rate(count(newrelic.goldenmetrics.apm.application.throughput), 1 MINUTES) AS 'Throughput' FROM Metric WHERE appName in ({{appname}}) LIMIT MAX TIMESERIES facet appName\n"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Error rate",
+				"layout": {
+					"column": 9,
+					"row": 4,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.billboard"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.apm.application.errorRate) AS 'Error Rate' FROM Metric WHERE appName in ({{appname}}) LIMIT MAX  facet appName\n"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					},
+					"thresholds": [{
+							"alertSeverity": "CRITICAL",
+							"value": 5
+						},
+						{
+							"alertSeverity": "WARNING",
+							"value": 3
+						}
+					]
+				}
+			},
+			{
+				"title": "Apdex",
+				"layout": {
+					"column": 1,
+					"row": 7,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.bar"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT apdex(`apm.service.apdex`) as 'APDEX' FROM Metric where appName in ({{appname}})   facet appName limit max"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "App availability",
+				"layout": {
+					"column": 5,
+					"row": 7,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.bar"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "FROM Transaction SELECT percentage(count(*), WHERE error is false)  WHERE appName in ({{appname}}) LIMIT MAX  facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Latency",
+				"layout": {
+					"column": 9,
+					"row": 7,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.billboard"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT percentile(duration, 50, 90, 99) as 'Duration' from Transaction  WHERE appName in ({{appname}}) LIMIT MAX  "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 10,
+					"width": 12,
+					"height": 1
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Infrastructure Performance "
+				}
+			},
+			{
+				"title": "CPU usage (%)",
+				"layout": {
+					"column": 1,
+					"row": 11,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.infra.host.cpuUsage) AS 'Cpu Usage' FROM Metric WHERE entity.name in ({{hostname}}) LIMIT MAX TIMESERIES FACET entity.name"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Storage usage (%)",
+				"layout": {
+					"column": 5,
+					"row": 11,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.infra.host.storageUsage) AS 'Storage Usage'  FROM Metric WHERE entity.name in ({{hostname}}) LIMIT MAX TIMESERIES FACET entity.name"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Memory usage (%)",
+				"layout": {
+					"column": 9,
+					"row": 11,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.infra.host.memoryUsage) AS 'Memory Usage' FROM Metric WHERE entity.name in ({{hostname}}) LIMIT MAX TIMESERIES FACET entity.name"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Network receive traffic (bytes/s)",
+				"layout": {
+					"column": 1,
+					"row": 14,
+					"width": 6,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.infra.host.networkTrafficRx) AS 'Network Traffic Rx' FROM Metric WHERE entity.name in ({{hostname}}) LIMIT MAX TIMESERIES FACET entity.name"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Network transmit traffic (bytes/s)",
+				"layout": {
+					"column": 7,
+					"row": 14,
+					"width": 6,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.infra.host.networkTrafficTx) AS 'Network Traffic Tx'  FROM Metric WHERE entity.name in ({{hostname}}) LIMIT MAX TIMESERIES FACET entity.name"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 17,
+					"width": 12,
+					"height": 1
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Browser Performance \n"
+				}
+			},
+			{
+				"title": "Throughput (ppm)",
+				"layout": {
+					"column": 1,
+					"row": 18,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Throughput Ppm' FROM Metric WHERE appName in ({{browserappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Largest contentful paint (75 percentile) (s)",
+				"layout": {
+					"column": 5,
+					"row": 18,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT percentile(newrelic.goldenmetrics.browser.application.largestContentfulPaint75PercentileS, 75) AS 'Largest Contentful Paint 75 Percentile S' FROM Metric WHERE appName in ({{browserappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "First input delay (75 percentile) (ms)",
+				"layout": {
+					"column": 9,
+					"row": 18,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT percentile(newrelic.goldenmetrics.browser.application.firstInputDelay75PercentileMs, 75) AS 'First Input Delay 75 Percentile Ms'  FROM Metric WHERE appName in ({{browserappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Errors",
+				"layout": {
+					"column": 1,
+					"row": 21,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.billboard"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Errors'  FROM Metric WHERE  appName in ({{browserappname}}) LIMIT MAX facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					},
+					"thresholds": [{
+							"alertSeverity": "WARNING",
+							"value": 20
+						},
+						{
+							"alertSeverity": "CRITICAL",
+							"value": 30
+						}
+					]
+				}
+			},
+			{
+				"title": "Pageload time (s)",
+				"layout": {
+					"column": 5,
+					"row": 21,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Page Load Seconds'  FROM Metric WHERE appName in ({{browserappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Ajax throughput (rpm)",
+				"layout": {
+					"column": 9,
+					"row": 21,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputAjax), 1 MINUTES) AS 'Throughput Ajax' FROM Metric WHERE appName in ({{browserappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 24,
+					"width": 12,
+					"height": 1
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Synthetics Performance\n"
+				}
+			},
+			{
+				"title": "Median duration (s)",
+				"layout": {
+					"column": 1,
+					"row": 25,
+					"width": 6,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT percentile(newrelic.goldenmetrics.synth.monitor.medianDurationS, 50) AS 'Median Duration S' FROM Metric WHERE monitorName in ({{monitorname}}) LIMIT MAX TIMESERIES FACET monitorName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Failures",
+				"layout": {
+					"column": 7,
+					"row": 25,
+					"width": 6,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT count(newrelic.goldenmetrics.synth.monitor.failures) AS 'Failures' FROM Metric WHERE monitorName in ({{monitorname}}) LIMIT MAX TIMESERIES FACET monitorName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "",
+				"layout": {
+					"column": 1,
+					"row": 28,
+					"width": 12,
+					"height": 1
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.markdown"
+				},
+				"rawConfiguration": {
+					"text": "# Mobile Performance "
+				}
+			},
+			{
+				"title": "App launches",
+				"layout": {
+					"column": 1,
+					"row": 29,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT count(newrelic.goldenmetrics.mobile.application.appLaunchCountMetric) AS 'App Launch Count Metric' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES facet appName"
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Crash Count",
+				"layout": {
+					"column": 5,
+					"row": 29,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT count(newrelic.goldenmetrics.mobile.application.crashCount) AS 'Crash Count' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES FACET appName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "HTTP response time (ms)",
+				"layout": {
+					"column": 9,
+					"row": 29,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.mobile.application.httpResponseTimeMsMetric) AS 'Http Response Time Ms Metric' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES FACET appName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Network failure count",
+				"layout": {
+					"column": 1,
+					"row": 32,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.mobile.application.networkFailuresCountMetric) AS 'Network Failures Count Metric' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES FACET appName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "HTTP error rate",
+				"layout": {
+					"column": 5,
+					"row": 32,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT average(newrelic.goldenmetrics.mobile.application.httpErrorsRateMetric) AS 'Http Errors Rate Metric' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES FACET appName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			},
+			{
+				"title": "Requests per minute (req/min)",
+				"layout": {
+					"column": 9,
+					"row": 32,
+					"width": 4,
+					"height": 3
+				},
+				"linkedEntityGuids": null,
+				"visualization": {
+					"id": "viz.area"
+				},
+				"rawConfiguration": {
+					"facet": {
+						"showOtherSeries": false
+					},
+					"legend": {
+						"enabled": true
+					},
+					"nrqlQueries": [{
+						"accountIds": [],
+						"query": "SELECT rate(count(newrelic.goldenmetrics.mobile.application.requestsPerMinute), 1 MINUTES) AS 'Requests Per Minute' FROM Metric WHERE appName in ({{mobileappname}}) LIMIT MAX TIMESERIES FACET appName "
+					}],
+					"platformOptions": {
+						"ignoreTimeRange": false
+					}
+				}
+			}
+		]
+	}],
+	"variables": [{
+			"name": "appname",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "Select uniques(appName) from Transaction"
+			},
+			"title": "Application Name",
+			"type": "NRQL",
+			"isMultiSelection": true,
+			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "hostname",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "Select uniques(hostname) from SystemSample"
+			},
+			"title": "Host Name",
+			"type": "NRQL",
+			"isMultiSelection": true,
+			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "monitorname",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "SELECT uniques(monitorName) from SyntheticCheck LIMIT max"
+			},
+			"title": "Monitor Name",
+			"type": "NRQL",
+			"isMultiSelection": true,
+			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "browserappname",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "from PageView SELECT uniques(appName)"
+			},
+			"title": "Browser App Name",
+			"type": "NRQL",
+			"isMultiSelection": true,
+			"replacementStrategy": "STRING"
+		},
+		{
+			"name": "mobileappname",
+			"items": null,
+			"defaultValues": [],
+			"nrqlQuery": {
+				"accountIds": [],
+				"query": "from Mobile SELECT uniques(appName) SINCE 10 days ago"
+			},
+			"title": "Mobile App Name",
+			"type": "NRQL",
+			"isMultiSelection": true,
+			"replacementStrategy": "STRING"
+		}
+	]
+}
