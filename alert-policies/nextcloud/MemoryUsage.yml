@@ -1,11 +1,11 @@
-name: Scrape Errors
+name: Memory Usage 
 
 description: |+
-  This alert is triggered  when the cache size limit is reached above 4 for at least 5 minutes.
+  This alert is triggered  when the Memory Usage is exceeds 90% for at least 5 minutes.
 
 type: STATIC
 nrql:
-  query: "FROM Metric SELECT sum(nextcloud_scrape_errors_total) As 'Scrape Errors'"
+  query: "FROM NextcloudFlexMetrics select (latest(ocs.data.server.php.opcache.memory_usage.used_memory) / 1e+6) / (latest(ocs.data.server.php.opcache.memory_usage.free_memory) / 1e+6) * 100 AS '(%) used memory'"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE).
 valueFunction: SINGLE_VALUE
@@ -16,7 +16,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation.
-    threshold: 4  
+    threshold: 90 
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration?
@@ -26,7 +26,7 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation.
-    threshold: 1  
+    threshold: 80 
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration?
