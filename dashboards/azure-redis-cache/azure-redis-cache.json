@@ -1,9 +1,9 @@
 {
-  "name": "Azure load balancer",
+  "name": "Azure redis cache",
   "description": null,
   "pages": [
     {
-      "name": "Azure load balancer",
+      "name": "Azure redis cache",
       "description": null,
       "widgets": [
         {
@@ -11,7 +11,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 10,
+            "width": 9,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -19,14 +19,13 @@
             "id": "viz.billboard"
           },
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes', SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets', AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability', AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average VIP Availability'"
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.cacheRead`) AS 'Total Cache Read', SUM(`azure.cache.redis.cacheWrite`) AS 'Total Cache Write', SUM(`azure.cache.redis.connectedclients`) AS 'Total Connected Clients', SUM(`azure.cache.redis.totalcommandsprocessed`) AS 'Total Commands Processed', SUM(`azure.cache.redis.usedmemory`) AS 'Total Used Memory', SUM(`azure.cache.redis.usedmemoryRss`) AS 'Total Used Memory RSS'"
               }
             ],
             "platformOptions": {
@@ -37,9 +36,9 @@
         {
           "title": "",
           "layout": {
-            "column": 11,
+            "column": 10,
             "row": 1,
-            "width": 2,
+            "width": 3,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -47,20 +46,20 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Load Balancer\nAzure Load Balancer delivers high availability and network performance to your applications. It is a Layer 4 (TCP, UDP) load balancer that distributes incoming traffic among healthy instances of services defined in a load-balanced set."
+            "text": "# Azure Redis Cache\nAzure Cache for Redis provides an in-memory data store based on the Redis software. Redis improves the performance and scalability of an application that uses backend data stores heavily. It's able to process large volumes of application requests by keeping frequently accessed data in the server memory, which can be written to and read from quickly. Redis brings a critical low-latency and high-throughput data storage solution to modern applications.\n\n"
           }
         },
         {
-          "title": "Number of bytes by direction",
+          "title": "CPU utilization per shardId",
           "layout": {
             "column": 1,
             "row": 3,
-            "width": 5,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.stacked-bar"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -72,32 +71,32 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes' TIMESERIES AUTO FACET azure.network.loadbalancers.direction"
+                "query": "FROM Metric SELECT MAX(`azure.cache.redis.percentProcessorTime`)/100 AS 'Maximum CPU Utilization' TIMESERIES AUTO FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
             "units": {
-              "unit": "BYTES"
+              "unit": "PERCENTAGE"
             }
           }
         },
         {
-          "title": "Number of bytes by frontend ip address and frontned port",
+          "title": "Server load per shardId",
           "layout": {
-            "column": 6,
+            "column": 7,
             "row": 3,
-            "width": 7,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.pie"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "legend": {
               "enabled": true
@@ -105,20 +104,23 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes' FACET azure.network.loadbalancers.frontendIpAddress, azure.network.loadbalancers.frontendPort"
+                "query": "FROM Metric SELECT MAX(`azure.cache.redis.serverLoad`)/100 AS 'Maximum Server Load' TIMESERIES AUTO FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
             }
           }
         },
         {
-          "title": "Number of packets by frontend port and ip address",
+          "title": "Connected clients per shardId",
           "layout": {
             "column": 1,
             "row": 6,
-            "width": 7,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -127,7 +129,7 @@
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "legend": {
               "enabled": true
@@ -135,7 +137,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets' FACET azure.network.loadbalancers.frontendIpAddress,azure.network.loadbalancers.frontendPort"
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.connectedclients`) AS 'Total Connected Clients' FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
@@ -144,11 +146,11 @@
           }
         },
         {
-          "title": "Number of packets by direction(IN/OUT)",
+          "title": "Total commands processed per shardId",
           "layout": {
-            "column": 8,
+            "column": 7,
             "row": 6,
-            "width": 5,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -157,7 +159,7 @@
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": true
+              "showOtherSeries": false
             },
             "legend": {
               "enabled": true
@@ -165,7 +167,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets' FACET azure.network.loadbalancers.direction"
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.totalcommandsprocessed`) AS 'Total Commands Processed' FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
@@ -174,11 +176,11 @@
           }
         },
         {
-          "title": "DIP  availability by frontend ip address and frontend port",
+          "title": "Cache read per shardId",
           "layout": {
             "column": 1,
             "row": 9,
-            "width": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -195,11 +197,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendIpAddress, azure.network.loadbalancers.frontendPort"
+                "query": "FROM Metric SELECT MAX(`azure.cache.redis.cacheRead`) AS 'Maximum Cache Read' TIMESERIES AUTO FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
             },
             "yAxisLeft": {
               "zero": true
@@ -210,11 +215,11 @@
           }
         },
         {
-          "title": "DIP availability by backend ip address and backend port",
+          "title": "Cache write per shardId",
           "layout": {
-            "column": 7,
+            "column": 5,
             "row": 9,
-            "width": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -231,11 +236,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.backendIpAddress, azure.network.loadbalancers.backendPort"
+                "query": "FROM Metric SELECT MAX(`azure.cache.redis.cacheWrite`) AS 'Maximum Cache Write' TIMESERIES AUTO FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
             },
             "yAxisLeft": {
               "zero": true
@@ -246,71 +254,11 @@
           }
         },
         {
-          "title": "SYN packets by direction(IN/OUT)",
+          "title": "Operations per second",
           "layout": {
-            "column": 1,
-            "row": 12,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.SYNCount`) AS 'SYN Count' FACET azure.network.loadbalancers.direction"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "SYN packets by frontend ip address and frontend port",
-          "layout": {
-            "column": 6,
-            "row": 12,
-            "width": 7,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.SYNCount`) AS 'SYN Count' FACET azure.network.loadbalancers.frontendIpAddress,azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "VIP availability by frontend ip address",
-          "layout": {
-            "column": 1,
-            "row": 15,
-            "width": 6,
+            "column": 9,
+            "row": 9,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -327,7 +275,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average Data Path Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendIpAddress"
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.operationsPerSecond`) AS 'Total Operations Per Second' TIMESERIES AUTO FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
@@ -342,16 +290,46 @@
           }
         },
         {
-          "title": "VIP availability by frontend port",
+          "title": "Used memory per shardId",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.usedmemory`) AS 'Total Used Memory' FACET azure.cache.redis.shardId"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Used memory Rss per shardId",
           "layout": {
             "column": 7,
-            "row": 15,
+            "row": 12,
             "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
@@ -363,17 +341,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average Data Path Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendPort"
+                "query": "FROM Metric SELECT SUM(`azure.cache.redis.usedmemoryRss`) AS 'Total Used memory Rss' FACET azure.cache.redis.shardId"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         }

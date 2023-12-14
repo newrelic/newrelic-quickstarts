@@ -1,9 +1,9 @@
 {
-  "name": "Azure load balancer",
+  "name": "Azure logic apps",
   "description": null,
   "pages": [
     {
-      "name": "Azure load balancer",
+      "name": "Azure logic apps",
       "description": null,
       "widgets": [
         {
@@ -11,22 +11,21 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 10,
-            "height": 2
+            "width": 7,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.billboard"
           },
           "rawConfiguration": {
-            "dataFormatters": [],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes', SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets', AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability', AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average VIP Availability'"
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.ActionsSucceeded) AS 'Total Actions Succeeded', SUM(azure.logic.workflows.ActionsFailed) AS 'Total Actions Failed', sum(azure.logic.workflows.RunsSucceeded) AS 'Total Runs Succeeded', SUM(azure.logic.workflows.RunsFailed) AS 'Total Runs Failed', SUM(azure.logic.workflows.TriggersSucceeded) AS 'Total Triggers Succeeded', SUM(azure.logic.workflows.TriggersFailed) AS 'Total Triggers Failed'"
               }
             ],
             "platformOptions": {
@@ -37,25 +36,154 @@
         {
           "title": "",
           "layout": {
-            "column": 11,
+            "column": 8,
             "row": 1,
-            "width": 2,
-            "height": 2
+            "width": 5,
+            "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure Load Balancer\nAzure Load Balancer delivers high availability and network performance to your applications. It is a Layer 4 (TCP, UDP) load balancer that distributes incoming traffic among healthy instances of services defined in a load-balanced set."
+            "text": "## Azure Logic Apps Workflow\nAzure Logic Apps Workflow refers to Azure Logic Apps under consumption plan type.\n\nAzure Logic Apps is a cloud platform where you can create and run automated workflows with little to no code. By using the visual designer and selecting from prebuilt operations, you can quickly build a workflow that integrates and manages your apps, data, services and systems."
           }
         },
         {
-          "title": "Number of bytes by direction",
+          "title": "Action success latency",
           "layout": {
             "column": 1,
-            "row": 3,
-            "width": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.logic.workflows.ActionSuccessLatency) AS 'Average Action Success Latency' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Run success latency",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.logic.workflows.RunSuccessLatency) AS 'Average Run Success Latency' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Trigger success latency",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT AVERAGE(azure.logic.workflows.TriggerSuccessLatency) AS 'Average Trigger Success Latency' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Run failure percentage",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.RunFailurePercentage)/100 AS 'Total Run Failure Percentage' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total billable executions",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -72,148 +200,145 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes' TIMESERIES AUTO FACET azure.network.loadbalancers.direction"
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.TotalBillableExecutions) AS 'Total Billable Executions' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Billing usage for storage consumption executions",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.BillingUsageStorageConsumption) AS 'Total Billing Usage for Storage Consumption Executions' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Billing usage for standard connector executions",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.BillingUsageStandardConnector) AS 'Total Billing Usage for Standard Connector Executions' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Billing usage for native operation executions",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.BillingUsageNativeOperation) AS 'Total Billing Usage for Native Operation Executions' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Billable action executions",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.BillableActionExecutions) AS 'Total Billable Action Executions' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
             "units": {
-              "unit": "BYTES"
-            }
-          }
-        },
-        {
-          "title": "Number of bytes by frontend ip address and frontned port",
-          "layout": {
-            "column": 6,
-            "row": 3,
-            "width": 7,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.ByteCount`) AS 'Total Number Of Bytes' FACET azure.network.loadbalancers.frontendIpAddress, azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Number of packets by frontend port and ip address",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 7,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets' FACET azure.network.loadbalancers.frontendIpAddress,azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Number of packets by direction(IN/OUT)",
-          "layout": {
-            "column": 8,
-            "row": 6,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.PacketCount`) AS 'Total Number Of Packets' FACET azure.network.loadbalancers.direction"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "DIP  availability by frontend ip address and frontend port",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendIpAddress, azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+              "unit": "COUNT"
             },
             "yAxisLeft": {
               "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         },
         {
-          "title": "DIP availability by backend ip address and backend port",
+          "title": "Billable trigger executions",
           "layout": {
             "column": 7,
-            "row": 9,
+            "row": 13,
             "width": 6,
             "height": 3
           },
@@ -231,148 +356,16 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.DipAvailability`) AS 'Average DIP Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.backendIpAddress, azure.network.loadbalancers.backendPort"
+                "query": "FROM Metric SELECT SUM(azure.logic.workflows.BillableTriggerExecutions) AS 'Total Billable Trigger Executions' TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "COUNT"
             },
             "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "SYN packets by direction(IN/OUT)",
-          "layout": {
-            "column": 1,
-            "row": 12,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.SYNCount`) AS 'SYN Count' FACET azure.network.loadbalancers.direction"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "SYN packets by frontend ip address and frontend port",
-          "layout": {
-            "column": 6,
-            "row": 12,
-            "width": 7,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": true
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.network.loadbalancers.SYNCount`) AS 'SYN Count' FACET azure.network.loadbalancers.frontendIpAddress,azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "VIP availability by frontend ip address",
-          "layout": {
-            "column": 1,
-            "row": 15,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average Data Path Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendIpAddress"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "VIP availability by frontend port",
-          "layout": {
-            "column": 7,
-            "row": 15,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.network.loadbalancers.VipAvailability`) AS 'Average Data Path Availability' TIMESERIES AUTO FACET azure.network.loadbalancers.frontendPort"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
               "zero": true
             }
           }
