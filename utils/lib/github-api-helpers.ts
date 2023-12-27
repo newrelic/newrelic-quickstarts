@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import * as parseLinkHeader from 'parse-link-header';
+import parseLinkHeader from 'parse-link-header';
 import {
   QUICKSTART_CONFIG_REGEXP,
   DATA_SOURCE_CONFIG_REGEXP,
@@ -8,6 +8,9 @@ import logger from '../logger';
 const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 const TEMPLATE_REGEXP = new RegExp('_template/.+');
+
+export const generatePrUrl = (prNumber: string | number) =>
+  `https://api.github.com/repos/newrelic/newrelic-quickstarts/pulls/${prNumber}/files`;
 
 /**
  * Pulls the next page off of a `Link` header

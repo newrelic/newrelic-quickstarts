@@ -33,21 +33,18 @@ export const getDataSourceId = (filename: string) => {
   return config.id;
 };
 
-/**
- * Entrypoint.
- */
-const main = async () => {
-  const [GITHUB_API_URL, dryRun] = passedProcessArguments();
-  const githubToken = process.env.GITHUB_TOKEN;
-  const isDryRun = dryRun === 'true';
-
-  if (!githubToken) {
+export const createValidateDataSources = async (
+  ghUrl: string,
+  ghToken?: string,
+  isDryRun = false
+) => {
+  if (!ghToken) {
     console.error('GITHUB_TOKEN is not defined.');
     process.exit(1);
   }
 
-  logger.info(`Fetching files for pull request ${GITHUB_API_URL}`);
-  const files = await fetchPaginatedGHResults(GITHUB_API_URL, githubToken);
+  logger.info(`Fetching files for pull request ${ghUrl}`);
+  const files = await fetchPaginatedGHResults(ghUrl, ghToken);
   logger.info(`Found ${files.length} files`);
 
   const dataSources = filterOutTestFiles(files)
@@ -79,6 +76,17 @@ const main = async () => {
   );
 
   const hasFailed = failures.length > 0;
+  return hasFailed;
+};
+
+/**
+ * Entrypoint.
+ */
+const main = async () => {
+  const [ghUrl, isDryRun] = passedProcessArguments();
+  const ghToken = process.env.GITHUB_TOKEN;
+  const dryRun = isDryRun === 'true';
+  const hasFailed = await createValidateDataSources(ghUrl, ghToken, dryRun);
 
   const event = isDryRun
     ? CUSTOM_EVENT.VALIDATE_DATA_SOURCES
