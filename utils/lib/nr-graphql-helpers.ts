@@ -45,7 +45,6 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 ): Promise<NerdGraphResponseWithLocalErrors<ResponseData>> => {
   const NR_API_URL = process.env.NR_API_URL || '';
   const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
-  console.log('URL', NR_API_URL)
 
   let results;
   let graphqlErrors: ErrorOrNerdGraphError[] = [];
