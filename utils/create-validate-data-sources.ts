@@ -39,8 +39,7 @@ export const createValidateDataSources = async (
   isDryRun = false
 ) => {
   if (!ghToken) {
-    console.error('GITHUB_TOKEN is not defined.');
-    process.exit(1);
+    console.warn('GITHUB_TOKEN is not defined.');
   }
 
   logger.info(`Fetching files for pull request ${ghUrl}`);

@@ -53,7 +53,7 @@ export interface GithubAPIPullRequestFile {
  */
 export const fetchPaginatedGHResults = async (
   url: string,
-  token: string
+  token?: string
 ): Promise<GithubAPIPullRequestFile[]> => {
   logger.debug(`Running fetch against ${url}`, { url });
   let files: GithubAPIPullRequestFile[] = [];
@@ -61,8 +61,10 @@ export const fetchPaginatedGHResults = async (
   try {
     while (nextPageLink) {
       logger.debug(`Fetching ${nextPageLink}`, { url: nextPageLink });
+
+      const headers = token ? { authorization: `token ${token}` } : undefined;
       const resp = await fetch(nextPageLink, {
-        headers: { authorization: `token ${token}` },
+        headers,
       });
       // TODO: this should happen after the resp.ok check
       const responseJson = await resp.json();

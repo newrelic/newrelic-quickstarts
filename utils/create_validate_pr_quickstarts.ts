@@ -64,8 +64,7 @@ export const createValidateQuickstarts = async (
   isDryRun = false
 ): Promise<boolean> => {
   if (!ghToken) {
-    console.error('GITHUB_TOKEN is not defined.');
-    return false;
+    console.warn('GITHUB_TOKEN is not defined.');
   }
 
   if (!ghUrl) {

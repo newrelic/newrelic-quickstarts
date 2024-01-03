@@ -9,7 +9,7 @@ import { generatePrUrl } from './lib/github-api-helpers';
 import { setDashboardsRequiredDataSources } from './set-dashboards-required-datasources';
 import { setAlertPoliciesRequiredDataSources } from './set-alert-policy-required-datasources';
 
-type Environment = 'staging' | 'us' | 'eu';
+type Environment = 'local' | 'staging' | 'us' | 'eu';
 type Context = {
   ENVIRONMENT: Environment;
   GH_TOKEN: string;
@@ -20,9 +20,8 @@ type Context = {
 };
 
 const API_ENDPOINTS: Record<Environment, string> = {
-  staging: 'https://localhost.newrelic.com:3100/graphql',
-  // staging:
-  //   'https://staging-api.newrelic.com/graphql?use_local_service=public-nerd-graph!3100&public-one-nerd-graph!3100&public-rpm-api!3200',
+  local: 'https://localhost.newrelic.com:3100/graphql',
+  staging: 'https://staging-api.newrelic.com/graphql',
   us: 'https://api.newrelic.com/graphql',
   eu: 'https://api.eu.newrelic.com/graphql',
 };
@@ -38,6 +37,7 @@ const bootstrap = async (): Promise<Context> => {
   const ENVIRONMENT = await select<Environment>({
     message: 'Select an environment to target.',
     choices: [
+      { name: 'Local', value: 'local' },
       { name: 'Staging', value: 'staging' },
       { name: 'US Production', value: 'us' },
       { name: 'EU Production', value: 'eu' },
@@ -46,6 +46,13 @@ const bootstrap = async (): Promise<Context> => {
 
   let GH_TOKEN = process.env.GH_TOKEN;
   let NR_API_TOKEN = process.env[`NR_API_TOKEN_${ENVIRONMENT.toUpperCase()}`];
+
+  if(ENVIRONMENT === 'local') {
+    // Local env should use staging API token
+    NR_API_TOKEN = process.env['NR_API_TOKEN_STAGING'];
+    // Allow self-signed certs against localhost
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
 
   if (!NR_API_TOKEN) {
     stepMessage(`No API token found for ${ENVIRONMENT}.`);
@@ -63,13 +70,19 @@ const bootstrap = async (): Promise<Context> => {
   }
 
   if (!GH_TOKEN) {
-    stepMessage('No GitHub token found.');
-    GH_TOKEN = await password({ message: 'What is your GitHub token?' });
-
-    appendFileSync('.env', `\nGH_TOKEN=${GH_TOKEN}`);
-    console.log(
-      'Your GitHub token has been saved to the .env file. Do not commit this file.'
+    stepMessage(
+      "No GitHub token found. You may experience rate-limiting from the GitHub API if you don't enter one."
     );
+    GH_TOKEN = await password({
+      message: 'What is your GitHub token? (optional)',
+    });
+
+    if (GH_TOKEN?.length) {
+      appendFileSync('.env', `\nGH_TOKEN=${GH_TOKEN}`);
+      console.log(
+        'Your GitHub token has been saved to the .env file. Do not commit this file.'
+      );
+    }
   }
 
   divider();
