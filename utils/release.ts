@@ -47,7 +47,7 @@ const bootstrap = async (): Promise<Context> => {
   let GH_TOKEN = process.env.GH_TOKEN;
   let NR_API_TOKEN = process.env[`NR_API_TOKEN_${ENVIRONMENT.toUpperCase()}`];
 
-  if(ENVIRONMENT === 'local') {
+  if (ENVIRONMENT === 'local') {
     // Local env should use staging API token
     NR_API_TOKEN = process.env['NR_API_TOKEN_STAGING'];
     // Allow self-signed certs against localhost
@@ -114,46 +114,30 @@ const main = async () => {
   stepMessage(`Performing dry run release to ${ENVIRONMENT}...`);
 
   // Dry run
-  const [dryRunSucceeded, dryRunFailures] = await runTasks(
-    PR_URL,
-    GH_TOKEN,
-    true
-  );
+  await runTasks(PR_URL, GH_TOKEN, true);
 
-  if (dryRunSucceeded) {
-    const shouldContinue = await confirm({
-      message: 'Dry run was successful. Proceed to deploy?',
-    });
+  const shouldContinue = await confirm({
+    message: 'Dry run was successful. Proceed to deploy?',
+  });
 
-    if (shouldContinue) {
-      stepMessage(`🚀 Releasing to ${ENVIRONMENT}!`);
-      // Real deploy
-      runTasks(PR_URL, GH_TOKEN, false);
-    } else {
-      console.log('Aborting.');
-      process.exit(0);
-    }
+  if (shouldContinue) {
+    stepMessage(`🚀 Releasing to ${ENVIRONMENT}!`);
+    // Real deploy
+    runTasks(PR_URL, GH_TOKEN, false);
+  } else {
+    console.log('Aborting.');
+    process.exit(0);
   }
 };
 
 const runTasks = async (url: string, token: string, dryRun = true) => {
-  const failures: Record<string, boolean> = {};
-
-  const allSuccess = () =>
-    Object.values(failures).every((status) => status === false);
-
-  failures['dataSources'] = await createValidateDataSources(url, token, dryRun);
-  failures['quickstarts'] = await createValidateQuickstarts(url, token, dryRun);
+  await createValidateDataSources(url, token, dryRun);
+  await createValidateQuickstarts(url, token, dryRun);
 
   if (!dryRun) {
-    failures['dashboardsRequiredDatasources'] =
-      await setDashboardsRequiredDataSources(url, token);
-
-    failures['alertPoliciesRequiredDatasources'] =
-      await setAlertPoliciesRequiredDataSources(url, token);
+    await setDashboardsRequiredDataSources(url, token);
+    await setAlertPoliciesRequiredDataSources(url, token);
   }
-
-  return [allSuccess(), failures];
 };
 
 if (require.main === module) {
