@@ -34,7 +34,7 @@ const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
 
 const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
   'extensions' in error &&
-  error?.extensions?.argumentPath.includes('dataSourceIds') &&
+  error?.extensions?.argumentPath?.includes('dataSourceIds') &&
   error?.message?.includes('contains a data source that does not exist');
 
 export const countAndOutputErrors = (
