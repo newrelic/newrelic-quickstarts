@@ -2,7 +2,8 @@
 
 import { getInstallPlanId } from '../create-validate-install-plans';
 
-import * as fs from 'fs';
+import {readFileSync} from 'fs';
+const fs = {readFileSync};
 
 jest.mock('@actions/core');
 jest.spyOn(global.console, 'error').mockImplementation(() => {});

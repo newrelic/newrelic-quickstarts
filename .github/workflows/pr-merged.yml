@@ -111,56 +111,56 @@ jobs:
             })
             console.log("Result:", result)
 
-  get-pr-number:
-    name: Get PR number
-    runs-on: ubuntu-latest
-    outputs:
-      pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: submit_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
+  # get-pr-number:
+  #   name: Get PR number
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
+  #   steps:
+  #     - name: Download artifact
+  #       uses: dawidd6/action-download-artifact@v2
+  #       with:
+  #         workflow: submit_gate.yml
+  #         run_id: ${{ github.event.workflow_run.id }}
 
-      - name: Get PR number
-        id: output_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
+  #     - name: Get PR number
+  #       id: output_pr_number
+  #       run: |
+  #         export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
+  #         echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-  staging:
-    needs: [generate-uuid, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL_STAGING }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN_STAGING }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # staging:
+  #   needs: [generate-uuid, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL_STAGING }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN_STAGING }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
-  production:
-    needs: [staging, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # production:
+  #   needs: [staging, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
-  eu-production:
-    needs: [staging, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL_EU }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN_EU }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # eu-production:
+  #   needs: [staging, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL_EU }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN_EU }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
