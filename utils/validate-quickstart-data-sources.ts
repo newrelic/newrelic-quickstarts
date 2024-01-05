@@ -56,16 +56,16 @@ export const validateDataSourceIds = async (
 
   if (quickstartsWithInvalidDataSources.length > 0) {
     console.error(
-      `ERROR: Found install plans with no corresponding data source id.\n`
+      `ERROR: Found quickstarts with no corresponding data source id.\n`
     );
-    console.error(`An install plan id must match an existing data source id.`);
+    console.error(`An data source id must match an existing data source id.`);
     quickstartsWithInvalidDataSources.forEach((m) =>
       console.error(
         `- ${m.invalidDataSourceIds.join(', ')} in ${m.quickstart.configPath}`
       )
     );
     console.error(
-      `\nPlease change to an existing install plan id or remove the ids.`
+      `\nPlease change to an existing data source id or remove the ids.`
     );
 
     if (require.main === module) {
