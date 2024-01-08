@@ -34,7 +34,7 @@ const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
 
 const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
   'extensions' in error &&
-  error?.extensions?.argumentPath.includes('dataSourceIds') &&
+  error?.extensions?.argumentPath?.includes('dataSourceIds') &&
   error?.message?.includes('contains a data source that does not exist');
 
 export const countAndOutputErrors = (
@@ -64,8 +64,7 @@ export const createValidateQuickstarts = async (
   isDryRun = false
 ): Promise<boolean> => {
   if (!ghToken) {
-    console.error('GITHUB_TOKEN is not defined.');
-    return false;
+    console.warn('GITHUB_TOKEN is not defined.');
   }
 
   if (!ghUrl) {
