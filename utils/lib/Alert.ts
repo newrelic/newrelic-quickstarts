@@ -25,6 +25,17 @@ import {
 
 import { CUSTOM_EVENT, recordNerdGraphResponse } from '../newrelic/customEvent';
 
+// We don't currently validate the raw configuration of an alert.
+// However, we _do_ know that alerts cannot have a `TIMESERIES` keyword
+// within a nrql query. This portion is to help validate against
+// very specific edge cases to ensure we don't have anything break
+// during an install once it hits our UIs.
+const TIMESERIES = 'TIMESERIES' as const;
+const INVALID_QUERY_KEYWORDS = [TIMESERIES] as const;
+
+// RegExp matches the _first_ instance of any invalid keywords
+const INVALID_REGEX = new RegExp(INVALID_QUERY_KEYWORDS.join('|'), 'mi');
+
 interface RequiredDataSources {
   id: string;
 }
@@ -72,6 +83,11 @@ export type SubmitSetRequiredDataSourcesMutationResult =
   | { errors: ErrorOrNerdGraphError[] };
 
 class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
+  constructor(identifier: string, basePath = path.join(__dirname, '..', '..')) {
+    super(identifier, basePath);
+    this.isValid = this.validate();
+  }
+
   /**
    * Returns the **directory** for the alert policy
    */
@@ -140,6 +156,53 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
         type: type && (type.trim() as AlertType),
       };
     });
+  }
+
+  /**
+   * Validation function for edge cases found in Alerts.
+   *
+   * > Note: We do not currently validate the schema of an alert through
+   * our API. This validation is used for edge cases found within our ecosystem.
+   *
+   */
+  validate(regex: RegExp = INVALID_REGEX) {
+    if (!this.isValid) {
+      return false;
+    }
+
+    logger.debug(`Running custom validation for alert at ${this.identifier}`);
+
+    const mutationVariables = this.getMutationVariables();
+
+    const validations = mutationVariables.map((variable) => {
+      const { rawConfiguration, displayName } = variable;
+      logger.debug(`Alert Condition: Validating ${displayName}`);
+
+      // JSON.parse can throw if argument is not the shape of an object
+      try {
+        const parsedConfiguration = JSON.parse(rawConfiguration);
+        const nrqlQuery = (parsedConfiguration?.nrql?.query as string) ?? '';
+
+        const containsInvalidQuery = regex.test(nrqlQuery);
+
+        if (containsInvalidQuery) {
+          logger.info(
+            `Alert Condition: ${this.identifier} contains an invalid keyword in query`
+          );
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        logger.error(`Alert Condition: Validaiton for ${displayName} failed with an error`);
+
+        return false;
+      }
+    });
+
+    logger.debug(`Alert condition: Finished validation for alert at ${this.identifier}`);
+
+    return validations.every(Boolean);
   }
 
   /**
