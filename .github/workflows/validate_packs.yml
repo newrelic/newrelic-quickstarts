@@ -204,6 +204,48 @@ jobs:
           statusContext: "Validation / Install plan ids exist"
           state: ${{ job.status }}
 
+  validate-data-source-ids:
+    name: Validate data source ids
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: "refs/pull/${{ env.pr-number }}/merge"
+
+      - name: Setup workspace
+        uses: './.github/actions/bootstrap'
+
+      - name: Validate new files
+        id: validation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ env.pr-number }}
+          NR_API_URL: ${{ secrets.NR_API_URL }}
+          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
+          cd utils && yarn validate-quickstart-data-sources "$URL"
+
+      - name: Add commit status
+        if: always()
+        uses: './.github/actions/add-commit-status'
+        with:
+          statusContext: "Validation / Data source ids exist"
+          state: ${{ job.status }}
+
   ensure-quickstart-dashboard-names-are-unique:
     name: Ensure quickstart dashboard names are unique
     runs-on: ubuntu-latest
