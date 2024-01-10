@@ -115,17 +115,13 @@ describe('Quickstart', () => {
       expect(qs.isValid).toBe(true);
 
       // all components are invalid
-      const invalidComponents = components.map((component) => {
-        if (!component.isValid) {
-          return component;
-        }
-      }).filter(Boolean);
+      const invalidComponents = components.filter((c) => !c.isValid);
 
       qs.validate();
 
       expect(invalidComponents).toHaveLength(1)
 
-      const invalidComponent = invalidComponents.pop();
+      const invalidComponent = invalidComponents[0];
       expect(invalidComponent.identifier).toBe('mock-alert-policy-3')
 
       expect(qs.isValid).toBe(false);
