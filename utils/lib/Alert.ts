@@ -163,7 +163,6 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
    *
    * > Note: We do not currently validate the schema of an alert through
    * our API. This validation is used for edge cases found within our ecosystem.
-   *
    */
   validate(regex: RegExp = INVALID_REGEX) {
     if (!this.isValid) {
