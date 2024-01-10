@@ -83,7 +83,7 @@ export type SubmitSetRequiredDataSourcesMutationResult =
   | { errors: ErrorOrNerdGraphError[] };
 
 class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
-  constructor(identifier: string, basePath = path.join(__dirname, '..', '..')) {
+  constructor(identifier: string, basePath?: string) {
     super(identifier, basePath);
     this.isValid = this.validate();
   }
