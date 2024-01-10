@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: "main"
+          ref: "release"
           fetch-depth: 0
 
       - name: Setup workspace
@@ -46,7 +46,7 @@ jobs:
             const result = await github.rest.repos.updateBranchProtection({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: 'main',
+              branch: 'release',
               required_status_checks: null,
               restrictions: null,
               enforce_admins: null,
@@ -60,8 +60,8 @@ jobs:
           git config --local user.email "${{ env.THIRD_PARTY_GIT_AUTHOR_EMAIL }}"
           git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
 
-          # main could have been modified since we checked out, so pull before committing
-          git pull --ff-only origin main
+          # release could have been modified since we checked out, so pull before committing
+          git pull --ff-only origin release
 
           git add ./quickstarts/*
           git diff-index --quiet HEAD ./quickstarts/* || { git commit -m 'chore: generate UUID(s) [skip ci]' && echo "commit=true" >> $GITHUB_ENV; }
@@ -80,17 +80,19 @@ jobs:
             const result = await github.rest.repos.updateBranchProtection({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: 'main',
+              branch: 'release',
               required_status_checks: {
                 strict: true,
                 contexts: [
                     'Validation / Image count and extension compliance',
                     'Validation / Ensure icons exist',
                     'Validation / Install plan ids exist',
+                    'Validation / Data source ids exist',
                     'Validation / Install plan schema compliance',
                     'Validation / Data source schema compliance',
                     'Validation / Quickstart id are unique',
-                    'Validation / Validate Quickstart Schema'
+                    'Validation / Validate Quickstart Schema',
+                    'Validation / Quickstart dashboard name is unique'
                 ]
               },
               restrictions: {
@@ -110,56 +112,56 @@ jobs:
             })
             console.log("Result:", result)
 
-  get-pr-number:
-    name: Get PR number
-    runs-on: ubuntu-latest
-    outputs:
-      pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: submit_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
+  # get-pr-number:
+  #   name: Get PR number
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     pr-number: ${{ steps.output_pr_number.outputs.pr-number }}
+  #   steps:
+  #     - name: Download artifact
+  #       uses: dawidd6/action-download-artifact@v2
+  #       with:
+  #         workflow: submit_gate.yml
+  #         run_id: ${{ github.event.workflow_run.id }}
 
-      - name: Get PR number
-        id: output_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
+  #     - name: Get PR number
+  #       id: output_pr_number
+  #       run: |
+  #         export PR_NUMBER=$(cat artifact/pr_number_submit.txt)
+  #         echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-  staging:
-    needs: [generate-uuid, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL_STAGING }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN_STAGING }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # staging:
+  #   needs: [generate-uuid, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL_STAGING }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN_STAGING }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
-  production:
-    needs: [staging, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # production:
+  #   needs: [staging, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
-  eu-production:
-    needs: [staging, get-pr-number]
-    uses: ./.github/workflows/reusable.quickstart_submission.yml
-    with:
-      pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
-      dry-run: false
-    secrets:
-      nr-api-url: ${{ secrets.NR_API_URL_EU }}
-      nr-api-token: ${{ secrets.NR_API_TOKEN_EU }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  # eu-production:
+  #   needs: [staging, get-pr-number]
+  #   uses: ./.github/workflows/reusable.quickstart_submission.yml
+  #   with:
+  #     pr-number: ${{ needs.get-pr-number.outputs.pr-number }}
+  #     dry-run: false
+  #   secrets:
+  #     nr-api-url: ${{ secrets.NR_API_URL_EU }}
+  #     nr-api-token: ${{ secrets.NR_API_TOKEN_EU }}
+  #     github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     nr-license-key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
