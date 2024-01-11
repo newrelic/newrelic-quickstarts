@@ -7,7 +7,6 @@ import {
   GITHUB_REPO_BASE_URL,
   ALERT_POLICY_REQUIRED_DATA_SOURCES_QUERY,
   ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION,
-  DASHBOARD_SET_REQUIRED_DATA_SOURCES_MUTATION,
 } from '../../constants';
 
 // TODO: maybe there is an easier way to mock a single function on this library
@@ -54,6 +53,14 @@ describe('Alert', () => {
       expect(alert.config).not.toBeDefined();
       expect(console.error).toHaveBeenCalled();
     });
+
+    test('Creates invalid alert when nrql query contains invalid keyword', () => {
+      jest.spyOn(global.console, 'error');
+      const alert = new Alert('mock-alert-policy-3', MOCK_FILES_BASEPATH);
+      expect(alert.isValid).toBe(false);
+      expect(alert.getMutationVariables()).toEqual([]);
+      expect(console.error).toHaveBeenCalled();
+    })
   });
 
   describe('getConfigFilePath', () => {
@@ -98,7 +105,7 @@ describe('Alert', () => {
       });
       const alert = new Alert('mock-alert-policy-2', MOCK_FILES_BASEPATH);
       expect(alert.isValid).toBe(false);
-      expect(console.log).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalledTimes(2);
     });
 
     test('returns config for alert-policy with 1 condition', () => {
