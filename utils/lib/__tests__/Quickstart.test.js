@@ -100,6 +100,33 @@ describe('Quickstart', () => {
 
       expect(qs.isValid).toBe(false);
     });
+
+    test('Ensure quickstart is invalid from an invalid Alert', () => {
+      jest.spyOn(global.console, 'error').mockImplementation(() => {});
+      jest.spyOn(global.console, 'log').mockImplementation(() => {});
+      const qs = new Quickstart(
+        'quickstarts/mock-quickstart-6/config.yml',
+        MOCK_FILES_BASEPATH
+      );
+
+      const components = qs.getComponents();
+
+      expect(components).toBeDefined();
+      expect(qs.isValid).toBe(true);
+
+      // all components are invalid
+      const invalidComponents = components.filter((c) => !c.isValid);
+
+      qs.validate();
+
+      expect(invalidComponents).toHaveLength(1)
+
+      const invalidComponent = invalidComponents[0];
+      expect(invalidComponent.identifier).toBe('mock-alert-policy-3')
+
+      expect(qs.isValid).toBe(false);
+
+    })
   });
 
   describe('getMutationVariables', () => {
