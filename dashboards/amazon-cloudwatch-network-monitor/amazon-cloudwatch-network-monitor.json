@@ -1,0 +1,175 @@
+{
+  "name": "Amazon CloudWatch Network Monitor",
+  "description": null,
+  "pages": [
+    {
+      "name": "Amazon CloudWatch Network Monitor",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Amazon CloudWatch Network Monitor\nIt is an active network monitoring service to troubleshoot issues in hybrid network connectivity from on-premise to AWS via AWS Direct Connect. Using this real-time data, customers can mitigate the issue quickly by routing the traffic to a redundant healthy path."
+          }
+        },
+        {
+          "title": "Network Health",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select if(sum(aws.loupe.HealthIndicator) = 1, 'Unhealthy', 'Healthy') as 'Status'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Overlay Network Performance",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "colors": {
+              "seriesOverrides": [
+                {
+                  "color": "#2bf410",
+                  "seriesName": "Health Indicator"
+                }
+              ]
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.loupe.HealthIndicator) as 'Health Indicator' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Round Trip Latency",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 12,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "select min(aws.loupe.RTT) as 'Minimum Latency',max(aws.loupe.RTT) as 'Maximum Latency',average(aws.loupe.RTT) as 'Average Latency' from Metric where metricName = 'aws.loupe.RTT' TIMESERIES AUTO facet aws.loupe.Monitor"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Packet Loss (%)",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`aws.loupe.PacketLoss`) FROM Metric FACET aws.loupe.Path TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
