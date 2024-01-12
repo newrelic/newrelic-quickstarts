@@ -1,0 +1,104 @@
+{
+  "name": "LifeKeeper node sample",
+  "description": null,
+  "pages": [
+    {
+      "name": "un15007",
+      "description": null,
+      "widgets": [
+        {
+          "title": "/var/log/lifekeeper.log",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "logger.log-table-widget"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT `filePath`,`hostname`,`message` FROM Log WHERE hostname = 'un115007' AND filePath ='/var/log/lifekeeper.log' SINCE 1 days ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "LifeKeeper is HA cluster software. LifeKeeper manages applications, IP addresses, and shared disks in units of \"resources\" and automatically performs recovery in the event of an occurrence.\n\nAdditionally, cluster nodes are monitored by sending heartbeats through the communication path. Therefore, NewRelic monitors the status of \"resources\" and \"communication paths\".\n\nFor the above reasons, NewRelic monitors the status of resources, communication paths, and LifeKeeper logs.\n\nSpecifically, we will introduce monitoring of the following three points:\n- LifeKeeper/DataKeeper for Linux logs\n- LifeKeeper Resource status\n- Communication path status\n\nDetails of LifeKeeper/DataKeeper are below.\nhttps://support.us.sios.com/aspx/docs_us_sios_com_home/"
+          }
+        },
+        {
+          "title": "LifeKeeper Resource status",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Resource_statusSample SELECT hostname, `resource-tag`, `resource-status` SINCE 60 seconds ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Communication path status",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM compath_statusSample SELECT Network, Protocol,Status,Priority SINCE 60 seconds ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
