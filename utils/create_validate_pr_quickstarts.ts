@@ -3,7 +3,7 @@ import {
   filterOutTestFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
-import { translateMutationErrors, chunk } from './lib/nr-graphql-helpers';
+import { translateMutationErrors } from './lib/nr-graphql-helpers';
 
 import Quickstart, { QuickstartMutationResponse } from './lib/Quickstart';
 import { CUSTOM_EVENT, recordNerdGraphResponse } from './newrelic/customEvent';
@@ -21,6 +21,8 @@ import {
 } from './types/nerdgraph';
 import logger from './logger';
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 type ResponseWithErrors =
   NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {
     name: string;
@@ -34,7 +36,7 @@ const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
 
 const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
   'extensions' in error &&
-  error?.extensions?.argumentPath.includes('dataSourceIds') &&
+  error?.extensions?.argumentPath?.includes('dataSourceIds') &&
   error?.message?.includes('contains a data source that does not exist');
 
 export const countAndOutputErrors = (
@@ -64,8 +66,7 @@ export const createValidateQuickstarts = async (
   isDryRun = false
 ): Promise<boolean> => {
   if (!ghToken) {
-    console.error('GITHUB_TOKEN is not defined.');
-    return false;
+    console.warn('GITHUB_TOKEN is not defined.');
   }
 
   if (!ghUrl) {
@@ -126,13 +127,12 @@ export const createValidateQuickstarts = async (
   const quickstartErrors: string[] = [];
 
   logger.info(`Submitting ${quickstarts.length} quickstarts...`);
-  for (const c of chunk(quickstarts, 5)) {
+  for (const c of quickstarts) {
     try {
-      const res = await Promise.all(
-        c.map((quickstart) => quickstart.submitMutation(isDryRun))
-      );
+      const res = await c.submitMutation(isDryRun);
+      await sleep(10);
 
-      results = [...results, ...res];
+      results = [...results, res];
     } catch (err) {
       const error = err as Error;
 
