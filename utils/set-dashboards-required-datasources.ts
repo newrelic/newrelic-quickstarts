@@ -1,5 +1,6 @@
 import {
   fetchPaginatedGHResults,
+  filterOutTestFiles,
   filterQuickstartConfigFiles,
   isNotRemoved,
 } from './lib/github-api-helpers';
@@ -35,7 +36,7 @@ const getQuickstartIds = async (
   const files = await fetchPaginatedGHResults(ghUrl, ghToken);
   logger.info(`Found ${files.length} files`);
 
-  const filteredQuickstarts = filterQuickstartConfigFiles(files)
+  const filteredQuickstarts = filterQuickstartConfigFiles(filterOutTestFiles(files))
     .filter(isNotRemoved)
     .reduce<Quickstart[]>((acc, { filename }) => {
       const quickstart = new Quickstart(filename);
