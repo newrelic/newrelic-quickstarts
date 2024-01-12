@@ -1,7 +1,6 @@
 {
-  "name": "LifeKeeper nodes",
+  "name": "LifeKeeper node sample",
   "description": null,
-  "permissions": "PUBLIC_READ_WRITE",
   "pages": [
     {
       "name": "un15007",
@@ -22,9 +21,7 @@
           "rawConfiguration": {
             "nrqlQueries": [
               {
-                "accountIds": [
-                  4108341
-                ],
+                "accountIds": [],
                 "query": "SELECT `filePath`,`hostname`,`message` FROM Log WHERE hostname = 'un115007' AND filePath ='/var/log/lifekeeper.log' SINCE 1 days ago"
               }
             ]
@@ -35,7 +32,7 @@
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 3,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -43,13 +40,13 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "![SIOSロゴ](https://bccs.sios.jp/images/logo.svg)"
+            "text": "LifeKeeper is HA cluster software. LifeKeeper manages applications, IP addresses, and shared disks in units of \"resources\" and automatically performs recovery in the event of an occurrence.\n\nAdditionally, cluster nodes are monitored by sending heartbeats through the communication path. Therefore, NewRelic monitors the status of \"resources\" and \"communication paths\".\n\nFor the above reasons, NewRelic monitors the status of resources, communication paths, and LifeKeeper logs.\n\nSpecifically, we will introduce monitoring of the following three points:\n- LifeKeeper/DataKeeper for Linux logs\n- LifeKeeper Resource status\n- Communication path status\n\nDetails of LifeKeeper/DataKeeper are below.\nhttps://support.us.sios.com/aspx/docs_us_sios_com_home/"
           }
         },
         {
           "title": "LifeKeeper Resource status",
           "layout": {
-            "column": 4,
+            "column": 5,
             "row": 4,
             "width": 4,
             "height": 3
@@ -64,9 +61,7 @@
             },
             "nrqlQueries": [
               {
-                "accountIds": [
-                  4108341
-                ],
+                "accountIds": [],
                 "query": "FROM Resource_statusSample SELECT hostname, `resource-tag`, `resource-status` SINCE 60 seconds ago"
               }
             ],
@@ -76,11 +71,11 @@
           }
         },
         {
-          "title": "Communication path",
+          "title": "Communication path status",
           "layout": {
-            "column": 8,
+            "column": 9,
             "row": 4,
-            "width": 5,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -93,374 +88,12 @@
             },
             "nrqlQueries": [
               {
-                "accountIds": [
-                  4108341
-                ],
+                "accountIds": [],
                 "query": "FROM compath_statusSample SELECT Network, Protocol,Status,Priority SINCE 60 seconds ago"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "CPU usage (%)",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "legend": {
-              "enabled": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4415109792629681097"
-                  ]
-                },
-                "query": "SELECT average(host.cpuPercent) AS 'CPU used %' FROM Metric WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0NDE1MTA5NzkyNjI5NjgxMDk3' TIMESERIES auto"
-              }
-            ],
-            "yAxisLeft": {
-              "max": 100,
-              "min": 0,
-              "zero": null
-            }
-          }
-        },
-        {
-          "title": "Memory usage (%)",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "legend": {
-              "enabled": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4415109792629681097"
-                  ]
-                },
-                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory used %' FROM Metric WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0NDE1MTA5NzkyNjI5NjgxMDk3' TIMESERIES auto"
-              }
-            ],
-            "yAxisLeft": {
-              "max": 100,
-              "min": 0,
-              "zero": null
-            }
-          }
-        },
-        {
-          "title": "Processes running",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4415109792629681097"
-                  ]
-                },
-                "query": "SELECT latest(host.process.cpuPercent) as 'CPU %', latest(host.process.threadCount) as 'Threads' FROM Metric FACET processId, processDisplayName WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0NDE1MTA5NzkyNjI5NjgxMDk3' ORDER BY cpuPercent asc LIMIT 100"
-              }
-            ]
-          }
-        },
-        {
-          "title": "Disk usage",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4415109792629681097"
-                  ]
-                },
-                "query": "SELECT latest(host.disk.usedPercent) as 'Used %' FROM Metric FACET device WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0NDE1MTA5NzkyNjI5NjgxMDk3' LIMIT MAX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "un15008",
-      "description": null,
-      "widgets": [
-        {
-          "title": "/var/log/lifekeeper.log",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 12,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "logger.log-table-widget"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [
-                  4108341
-                ],
-                "query": "SELECT `filePath`,`hostname`,`message` FROM Log WHERE hostname = 'un115008' AND filePath ='/var/log/lifekeeper.log' SINCE 1 days ago"
-              }
-            ]
-          }
-        },
-        {
-          "title": "LifeKeeper Resource status",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [
-                  4108341
-                ],
-                "query": "FROM Resource_status2Sample SELECT hostname, `resource-tag`, `resource-status` SINCE 60 seconds ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Communication path",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 5,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [
-                  4108341
-                ],
-                "query": "FROM compath_status2Sample SELECT Network, Protocol,Status,Priority SINCE 60 seconds ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 10,
-            "row": 4,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "![SIOSロゴ](https://bccs.sios.jp/images/logo.svg)\n\nNRI-Flex利用でスタータスも取得可能に\\\n\n残作業\n\ncom path のステータスを追加(完了)\\\nアラートの設定\\\nCPUの使用量(完了)\\\nMemoryの使用量(完了)\\\n複数台（2台以上）(完了)\\\nGitHUb への公開の可能性を確認する\\\n画像を張る(完了)"
-          }
-        },
-        {
-          "title": "Network traffic",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "actions": {
-              "point": {
-                "logs": {
-                  "enabled": true,
-                  "entityGuid": "NDEwODM0MXxJTkZSQXxOQXw0OTE5OTU3NzU1NjkyMjQzOTMz"
-                }
-              }
-            },
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4919957755692243933"
-                  ]
-                },
-                "query": "SELECT average(host.net.transmitBytesPerSecond) AS 'Transmit bytes per second', average(host.net.receiveBytesPerSecond) AS 'Receive bytes per second' FROM Metric WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0OTE5OTU3NzU1NjkyMjQzOTMz' TIMESERIES auto"
-              }
-            ]
-          }
-        },
-        {
-          "title": "CPU usage (%)",
-          "layout": {
-            "column": 5,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "legend": {
-              "enabled": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4919957755692243933"
-                  ]
-                },
-                "query": "SELECT average(host.cpuPercent) AS 'CPU used %' FROM Metric WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0OTE5OTU3NzU1NjkyMjQzOTMz' TIMESERIES auto"
-              }
-            ],
-            "yAxisLeft": {
-              "max": 100,
-              "min": 0,
-              "zero": null
-            }
-          }
-        },
-        {
-          "title": "Memory usage (%)",
-          "layout": {
-            "column": 9,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "config": {
-              "bisect": {
-                "position": null
-              }
-            },
-            "legend": {
-              "enabled": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": "4108341",
-                "events": {
-                  "agent_ids": [
-                    "4919957755692243933"
-                  ]
-                },
-                "query": "SELECT average(host.memoryUsedPercent) AS 'Memory used %' FROM Metric WHERE `entityGuid` = 'NDEwODM0MXxJTkZSQXxOQXw0OTE5OTU3NzU1NjkyMjQzOTMz' TIMESERIES auto"
-              }
-            ],
-            "yAxisLeft": {
-              "max": 100,
-              "min": 0,
-              "zero": null
             }
           }
         }
