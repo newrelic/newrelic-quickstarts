@@ -22,7 +22,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(k8s.node.cpuUsedCores) * uniqueCount(entity.name)) as 'Cores', (average(k8s.node.memoryWorkingSetBytes) * uniqueCount(entity.name)) / 1000000000 as 'Mem GB' FROM Metric  WHERE metricName IN ('k8s.node.cpuUsedCores', 'k8s.node.memoryWorkingSetBytes') UNTIL 1 minute ago"
+                "query": "SELECT (average(cpuUsedCores) * uniqueCount(entityName)) AS `Cores`, ((average(memoryWorkingSetBytes) * uniqueCount(entityName)) / 1000000000) AS `Mem GB` FROM K8sNodeSample UNTIL 1 MINUTES AGO"
               }
             ]
           }
@@ -82,7 +82,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT uniqueCount(k8s.namespaceName) WHERE metricName = 'k8s.pod.createdAt' FACET k8s.clusterName UNTIL 1 minute ago limit 100"
+                "query": "SELECT uniqueCount(namespaceName) FROM K8sPodSample UNTIL 1 MINUTES AGO FACET clusterName LIMIT 100"
               }
             ]
           }
@@ -103,7 +103,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT uniqueCount(k8s.podName) as 'pod' WHERE metricName = 'k8s.pod.createdAt' FACET k8s.namespaceName UNTIL 1 minute ago limit 100"
+                "query": "SELECT uniqueCount(podName) AS `pod` FROM K8sPodSample UNTIL 1 MINUTES AGO FACET namespaceName LIMIT 100"
               }
             ]
           }
@@ -124,7 +124,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT max(k8s.container.restartCount)-min(k8s.container.restartCount) as 'Restarts' WHERE metricName = 'k8s.container.restartCount' FACET k8s.clusterName, k8s.podName, k8s.containerName UNTIL 1 minute ago TIMESERIES limit 50"
+                "query": "SELECT (max(restartCount) - min(restartCount)) AS `Restarts` FROM K8sContainerSample UNTIL 1 MINUTES AGO FACET tuple(clusterName, podName, containerName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -145,7 +145,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT latest(k8s.container.cpuUsedCores)/latest(k8s.container.cpuLimitCores) * 100 as '% CPU' WHERE metricName = 'k8s.container.restartCount' FACET k8s.clusterName, k8s.podName, k8s.containerName UNTIL 1 minute ago TIMESERIES limit 50"
+                "query": "SELECT ((latest(cpuUsedCores) / latest(cpuLimitCores)) * 100) AS `% CPU` FROM K8sContainerSample UNTIL 1 MINUTES AGO FACET tuple(clusterName, podName, containerName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -166,7 +166,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT latest(k8s.container.memoryWorkingSetUtilization) as '% Memory' WHERE metricName = 'k8s.container.restartCount' FACET k8s.clusterName, k8s.podName, k8s.containerName UNTIL 1 minute ago TIMESERIES limit 50"
+                "query": "SELECT latest(memoryWorkingSetUtilization) AS `% Memory` FROM K8sContainerSample UNTIL 1 MINUTES AGO FACET tuple(clusterName, podName, containerName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -187,7 +187,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select latest(k8s.volume.fsUsedPercent) where metricName = 'k8s.volume.fsUsedPercent' facet k8s.podName, k8s.volumeName, k8s.pvcName timeseries"
+                "query": "SELECT latest(fsUsedPercent) FROM K8sVolumeSample FACET tuple(podName, volumeName, pvcName) TIMESERIES AUTO"
               }
             ]
           }
@@ -208,7 +208,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(k8s.container.cpuUsedCores) as 'CPU Cores Used' FROM Metric WHERE metricName = 'k8s.container.restartCount' FACET k8s.clusterName, k8s.podName, k8s.containerName timeseries since 60 minutes ago UNTIL 1 minute ago limit 50"
+                "query": "SELECT average(cpuUsedCores) AS `CPU Cores Used` FROM K8sContainerSample SINCE 60 MINUTES AGO UNTIL 1 MINUTES AGO FACET tuple(clusterName, podName, containerName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -229,7 +229,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(k8s.container.memoryWorkingSetBytes / 1000000) as 'MB of Mem' FROM Metric FACET k8s.clusterName, k8s.podName, k8s.containerName timeseries since 60 minutes ago UNTIL 1 minute ago limit 50"
+                "query": "SELECT average((memoryWorkingSetBytes / 1000000)) AS `MB of Mem` FROM K8sContainerSample SINCE 60 MINUTES AGO UNTIL 1 MINUTES AGO FACET tuple(clusterName, podName, containerName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -250,7 +250,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(k8s.replicaset.podsDesired) - latest(k8s.replicaset.podsReady) as 'Missing Pods' FROM Metric since 10 minutes ago UNTIL 1 minute ago facet k8s.clusterName, k8s.deploymentName timeseries limit 50"
+                "query": "SELECT (latest(podsDesired) - latest(podsReady)) AS `Missing Pods` FROM K8sReplicasetSample SINCE 10 MINUTES AGO UNTIL 1 MINUTES AGO FACET tuple(clusterName, deploymentName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -275,7 +275,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT filter (latest(k8s.status),WHERE k8s.status !='Running' AND k8s.status !='Succeeded' AND k8s.status IS NOT NULL AND k8s.podName IS NOT NULL) as 'Status', max(timestamp) as 'Timestamp' FROM Metric FACET k8s.clusterName AS 'Cluster Name', k8s.namespaceName AS 'Namespace', k8s.podName AS 'Pod Name'  limit 100 "
+                "query": "SELECT filter(latest(status), WHERE (((`eventType`() IN ('K8sContainerSample', 'K8sPodSample')) AND (((NOT ((status = 'Running')) AND NOT ((status = 'Succeeded'))) AND NOT (status IS NULL)) AND NOT (podName IS NULL))) OR ((`eventType`() = 'K8sNamespaceSample') AND (((NOT ((status = 'Running')) AND NOT ((status = 'Succeeded'))) AND NOT (status IS NULL)) AND NOT (`k8s`.`podName` IS NULL))))) AS `Status`, max(timestamp) AS `Timestamp` FROM K8sContainerSample, K8sNamespaceSample, K8sPodSample FACET tuple(clusterName AS `Cluster Name`, namespaceName AS `Namespace`, (`conditional`(WHERE (`eventType`() IN ('K8sContainerSample', 'K8sPodSample')), podName) OR `conditional`(WHERE (`eventType`() = 'K8sNamespaceSample'), k8s.podName)) AS `Pod Name`) LIMIT 100 "
               }
             ]
           }
@@ -302,7 +302,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniqueCount(k8s.containerId) FROM Metric where metricName = 'k8s.container.restartCount' facet k8s.namespaceName TIMESERIES"
+                "query": "SELECT uniqueCount(containerID) FROM K8sContainerSample FACET namespaceName TIMESERIES AUTO"
               }
             ],
             "yAxisLeft": {
@@ -326,7 +326,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT latest(k8s.node.cpuUsedCores) as 'Used Cores', latest(k8s.node.memoryWorkingSetBytes) / 1000000 as 'Used Memory MB', uniqueCount(k8s.podName) as 'Pods' WHERE metricName = 'k8s.node.cpuUsedCores' FACET k8s.nodeName since 10 minutes ago UNTIL 1 minute ago limit 100"
+                "query": "SELECT latest(cpuUsedCores) AS `Used Cores`, (latest(memoryWorkingSetBytes) / 1000000) AS `Used Memory MB`, uniqueCount(`k8s`.`podName`) AS `Pods` FROM K8sNodeSample SINCE 10 MINUTES AGO UNTIL 1 MINUTES AGO FACET nodeName LIMIT 100"
               }
             ]
           }
@@ -347,7 +347,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniqueCount(k8s.podName) FROM Metric where k8s.status = 'Running' AND metricName = 'k8s.pod.createdAt' SINCE 10 minutes AGO UNTIL 1 minute ago facet k8s.clusterName, k8s.deploymentName WHERE k8s.deploymentName IS NOT NULL TIMESERIES limit 50"
+                "query": "SELECT uniqueCount(podName) FROM K8sPodSample WHERE (((status = 'Running') AND NOT (createdAt IS NULL)) AND NOT (deploymentName IS NULL)) SINCE 10 MINUTES AGO UNTIL 1 MINUTES AGO FACET tuple(clusterName, deploymentName) LIMIT 50 TIMESERIES AUTO"
               }
             ]
           }
@@ -389,7 +389,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniquecount(k8s.podName) FROM Metric where status='Running' and metricName = 'k8s.pod.createdAt' facet k8s.nodeName since 10 minutes ago UNTIL 1 minute ago"
+                "query": "SELECT uniquecount(podName) FROM K8sPodSample WHERE ((status = 'Running') AND NOT (createdAt IS NULL)) SINCE 10 MINUTES AGO UNTIL 1 MINUTES AGO FACET nodeName"
               }
             ]
           }
@@ -410,7 +410,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(`k8s.pod.netRxBytesPerSecond`)/1000 as 'Received KBps', latest(`k8s.pod.netTxBytesPerSecond`)/1000 as 'Transmitted KBps', latest(`k8s.pod.netErrorsPerSecond`) as 'Errors / sec' FROM Metric FACET k8s.podName since 10 minutes ago UNTIL 1 minute ago limit 100"
+                "query": "SELECT (latest(net.rxBytesPerSecond) / 1000) AS `Received KBps`, (latest(net.txBytesPerSecond) / 1000) AS `Transmitted KBps`, latest(net.errorsPerSecond) AS `Errors / sec` FROM K8sPodSample SINCE 10 MINUTES AGO UNTIL 1 MINUTES AGO FACET podName LIMIT 100"
               }
             ]
           }
@@ -453,7 +453,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select uniqueCount(k8s.nodeName) as 'Nodes', filter(uniqueCount(k8s.podName), where k8s.status = 'Running' and metricName = 'k8s.pod.createdAt') as 'Running Pods', filter(uniqueCount(k8s.podName), where k8s.status in ('Pending') and metricName = 'k8s.pod.createdAt') as 'Pending Pods', uniqueCount(k8s.podName) as 'Total Pods' where metricName = 'k8s.pod.createdAt' facet k8s.clusterName since 30 minutes ago limit 1000"
+                "query": "SELECT uniqueCount(nodeName) AS `Nodes`, filter(uniqueCount(podName), WHERE ((status = 'Running') AND NOT (createdAt IS NULL))) AS `Running Pods`, filter(uniqueCount(podName), WHERE ((status IN ('Pending')) AND NOT (createdAt IS NULL))) AS `Pending Pods`, uniqueCount(podName) AS `Total Pods` FROM K8sPodSample SINCE 30 MINUTES AGO FACET clusterName LIMIT 1000"
               }
             ]
           }
@@ -474,7 +474,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(k8s.node.cpuUsedCores) / average(k8s.node.allocatableCpuCores) * 100 AS 'CPU Util %', 100 as '100' since 30 minutes ago TIMESERIES"
+                "query": "SELECT ((average(cpuUsedCores) / average(allocatableCpuCores)) * 100) AS `CPU Util %`, 100 AS `100` FROM K8sNodeSample SINCE 30 MINUTES AGO TIMESERIES AUTO"
               }
             ]
           }
@@ -495,7 +495,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT average(k8s.node.memoryWorkingSetBytes) / average(k8s.node.allocatableMemoryBytes) * 100 AS 'Memory Util %', 100 as '100' since 30 minutes ago TIMESERIES"
+                "query": "SELECT ((average(memoryWorkingSetBytes) / average(allocatableMemoryBytes)) * 100) AS `Memory Util %`, 100 AS `100` FROM K8sNodeSample SINCE 30 MINUTES AGO TIMESERIES AUTO"
               }
             ]
           }
@@ -516,7 +516,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(k8s.node.fsUsedBytes) / average(k8s.node.fsCapacityBytes) * 100 AS 'Disk Util %', 100 as '100' FROM Metric since 30 minutes ago TIMESERIES"
+                "query": "SELECT ((average(fsUsedBytes) / average(fsCapacityBytes)) * 100) AS `Disk Util %`, 100 AS `100` FROM K8sNodeSample SINCE 30 MINUTES AGO TIMESERIES AUTO"
               }
             ]
           }
@@ -583,7 +583,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select filter(uniqueCount(k8s.podName), where  k8s.status = 'Running') as 'Running Pods', filter(uniqueCount(k8s.podName), where k8s.status = 'Pending') as 'Pending Pods', (average(k8s.node.cpuUsedCores) / average(k8s.node.allocatableCpuCores) * 100) as 'CPU %', (average(k8s.node.memoryWorkingSetBytes) / average(k8s.node.allocatableMemoryBytes) * 100) as 'Mem %', (average(k8s.node.fsUsedBytes) / average(k8s.node.fsCapacityBytes) * 100) as 'Disk Util %' where metricName = 'k8s.pod.createdAt' and nodeName is not null facet nodeName limit 2000 since 30 minutes ago"
+                "query": "SELECT filter(uniqueCount(podName), WHERE (status = 'Running')) AS `Running Pods`, filter(uniqueCount(podName), WHERE (status = 'Pending')) AS `Pending Pods`, ((average(`k8s`.`node.cpuUsedCores`) / average(`k8s`.`node.allocatableCpuCores`)) * 100) AS `CPU %`, ((average(`k8s`.`node.memoryWorkingSetBytes`) / average(`k8s`.`node.allocatableMemoryBytes`)) * 100) AS `Mem %`, ((average(`k8s`.`node.fsUsedBytes`) / average(`k8s`.`node.fsCapacityBytes`)) * 100) AS `Disk Util %` FROM K8sPodSample WHERE (NOT (createdAt IS NULL) AND NOT (nodeName IS NULL)) SINCE 30 MINUTES AGO FACET nodeName LIMIT 2000"
               }
             ]
           }
@@ -718,7 +718,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select max(k8s.container.restartCount) AS 'Restart Count', latest(k8s.reason) AS 'Last Restart Reason' where k8s.container.restartCount[latest] > 0 AND k8s.reason IS NOT NULL and metricName = 'k8s.container.restartCount' order by k8s.container.restartCount facet k8s.containerName AS 'Container Name', k8s.podName AS 'Pod Name', k8s.clusterName AS 'Cluster Name' since 30 minutes ago limit 1000"
+                "query": "SELECT max(restartCount) AS `Restart Count`, latest(reason) AS `Last Restart Reason` FROM K8sContainerSample WHERE (((restartCount > 0) AND NOT (reason IS NULL)) AND NOT (restartCount IS NULL)) SINCE 30 MINUTES AGO FACET tuple(containerName AS `Container Name`, podName AS `Pod Name`, clusterName AS `Cluster Name`) LIMIT 1000"
               }
             ]
           }
@@ -786,7 +786,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select uniqueCount(k8s.podName) as 'Pod Count' where k8s.status is not null and metricName = 'k8s.pod.createdAt' facet k8s.clusterName AS 'Cluster Name', k8s.status AS 'Status' since 30 minutes ago limit 100"
+                "query": "SELECT uniqueCount(podName) AS `Pod Count` FROM K8sPodSample WHERE (NOT (status IS NULL) AND NOT (createdAt IS NULL)) SINCE 30 MINUTES AGO FACET tuple(clusterName AS `Cluster Name`, status AS `Status`) LIMIT 100"
               }
             ]
           }
@@ -811,7 +811,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select k8s.podName AS 'Pod Name', k8s.status AS 'Status' , k8s.clusterName AS 'Cluster Name' where k8s.status = 'Pending' and metricName = 'k8s.pod.createdAt' since 30 minutes ago limit 1000"
+                "query": "SELECT podName AS `Pod Name`, status AS `Status`, clusterName AS `Cluster Name` FROM K8sPodSample WHERE ((status = 'Pending') AND NOT (createdAt IS NULL)) SINCE 30 MINUTES AGO LIMIT 1000"
               }
             ]
           }
@@ -832,7 +832,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT count(k8s.reason) as 'OOM Kills' FROM Metric WHERE k8s.reason = 'OOMKilled' facet k8s.clusterName, k8s.podName since 30 minutes ago limit 1000"
+                "query": "SELECT count(reason) AS `OOM Kills` FROM K8sContainerSample, K8sPodSample WHERE (reason = 'OOMKilled') SINCE 30 MINUTES AGO FACET tuple(clusterName, podName) LIMIT 1000"
               }
             ]
           }
@@ -857,7 +857,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select k8s.podName AS 'Pod Name', k8s.status AS 'Status', k8s.clusterName AS 'Cluster Name' where k8s.status = 'Failed' and metricName = 'k8s.pod.createdAt' since 30 minutes ago limit 1000"
+                "query": "SELECT podName AS `Pod Name`, status AS `Status`, clusterName AS `Cluster Name` FROM K8sPodSample WHERE ((status = 'Failed') AND NOT (createdAt IS NULL)) SINCE 30 MINUTES AGO LIMIT 1000"
               }
             ]
           }
@@ -878,7 +878,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT max(k8s.container.restartCount) - min(k8s.container.restartCount) FROM Metric FACET k8s.podName, k8s.namespaceName"
+                "query": "SELECT (max(restartCount) - min(restartCount)) FROM K8sContainerSample FACET tuple(podName, namespaceName)"
               }
             ]
           }
@@ -905,7 +905,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(k8s.node.cpuUsedCores) FROM Metric FACET k8s.nodeName SINCE 60 MINUTES AGO TIMESERIES"
+                "query": "SELECT average(cpuUsedCores) FROM K8sNodeSample SINCE 60 MINUTES AGO FACET nodeName TIMESERIES AUTO"
               }
             ]
           }
@@ -926,7 +926,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT histogram(host.process.cpuPercent, 100, 25) FROM Metric FACET host.instanceType"
+                "query": "SELECT histogram(cpuPercent, 100, 25) FROM ProcessSample FACET instanceType"
               }
             ]
           }
@@ -953,7 +953,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT (average(k8s.container.memoryUsedBytes) / average(k8s.container.memoryLimitBytes))*100 as 'Memory Used %' FROM Metric facet k8s.podName, k8s.containerName timeseries since 60 minutes ago LIMIT 1000"
+                "query": "SELECT ((average(memoryUsedBytes) / average(memoryLimitBytes)) * 100) AS `Memory Used %` FROM K8sContainerSample SINCE 60 MINUTES AGO FACET tuple(podName, containerName) LIMIT 1000 TIMESERIES AUTO"
               }
             ],
             "yAxisLeft": {
@@ -977,7 +977,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT histogram(host.process.cpuPercent, 10, 100) FROM Metric FACET `containerLabel_io.kubernetes.pod.namespace`"
+                "query": "SELECT histogram(cpuPercent, 10, 100) FROM ProcessSample FACET containerLabel_io.kubernetes.pod.namespace"
               }
             ]
           }
@@ -998,7 +998,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT max(k8s.container.cpuRequestedCores) FROM Metric FACET k8s.containerName SINCE 30 MINUTES AGO TIMESERIES"
+                "query": "SELECT max(cpuRequestedCores) FROM K8sContainerSample SINCE 30 MINUTES AGO FACET containerName TIMESERIES AUTO"
               }
             ]
           }
