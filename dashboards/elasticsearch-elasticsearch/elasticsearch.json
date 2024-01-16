@@ -36,7 +36,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.clusterStatus) AS 'Cluster Status', latest(elasticsearch.cluster.nodes) AS 'Cluster Nodes', latest(elasticsearch.cluster.dataNodes) AS 'Data Nodes' FACET entity.name"
+          "query" : "SELECT latest(cluster.status) AS `Cluster Status`, latest(cluster.nodes) AS `Cluster Nodes`, latest(cluster.dataNodes) AS `Data Nodes` FROM ElasticsearchClusterSample FACET entityName"
         } ]
       }
     }, {
@@ -57,7 +57,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.cluster.shards.primaryActive) AS 'Primary Active', latest(elasticsearch.cluster.shards.active) - latest(elasticsearch.cluster.shards.primaryActive) AS 'Replicas', latest(elasticsearch.cluster.shards.relocating) AS 'Relocating', latest(elasticsearch.cluster.shards.initializing) AS 'Initializing', latest(elasticsearch.cluster.shards.unassigned) AS 'Unassigned' FACET entity.name AS 'Cluster Name'"
+          "query" : "SELECT latest(shards.primaryActive) AS `Primary Active`, (latest(shards.active) - latest(shards.primaryActive)) AS `Replicas`, latest(shards.relocating) AS `Relocating`, latest(shards.initializing) AS `Initializing`, latest(shards.unassigned) AS `Unassigned` FROM ElasticsearchClusterSample FACET entityName AS `Cluster Name`"
         } ]
       }
     }, {
@@ -119,7 +119,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.fs.unallocatedBytes)/1024/1024/1024 AS 'Free GB', latest(elasticsearch.node.fs.totalSizeInBytes)/1024/1024/1024 AS 'Total GB', latest(elasticsearch.node.fs.readOperations) AS 'Read IO Operations', latest(elasticsearch.node.fs.writeOperations) AS 'Write IO Operations' FACET host.hostname"
+          "query" : "SELECT (((latest(fs.unallocatedBytesInBYtes) / 1024) / 1024) / 1024) AS `Free GB`, (((latest(fs.totalSizeInBytes) / 1024) / 1024) / 1024) AS `Total GB`, latest(fs.reads) AS `Read IO Operations`, latest(fs.writeOperations) AS `Write IO Operations` FROM ElasticsearchNodeSample FACET hostname"
         } ]
       }
     }, {
@@ -141,7 +141,7 @@
         } ],
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.http.openedConnections) AS 'Total' FACET host.hostname SINCE 10 MINUTES AGO"
+          "query" : "SELECT latest(http.openedConnections) AS `Total` FROM ElasticsearchNodeSample SINCE 10 MINUTES AGO FACET hostname"
         } ],
         "thresholds" : [ ]
       }
@@ -165,7 +165,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.http.currentOpenConnections) AS 'Total' FACET host.hostname TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT latest(http.currentOpenConnections) AS `Total` FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET hostname TIMESERIES AUTO"
         } ],
         "yAxisLeft" : {
           "zero" : false
@@ -189,7 +189,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.jvm.mem.heapUsed) AS 'Percent' FACET host.hostname SINCE 10 MINUTES AGO COMPARE WITH 1 HOUR AGO"
+          "query" : "SELECT latest(jvm.mem.heapUsed) AS `Percent` FROM ElasticsearchNodeSample SINCE 10 MINUTES AGO FACET hostname COMPARE WITH 1 HOURS AGO"
         } ],
         "thresholds" : [ ]
       }
@@ -222,7 +222,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.jvm.mem.heapUsedInBytes)/1024/1024 AS 'Heap Used (GB)', latest(elasticsearch.node.jvm.mem.heapMaxInBytes)/1024/1024 AS 'Max Heap (GB)' FACET host.hostname SINCE 1 WEEK AGO TIMESERIES"
+          "query" : "SELECT ((latest(jvm.mem.heapUsedInBytes) / 1024) / 1024) AS `Heap Used (GB)`, ((latest(jvm.mem.heapMaxInBytes) / 1024) / 1024) AS `Max Heap (GB)` FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET hostname TIMESERIES AUTO"
         } ],
         "yAxisLeft" : {
           "zero" : false
@@ -248,7 +248,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.openFd) FACET host.hostname TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT latest(openFD) FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET hostname TIMESERIES AUTO"
         } ],
         "yAxisLeft" : {
           "zero" : false
@@ -276,7 +276,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.indexHealth) AS 'CURRENT HEALTH' FACET host.hostname, entity.name LIMIT MAX"
+          "query" : "SELECT latest(index.health) AS `CURRENT HEALTH` FROM ElasticsearchIndexSample FACET tuple(hostname, entityName) LIMIT MAX"
         } ]
       }
     }, {
@@ -305,7 +305,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.index.docs) AS 'Total Docs', latest(elasticsearch.index.docsDeleted) AS 'Deleted Docs', latest(elasticsearch.index.primaryShards) AS 'Primary Shards', latest(elasticsearch.index.primaryStoreSizeInBytes)/1024/1024/1024 AS 'Primary Store (GB)', latest(elasticsearch.index.replicaShards) AS 'Replica Shards', (latest(elasticsearch.index.storeSizeInBytes) - latest(elasticsearch.index.primaryStoreSizeInBytes))/1024/1024/1024 AS 'Replica Store (GB)' FACET host.hostname, entity.name"
+          "query" : "SELECT latest(index.docs) AS `Total Docs`, latest(index.docsDeleted) AS `Deleted Docs`, latest(index.primaryShards) AS `Primary Shards`, (((latest(index.primaryStoreSizeInBytes) / 1024) / 1024) / 1024) AS `Primary Store (GB)`, latest(index.replicaShards) AS `Replica Shards`, ((((latest(index.storeSizeInBytes) - latest(index.primaryStoreSizeInBytes)) / 1024) / 1024) / 1024) AS `Replica Store (GB)` FROM ElasticsearchIndexSample FACET tuple(hostname, entityName)"
         } ]
       }
     } ]
@@ -332,7 +332,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT (latest(elasticsearch.node.activeSearchesInMilliseconds) - earliest(elasticsearch.node.activeSearchesInMilliseconds))/sum(elasticsearch.node.activeSearches) FACET capture(entity.name, r'es-node:(?P<Node>.*)') TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT ((latest(activeSearchesInMilliseconds) - earliest(activeSearchesInMilliseconds)) / sum(activeSearches)) FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES AUTO"
         } ],
         "nullValues": {
           "nullValue": "zero"
@@ -364,7 +364,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT (latest(elasticsearch.node.get.totalGetRequests) - earliest(elasticsearch.node.get.totalGetRequests)) / (latest(elasticsearch.node.get.timeGetRequestsInMilliseconds) - earliest(elasticsearch.node.get.timeGetRequestsInMilliseconds)) AS 'Total', (latest(elasticsearch.node.get.requestsDocumentExists) - earliest(elasticsearch.node.get.requestsDocumentExists)) / (latest(elasticsearch.node.get.requestsDocumentExistsInMilliseconds) - earliest(elasticsearch.node.get.requestsDocumentExistsInMilliseconds)) AS 'Document Exists', (latest(elasticsearch.node.get.requestsDocumentMissing) - earliest(elasticsearch.node.get.requestsDocumentMissing)) / (latest(elasticsearch.node.get.requestsDocumentMissingInMilliseconds) - earliest(elasticsearch.node.get.requestsDocumentMissingInMilliseconds)) AS 'Document Missing' FACET capture(entity.name, r'es-node:(?P<Node>.*)') TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT ((latest(get.totalGetRequests) - earliest(get.totalGetRequests)) / (latest(get.timeGetRequestsInMilliseconds) - earliest(get.timeGetRequestsInMilliseconds))) AS `Total`, ((latest((get.requestsDcoumentExists OR get.requestsDocumentExists)) - earliest((get.requestsDcoumentExists OR get.requestsDocumentExists))) / (latest(get.requestsDocumentExistsInMilliseconds) - earliest(get.requestsDocumentExistsInMilliseconds))) AS `Document Exists`, ((latest(get.requestsDocumentMissing) - earliest(get.requestsDocumentMissing)) / (latest(get.requestsDocumentMissingInMilliseconds) - earliest(get.requestsDocumentMissingInMilliseconds))) AS `Document Missing` FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES AUTO"
         } ],
         "nullValues": {
           "nullValue": "zero"
@@ -394,7 +394,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT latest(elasticsearch.node.index.indexingOperationsFailed) - earliest(elasticsearch.node.index.indexingOperationsFailed) AS 'Failed Operations' FACET capture(entity.name, r'es-node:(?P<Node>.*)')"
+          "query" : "SELECT (latest(indices.indexingOperationsFailed) - earliest(indices.indexingOperationsFailed)) AS `Failed Operations` FROM ElasticsearchNodeSample FACET capture(entityName, r'es-node:(?P<Node>.*)')"
         } ]
       }
     }, {
@@ -417,7 +417,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT (latest(elasticsearch.node.indexing.documentsIndexed) - earliest(elasticsearch.node.indexing.documentsIndexed))/(latest(elasticsearch.node.indexing.timeIndexingDocumentsInMilliseconds) - earliest(elasticsearch.node.indexing.timeIndexingDocumentsInMilliseconds)) FACET capture(entity.name, r'es-node:(?P<Node>.*)') TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT ((latest(indexing.documentsIndexed) - earliest(indexing.documentsIndexed)) / (latest(indexing.timeIndexingDocumentsInMilliseconds) - earliest(indexing.timeIndexingDocumentsInMilliseconds))) FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES AUTO"
         } ],
         "yAxisLeft" : {
           "zero" : false
@@ -443,7 +443,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT (latest(elasticsearch.node.merges.totalSegmentMergingInMilliseconds) - earliest(elasticsearch.node.merges.totalSegmentMergingInMilliseconds)) / (latest(elasticsearch.node.merges.segmentMerges) - earliest(elasticsearch.node.merges.segmentMerges)) FACET capture(entity.name, r'es-node:(?P<Node>.*)') TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT ((latest(merges.totalSegmentMergingInMilliseconds) - earliest(merges.totalSegmentMergingInMilliseconds)) / (latest(merges.segmentMerges) - earliest(merges.segmentMerges))) FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES AUTO"
         } ],
         "nullValues": {
           "nullValue": "zero"
@@ -472,7 +472,7 @@
         },
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "FROM Metric SELECT (latest(elasticsearch.node.refresh.totalInMilliseconds) - earliest(elasticsearch.node.refresh.totalInMilliseconds))/(latest(elasticsearch.node.refresh.total) - earliest(elasticsearch.node.refresh.total)) FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES SINCE 1 WEEK AGO"
+          "query" : "SELECT ((latest(refresh.totalInMilliseconds) - earliest(refresh.totalInMilliseconds)) / (latest(refresh.total) - earliest(refresh.total))) FROM ElasticsearchNodeSample SINCE 1 WEEKS AGO FACET capture(entityName, r'es-node:(?P<Node>.*)') TIMESERIES AUTO"
         } ],
         "nullValues": {
           "nullValue": "zero"
