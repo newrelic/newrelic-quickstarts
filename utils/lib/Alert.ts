@@ -30,11 +30,8 @@ import { CUSTOM_EVENT, recordNerdGraphResponse } from '../newrelic/customEvent';
 // within a nrql query. This portion is to help validate against
 // very specific edge cases to ensure we don't have anything break
 // during an install once it hits our UIs.
-const TIMESERIES = 'TIMESERIES';
-const INVALID_QUERY_KEYWORDS = [TIMESERIES] as const;
-
 // RegExp matches the _first_ instance of any invalid keywords
-const INVALID_REGEX = new RegExp(INVALID_QUERY_KEYWORDS.join('|'), 'mi');
+const INVALID_REGEX = /\sTIMESERIES[\s]?/mi
 
 interface RequiredDataSources {
   id: string;
