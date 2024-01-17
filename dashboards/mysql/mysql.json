@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n latest(entity.name) AS 'Node'\nFACET \n  mysql.hostname AS 'Hostname',\n  mysql.clusterNodeType AS 'Node Type',\n  mysql.port AS 'TCP Port',\n  mysql.version AS 'MySQL Version',\n  mysql.edition AS 'MySQL Edition'\nWHERE metricName = 'mysql.node.net.maxUsedConnections'\nAND mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+                "query": "SELECT latest(entityName) AS `Node` FROM MysqlSample WHERE ((NOT (net.maxUsedConnections IS NULL) AND (hostname IN ({{mysql_host}}))) AND (entityName IN ({{mysql_node}}))) FACET tuple(hostname AS `Hostname`, cluster.nodeType AS `Node Type`, port AS `TCP Port`, software.version AS `MySQL Version`, software.edition AS `MySQL Edition`) LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -84,7 +84,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n latest(mysql.node.net.threadsConnected) AS 'Active Connections'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+                "query": "SELECT latest(net.threadsConnected) AS `Active Connections` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -114,7 +114,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n max(mysql.node.net.threadsConnected) AS 'Max Connections'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(net.threadsConnected) AS `Max Connections` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -147,7 +147,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n average(mysql.node.net.connectionsPerSecond) AS 'Connections per Second'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(net.connectionsPerSecond) AS `Connections per Second` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -212,7 +212,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.query.insertPerSecond) AS 'Insert Commands', \n  average(mysql.node.query.selectPerSecond) AS 'Select Commands', \n  average(mysql.node.query.updatePerSecond) AS 'Update Comands', \n  average(mysql.node.query.deletePerSecond) AS 'Delete Commands'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(query.comInsertPerSecond) AS `Insert Commands`, average(query.comSelectPerSecond) AS `Select Commands`, average(query.comUpdatePerSecond) AS `Update Comands`, average(query.comDeletePerSecond) AS `Delete Commands` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -242,7 +242,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.tablesLocksWaitedPerSecond) AS 'Waits'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(db.tablesLocksWaitedPerSecond) AS `Waits` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -294,7 +294,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.query.queriesPerSecond) AS 'Queries'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(query.queriesPerSecond) AS `Queries` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -330,7 +330,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  (average(mysql.node.query.slowQueriesPerSecond)/average(mysql.node.query.queriesPerSecond))*100 AS 'Slow Query Rate'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT ((average(query.slowQueriesPerSecond) / average(query.queriesPerSecond)) * 100) AS `Slow Query Rate` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -366,7 +366,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.query.questionsPerSecond) AS 'Questions'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(query.questionsPerSecond) AS `Questions` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -418,7 +418,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.net.bytesReceivedPerSecond) AS 'Received', \n  average(mysql.node.net.bytesSentPerSecond) AS 'Sent'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(net.bytesReceivedPerSecond) AS `Received`, average(net.bytesSentPerSecond) AS `Sent` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -451,7 +451,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.innodb.dataReadBytesPerSecond) AS 'Read InnoDB Data', \n  average(mysql.node.innodb.dataWrittenBytesPerSecond) AS 'Write InnoDB Data'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(db.innodb.dataReadBytesPerSecond) AS `Read InnoDB Data`, average(db.innodb.dataWrittenBytesPerSecond) AS `Write InnoDB Data` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -506,7 +506,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.maxExecutionTimeExceededPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.maxExecutionTimeExceededPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -555,7 +555,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpTablesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.createdTmpTablesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -588,7 +588,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpDiskTablesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.createdTmpDiskTablesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -621,7 +621,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.createdTmpFilesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.createdTmpFilesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -670,7 +670,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheHitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.tableOpenCacheHitsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -703,7 +703,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheMissesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.tableOpenCacheMissesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -736,7 +736,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.tableOpenCacheOverflowsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.tableOpenCacheOverflowsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -785,7 +785,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.threadsCached)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.threadsCached) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -818,7 +818,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.threadsCreatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.threadsCreatedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -851,7 +851,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.threadCacheMissRate)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.threadCacheMissRate) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -919,7 +919,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.selectFullJoinPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.selectFullJoinPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -968,7 +968,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.selectFullJoinRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.selectFullJoinRangePerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1017,7 +1017,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.selectRangeCheckPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.selectRangeCheckPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1066,7 +1066,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.selectRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.selectRangePerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1115,7 +1115,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.sortMergePassesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.sortMergePassesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1164,7 +1164,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.sortRangePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.sortRangePerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1213,7 +1213,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.sortRowsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.sortRowsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1262,7 +1262,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\nmax(mysql.node.sortScanPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.sortScanPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1317,7 +1317,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  (latest(mysql.node.innodb.bufferPool.pagesTotal) - latest(mysql.node.innodb.bufferPool.pagesFree))/latest(mysql.node.innodb.bufferPool.pagesTotal)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT ((latest(db.innodb.bufferPoolPagesTotal) - latest(db.innodb.bufferPoolPagesFree)) / latest(db.innodb.bufferPoolPagesTotal)) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1369,7 +1369,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataReadBytesPerSecond) AS 'Read'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataReadBytesPerSecond) AS `Read` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1402,7 +1402,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataWrittenBytesPerSecond) AS 'Write'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataWrittenBytesPerSecond) AS `Write` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1451,7 +1451,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWaitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.logWaitsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1484,7 +1484,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowLockWaitsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.rowLockWaitsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1517,7 +1517,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  average(mysql.node.innodb.rowLockTimeAvg)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT average(db.innodb.rowLockTimeAvg) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1569,7 +1569,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.pagesDirty)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolPagesDirty) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1602,7 +1602,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.pagesFlushedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolPagesFlushedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1635,7 +1635,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readAheadEvictedPerSecond)/max(mysql.node.innodb.bufferPool.readAheadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT (max(db.innodb.bufferPoolReadAheadEvictedPerSecond) / max(db.innodb.bufferPoolReadAheadPerSecond)) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1671,7 +1671,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolReadRequestsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1704,7 +1704,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.readsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolReadsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1737,7 +1737,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.writeRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolWriteRequestsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1770,7 +1770,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.bufferPool.waitFreePerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.bufferPoolWaitFreePerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1819,7 +1819,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.numOpenFiles)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.numOpenFiles) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1852,7 +1852,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataFsyncsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataFsyncsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1885,7 +1885,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingFsyncs)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataPendingFsyncs) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1918,7 +1918,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingReads)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataPendingReads) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1951,7 +1951,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.dataPendingWrites)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.dataPendingWrites) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -1984,7 +1984,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWriteRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.logWriteRequestsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2017,7 +2017,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.logWritesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.logWritesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2066,7 +2066,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesCreatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.pagesCreatedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2099,7 +2099,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesReadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.pagesReadPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2132,7 +2132,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.pagesWrittenPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.pagesWrittenPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2181,7 +2181,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsDeletedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.rowsDeletedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2214,7 +2214,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsInsertedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.rowsInsertedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2247,7 +2247,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsReadPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.rowsReadPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2280,7 +2280,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.innodb.rowsUpdatedPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.innodb.rowsUpdatedPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2335,7 +2335,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyCacheUtilization)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyCacheUtilization) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2371,7 +2371,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyBlocksNotFlushed)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyBlocksNotFlushed) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2404,7 +2404,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyReadRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyReadRequestsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2437,7 +2437,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyReadsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyReadsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2470,7 +2470,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyWriteRequestsPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyWriteRequestsPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2503,7 +2503,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.myisam.keyWritesPerSecond)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.myisam.keyWritesPerSecond) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2555,7 +2555,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  latest(mysql.clusterSlaveIoRunning) AS 'Slave IO Running',\n  latest(mysql.clusterSlaveSqlRunning) AS 'Slave SQL Running'\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nLIMIT MAX"
+                "query": "SELECT latest(cluster.slaveIORunning) AS `Slave IO Running`, latest(cluster.slaveSQLRunning) AS `Slave SQL Running` FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -2585,7 +2585,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.relayLogSpace)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(db.relayLogSpace) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -2621,7 +2621,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT\n  max(mysql.node.cluster.secondsBehindMaster)\nFACET concat(mysql.hostname, ' - ', entity.name) AS 'Node'\nWHERE mysql.hostname IN ( {{mysql_host}} )\nAND entity.name IN ( {{mysql_node}} )\nTIMESERIES LIMIT MAX"
+                "query": "SELECT max(cluster.secondsBehindMaster) FROM MysqlSample WHERE ((hostname IN ({{mysql_host}})) AND (entityName IN ({{mysql_node}}))) FACET concat(hostname, ' - ', entityName) AS `Node` LIMIT MAX TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
