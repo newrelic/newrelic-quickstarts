@@ -14,7 +14,11 @@ import {
   getComponentLocalPath,
 } from './lib/helpers';
 
-import { QUICKSTART_CONFIG_REGEXP, COMPONENT_PREFIX_REGEXP } from './constants';
+import {
+  QUICKSTART_CONFIG_REGEXP,
+  COMPONENT_PREFIX_REGEXP,
+  SUBMIT_THROTTLE_MS,
+} from './constants';
 import {
   NerdGraphResponseWithLocalErrors,
   NerdGraphError,
@@ -130,7 +134,7 @@ export const createValidateQuickstarts = async (
   for (const c of quickstarts) {
     try {
       const res = await c.submitMutation(isDryRun);
-      await sleep(10);
+      await sleep(SUBMIT_THROTTLE_MS);
 
       results = [...results, res];
     } catch (err) {
