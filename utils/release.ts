@@ -55,9 +55,9 @@ const bootstrap = async (): Promise<Context> => {
   }
 
   if (!NR_API_TOKEN) {
-    stepMessage(`No API token found for ${ENVIRONMENT}.`);
+    stepMessage(`No API key found for ${ENVIRONMENT}.`);
     NR_API_TOKEN = await password({
-      message: `What is your NR API token for ${ENVIRONMENT}?`,
+      message: `What is your NR API key for ${ENVIRONMENT}?`,
     });
 
     appendFileSync(
@@ -65,7 +65,7 @@ const bootstrap = async (): Promise<Context> => {
       `\nNR_API_TOKEN_${ENVIRONMENT.toUpperCase()}=${NR_API_TOKEN}`
     );
     console.log(
-      `Your NR API token for ${ENVIRONMENT} has been saved to the .env file. Do not commit this file.`
+      `Your NR API key for ${ENVIRONMENT} has been saved to the .env file. Do not commit this file.`
     );
   }
 
@@ -109,7 +109,7 @@ const bootstrap = async (): Promise<Context> => {
 };
 
 const main = async () => {
-  const { ENVIRONMENT, GH_TOKEN, NR_API_TOKEN, PR_URL } = await bootstrap();
+  const { ENVIRONMENT, GH_TOKEN, PR_URL } = await bootstrap();
 
   stepMessage(`Performing dry run release to ${ENVIRONMENT}...`);
 
