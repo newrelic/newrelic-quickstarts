@@ -25,7 +25,7 @@ import {
 } from './types/nerdgraph';
 import logger from './logger';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 type ResponseWithErrors =
   NerdGraphResponseWithLocalErrors<QuickstartMutationResponse> & {

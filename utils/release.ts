@@ -109,7 +109,7 @@ const bootstrap = async (): Promise<Context> => {
 };
 
 const main = async () => {
-  const { ENVIRONMENT, GH_TOKEN, NR_API_TOKEN, PR_URL } = await bootstrap();
+  const { ENVIRONMENT, GH_TOKEN, PR_URL } = await bootstrap();
 
   stepMessage(`Performing dry run release to ${ENVIRONMENT}...`);
 
