@@ -7,25 +7,47 @@
       "description": null,
       "widgets": [
         {
-          "title": "Number of Brokers",
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 2,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![ConfluentLogo](https://cdn.confluent.io/wp-content/uploads/seo-logo-meadow.png)\n# Confluent Cloud Kafka\n#### [Confluent API docs](https://api.telemetry.confluent.cloud/docs/descriptors/datasets/cloud?_ga=2.214885143.1264186867.1705940186-6520871.1686857317&_gl=1*xevtc5*_ga*NjUyMDg3MS4xNjg2ODU3MzE3*_ga_D2D3EGKSGD*MTcwNTk0MDA5MC41My4xLjE3MDU5NDAxODUuNjAuMC4w)"
+          }
+        },
+        {
+          "title": "Cluster Specs",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 5,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Last Update",
+                "type": "date"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(kafka.brokers) as 'Kafka Brokers'  FROM Metric "
+                "accountIds": [],
+                "query": "SELECT uniqueCount(topic) as 'Topics',\nlatest(confluent_kafka_server_partition_count) as 'Partitions', uniqueCount(consumer_group_id) as 'Consumer Groups', uniqueCount(connector_id) AS 'Connectors' FROM Metric where `kafka_id` in ({{kafka_id}})"
               }
             ],
             "platformOptions": {
@@ -34,95 +56,71 @@
           }
         },
         {
-          "title": "Consumer Group Lag",
+          "title": "Request Bytes (bytes/second) Per Type",
           "layout": {
-            "column": 5,
+            "column": 8,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 5,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.pie"
           },
           "rawConfiguration": {
             "facet": {
-              "showOtherSeries": false
+              "showOtherSeries": true
             },
             "legend": {
               "enabled": true
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT average(kafka.consumer_group.lag) FROM Metric TIMESERIES FACET `topic` LIMIT MAX"
+                "accountIds": [],
+                "query": "SELECT rate(sum(confluent_kafka_server_request_bytes), 1 second) FROM Metric WHERE\n`kafka_id` in ({{kafka_id}}) FACET type LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Active Connections",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT max(confluent_kafka_server_active_connection_count) AS 'Active Connections' FROM Metric  facet kafka_id LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Topics",
+          "title": "Retained Bytes Per Topic",
           "layout": {
             "column": 1,
-            "row": 4,
+            "row": 5,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.table"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
+            "legend": {
+              "enabled": true
+            },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT latest(kafka.topic.partitions) FROM Metric FACET `topic` LIMIT 100"
+                "accountIds": [],
+                "query": "SELECT latest(confluent_kafka_server_retained_bytes) FROM Metric TIMESERIES WHERE kafka_id IN ({{kafka_id}}) FACET topic LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
             }
           }
         },
@@ -130,7 +128,7 @@
           "title": "Records Sent Per Minute",
           "layout": {
             "column": 5,
-            "row": 4,
+            "row": 5,
             "width": 4,
             "height": 3
           },
@@ -160,10 +158,46 @@
           }
         },
         {
-          "title": "Records Recieved Per Minute",
+          "title": "Active Connections",
           "layout": {
             "column": 9,
-            "row": 4,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(confluent_kafka_server_active_connection_count) AS 'Active Connections' FROM Metric facet kafka_id WHERE kafka_id IN ({{kafka_id}}) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Partitions ",
+          "layout": {
+            "column": 1,
+            "row": 8,
             "width": 4,
             "height": 3
           },
@@ -181,7 +215,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(confluent_kafka_server_received_records),1 minute ) FROM Metric TIMESERIES FACET `topic` where `kafka_id` in ({{kafka_id}}) LIMIT MAX"
+                "query": "SELECT latest(confluent_kafka_server_partition_count) AS partitions FROM Metric WHERE `kafka_id` in ({{kafka_id}}) LIMIT MAX TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -193,43 +227,10 @@
           }
         },
         {
-          "title": "Cluster Specs",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Last Update",
-                "type": "date"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT uniqueCount(topic) as 'Topics',\nlatest(confluent_kafka_server_partition_count) as 'Partitions', uniqueCount(consumer_group_id) as 'Consumer Groups' FROM Metric where `kafka_id` in ({{kafka_id}})"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
           "title": "Recieved Bytes by Topic",
           "layout": {
             "column": 5,
-            "row": 7,
+            "row": 8,
             "width": 4,
             "height": 3
           },
@@ -262,10 +263,10 @@
           }
         },
         {
-          "title": "Sent Bytes by Topic",
+          "title": "Records Recieved Per Minute",
           "layout": {
             "column": 9,
-            "row": 7,
+            "row": 8,
             "width": 4,
             "height": 3
           },
@@ -283,221 +284,11 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(confluent_kafka_server_sent_bytes) FROM Metric TIMESERIES FACET `topic` where `kafka_id` in ({{kafka_id}}) LIMIT MAX "
+                "query": "SELECT rate(sum(confluent_kafka_server_received_records),1 minute ) FROM Metric TIMESERIES FACET `topic` where `kafka_id` in ({{kafka_id}}) LIMIT MAX"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Retained Bytes Per Topic",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(confluent_kafka_server_retained_bytes) FROM Metric TIMESERIES FACET topic LIMIT MAX"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Egres rate (bytes/minute)",
-          "layout": {
-            "column": 5,
-            "row": 10,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(l) as egress from (SELECT rate(sum(confluent_kafka_server_response_bytes), 1 minute) as l FROM Metric WHERE kafka_id IN {{kafka_id}} FACET topic LIMIT MAX TIMESERIES) LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Ingress rate (bytes/minute)",
-          "layout": {
-            "column": 9,
-            "row": 10,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT sum(l) as ingress from (SELECT rate(sum(confluent_kafka_server_request_bytes), 1 minute) as l FROM Metric WHERE kafka_id IN {{kafka_id}} FACET topic LIMIT MAX TIMESERIES) LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Partitions ",
-          "layout": {
-            "column": 1,
-            "row": 13,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT latest(confluent_kafka_server_partition_count) AS partitions FROM Metric WHERE `kafka_id` in ({{kafka_id}}) LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Request Rate",
-          "layout": {
-            "column": 5,
-            "row": 13,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(confluent_kafka_server_request_count), 1 minute) as 'Requests Per Minute' FROM Metric WHERE `kafka_id` in ({{kafka_id}}) LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "REQUESTS_PER_SECOND"
-            },
-            "yAxisLeft": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Response Rate ",
-          "layout": {
-            "column": 9,
-            "row": 13,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountId": 0,
-                "query": "SELECT rate(sum(confluent_kafka_server_response_count), 1 minute) as 'Responses Per Minute' FROM Metric WHERE  `kafka_id` in ({{kafka_id}}) LIMIT MAX TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "REQUESTS_PER_SECOND"
             },
             "yAxisLeft": {
               "zero": true
@@ -508,7 +299,7 @@
           "title": "Successful Auth Attempts",
           "layout": {
             "column": 1,
-            "row": 16,
+            "row": 11,
             "width": 4,
             "height": 3
           },
@@ -541,11 +332,191 @@
           }
         },
         {
-          "title": "Request Bytes (bytes/second) Per Kafka Protocol Request Type",
+          "title": "Egres rate (bytes/minute)",
           "layout": {
             "column": 5,
-            "row": 16,
+            "row": 11,
             "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(l) as egress from (SELECT rate(sum(confluent_kafka_server_response_bytes), 1 minute) as l FROM Metric WHERE kafka_id IN ({{kafka_id}}) TIMESERIES) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Sent Bytes by Topic",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT sum(confluent_kafka_server_sent_bytes) FROM Metric TIMESERIES FACET `topic` where `kafka_id` in ({{kafka_id}}) LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response Bytes (bytes/second) Per Kafka Protocol Request Type",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(confluent_kafka_server_response_bytes), 1 second) FROM Metric WHERE\n`kafka_id` in ({{kafka_id}}) FACET type LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request Rate",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT rate(sum(confluent_kafka_server_request_count), 1 minute) as 'Requests Per Minute' FROM Metric WHERE `kafka_id` in ({{kafka_id}}) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Ingress rate (bytes/minute)",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(confluent_kafka_server_request_bytes), 1 minute) as 'Ingress' FROM Metric WHERE kafka_id IN ({{kafka_id}}) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request Bytes (bytes/second) Per Kafka Protocol Request Type",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -577,11 +548,11 @@
           }
         },
         {
-          "title": "Response Bytes (bytes/second) Per Kafka Protocol Request Type",
+          "title": "Response Rate ",
           "layout": {
-            "column": 9,
-            "row": 16,
-            "width": 4,
+            "column": 7,
+            "row": 17,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -597,17 +568,20 @@
             },
             "nrqlQueries": [
               {
-                "accountId": 0,
-                "query": "SELECT rate(sum(confluent_kafka_server_response_bytes), 1 second) FROM Metric WHERE\n`kafka_id` in ({{kafka_id}}) FACET type LIMIT MAX TIMESERIES"
+                "accountIds": [],
+                "query": "SELECT rate(sum(confluent_kafka_server_response_bytes), 1 minute) as 'Bytes Per Minute' FROM Metric WHERE `kafka_id` in ({{kafka_id}}) FACET kafka_id LIMIT MAX TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
             "units": {
-              "unit": "BYTES_PER_SECOND"
+              "unit": "REQUESTS_PER_SECOND"
             },
             "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
               "zero": true
             }
           }
@@ -619,14 +593,23 @@
     {
       "name": "kafka_id",
       "items": null,
-      "defaultValues": [],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
       "nrqlQuery": {
         "accountIds": [],
         "query": "select uniques(kafka_id) from Metric"
       },
+      "options": {
+        "ignoreTimeRange": true
+      },
       "title": "Kafka Cluster Id",
       "type": "NRQL",
-      "isMultiSelection": false,
+      "isMultiSelection": true,
       "replacementStrategy": "STRING"
     }
   ]
