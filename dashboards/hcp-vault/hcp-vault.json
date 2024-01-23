@@ -1,0 +1,812 @@
+{
+    "name": "HCP Vault",
+    "description": null,
+    "pages": [
+      {
+        "name": "Overview",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 1,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "\n\n![New Rellog](https://www.datocms-assets.com/2885/1696356781-vault_verticallogo_black_rgb.svg)\n\n"
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 2,
+              "row": 1,
+              "width": 11,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# HCP Vault Metrics Overview"
+            }
+          },
+          {
+            "title": "Vault core Unsealed (1=true)",
+            "layout": {
+              "column": 2,
+              "row": 2,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "vault_core_unsealed",
+                  "type": null
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(vault_core_unsealed) WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": -1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Number of Identity Entities",
+            "layout": {
+              "column": 4,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(vault_identity_num_entities) TIMESERIES 5 minutes SINCE 1 hour ago WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Login request duration",
+            "layout": {
+              "column": 8,
+              "row": 2,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(vault_core_handle_login_request) AS 'ms' TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Leases set to expire",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(vault_expire_num_leases) as 'leases' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Policy get",
+            "layout": {
+              "column": 4,
+              "row": 5,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT rate(sum(vault_policy_get_policy_count), 1 minute) as 'Gets per minute' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 5 minutes SINCE 1 hour ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Policy set",
+            "layout": {
+              "column": 8,
+              "row": 5,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT rate(sum(vault_policy_set_policy_count), 1 minute) as 'Sets per minute' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Secret Count",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT max(vault_secret_kv_count) as 'Secrets' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Runtime metrics"
+            }
+          },
+          {
+            "title": "Total Go routines",
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(vault_runtime_num_goroutines) as 'Go routines' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 1 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Allocated MB",
+            "layout": {
+              "column": 7,
+              "row": 9,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(vault_runtime_alloc_bytes)/1e+6 as 'MB' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Heap Objects used",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average((`__result_0` / `__result_1`)) as 'Heap objects used' FROM (SELECT latest(vault_runtime_heap_objects) AS `__result_0`, latest(vault_runtime_malloc_count) AS `__result_1` FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) FACET dimensions() LIMIT max TIMESERIES 2 minutes) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 2 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Count of object on the heap",
+            "layout": {
+              "column": 7,
+              "row": 12,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(vault_runtime_heap_objects) WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago UNTIL Now"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 15,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Token related metrics"
+            }
+          },
+          {
+            "title": "Available token count",
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(vault_token_count) as 'Tokens' WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tokens by auth method",
+            "layout": {
+              "column": 4,
+              "row": 16,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_token_count_by_auth) FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) FACET auth_method TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tokens by ttl Method",
+            "layout": {
+              "column": 7,
+              "row": 16,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_token_count_by_ttl) FROM Metric FACET creation_ttl WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tokens by policy",
+            "layout": {
+              "column": 10,
+              "row": 16,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.stacked-bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_token_count_by_policy) FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) FACET policy TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Token creation/storage",
+            "layout": {
+              "column": 1,
+              "row": 19,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_token_create) as 'create' FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago UNTIL now"
+                },
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_token_store) as 'store' FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago UNTIL now"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Token lookups",
+            "layout": {
+              "column": 5,
+              "row": 19,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(sum(vault_token_lookup_count), 1 minute) as 'Lookups per minute' FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) TIMESERIES 2 minutes SINCE 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Renew/Revoke time (in ms)",
+            "layout": {
+              "column": 9,
+              "row": 19,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_expire_revoke) as 'Revoke ms' FROM Metric WHERE project_id IN ({{vault_project}}) AND cluster_id IN ({{vault_cluster}}) SINCE 1 hour ago TIMESERIES 2 minutes"
+                },
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(vault_expire_renew) as 'Renew ms' FROM Metric SINCE 1 hour ago TIMESERIES 5 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 22,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Audit Logs"
+            }
+          },
+          {
+            "title": "Audit Log rate per minute",
+            "layout": {
+              "column": 1,
+              "row": 23,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(count(*), 1 minute) as 'Logs per minute' FROM Log WHERE hcp_product = 'vault' TIMESERIES 5 minutes UNTIL now"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Error logs (response/request)",
+            "layout": {
+              "column": 7,
+              "row": 23,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) as 'Response Log Errors' FROM Log WHERE response.data.error IS NOT NULL AND hcp_product='vault' TIMESERIES 5 minutes SINCE 1 hour ago UNTIL NOW"
+                },
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(*) as 'Request Log Errors' FROM Log WHERE request.data.error IS NOT NULL AND hcp_product='vault' TIMESERIES 5 minutes SINCE 1 hour ago UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "vault_cluster",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          },
+          {
+            "value": {
+              "string": "vault-cluster"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(cluster_id) FROM Metric WHERE hcp_product='vault'"
+        },
+        "options": {
+          "ignoreTimeRange": true
+        },
+        "title": "Cluster Id",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "vault_project",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          },
+          {
+            "value": {
+              "string": "d8ff14cb-a4ca-4666-8fdb-6f26b8d3a3d9"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(project_id) FROM Metric WHERE hcp_product='vault'"
+        },
+        "options": {
+          "ignoreTimeRange": true
+        },
+        "title": "Project Id",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
