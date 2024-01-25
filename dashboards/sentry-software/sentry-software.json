@@ -1,0 +1,3021 @@
+{
+    "name": "Hardware Sentry",
+    "description": null,
+    "pages": [
+      {
+        "name": "Main",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![Sentry Software Logo](https://dl.sentrysoftware.com/public/otel-dl-link.png)"
+            }
+          },
+          {
+            "title": "Monitoring Coverage",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(FROM Metric \n  SELECT filter( latest(`hardware_sentry.connector.status`), WHERE state = 'ok' AND host.name IN ({{sentry_host}}) AND site IN ({{sentry_site}}) ) as 'status'\n  FACET site,host.id LIMIT 200) SELECT sum (`status`)*100/(FROM Metric SELECT cardinality(hardware_sentry.host.configured) SINCE 24 hours ago WHERE site IN ({{sentry_site}})) as '% coverage' SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 90
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 50
+                }
+              ]
+            }
+          },
+          {
+            "title": "Hosts",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(hardware_sentry.host.configured) as 'Total Hosts' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Number of Status Failed ",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(conditional(WHERE (`failedHwStatus` = 1), `failedHwStatus`)) as 'Failed Status' FROM (SELECT latest(`hw.status`) as 'failedHwStatus' FROM Metric WHERE ((state = 'failed') AND (getfield(`hw.status`, latest) = 1)) FACET dimensions() LIMIT MAX WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Active Connectors",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(FROM Metric SELECT max(hardware_sentry.connector.status) as 'status' FACET host.id, site WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})) SELECT sum(status) as 'Active Connectors'  SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Collect Started",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "",
+                  "type": "duration"
+                },
+                {
+                  "format": "%b %d, %Y",
+                  "name": "Min timestamp",
+                  "type": "duration"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(timestamp) as '' FROM Metric WHERE metricName = 'hardware_sentry.agent.info' SINCE 2 years ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts not responding",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(SELECT cardinality(hardware_sentry.host.up) - latest(hardware_sentry.host.up) as 'hosts' FROM Metric WHERE site IN ({{sentry_site}}) FACET host.id) SELECT sum(`hosts`) AS 'Hosts not responding' SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Missing Devices",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM (select latest(hw.status) as 'devices' FROM Metric WHERE state='present' AND site IN ({{sentry_site}}) FACET host.id LIMIT MAX) SELECT count(`devices`) - sum(`devices`) as 'Missing Devices' SINCE 10 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Power, Cost, and CO2 Emissions"
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001) as 'kW' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN ({{sentry_site}}) FACET site LIMIT max ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 3,
+              "row": 4,
+              "width": 4,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001) as 'MW' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN ({{sentry_site}}) FACET site LIMIT max TIMESERIES 5 minutes)SINCE 1 hour AGO UNTIL NOW TIMESERIES 5 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily consumption (kWh)",
+            "layout": {
+              "column": 7,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001*24) as 'kWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT 100 ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily Cost",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24/1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily CO₂ Emissions (t)",
+            "layout": {
+              "column": 11,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Power ",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(Power)*.001 as 'kW' FROM(\nSELECT latest(hw.host.power) AS 'Power' FROM Metric LIMIT MAX FACET site, host.name WHERE site IN ({{sentry_site}}))"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly consumption (MWh)",
+            "layout": {
+              "column": 7,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*1e-6*24*30.437) as 'MWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric FACET site WHERE site IN ({{sentry_site}}) LIMIT 100 ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly Cost",
+            "layout": {
+              "column": 9,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 * 30.437 / 1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 30 days  AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly CO₂ Emissions (t)",
+            "layout": {
+              "column": 11,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 30.467 * 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 month AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly consumption (MWh) (estimated)",
+            "layout": {
+              "column": 7,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*1e-6*24*365) as 'MWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric FACET site WHERE site IN ({{sentry_site}}) LIMIT max ) SINCE 1 month AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly Cost (estimated)",
+            "layout": {
+              "column": 9,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 * 365 / 1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly CO₂ Emissions (t) (estimated)",
+            "layout": {
+              "column": 11,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 365 * 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Sites"
+            }
+          },
+          {
+            "title": "Sites",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT cardinality(hardware_sentry.host.configured) as 'Hosts Count',average(hw.host.power)*cardinality(hw.host.power)*.001 as 'Total Power (kW)', average(hw.site.pue) as 'PUE', average(hw.site.electricity_cost) as 'Electricity Cost ($ per kWh)', average(hw.site.carbon_intensity_grams) as 'CO₂ Intensity (grams per kWh)', average(hw.host.ambient_temperature) as 'Ambient Temperature (°C)', min(hw.host.heating_margin) as 'Heating Margin (°C)' FACET site SINCE 1 hour ago UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly consumption (MW)",
+            "layout": {
+              "column": 1,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*1e-6*24*365) as 'MW' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric FACET site LIMIT 100 ) SINCE 1 month AGO UNTIL NOW FACET site"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly Cost (estimated)",
+            "layout": {
+              "column": 5,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 * 365 / 1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW FACET site"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly CO₂ Emissions (t)",
+            "layout": {
+              "column": 9,
+              "row": 14,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 365 * 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW FACET site"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Power and Host information"
+            }
+          },
+          {
+            "title": "Top Consumers (in kW)",
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(`hw.host.power`)*.001 AS 'kW' FROM Metric SINCE 60 MINUTES AGO UNTIL NOW WHERE site in ({{sentry_site}}) FACET concat(`site`,': ',`host.name`) LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Hosts Ambient Temperature (°C)",
+            "layout": {
+              "column": 5,
+              "row": 18,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(hw.host.ambient_temperature) as 'C' WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})  FACET concat(site,': ',host.name) LIMIT 20"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Hosts Highest Temperature (°C)",
+            "layout": {
+              "column": 9,
+              "row": 18,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT max(hw.temperature) as 'C' WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) FACET concat(site,': ',host.name) LIMIT 20"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power per Host Type",
+            "layout": {
+              "column": 1,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(Power) FROM (SELECT latest(hw.host.power) AS 'Power' FROM Metric LIMIT MAX FACET site, host.id, host.type WHERE site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) )FACET host.type SINCE 60 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power per Platform Type",
+            "layout": {
+              "column": 4,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) as 'kW' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 60 MINUTES AGO UNTIL NOW FACET `os.type` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts Type",
+            "layout": {
+              "column": 7,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) as 'kW' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 60 MINUTES AGO UNTIL NOW FACET `host.type` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts Vendors",
+            "layout": {
+              "column": 10,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT count(hw.status) as 'hosts' FACET vendor LIMIT 30 WHERE state = 'present' AND hw.type = 'enclosure' AND metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 26,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Temperature Optimization by Site"
+            }
+          },
+          {
+            "title": "Heating Margin",
+            "layout": {
+              "column": 1,
+              "row": 27,
+              "width": 6,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(`hw.host.heating_margin`) FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 10 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 5
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Current Temperature",
+            "layout": {
+              "column": 7,
+              "row": 27,
+              "width": 6,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(`hw.host.ambient_temperature`)  FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 10 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 15
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 18
+                }
+              ]
+            }
+          },
+          {
+            "title": "Heating Margin host distribution",
+            "layout": {
+              "column": 1,
+              "row": 29,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.histogram"
+            },
+            "rawConfiguration": {
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(SELECT min(`hw.host.heating_margin`) as 'margin' FROM Metric  FACET `host.name` WHERE site IN ({{sentry_site}}) LIMIT max) SELECT histogram(`margin`, width:40, buckets:20) as '°C' SINCE 60 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Heating Margin by site",
+            "layout": {
+              "column": 7,
+              "row": 29,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(`hw.host.heating_margin`) as '°C' FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 1 week AGO UNTIL NOW TIMESERIES 1 hour"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "CELSIUS"
+              },
+              "yAxisLeft": {
+                "max": 40,
+                "min": 0,
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Site",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "![Sentry Software Logo](https://dl.sentrysoftware.com/public/otel-dl-link.png)\n\n#### IMPORTANT: Select a site from the variable dropdown to facet the widgets by site."
+            }
+          },
+          {
+            "title": "Monitoring Coverage",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(FROM Metric \n  SELECT filter( latest(`hardware_sentry.connector.status`), WHERE state = 'ok' AND host.name IN ({{sentry_host}}) AND site IN ({{sentry_site}}) ) as 'status'\n  FACET site,host.id LIMIT 200) SELECT sum (`status`)*100/(FROM Metric SELECT cardinality(hardware_sentry.host.configured) SINCE 24 hours ago WHERE site IN ({{sentry_site}})) as '% coverage' SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 90
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 50
+                }
+              ]
+            }
+          },
+          {
+            "title": "Hosts",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(hardware_sentry.host.configured) as 'Hosts' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Number of Status Failed ",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(conditional(WHERE (`failedHwStatus` = 1), `failedHwStatus`)) as 'Failed Status' FROM (SELECT latest(`hw.status`) as 'failedHwStatus' FROM Metric WHERE ((state = 'failed') AND (getfield(`hw.status`, latest) = 1)) FACET dimensions() LIMIT MAX WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Active Connectors",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(FROM Metric SELECT max(hardware_sentry.connector.status) as 'status' FACET host.id, site WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})) SELECT sum(status) as 'Active Connectors'  SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Collect Started",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "",
+                  "type": "duration"
+                },
+                {
+                  "format": "%b %d, %Y",
+                  "name": "Min timestamp",
+                  "type": "duration"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(timestamp) as '' FROM Metric WHERE metricName = 'hardware_sentry.agent.info' SINCE 2 years ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts not responding",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(SELECT cardinality(hardware_sentry.host.up) - latest(hardware_sentry.host.up) as 'hosts' FROM Metric WHERE site IN ({{sentry_site}}) FACET host.id) SELECT sum(`hosts`) AS 'Hosts not responding' SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Missing Devices",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM (select latest(hw.status) as 'devices' FROM Metric WHERE state = 'present' AND site IN ('Sentry-PC', 'Sentry-Paris', 'Sentry-Ottawa') FACET host.id LIMIT MAX) SELECT count(`devices`) - sum(`devices`) as 'Missing Devices' SINCE 10 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "CPUs",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(hw.status) as 'CPUs' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND hw.type = 'cpu' AND state = 'present' SINCE 24 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Disk Space",
+            "layout": {
+              "column": 3,
+              "row": 3,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.physical_disk.size`) * cardinality(`hw.physical_disk.size`)) * 1e-12 as 'TB' FROM Metric WHERE site IN ({{sentry_site}}) SINCE 5 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "PUE",
+            "layout": {
+              "column": 5,
+              "row": 3,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(hw.site.pue) as 'PUE' WHERE site IN ({{sentry_site}}) TIMESERIES 5 minutes SINCE 2 hours ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "CO₂ Intensity",
+            "layout": {
+              "column": 9,
+              "row": 3,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(hw.site.carbon_intensity_grams) as 'g' WHERE site IN ({{sentry_site}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Electricity Cost",
+            "layout": {
+              "column": 11,
+              "row": 3,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(hw.site.electricity_cost ) as '$' WHERE site IN ({{sentry_site}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Connected NICs",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(`nics`) FROM (SELECT average(hw.network.up) * cardinality(hw.network.up) as 'nics' FROM Metric WHERE site IN ({{sentry_site}})) SINCE 20 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Network Tx (GB)",
+            "layout": {
+              "column": 3,
+              "row": 4,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Total hw.network.io",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(`hw.network.io`)*1e-9 as 'GB' FROM Metric WHERE site = {{sentry_site}} AND direction = 'transmit' SINCE  5 minutes AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Power, Cost, and CO2 Emissions"
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001) as 'kW' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN ({{sentry_site}}) FACET site LIMIT max ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 3,
+              "row": 6,
+              "width": 4,
+              "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001) as 'MW' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN ({{sentry_site}}) FACET site LIMIT max TIMESERIES 5 minutes)SINCE 1 hour AGO UNTIL NOW TIMESERIES 5 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily consumption (kWh)",
+            "layout": {
+              "column": 7,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*.001*24) as 'kWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT 100 ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily Cost",
+            "layout": {
+              "column": 9,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24/1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": -1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Daily CO₂ Emissions (t)",
+            "layout": {
+              "column": 11,
+              "row": 6,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Power ",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(Power)*.001 as 'kW' FROM(\nSELECT latest(hw.host.power) AS 'Power' FROM Metric LIMIT MAX FACET site, host.name WHERE site IN ({{sentry_site}}))"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly consumption (MWh)",
+            "layout": {
+              "column": 7,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*1e-6*24*30.437) as 'MWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric FACET site WHERE site IN ({{sentry_site}}) LIMIT 100 ) SINCE 1 day AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly Cost",
+            "layout": {
+              "column": 9,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 * 30.437 / 1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 30 days  AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": -1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Monthly CO₂ Emissions (t)",
+            "layout": {
+              "column": 11,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 30.467 * 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 1 month AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly consumption (MWh) (estimated)",
+            "layout": {
+              "column": 7,
+              "row": 10,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1`)) * cardinality((`__result_0` * `__result_1`))*1e-6*24*365) as 'MWh' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1` FROM Metric FACET site WHERE site IN ({{sentry_site}}) LIMIT max ) SINCE 1 month AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Yearly Cost (estimated)",
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 24 * 365 / 1000) as '$' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.electricity_cost`) * cardinality(`hw.site.electricity_cost`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": -1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Yearly CO₂ Emissions (t) (estimated)",
+            "layout": {
+              "column": 11,
+              "row": 10,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average((`__result_0` * `__result_1` * `_result_2`)) * cardinality((`__result_0` * `__result_1`* `_result_2`))* 365 * 24 / 1000 / 1000 / 1000) as 't' FROM (SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) AS `__result_0`, average(`hw.site.pue`) AS `__result_1`, (average(`hw.site.carbon_density_grams`) * cardinality(`hw.site.carbon_density_grams`)) AS `_result_2` FROM Metric WHERE site IN({{sentry_site}}) FACET site LIMIT MAX) SINCE 2 months AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 12,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Site Temperature Optimization\n#### Select a site from the variable list to view at site specific level"
+            }
+          },
+          {
+            "title": "Heating Margin",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(`hw.host.heating_margin`) FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 10 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Heating Margin for site",
+            "layout": {
+              "column": 3,
+              "row": 13,
+              "width": 6,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT min(`hw.host.heating_margin`) as '°C' FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 1 week AGO UNTIL NOW TIMESERIES 1 hour"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "CELSIUS"
+              },
+              "yAxisLeft": {
+                "max": 40,
+                "min": 0,
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Current Temperature",
+            "layout": {
+              "column": 9,
+              "row": 13,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(`hw.host.ambient_temperature`)  FROM Metric WHERE site IN ({{sentry_site}}) FACET site SINCE 10 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 15
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 18
+                }
+              ]
+            }
+          },
+          {
+            "title": "Recommended max site temperature",
+            "layout": {
+              "column": 11,
+              "row": 13,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "°C",
+                  "precision": 0,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT clamp_min(clamp_max(((sum(`avg_amb`) + (sum(`min_heat`) - 5)) - (average(`__result_0`) - sum(`avg_amb`))), 29), 15) as '°C' FROM (SELECT max(`hw.host.ambient_temperature`) AS `__result_0`, average(`hw.host.ambient_temperature`) as 'avg_amb', min(hw.host.heating_margin) as 'min_heat' FROM Metric WHERE site IN ({{sentry_site}}) LIMIT 100) SINCE 1 MINUTE AGO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Heating Margin host distribution",
+            "layout": {
+              "column": 1,
+              "row": 15,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.histogram"
+            },
+            "rawConfiguration": {
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM(SELECT min(`hw.host.heating_margin`) as 'margin' FROM Metric  FACET `host.name` WHERE site = {{sentry_site}} LIMIT max) SELECT histogram(`margin`, width:40, buckets:20) as '°C' SINCE 60 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Top Hosts Ambient Temperature (°C)",
+            "layout": {
+              "column": 7,
+              "row": 15,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(hw.host.ambient_temperature) as 'C' WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})  FACET concat(site,': ',host.name) LIMIT 20"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Power and Host information"
+            }
+          },
+          {
+            "title": "Top Consumers (in kW)",
+            "layout": {
+              "column": 1,
+              "row": 19,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(`hw.host.power`)*.001 AS 'kW' FROM Metric SINCE 60 MINUTES AGO UNTIL NOW WHERE site in ({{sentry_site}}) FACET concat(`site`,': ',`host.name`) LIMIT 10"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Top Hosts Highest Temperature (°C)",
+            "layout": {
+              "column": 7,
+              "row": 19,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT max(hw.temperature) as 'C' WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) FACET concat(site,': ',host.name) LIMIT 20"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power per Host Type",
+            "layout": {
+              "column": 1,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT sum(Power) FROM (SELECT latest(hw.host.power) AS 'Power' FROM Metric LIMIT MAX FACET site, host.id, host.type WHERE site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) )FACET host.type SINCE 60 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power per Platform Type",
+            "layout": {
+              "column": 4,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) as 'kW' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 60 MINUTES AGO UNTIL NOW FACET `os.type` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts Type",
+            "layout": {
+              "column": 7,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.host.power`) * cardinality(`hw.host.power`)) as 'kW' FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}}) SINCE 60 MINUTES AGO UNTIL NOW FACET `host.type` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Hosts Vendors",
+            "layout": {
+              "column": 10,
+              "row": 22,
+              "width": 3,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT count(hw.status) as 'hosts' FACET vendor LIMIT 30 WHERE state = 'present' AND hw.type = 'enclosure' AND metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' AND site IN ({{sentry_site}}) AND host.name IN ({{sentry_host}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Host",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Hardware Sentry - Host\n\nIMPORTANT: Select a single site and host from the variables for the widgets to work properly. "
+            }
+          },
+          {
+            "title": "Host Type",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(host.type) as '' FROM Metric WHERE host.id = {{sentry_host}}"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Vendor and Model",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(vendor), latest(model) FROM Metric WHERE host.id = ({{sentry_host}})"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Disk Size",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (average(`hw.physical_disk.size`) * cardinality(`hw.physical_disk.size`)) FROM Metric WHERE ((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Power, Costs and CO₂ Emissions"
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "W",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (latest(conditional(WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})), `hw.host.power`)) * average(conditional(WHERE (site = {{sentry_site}}), `hw.site.pue_ratio`))) as 'W' FROM Metric SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Power * PUE",
+            "layout": {
+              "column": 4,
+              "row": 4,
+              "width": 5,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (latest(conditional(WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})), `hw.host.power`)) * average(conditional(WHERE (site = {{sentry_site}}), `hw.site.pue_ratio`))) as 'Watts' FROM Metric TIMESERIES 30 minutes SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "COUNT"
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Power per Device Type (joules)",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(hw.energy) as 'Joules' FACET hw.type WHERE host.name = {{sentry_host}} AND site = {{sentry_site}}"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Power",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 3,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "W",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT (latest(conditional(WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})), `hw.host.power`))) as 'W' FROM Metric SINCE 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Daily Cost",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT ((((average(conditional(WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})), `hw.host.power`)) * average(conditional(WHERE (site = {{sentry_site}}), `hw.site.pue`))) * average(`hw.site.electricity_cost`)) * 24) / 1000) AS '$' FROM Metric SINCE 1 days AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Monthly Cost",
+            "layout": {
+              "column": 3,
+              "row": 8,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT ((((average(conditional(WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})), `hw.host.power`)) * average(conditional(WHERE (site = {{sentry_site}}), `hw.site.pue`))) * average(`hw.site.electricity_cost`)*30.437) * 24) / 1000) AS '$' FROM Metric SINCE 1 month AGO UNTIL NOW"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Monitored Devices"
+            }
+          },
+          {
+            "title": "Monitored Devices",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT cardinality(`hw.status`) FROM Metric WHERE (((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) AND (state = 'present')) SINCE 60 MINUTES AGO UNTIL NOW FACET `hw.type` LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Errors per Hour",
+            "layout": {
+              "column": 7,
+              "row": 11,
+              "width": 6,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(sum(`hw.errors`), 1 SECONDS) FROM Metric WHERE ((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW FACET `hw.type` LIMIT 100 TIMESERIES 3600000 SLIDE BY 30000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 15,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Temperatures and Fans"
+            }
+          },
+          {
+            "title": "Ambient",
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(`hw.host.ambient_temperature`) AS '°C' FROM Metric WHERE ((site = {{sentry_site}}) AND (host.name = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Temperatures",
+            "layout": {
+              "column": 3,
+              "row": 16,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(`hw.temperature`) FROM Metric WHERE ((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW FACET device_id LIMIT 100 TIMESERIES 30000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Fan Speed",
+            "layout": {
+              "column": 8,
+              "row": 16,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(`hw.fan.speed`) FROM Metric WHERE ((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW FACET device_id LIMIT 100 TIMESERIES 30000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Heating Margin",
+            "layout": {
+              "column": 1,
+              "row": 17,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(`hw.host.heating_margin`) FROM Metric WHERE ((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW FACET dimensions() LIMIT 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Avg Fan Speed",
+            "layout": {
+              "column": 1,
+              "row": 18,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(`hw.fan.speed`) as 'rpm' FROM Metric WHERE ((site = {{sentry_site}}) AND (host.name RLIKE {{sentry_host}})) SINCE 60 MINUTES AGO UNTIL NOW "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 19,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Network"
+            }
+          },
+          {
+            "title": "Total Traffic (byte/s)",
+            "layout": {
+              "column": 1,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(sum(`hw.network.io`), 1 SECONDS) as 'Transmitted' FROM Metric WHERE (((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) AND (direction = 'transmit')) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 30000"
+                },
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(sum(`hw.network.io`), 1 SECONDS) as 'Received' FROM Metric WHERE (((site = {{sentry_site}}) AND (`host.name` = {{sentry_host}})) AND (direction = 'receive')) SINCE 60 MINUTES AGO UNTIL NOW TIMESERIES 300000 SLIDE BY 30000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "yAxisLeft": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Bandwidth utilization",
+            "layout": {
+              "column": 7,
+              "row": 20,
+              "width": 6,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT latest(`hw.network.bandwidth.utilization`) as 'Bandwidth utilization' FROM Metric SINCE 1 hour AGO UNTIL NOW WHERE host.id = ({{sentry_host}}) LIMIT 100 TIMESERIES 5 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "units": {
+                "unit": "PERCENTAGE"
+              },
+              "yAxisLeft": {
+                "max": 1,
+                "min": 0,
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "sentry_site",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "FROM Metric SELECT uniques(site) WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%'"
+        },
+        "options": {
+          "ignoreTimeRange": true
+        },
+        "title": "Site",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "sentry_host",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "SELECT uniques(host.name) FROM Metric WHERE metricName LIKE 'hw.%' OR metricName LIKE 'hardware_sentry%' LIMIT MAX SINCE 1 month ago"
+        },
+        "options": {
+          "ignoreTimeRange": true
+        },
+        "title": "Hostname",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
