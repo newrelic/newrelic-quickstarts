@@ -1,0 +1,28 @@
+name: Task failure
+
+description: |+
+  This alert is triggered in the event of a connection failure, indicating the failure of any Fivetran task.
+  
+type: STATIC
+
+nrql:
+  query: "SELECT count(*) from Log where event = 'sync_end' and data.status ='FAILURE_WITH_TASK'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE 
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: EQUALS
+    # Value that triggers a violation; float value
+    threshold: 1
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 2592000
