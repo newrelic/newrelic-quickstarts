@@ -211,3 +211,11 @@ export const ALERT_POLICY_SET_REQUIRED_DATA_SOURCES_MUTATION = gql`
     }
   }
 `;
+
+/**
+ * When submitting quickstarts (or other resources), we have found that
+ * submitting items too frequently can cause the process to fail. By introducing
+ * a slight amount of delay between submissions, we can avoid a possible race
+ * condition.
+ */
+export const SUBMIT_THROTTLE_MS = 250;

@@ -18,7 +18,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.totalDatabases`) AS `Databases` FROM Metric"
+          "query" : "SELECT latest(totalDatabases) AS `Databases` FROM MongoSample"
         } ]
       }
     }, {
@@ -35,7 +35,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT uniqueCount(mongo.collection) FROM Metric"
+          "query" : "SELECT uniqueCount(collection) FROM MongoCollectionSample, MongodTopSample"
         } ]
       }
     }, {
@@ -65,7 +65,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.mongos.commands.countPerSecond`) + latest(`mongo.mongos.commands.deletePerSecond`) + latest(`mongo.mongos.commands.createIndexesPerSecond`) + latest(`mongo.mongos.commands.evalPerSecond`) + latest(`mongo.mongos.commands.findAndModifyPerSecond`) + latest(`mongo.mongos.commands.insertPerSecond`) + latest(`mongo.mongos.commands.updatePerSecond`) FROM Metric FACET entity.name TIMESERIES 1 MINUTE"
+          "query" : "SELECT ((((((latest(commands.countPerSecond) + latest(commands.deletePerSecond)) + latest(commands.createIndexesPerSecond)) + latest(commands.evalPerSecond)) + latest(commands.findAndModifyPerSecond)) + latest(commands.insertPerSecond)) + latest(commands.updatePerSecond)) FROM MongosSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -82,7 +82,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.mongos.commands.countFailedPerSecond`) + latest(`mongo.mongos.commands.deleteFailedPerSecond`) + latest(`mongo.mongos.commands.createIndexesFailedPerSecond`) + latest(`mongo.mongos.commands.evalFailedPerSecond`) + latest(`mongo.mongos.commands.findAndModifyFailedPerSecond`) + latest(`mongo.mongos.commands.insertFailedPerSecond`) + latest(`mongo.mongos.commands.updateFailedPerSecond`) FROM Metric FACET entity.name TIMESERIES 1 MINUTE"
+          "query" : "SELECT ((((((latest(commands.countFailedPerSecond) + latest(commands.deleteFailedPerSecond)) + latest(commands.createIndexesFailedPerSecond)) + latest(commands.evalFailedPerSecond)) + latest(commands.findAndModifyFailedPerSecond)) + latest(commands.insertFailedPerSecond)) + latest(commands.updateFailedPerSecond)) FROM MongosSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -99,7 +99,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT average(`mongo.mongos.network.bytesInPerSecond`) AS 'Bytes In' FROM Metric TIMESERIES 1 MINUTE FACET entity.name"
+          "query" : "SELECT average(network.bytesInPerSecond) AS `Bytes In` FROM MongosSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -116,7 +116,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT average(`mongo.mongos.network.bytesOutPerSecond`) AS `Bytes Out` FROM Metric FACET entity.name TIMESERIES 1 MINUTE"
+          "query" : "SELECT average(network.bytesOutPerSecond) AS `Bytes Out` FROM MongosSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -133,7 +133,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT average(`mongo.mongos.network.requestsPerSecond`) FROM Metric FACET entity.name TIMESERIES 1 MINUTE"
+          "query" : "SELECT average(network.requestsPerSecond) FROM MongosSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -150,7 +150,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.database.dataInBytes`) AS `Size in Bytes`, latest(`mongo.database.objects`) AS `Objects` FROM Metric FACET entity.name LIMIT 1000"
+          "query" : "SELECT latest(stats.dataInBytes) AS `Size in Bytes`, latest(stats.objects) AS `Objects` FROM MongoDatabaseSample FACET entityName LIMIT 1000"
         } ]
       }
     }, {
@@ -167,7 +167,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.mongod.connections.available`) FROM Metric FACET entity.name"
+          "query" : "SELECT latest(connections.available) FROM MongodSample FACET entityName"
         } ]
       }
     }, {
@@ -184,7 +184,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT average(`mongo.mongod.usage.totalInMillisecondsPerSecond`) FROM Metric TIMESERIES 1 minutes FACET entity.name"
+          "query" : "SELECT average(usage.totalInMillisecondsPerSecond) FROM MongodTopSample FACET entityName TIMESERIES 1 MINUTE"
         } ]
       }
     }, {
@@ -201,7 +201,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.database.indexes`) AS `Indexes`, latest(`mongo.database.indexInBytes`) AS `Total Index Size` FROM Metric FACET entity.name LIMIT 1000"
+          "query" : "SELECT latest(stats.indexes) AS `Indexes`, latest(stats.indexInBytes) AS `Total Index Size` FROM MongoDatabaseSample FACET entityName LIMIT 1000"
         } ]
       }
     }, {
@@ -218,7 +218,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.collection.count`) AS `Objects`, latest(`mongo.collection.sizeInBytes`) AS `Storage Bytes` FROM Metric FACET mongo.database,entity.name where database IS NOT NULL LIMIT 1000"
+          "query" : "SELECT latest(collection.count) AS `Objects`, latest(collection.sizeInBytes) AS `Storage Bytes` FROM MongoCollectionSample WHERE NOT (database IS NULL) FACET tuple(database, entityName) LIMIT 1000"
         } ]
       }
     }, {
@@ -235,7 +235,7 @@
       "rawConfiguration" : {
         "nrqlQueries" : [ {
           "accountId" : 0,
-          "query" : "SELECT latest(`mongo.collection.sizeInBytes`) FROM Metric LIMIT 10 FACET mongo.database,entity.name"
+          "query" : "SELECT latest(collection.sizeInBytes) FROM MongoCollectionSample FACET tuple(database, entityName) LIMIT 10"
         } ]
       }
     } ]
