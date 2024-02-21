@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT LATEST(`gcp.bigquery.storage.table_count`) AS 'Tables', SUM(`gcp.bigquery.query.count`) AS 'Queries', MAX(`gcp.bigquery.query.execution_times`) AS 'Maximum Execution Time(s)', AVERAGE(`gcp.bigquery.storage.stored_bytes`) AS 'Average Stored Bytes'"
+                "query": "SELECT LATEST(GcpBigQueryDataSetSample.storage.Tables) AS `Tables`, SUM(GcpBigQueryProjectSample.query.Count) AS `Queries`, MAX(GcpBigQueryProjectSample.query.ExecutionTimes) AS `Maximum Execution Time(s)`, AVERAGE(GcpBigQueryDataSetSample.storage.StoredBytes) AS `Average Stored Bytes` FROM GcpBigQueryDataSetSample, GcpBigQueryProjectSample WHERE (((`eventType`() = 'GcpBigQueryDataSetSample') AND (`provider` = 'GcpBigQueryDataSet')) OR ((`eventType`() = 'GcpBigQueryProjectSample') AND (`provider` = 'GcpBigQueryProject')))"
               }
             ],
             "platformOptions": {
@@ -71,7 +71,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT LATEST(`gcp.bigquery.storage.table_count`) AS 'Total Tables' FACET entity.name"
+                "query": "SELECT LATEST(storage.Tables) AS `Total Tables` FROM GcpBigQueryDataSetSample WHERE (`provider` = 'GcpBigQueryDataSet') FACET entityName"
               }
             ],
             "platformOptions": {
@@ -101,7 +101,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.bigquery.storage.stored_bytes`) AS 'Storage Usage (byte)' TIMESERIES AUTO FACET gcp.bigquery.table"
+                "query": "SELECT SUM(storage.StoredBytes) AS `Storage Usage (byte)` FROM GcpBigQueryDataSetSample WHERE (`provider` = 'GcpBigQueryDataSet') FACET table TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -134,7 +134,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.bigquery.query.count`) AS 'Queries' FACET gcp.bigquery.priority"
+                "query": "SELECT SUM(query.Count) AS `Queries` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') FACET priority"
               }
             ],
             "platformOptions": {
@@ -164,7 +164,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.bigquery.query.execution_times`) AS 'Average Execution Time(s)' TIMESERIES AUTO FACET gcp.bigquery.priority"
+                "query": "SELECT AVERAGE(query.ExecutionTimes) AS `Average Execution Time(s)` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') FACET priority TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -197,7 +197,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MIN(`gcp.bigquery.slots.total_available`) AS 'Available', SUM(`gcp.bigquery.slots.allocated`) AS 'Allocated' TIMESERIES AUTO"
+                "query": "SELECT MIN(slots.TotalAvailable) AS `Available`, SUM(slots.Allocated) AS `Allocated` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -233,7 +233,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.bigquery.slots.allocated_for_project`) AS 'Average Slots Allocated For Project' TIMESERIES AUTO"
+                "query": "SELECT AVERAGE(slots.AllocatedForProject) AS `Average Slots Allocated For Project` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -269,7 +269,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.bigquery.slots.allocated_for_project_and_job_type`) AS 'Allocated Slots For Project And JobType' TIMESERIES AUTO FACET gcp.bigquery.jobType"
+                "query": "SELECT AVERAGE(slots.AllocatedForProjectAndJobType) AS `Allocated Slots For Project And JobType` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') FACET jobType TIMESERIES AUTO"
               }
             ],
             "nullValues": {
@@ -308,7 +308,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.bigquery.slots.allocated_for_reservation`) AS 'Average Slots Total Allocated For Reservation', AVERAGE(`gcp.bigquery.slots.allocated_for_reservation`) AS 'Average Slots Allocated For Reservation' TIMESERIES AUTO"
+                "query": "SELECT AVERAGE(slots.AllocatedForReservation) AS `Average Slots Total Allocated For Reservation`, AVERAGE(slots.AllocatedForReservation) AS `Average Slots Allocated For Reservation` FROM GcpBigQueryProjectSample WHERE (`provider` = 'GcpBigQueryProject') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -327,3 +327,4 @@
   ],
   "variables": []
 }
+
