@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.http.server.response_count`) AS 'Total Responses', SUM(`gcp.appengine.system.instance_count`) AS 'Total Instances', AVERAGE(`gcp.appengine.http.server.response_latencies`) AS 'Average Latency(ms)', FILTER(SUM(`gcp.appengine.http.server.response_count`), WHERE gcp.appengine.responseCode NOT LIKE '2%') * 100 / SUM(`gcp.appengine.http.server.response_count`) AS 'Error Rate %', SUM(`gcp.appengine.system.cpu.usage`) AS 'Total CPU Usage', SUM(`gcp.appengine.system.memory.usage`) AS 'Total Memory Usage'"
+                "query": "SELECT SUM(server.Responses) AS `Total Responses`, SUM(system.Instances) AS `Total Instances`, AVERAGE(server.ResponseLatenciesMilliseconds) AS `Average Latency(ms)`, ((FILTER(SUM(server.Responses), WHERE ((`provider` = 'GcpAppEngineService') AND NOT ((response_code LIKE '2%')))) * 100) / SUM(server.Responses)) AS `Error Rate %`, SUM(system.cpu.Usage) AS `Total CPU Usage`, SUM(system.memory.UsageBytes) AS `Total Memory Usage` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService')"
               }
             ],
             "platformOptions": {
@@ -71,7 +71,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`gcp.appengine.system.cpu.usage`) AS 'CPU Usage' TIMESERIES AUTO FACET gcp.appengine.source"
+                "query": "SELECT MAX(system.cpu.Usage) AS `CPU Usage` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET source TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -104,7 +104,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`gcp.appengine.system.memory.usage`) AS 'Maximum Memory usage' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT MAX(system.memory.UsageBytes) AS `Maximum Memory usage` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET entityName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -137,7 +137,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.system.instance_count`) AS 'Total Instances' FACET gcp.appengine.state"
+                "query": "SELECT SUM(system.Instances) AS `Total Instances` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET state"
               }
             ],
             "platformOptions": {
@@ -167,7 +167,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.http.server.response_count`) AS 'Total Responses' FACET gcp.appengine.responseCode"
+                "query": "SELECT SUM(server.Responses) AS `Total Responses` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET response_code"
               }
             ],
             "platformOptions": {
@@ -197,7 +197,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.appengine.http.server.response_latencies`) AS 'Average Response Time' TIMESERIES AUTO FACET gcp.appengine.responseCode"
+                "query": "SELECT AVERAGE(server.ResponseLatenciesMilliseconds) AS `Average Response Time` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET response_code TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -230,7 +230,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.system.network.received_bytes_count`) AS 'Total Received Bytes', SUM(`gcp.appengine.system.network.sent_bytes_count`) AS 'Total Sent Bytes' TIMESERIES AUTO"
+                "query": "SELECT SUM(system.network.ReceivedBytes) AS `Total Received Bytes`, SUM(system.network.SentBytes) AS `Total Sent Bytes` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -263,7 +263,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.http.server.response_count`) AS 'Responses' WHERE gcp.appengine.responseCode LIKE '4%' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT SUM(server.Responses) AS `Responses` FROM GcpAppEngineServiceSample WHERE ((`provider` = 'GcpAppEngineService') AND (response_code LIKE '4%')) FACET entityName TIMESERIES AUTO"
               }
             ],
             "nullValues": {
@@ -305,7 +305,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.http.server.response_count`) AS 'Responses' WHERE gcp.appengine.responseCode LIKE '5%' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT SUM(server.Responses) AS `Responses` FROM GcpAppEngineServiceSample WHERE ((`provider` = 'GcpAppEngineService') AND (response_code LIKE '5%')) FACET entityName TIMESERIES AUTO"
               }
             ],
             "nullValues": {
@@ -344,7 +344,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.cloudtasks.api.request_count`) AS 'Total API Requests' FACET gcp.cloudtasks.apiMethod,gcp.cloudtasks.responseCode"
+                "query": "SELECT SUM(api.Requests) AS `Total API Requests` FROM GcpCloudTasksQueueSample WHERE (`provider` = 'GcpCloudTasksQueue') FACET tuple(api_method, response_code)"
               }
             ],
             "platformOptions": {
@@ -374,7 +374,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`gcp.cloudtasks.queue.task_attempt_count`) AS 'Maximum Attempts' FACET gcp.cloudtasks.responseCode"
+                "query": "SELECT MAX(queue.taskAttempts) AS `Maximum Attempts` FROM GcpCloudTasksQueueSample WHERE (`provider` = 'GcpCloudTasksQueue') FACET response_code"
               }
             ],
             "platformOptions": {
@@ -404,7 +404,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`gcp.cloudtasks.queue.task_attempt_delays`) / 1000 AS 'Delay' TIMESERIES AUTO"
+                "query": "SELECT (MAX(queue.taskAttemptDelaysMilliseconds) / 1000) AS `Delay` FROM GcpCloudTasksQueueSample WHERE (`provider` = 'GcpCloudTasksQueue') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -437,7 +437,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT SUM(`gcp.appengine.memcache.centi_mcu_count` / 100) AS `MCU Utilization` FROM Metric TIMESERIES AUTO FACET gcp.appengine.command"
+                "query": "SELECT SUM((memcache.CentiMcu / 100)) AS `MCU Utilization` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET command TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -473,7 +473,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.memcache.operation_count`) AS 'Operations' TIMESERIES AUTO FACET gcp.appengine.command"
+                "query": "SELECT SUM(memcache.Operations) AS `Operations` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET command TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -503,7 +503,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.memcache.received_bytes_count`) AS 'Total Received Bytes', SUM(`gcp.appengine.memcache.sent_bytes_count`) AS 'Total Sent Bytes' TIMESERIES AUTO"
+                "query": "SELECT SUM(memcache.ReceivedBytes) AS `Total Received Bytes`, SUM(memcache.SentBytes) AS `Total Sent Bytes` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -542,7 +542,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`gcp.appengine.flex.cpu.utilization`) AS 'Average CPU Utilization' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT AVERAGE(flex.cpu.Utilization) AS `Average CPU Utilization` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET entityName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -575,7 +575,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.flex.disk.read_bytes_count`) AS 'Total Disk Read Bytes', SUM(`gcp.appengine.flex.disk.write_bytes_count`) AS 'Total Disk Write Bytes' TIMESERIES AUTO"
+                "query": "SELECT SUM(flex.disk.ReadBytes) AS `Total Disk Read Bytes`, SUM(flex.disk.WriteBytes) AS `Total Disk Write Bytes` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -608,7 +608,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.flex.network.received_bytes_count`) AS 'Total Network received bytes' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT SUM(flex.network.ReceivedBytes) AS `Total Network received bytes` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET entityName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -641,7 +641,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.appengine.flex.network.sent_bytes_count`) AS 'Total Network Sent Bytes' TIMESERIES AUTO FACET entity.name"
+                "query": "SELECT SUM(flex.network.SentBytes) AS `Total Network Sent Bytes` FROM GcpAppEngineServiceSample WHERE (`provider` = 'GcpAppEngineService') FACET entityName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -657,3 +657,4 @@
   ],
   "variables": []
 }
+
