@@ -28,7 +28,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT percentile(gcp.spanner.instance.cpu.smoothed_utilization, 99)as '%' FACET gcp.spanner.database WHERE gcp.spanner.database IN ({{db_id}}) TIMESERIES"
+                  "query": "SELECT percentile(instance.cpu.SmoothedUtilization, 99) AS `%` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -61,7 +61,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT max(gcp.spanner.instance.node_count) as 'Node count' WHERE gcp.spanner.database IN ({{db_id}}) TIMESERIES SINCE 1 hour ago"
+                  "query": "SELECT max(instance.nodes) AS `Node count` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) SINCE 1 HOURS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -94,7 +94,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.instance.cpu.utilization_by_priority*100)as '%' FACET gcp.spanner.priority, gcp.spanner.is_system as 'System' TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average((instance.cpu.UtilizationByPriority * 100)) AS `%` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) FACET tuple(priority, isSystem AS `System`) TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -127,7 +127,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.instance.cpu.utilization_by_operation_type*100)as '%' FACET gcp.spanner.category TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average((instance.cpu.UtilizationByOperationType * 100)) AS `%` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) FACET category TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -160,7 +160,7 @@
               "nrqlQueries": [
                 {
                   "accountId": 0,
-                  "query": "SELECT percentile(`gcp.spanner.api.request_latencies`, 99) FROM Metric FACET gcp.spanner.method SINCE 1 day ago TIMESERIES"
+                  "query": "SELECT percentile(api.RequestLatencies, 99) FROM GcpSpannerDatabaseSample WHERE (`provider` = 'GcpSpannerDatabase') SINCE 1 DAYS AGO FACET method TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -193,7 +193,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT percentile(gcp.spanner.request_latencies, 99) FROM Metric FACET gcp.spanner.method SINCE 30 minutes ago TIMESERIES"
+                  "query": "SELECT percentile(api.RequestLatencies, 99) FROM GcpSpannerDatabaseSample WHERE (`provider` = 'GcpSpannerDatabase') SINCE 30 MINUTES AGO FACET method TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -226,7 +226,7 @@
               "nrqlQueries": [
                 {
                   "accountId": 0,
-                  "query": "SELECT average(gcp.spanner.api.request_count) FROM Metric SINCE 1 day ago TIMESERIES"
+                  "query": "SELECT average(api.Requests) FROM GcpSpannerDatabaseSample WHERE (`provider` = 'GcpSpannerDatabase') SINCE 1 DAYS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -259,7 +259,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT average(gcp.spanner.api.request_count) FROM Metric SINCE 1 day ago TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.Requests) FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND (database IN ({{db_id}}))) SINCE 1 DAYS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -292,7 +292,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT average(gcp.spanner.api.sent_bytes_count) as 'bytes' FROM Metric SINCE 1 day ago TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.SentBytes) AS `bytes` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerDatabase') AND (database IN ({{db_id}}))) SINCE 1 DAYS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -325,7 +325,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT average(gcp.spanner.api.sent_bytes_count) as 'bytes' FROM Metric SINCE 1 hour ago TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.SentBytes) AS `bytes` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerDatabase') AND (database IN ({{db_id}}))) SINCE 1 HOURS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -358,7 +358,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT sum(gcp.spanner.instance.storage.used_bytes) as 'bytes' FROM Metric SINCE 1 hour ago TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT sum(instance.storage.UsedBytes) AS `bytes` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) SINCE 1 HOURS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -391,7 +391,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "SELECT average(gcp.spanner.instance.storage.used_bytes) as 'bytes' FROM Metric SINCE 1 hour ago TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(instance.storage.UsedBytes) AS `bytes` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) SINCE 1 HOURS AGO TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -430,7 +430,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.instance.cpu.utilization*100)as '%' FACET gcp.spanner.database TIMESERIES WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average((instance.cpu.Utilization * 100)) AS `%` FROM GcpSpannerInstanceSample WHERE ((`provider` = 'GcpSpannerInstance') AND (database IN ({{db_id}}))) FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -463,7 +463,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT percentile(gcp.spanner.api.request_latencies, 99)as 'ms' WHERE gcp.spanner.method='Commit' FACET gcp.spanner.database TIMESERIES SINCE 1 day ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT percentile(api.RequestLatencies, 99) AS `ms` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method = 'Commit') AND (database IN ({{db_id}})))) SINCE 1 DAYS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -496,7 +496,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT percentile(gcp.spanner.api.request_latencies, 99)as 'ms' WHERE gcp.spanner.method in ('ExecuteBatchDml','ExecuteSql','ExecuteStreamingSql','Read','StreamingRead') FACET gcp.spanner.database TIMESERIES SINCE 1 day ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT percentile(api.RequestLatencies, 99) AS `ms` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method IN ('ExecuteBatchDml', 'ExecuteSql', 'ExecuteStreamingSql', 'Read', 'StreamingRead')) AND (database IN ({{db_id}})))) SINCE 1 DAYS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -529,7 +529,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.api.request_count)as 'operations' WHERE gcp.spanner.method='Commit' FACET gcp.spanner.database TIMESERIES SINCE 1 hour ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.Requests) AS `operations` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method = 'Commit') AND (database IN ({{db_id}})))) SINCE 1 HOURS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -562,7 +562,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.api.request_count)as 'ms' WHERE gcp.spanner.method in ('ExecuteBatchDml','ExecuteSql','ExecuteStreamingSql','Read','StreamingRead') FACET gcp.spanner.database TIMESERIES SINCE 1 hour ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.Requests) AS `ms` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method IN ('ExecuteBatchDml', 'ExecuteSql', 'ExecuteStreamingSql', 'Read', 'StreamingRead')) AND (database IN ({{db_id}})))) SINCE 1 HOURS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -595,7 +595,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT sum(gcp.spanner.api.received_bytes_count)as 'operations' WHERE gcp.spanner.method IN ('Commit')FACET gcp.spanner.database TIMESERIES SINCE 1 day ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT sum(api.ReceivedBytes) AS `operations` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method IN ('Commit')) AND (database IN ({{db_id}})))) SINCE 1 DAYS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -628,7 +628,7 @@
               "nrqlQueries": [
                 {
                   "accountIds": [],
-                  "query": "FROM Metric SELECT average(gcp.spanner.api.received_bytes_count)as 'operations' WHERE gcp.spanner.method in ('ExecuteBatchDml', 'ExecuteSql', 'ExecuteStreamingSql', 'Read', 'StreamingRead') FACET gcp.spanner.database TIMESERIES SINCE 1 day ago WHERE gcp.spanner.database IN ({{db_id}})"
+                  "query": "SELECT average(api.ReceivedBytes) AS `operations` FROM GcpSpannerDatabaseSample WHERE ((`provider` = 'GcpSpannerDatabase') AND ((method IN ('ExecuteBatchDml', 'ExecuteSql', 'ExecuteStreamingSql', 'Read', 'StreamingRead')) AND (database IN ({{db_id}})))) SINCE 1 DAYS AGO FACET database TIMESERIES AUTO"
                 }
               ],
               "platformOptions": {
@@ -648,7 +648,7 @@
         "items": null,
         "nrqlQuery": {
           "accountIds": [],
-          "query": "SELECT uniques(gcp.spanner.database) FROM Metric SINCE 3 days ago\n\n\n"
+          "query": "SELECT uniques(database) FROM GcpSpannerDatabaseSample SINCE 3 days ago\n\n\n"
         },
         "title": "Database ID",
         "type": "NRQL",
@@ -657,3 +657,4 @@
       }
     ]
   }
+

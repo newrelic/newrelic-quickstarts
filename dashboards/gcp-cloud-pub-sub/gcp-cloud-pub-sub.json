@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.pubsub.topic.send_request_count`) AS 'SEND REQUEST COUNT',SUM(`gcp.pubsub.topic.config_updates_count`) AS 'TOPIC CONFIG UPDATES COUNT',  SUM(`gcp.pubsub.subscription.config_updates_count`) AS ' SUBSCRIPTION CONFIG UPDATES COUNT' SINCE 6 hours ago"
+                "query": "SELECT SUM(GcpPubSubTopicSample.topic.SendRequest) AS `SEND REQUEST COUNT`, SUM(GcpPubSubTopicSample.topic.ConfigUpdates) AS `TOPIC CONFIG UPDATES COUNT`, SUM(GcpPubSubSubscriptionSample.subscription.ConfigUpdates) AS ` SUBSCRIPTION CONFIG UPDATES COUNT` FROM GcpPubSubSubscriptionSample, GcpPubSubTopicSample WHERE (((`eventType`() = 'GcpPubSubTopicSample') AND (`provider` = 'GcpPubSubTopic')) OR ((`eventType`() = 'GcpPubSubSubscriptionSample') AND (`provider` = 'GcpPubSubSubscription'))) SINCE 6 HOURS AGO"
               }
             ],
             "platformOptions": {
@@ -55,7 +55,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.pubsub.subscription.config_updates_count`) AS 'Subscription config updates count' TIMESERIES AUTO FACET gcp.pubsub.responseCode"
+                "query": "SELECT SUM(subscription.ConfigUpdates) AS `Subscription config updates count` FROM GcpPubSubSubscriptionSample WHERE (`provider` = 'GcpPubSubSubscription') FACET responseCode TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -88,7 +88,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.pubsub.topic.config_updates_count`) AS 'Topic config updates count' TIMESERIES AUTO FACET gcp.pubsub.responseCode"
+                "query": "SELECT SUM(topic.ConfigUpdates) AS `Topic config updates count` FROM GcpPubSubTopicSample WHERE (`provider` = 'GcpPubSubTopic') FACET responseCode TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -121,7 +121,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.pubsub.subscription.config_updates_count`) AS 'Subscription config updates count' TIMESERIES AUTO FACET gcp.pubsub.operationType"
+                "query": "SELECT SUM(subscription.ConfigUpdates) AS `Subscription config updates count` FROM GcpPubSubSubscriptionSample WHERE (`provider` = 'GcpPubSubSubscription') FACET operationType TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -154,7 +154,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`gcp.pubsub.topic.config_updates_count`) AS 'Topic config updates count' TIMESERIES AUTO FACET gcp.pubsub.operationType"
+                "query": "SELECT SUM(topic.ConfigUpdates) AS `Topic config updates count` FROM GcpPubSubTopicSample WHERE (`provider` = 'GcpPubSubTopic') FACET operationType TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -187,7 +187,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(`gcp.pubsub.topic.byte_cost`) AS 'Subscription config updates count' TIMESERIES AUTO FACET gcp.pubsub.responseCode"
+                "query": "SELECT average(topic.ByteCost) AS `Subscription config updates count` FROM GcpPubSubTopicSample WHERE (`provider` = 'GcpPubSubTopic') FACET responseCode TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -203,3 +203,4 @@
   ],
   "variables": []
 }
+
