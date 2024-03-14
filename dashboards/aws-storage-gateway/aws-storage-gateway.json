@@ -1,138 +1,34 @@
 {
-  "name": "Azure SQL database",
+  "name": "AWS Storage Gateway",
   "description": null,
   "pages": [
     {
-      "name": "Azure SQL database",
+      "name": "AWS Storage Gateway",
       "description": null,
       "widgets": [
         {
-          "title": "Summary",
+          "title": "",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 8,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Average DTU Usage",
-                "precision": 2,
-                "type": "decimal"
-              },
-              {
-                "name": "Average Sessions Count",
-                "precision": 2,
-                "type": "decimal"
-              },
-              {
-                "name": "Average CPU Usage (%)",
-                "precision": 2,
-                "type": "decimal"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT AVERAGE(`cpuPercent.Average`) AS `Average CPU Usage (%)`, AVERAGE(`dtuUsed.Average`) AS `Average DTU Usage`, AVERAGE(`azure`.`sql.servers.databases.sessions_count`) AS `Average Sessions Count`, SUM(`workersPercent.Total`) AS `Total Workers Percent` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase')"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 3,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "# Azure SQL  Database\nAzure SQL Database is a fully managed platform as a service (PaaS) database engine that handles most of the database management functions such as upgrading, patching, backups, and monitoring without user involvement."
+            "text": "## AWS Storage Gateway\nIt is a set of hybrid cloud storage services that provide on-premises access to virtually unlimited cloud storage. Storage Gateway provides a standard set of storage protocols such as iSCSI, SMB, and NFS, which allow you to use AWS storage without rewriting your existing applications."
           }
         },
         {
-          "title": "Connections details",
+          "title": "Availability Notifications",
           "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.stacked-bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.sql.servers.databases.connection_successful`) AS 'Total Successful Connections', SUM(`azure.sql.servers.databases.connection_failed`) AS 'Total Failed Connections : System', SUM(`azure.sql.servers.databases.connection_failed_user_error`) AS 'Total Failed Connections\t: User' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Failed connections : user errors",
-          "layout": {
-            "column": 7,
-            "row": 4,
+            "column": 4,
+            "row": 1,
             "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.sql.servers.databases.connection_failed_user_error`) AS 'Total Failed Connections : User Errors' FACET azure.sql.servers.databases.error"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Failed connections : system errors\t",
-          "layout": {
-            "column": 10,
-            "row": 4,
-            "width": 3,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -145,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT SUM(`connectionFailed.Total`) AS `Total Failed Connections : System Errors` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase')"
+                "query": "FROM Metric select sum(aws.storagegateway.AvailabilityNotifications) as 'AvailabilityNotifications'"
               }
             ],
             "platformOptions": {
@@ -153,199 +49,83 @@
             },
             "thresholds": [
               {
+                "alertSeverity": "CRITICAL",
                 "value": 0
               }
             ]
           }
         },
         {
-          "title": "DTU usage details",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT AVERAGE(`dtuLimit.Average`) AS `Average DTU Limit`, AVERAGE(`dtuUsed.Average`) AS `Average DTU Used` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "DWU usage details",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT AVERAGE(`dwuLimit.Average`) AS `Average DWU Limit`, AVERAGE(`dwuUsed.Average`) AS `Average DWU Used` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "CPU usage details",
-          "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT AVERAGE(`cpuLimit.Average`) AS `Average CPU Limit`, AVERAGE(`azure`.`sql.servers.databases.cpu_used`) AS `Average CPU Used` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Database size (bytes)",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT MAX(`storageBytes.Maximum`) AS `Maximum Data Space Used`, MAX(azure.sql.servers.databases.allocated_data_storage) AS `Maximum Allocated Data Storage` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Tempdb usage (Kilobytes)",
+          "title": "Health Notifications",
           "layout": {
             "column": 7,
-            "row": 10,
-            "width": 6,
-            "height": 3
+            "row": 1,
+            "width": 3,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`azure.sql.servers.databases.tempdb_log_size`) AS 'Maximum Tempdb Log File Size',  MAX(azure.sql.servers.databases.tempdb_data_size) AS 'Maximum Tempdb Data File Size' TIMESERIES AUTO"
+                "query": "FROM Metric select count(aws.storagegateway.HealthNotifications) as ' HealthNotification'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
           }
         },
         {
-          "title": "Cache usage",
+          "title": "FileSharesUnavailable",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.storagegateway.FileSharesUnavailable) as 'FileSharesUnavailable' "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "WorkingStoragePercentUsed",
           "layout": {
             "column": 1,
-            "row": 13,
+            "row": 3,
             "width": 4,
             "height": 3
           },
@@ -363,17 +143,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.sql.servers.databases.cache_used_percent`) AS 'Average Cache used percentage',  AVERAGE(`azure.sql.servers.databases.cache_hit_percent`) AS 'Average Cache hit percentage' TIMESERIES AUTO"
+                "query": "FROM Metric select average(aws.storagegateway.WorkingStoragePercentUsed) as 'WorkingStoragePercentUsed' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
               }
             ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "PERCENTAGE"
+            "thresholds": {
+              "isLabelVisible": true
             },
             "yAxisLeft": {
               "zero": true
@@ -384,16 +161,16 @@
           }
         },
         {
-          "title": "Backup details",
+          "title": "UserCpu and UploadBufferPercent Used (%)",
           "layout": {
             "column": 5,
-            "row": 13,
+            "row": 3,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.stacked-bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -405,19 +182,58 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`azure.sql.servers.databases.full_backup_size_bytes`) AS 'Maximum Full Backup Storage Size',  MAX(`azure.sql.servers.databases.snapshot_backup_size_bytes`) AS 'Maximum Data Backup Storage Size', MAX(`azure.sql.servers.databases.diff_backup_size_bytes`) AS 'Maximum Differential Backup Storage Size',  MAX(`azure.sql.servers.databases.log_backup_size_bytes`) AS 'Maximum Log Backup Storage Size' TIMESERIES AUTO"
+                "query": "FROM Metric select average(aws.storagegateway.UserCpuPercent) as 'UserCpuPercent', average(aws.storagegateway.UploadBufferPercentUsed) as 'UploadBufferPercentUsed' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
             }
           }
         },
         {
-          "title": "Data & log IO",
+          "title": "Cloud bytes Downloaded/Uploaded",
           "layout": {
             "column": 9,
-            "row": 13,
+            "row": 3,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select count(aws.storagegateway.CloudBytesUploaded) as 'CloudBytesUploaded', count(aws.storagegateway.CloudBytesDownloaded) as 'CloudBytesDownloaded' facet aws.storagegateway.GatewayName "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "ReadTime & WriteTime",
+          "layout": {
+            "column": 1,
+            "row": 6,
             "width": 4,
             "height": 3
           },
@@ -435,14 +251,17 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT AVERAGE(`physicalDataReadPercent.Average`) AS `Average Data IO Percentage`, AVERAGE(`logWritePercent.Average`) AS `Average Log IO Percentage` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
+                "query": "FROM Metric select sum(aws.storagegateway.ReadTime) as 'ReadTime', sum(aws.storagegateway.WriteTime) as 'WriteTime' facet aws.storagegateway.GatewayName TIMESERIES AUTO "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
             },
             "units": {
-              "unit": "PERCENTAGE"
+              "unit": "MS"
             },
             "yAxisLeft": {
               "zero": true
@@ -453,77 +272,11 @@
           }
         },
         {
-          "title": "Errors",
+          "title": "QueuedWrites",
           "layout": {
-            "column": 1,
-            "row": 16,
-            "width": 7,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT SUM(`blockedByFirewall.Total`) AS `Total Blocked By Firewall`, SUM(`deadlock.Total`) AS `Total Deadlocks`, SUM(azure.sql.servers.databases.ledger_digest_upload_failed) AS `Total Failed Ledger Digest Uploads` FROM AzureSqlDatabaseSample WHERE (`provider` = 'AzureSqlDatabase') TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Query details",
-          "layout": {
-            "column": 8,
-            "row": 16,
-            "width": 5,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.stacked-bar"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.sql.servers.databases.active_queries`) AS 'Total Active Queries',  SUM(`azure.sql.servers.databases.queued_queries`) AS 'Total Queued Queries' TIMESERIES AUTO"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "App CPU details",
-          "layout": {
-            "column": 1,
-            "row": 19,
-            "width": 5,
+            "column": 5,
+            "row": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -540,7 +293,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.sql.servers.databases.app_cpu_billed`) AS 'Total App CPU Billed',  SUM(`azure.sql.servers.databases.app_cpu_billed_ha_replicas`) AS 'Total App CPU Billed HA Replicas' TIMESERIES AUTO"
+                "query": "FROM Metric select average(aws.storagegateway.QueuedWrites) as 'QueuedWrites' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
@@ -549,11 +302,41 @@
           }
         },
         {
-          "title": "App CPU & memory",
+          "title": "ReadBytes and WriteBytes",
           "layout": {
-            "column": 6,
-            "row": 19,
-            "width": 7,
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.storagegateway.ReadBytes) as 'ReadBytes', sum(aws.storagegateway.WriteBytes) as 'WriteBytes' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "FilesFailingUpload",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -570,14 +353,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT AVERAGE(`azure.sql.servers.databases.app_cpu_percent`)/100 AS 'Average App CPU Percentage', AVERAGE(`azure.sql.servers.databases.app_memory_percent`)/100 AS 'Average Memory Percentage' TIMESERIES AUTO "
+                "query": "FROM Metric select sum(aws.storagegateway.FilesFailingUpload) as 'FilesFailingUpload' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "PERCENTAGE"
+            "thresholds": {
+              "isLabelVisible": true
             },
             "yAxisLeft": {
               "zero": true
@@ -588,16 +371,16 @@
           }
         },
         {
-          "title": "Workload group query details",
+          "title": "Smb sessions",
           "layout": {
-            "column": 1,
-            "row": 22,
-            "width": 6,
+            "column": 5,
+            "row": 9,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.stacked-bar"
+            "id": "viz.line"
           },
           "rawConfiguration": {
             "facet": {
@@ -609,25 +392,292 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT SUM(`azure.sql.servers.databases.wlg_active_queries`) AS 'Total Workload Group Active Queries',  SUM(`azure.sql.servers.databases.wlg_queued_queries`) AS 'Total Workload Group Queued Queries',  SUM(`azure.sql.servers.databases.wlg_active_queries_timeouts`) AS 'Total Workload Group Query Timeouts' TIMESERIES AUTO"
+                "query": "FROM Metric select count(aws.storagegateway.SmbV1Sessions) as 'SmbV1Sessions', count(aws.storagegateway.SmbV2Sessions) as 'SmbV2Sessions',count(aws.storagegateway.SmbV3Sessions) as 'SmbV3Sessions' facet aws.storagegateway.GatewayName  TIMESERIES AUTO"
               }
             ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "COUNT"
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
             }
           }
         },
         {
-          "title": "Workload group allocation",
+          "title": "Working Storage Free",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.storagegateway.WorkingStorageFree) as 'WorkingStorageFree' , sum(aws.storagegateway.WorkingStorageUsed) as 'WorkingStorageUsed' facet aws.storagegateway.GatewayName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "FileShares Unavailable",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 8,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.storagegateway.FileSharesUnavailable) facet aws.storagegateway.GatewayName TIMESERIES  AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total Cache Size",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select average(aws.storagegateway.TotalCacheSize) as 'TotalCacheSize'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Maximum Cache File & Folder Size",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 5,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select max(aws.storagegateway.CacheFileSize) as 'CacheFileSize', max(aws.storagegateway.CacheDirectorySize) as 'CacheDirectorySize' facet aws.storagegateway.gatewayName TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Allocation & Utilisation",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 7
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select sum(aws.storagegateway.CacheFree) as 'Cache Free', sum(aws.storagegateway.CacheUsed) as 'Cache Used' facet aws.storagegateway.GatewayName   "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Cache File & Folder Size",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 8,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select average(aws.storagegateway.CacheFileSize) as 'CacheFileSize', average(aws.storagegateway.CacheDirectorySize) as 'CacheDirectorySize' facet aws.storagegateway.gatewayName TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "CacheHit, CacheUsed,CacheDirty %",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select average(aws.storagegateway.CacheHitPercent) as 'CacheHitPercent', average(aws.storagegateway.CachePercentDirty) as 'CachePercentDirty', average(aws.storagegateway.CachePercentUsed) as 'CachePercentUsed' facet aws.storagegateway.GatewayName TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Memory Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Memory Total and Used (in bytes)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select average(aws.storagegateway.MemTotalBytes) as 'MemTotalBytes', average(aws.storagegateway.MemUsedBytes) as ' MemUsedBytes'  facet aws.storagegateway.GatewayName "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total UploadBufferUsed",
           "layout": {
             "column": 7,
-            "row": 22,
+            "row": 1,
             "width": 6,
             "height": 3
           },
@@ -645,14 +695,14 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT MAX(`azure.sql.servers.databases.wlg_allocation_relative_to_system_percent`) AS 'Max Workload group allocation by System percent',  MAX(`azure.sql.servers.databases.wlg_allocation_relative_to_wlg_effective_cap_percent`) AS 'Max Workload group allocation by Cap Resource percent', MAX(`azure.sql.servers.databases.wlg_effective_cap_resource_percent`) AS 'Max Effective cap resource percent', MAX(`azure.sql.servers.databases.wlg_effective_min_resource_percent`) AS 'Max Effective min resource percent' TIMESERIES AUTO"
+                "query": "FROM Metric select sum(aws.storagegateway.UploadBufferUsed) as 'UploadBufferUsed' facet aws.storagegateway.gatewayName TIMESERIES AUTO"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             },
-            "units": {
-              "unit": "PERCENTAGE"
+            "thresholds": {
+              "isLabelVisible": true
             },
             "yAxisLeft": {
               "zero": true
