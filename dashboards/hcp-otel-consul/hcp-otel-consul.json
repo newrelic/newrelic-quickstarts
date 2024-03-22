@@ -1,0 +1,723 @@
+{
+    "name": "HCP Consul OTeL",
+    "description": null,
+    "pages": [
+      {
+        "name": "HCP Consul",
+        "description": null,
+        "widgets": [
+          {
+            "title": "Certificate authority expiriation (in seconds)",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(`consul_agent_tls_cert_expiry`) as 'Agent TLS certificate', latest(`consul_mesh_active_signing_ca_expiry`) as 'Signing CA', latest(`consul_mesh_active_root_ca_expiry`) as 'Active root CA', latest(`consul_system_licenseExpiration`) as 'Consul system license'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1
+                },
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1000
+                }
+              ]
+            }
+          },
+          {
+            "title": "BoltDB write capacity (in logs per second)",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(consul_raft_boltdb_writeCapacity) AS 'logs per second'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Consul server elections",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_raft_state_candidate) As 'elections'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "State of Consul autopilot",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(consul_autopilot_healthy)"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0.5
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": -0.5
+                }
+              ]
+            }
+          },
+          {
+            "title": "Server is a leader (1) or not (0)",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(consul_server_isLeader)"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Last restore duration",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "consul_raft_fsm_lastRestoreDuration",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(consul_raft_fsm_lastRestoreDuration) as 'last restore duration', latest(consul_raft_leader_oldestLogAge) as 'oldest log age', latest(consul_raft_rpc_installSnapshot) as 'installSnapshot time'"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Average time to complete an update to the KV store (in ms)",
+            "layout": {
+              "column": 5,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(consul_kvs_apply) TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Average transaction operation (in ms)",
+            "layout": {
+              "column": 9,
+              "row": 4,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(consul_txn_apply) TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Rate of raft transactions applied (per minute)",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT rate(sum(consul_raft_apply), 1 minute) TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Average time (ms) to commit a new entry to the Raft log",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(consul_raft_commitTime) TIMESERIES AUTO"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Memory obtained from OS",
+            "layout": {
+              "column": 9,
+              "row": 7,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_runtime_sys_bytes_sys_bytes) as 'Bytes' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Allocated memory for process",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_runtime_alloc_bytes_alloc_bytes) as 'Bytes' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Garbage collection pause time (cumulative)",
+            "layout": {
+              "column": 5,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": " FROM Metric SELECT latest(consul_runtime_total_gc_pause_ns_total_gc_pause_ns)/1000000000 as 's' TIMESERIES "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "units": {
+                "unit": "SECONDS"
+              },
+              "yAxisLeft": {
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "RPC requests to server",
+            "layout": {
+              "column": 9,
+              "row": 10,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_client_rpc) as 'requests' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "RPC requests hitting limit",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_client_rpc_exceeded) as 'Requests' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Failed RPC requests",
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT sum(consul_client_rpc_failed) as 'Requests' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Average BoltDB store log write time per batch",
+            "layout": {
+              "column": 9,
+              "row": 13,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT average(consul_raft_boltdb_storeLogs) as 'ms' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "units": {
+                "unit": "MS"
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Raft freelist bytes",
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(consul_raft_boltdb_freelistBytes_freelistBytes) as 'bytes' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "units": {
+                "unit": "BYTES"
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "BoltDB Logs per batch",
+            "layout": {
+              "column": 5,
+              "row": 16,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "FROM Metric SELECT latest(consul_raft_boltdb_logsPerBatch) AS 'logs' TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
