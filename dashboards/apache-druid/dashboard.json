@@ -207,7 +207,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(druid_segment_size) AS  'MiB' FROM Metric SINCE 30 MINUTES AGO"
+                "query": "SELECT average(druid_segment_size)/(1e+6) as 'MB' FROM Metric"
               }
             ],
             "platformOptions": {
@@ -345,7 +345,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(*) FROM Metric SINCE 30 MINUTES AGO facet memKind "
+                "query": "SELECT count(*) FROM Metric facet memKind "
               }
             ],
             "platformOptions": {
@@ -410,7 +410,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(druid_jvm_mem_used) / latest(druid_jvm_mem_max) FROM Metric SINCE 30 MINUTES AGO facet scrapedTargetURL"
+                "query": "SELECT latest(druid_jvm_mem_used) / latest(druid_jvm_mem_max) FROM Metric facet scrapedTargetURL"
               }
             ],
             "platformOptions": {
@@ -464,7 +464,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(druid_jvm_pool_used) / latest(druid_jvm_pool_max) FROM Metric SINCE 30 MINUTES AGO facet scrapedTargetURL"
+                "query": "SELECT latest(druid_jvm_pool_used) / latest(druid_jvm_pool_max) FROM Metric facet scrapedTargetURL"
               }
             ],
             "platformOptions": {
@@ -473,7 +473,7 @@
           }
         },
         {
-          "title": "JVM pool utilization",
+          "title": "JVM pool utilization (%)",
           "layout": {
             "column": 9,
             "row": 4,
@@ -494,7 +494,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(druid_jvm_pool_used) / latest(druid_jvm_pool_max) FROM Metric TIMESERIES "
+                "query": "SELECT (average(druid_jvm_pool_used) / average(druid_jvm_pool_max)) * 100 FROM Metric TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -512,7 +512,7 @@
           }
         },
         {
-          "title": "JVM bufferpool",
+          "title": "JVM bufferpool (MB)",
           "layout": {
             "column": 1,
             "row": 6,
@@ -521,7 +521,7 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.area"
           },
           "rawConfiguration": {
             "facet": {
@@ -533,20 +533,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT average(druid_jvm_bufferpool_capacity) AS 'Total capacity', average(druid_jvm_bufferpool_used) AS 'Used' FROM Metric TIMESERIES"
+                "query": "SELECT average(druid_jvm_bufferpool_capacity)/(1e+6) AS 'Total capacity', average(druid_jvm_bufferpool_used)/(1e+6) AS 'Used' FROM Metric TIMESERIES"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         }
