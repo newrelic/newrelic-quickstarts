@@ -1,0 +1,1083 @@
+{
+    "name": "Browser Signals",
+    "description": null,
+    "pages": [
+      {
+        "name": "Signals",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## Browser Headline Signals\n\n"
+            }
+          },
+          {
+            "title": "Core Web Vital Score",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "CWV Score",
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT\n100*(1/3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) +\n100*(1/3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + \n100*(1/3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'CWV Score'\nFROM PageViewTiming  since  5 minutes ago COMPARE WITH  1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 0.85
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0.8
+                }
+              ]
+            }
+          },
+          {
+            "title": "Throughput",
+            "layout": {
+              "column": 3,
+              "row": 2,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "\n\n\n\nSELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Pages per minute' FROM Metric since 5 minutes ago compare with 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 20
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 19
+                }
+              ]
+            }
+          },
+          {
+            "title": "App Name (Filterable)",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 8,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "Select rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Pages per minute', count(newrelic.goldenmetrics.browser.application.errors) AS 'Errors', average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Average PageLoad'  FROM Metric since 5 minutes ago facet appName limit 10\n\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Errors",
+            "layout": {
+              "column": 1,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Errors' FROM Metric  WHERE (appName LIKE '%') since  5 minutes ago  COMPARE WITH 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 1
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1.5
+                }
+              ]
+            }
+          },
+          {
+            "title": "Latency",
+            "layout": {
+              "column": 3,
+              "row": 4,
+              "width": 2,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Average PageLoad' FROM Metric  since  5 minutes ago compare with 1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": 4
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 6,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## Tier 2 Signals"
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 7,
+              "width": 1,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Core Web Vitals"
+            }
+          },
+          {
+            "title": "CWV Score",
+            "layout": {
+              "column": 2,
+              "row": 7,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "CWV Score",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'CWV Score' FROM PageViewTiming since 15 minutes ago until 5 minutes ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "CWV last hour",
+            "layout": {
+              "column": 4,
+              "row": 7,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Last Hour",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'Last Hour' FROM PageViewTiming since 1 hour ago compare with 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "CWV last 24 hours",
+            "layout": {
+              "column": 5,
+              "row": 7,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'CWV Score' FROM PageViewTiming since 1 day ago compare with 1 day ago timeseries 10 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "CWV last week",
+            "layout": {
+              "column": 8,
+              "row": 7,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'CWV Score' FROM PageViewTiming since 1 week ago compare with 1 week ago timeseries 1 hour"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "CWV last day",
+            "layout": {
+              "column": 4,
+              "row": 8,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Last Day",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'Last Day' FROM PageViewTiming since 1 day ago compare with 1 week ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "CWV last week",
+            "layout": {
+              "column": 4,
+              "row": 9,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Last Week",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT 100 * (1 / 3 * (filter(count(*), WHERE largestContentfulPaint < 2.5) / filter(count(*), WHERE largestContentfulPaint IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE firstInputDelay < 100) / filter(count(*), WHERE firstInputDelay IS NOT NULL))) + 100 * (1 / 3 * (filter(count(*), WHERE cumulativeLayoutShift < 0.1) / filter(count(*), WHERE cumulativeLayoutShift IS NOT NULL))) AS 'Last Week' FROM PageViewTiming since 1 week ago compare with 1 week ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 10,
+              "width": 1,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Throughput\n![thoughput](data:image/png;base64,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)"
+            }
+          },
+          {
+            "title": "Current PPM",
+            "layout": {
+              "column": 2,
+              "row": 10,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Throughput Ppm' FROM Metric since today at '00:00' compare with 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 4,
+              "row": 10,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Last Hour' FROM Metric since 1 hour ago COMPARE WITH    1 hour ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Throughput last 24 hours",
+            "layout": {
+              "column": 5,
+              "row": 10,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "\n\n\nSELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Throughput Ppm' FROM Metric  since 1 day ago compare with 1 day ago LIMIT MAX TIMESERIES"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Throughput last week",
+            "layout": {
+              "column": 8,
+              "row": 10,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "\n \n\n\n\nSELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Throughput Ppm' FROM Metric  since 1 week ago compare with 1 week ago LIMIT MAX TIMESERIES MAX "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 4,
+              "row": 11,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Last Day' FROM Metric since 1 day ago COMPARE WITH 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 4,
+              "row": 12,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT rate(count(newrelic.goldenmetrics.browser.application.throughputPpm), 1 MINUTES) AS 'Last Week' FROM Metric since  1 week ago compare with 1 week ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "width": 1,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Latency"
+            }
+          },
+          {
+            "title": "Latency",
+            "layout": {
+              "column": 2,
+              "row": 13,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Average PageLoad' FROM Metric since 15 minutes ago until 5 minutes ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Latency last hour",
+            "layout": {
+              "column": 4,
+              "row": 13,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Last Hour' FROM Metric  since  1 hour ago COMPARE WITH  1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Latency last 24 hours",
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "\nSELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Last Day' FROM Metric  since  1 day ago COMPARE WITH  1 day ago timeseries 10 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Latency last 7 days ",
+            "layout": {
+              "column": 8,
+              "row": 13,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Last Week' FROM Metric since 1 week ago COMPARE WITH 1 week ago timeseries 1 hour"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": false
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Latency last day",
+            "layout": {
+              "column": 4,
+              "row": 14,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Last Day' FROM Metric  since 1 day ago COMPARE WITH 1 week ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Latency last week",
+            "layout": {
+              "column": 4,
+              "row": 15,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT average(newrelic.goldenmetrics.browser.application.pageLoadSeconds) AS 'Last Week' FROM Metric since  1 week ago COMPARE WITH  1 WEEK ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 16,
+              "width": 1,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "# Errors"
+            }
+          },
+          {
+            "title": "Errors",
+            "layout": {
+              "column": 2,
+              "row": 16,
+              "width": 2,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Errors' FROM Metric  WHERE (appName LIKE '%')  since today at '00:00' compare with 1 day ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Errors last hour",
+            "layout": {
+              "column": 4,
+              "row": 16,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Last Hour' FROM Metric  WHERE (appName LIKE '%')  since 1 hour ago compare with 1 hour ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Errors last 24 hours",
+            "layout": {
+              "column": 5,
+              "row": 16,
+              "width": 3,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Last Day' FROM Metric  WHERE (appName LIKE '%') since 1 day ago compare with 1 week ago timeseries 10 minutes"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Errors last week",
+            "layout": {
+              "column": 8,
+              "row": 16,
+              "width": 5,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Last Week' FROM Metric  WHERE (appName LIKE '%')  since 1 week ago compare with 1 week ago timeseries 1 hour"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Errors last day",
+            "layout": {
+              "column": 4,
+              "row": 17,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Last Day' FROM Metric  WHERE (appName LIKE '%')  since 1 day ago compare with 1 week ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Errors last week",
+            "layout": {
+              "column": 4,
+              "row": 18,
+              "width": 1,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "dataFormatters": [
+                {
+                  "name": "Last Week",
+                  "precision": 2,
+                  "type": "decimal"
+                }
+              ],
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "SELECT count(newrelic.goldenmetrics.browser.application.errors) AS 'Last Week' FROM Metric  WHERE (appName LIKE '%')  since 1 Week ago compare with 1 Week ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": []
+  }
