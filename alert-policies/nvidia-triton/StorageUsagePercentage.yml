@@ -1,11 +1,11 @@
-name: Queued Queries
+name: Storage Utilization (%)
 
 description: |+
-  This alert is triggered when queries being queued are above 5 during 5 minutes.  
+  This alert is triggered when the storage utilization exceeds 85% for 5 minutes.
 
 type: STATIC
 nrql:
-  query: "FROM snowflakeWarehouseLoadHistorySample SELECT latest(QUEUED_LOAD_AVERAGE) as 'Queued Queries'"
+  query: "SELECT average(diskUsedPercent) AS `Storage used %` FROM StorageSample"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -16,7 +16,17 @@ terms:
     # Operator used to compare against the threshold.
     operator: ABOVE
     # Value that triggers a violation
-    threshold: 5
+    threshold: 90
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 85
     # Time in seconds; 120 - 3600
     thresholdDuration: 300
     # How many data points must be in violation for the duration
