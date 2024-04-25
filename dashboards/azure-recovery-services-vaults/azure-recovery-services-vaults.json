@@ -1,0 +1,262 @@
+{
+    "name": "Azure Recovery Services Vaults",
+    "description": null,
+    "pages": [
+      {
+        "name": "Azure Recovery Services Vaults",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 4,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "## Azure Recovery Services Vaults\nAzure Recovery Services Vaults is a cloud-based backup and disaster recovery solution that provides centralized management for various data sources. It offers features like backup and restore, disaster recovery, data archiving, security, and compliance to ensure business continuity and protect data from accidental deletion or loss."
+            }
+          },
+          {
+            "title": "Total Backup Success",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM  Metric SELECT uniqueCount(azure.recoveryservices.vaults.backupinstancename) as 'Backup Success' WHERE azure.recoveryservices.vaults.healthstatus = 'Healthy' AND  collector.name = 'azure-monitor' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Total Backup Failed",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM  Metric SELECT uniqueCount(azure.recoveryservices.vaults.backupinstancename) as 'Backup Failed' WHERE azure.recoveryservices.vaults.healthstatus != 'Healthy' AND  collector.name = 'azure-monitor' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Total Restore Success",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(azure.recoveryservices.vaults.backupinstancename) as 'Restore Success' WHERE azure.metricNamespace = 'microsoft.recoveryservices/vaults' and metricName='azure.recoveryservices.vaults.RestoreHealthEvent' and azure.recoveryservices.vaults.healthstatus = 'Healthy' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "value": 0
+                }
+              ]
+            }
+          },
+          {
+            "title": "Total Restore Failed",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT uniqueCount(azure.recoveryservices.vaults.backupinstancename) as 'Restore Failed' WHERE azure.metricNamespace = 'microsoft.recoveryservices/vaults' and metricName='azure.recoveryservices.vaults.RestoreHealthEvent' and azure.recoveryservices.vaults.healthstatus != 'Healthy' LIMIT MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": [
+                {
+                  "alertSeverity": "WARNING",
+                  "value": -1
+                },
+                {
+                  "alertSeverity": "CRITICAL",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          {
+            "title": "Total Backup Health Event",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 8,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT count(azure.recoveryservices.vaults.BackupHealthEvent) As 'BackupHealthEvent' WHERE azure.metricNamespace='microsoft.recoveryservices/vaults' AND  azure.recoveryservices.vaults.BackupHealthEvent != '' AND azure.recoveryservices.vaults.healthstatus != '' TIMESERIES AUTO LIMIT  MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          },
+          {
+            "title": "Total Data Source Events",
+            "layout": {
+              "column": 9,
+              "row": 3,
+              "width": 4,
+              "height": 4
+            },
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT count(azure.recoveryservices.vaults.healthstatus) WHERE azure.metricNamespace = 'microsoft.recoveryservices/vaults' AND azure.recoveryservices.vaults.healthstatus != '' FACET azure.recoveryservices.vaults.datasourcetype "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Total Restore Health Event",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 8,
+              "height": 2
+            },
+            "visualization": {
+              "id": "viz.line"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM Metric SELECT count(azure.recoveryservices.vaults.RestoreHealthEvent) As 'RestoreHealthEvent' WHERE azure.metricNamespace='microsoft.recoveryservices/vaults' AND  azure.recoveryservices.vaults.RestoreHealthEvent != '' AND azure.recoveryservices.vaults.healthstatus != '' TIMESERIES AUTO LIMIT  MAX"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              },
+              "thresholds": {
+                "isLabelVisible": true
+              },
+              "yAxisLeft": {
+                "zero": true
+              },
+              "yAxisRight": {
+                "zero": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
