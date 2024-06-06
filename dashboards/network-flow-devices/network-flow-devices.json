@@ -1,0 +1,340 @@
+{
+    "name": "Kentik Firehose",
+    "description": "",
+    "pages": [
+      {
+        "name": "Top Talkers",
+        "description": "",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "viz.pie"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 8,
+              "width": 6
+            },
+            "title": "Top 10 - Conversations",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT sum(in_bytes) AS 'bytes' FACET src_endpoint AS 'Source', application, dst_endpoint AS 'Destination' SINCE 1 HOUR AGO LIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "height": 8,
+              "width": 3
+            },
+            "title": "Top 10 - Known Apps by TCP Port",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT sum(in_bytes) AS 'bytes' FACET l4_src_port AS 'TCP Port', application WHERE application IS NOT NULL SINCE 1 HOUR AGO LIMIT 10"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 10,
+              "row": 1,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - Source Endpoints",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT sum(in_bytes) AS 'bytes' FACET src_endpoint SINCE 1 HOUR AGO LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 10,
+              "row": 5,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - Destination Endpoints",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT sum(in_bytes) AS 'bytes' FACET dst_endpoint SINCE 1 HOUR AGO LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      },
+      {
+        "name": "Flow Overview",
+        "description": "",
+        "widgets": [
+          {
+            "visualization": {
+              "id": "38301291-54c7-4042-855f-777bbf9e9294.kentik-map"
+            },
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "height": 8,
+              "width": 4
+            },
+            "title": "Traffic by Geo",
+            "rawConfiguration": {
+              "accountId": 0,
+              "autoZoom": null,
+              "initialLat": "41.8336479",
+              "initialLng": "-87.8720462",
+              "initialZoom": "3",
+              "metric": "kentik.rollup.bytes.rcv",
+              "showTable": true
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - bps per Destination Geo",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT rate(sum(in_bytes)*8, 1 SECOND) FACET dst_geo AS 'Geo' WHERE instrumentation.name = 'netflow-events' AND dst_geo IS NOT NULL LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "38301291-54c7-4042-855f-777bbf9e9294.kentik-sankey"
+            },
+            "layout": {
+              "column": 8,
+              "row": 1,
+              "height": 8,
+              "width": 5
+            },
+            "title": "Source > Destination by Geo",
+            "rawConfiguration": {
+              "chartName": "",
+              "dimensionLeft": "src_geo",
+              "dimensionRight": "dst_geo",
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "select rate(sum(in_bytes*sample_rate)*8/1000/1000, 1 second) as mbits from KFlow facet src_geo, dst_geo where src_geo is not null or dst_geo is not null since 60 minutes ago"
+                }
+              ],
+              "showTable": false
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 5,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - bps per Source Geo",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT rate(sum(in_bytes)*8, 1 SECOND) FACET src_geo AS 'Geo' WHERE instrumentation.name = 'netflow-events' AND src_geo IS NOT NULL LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 9,
+              "height": 4,
+              "width": 4
+            },
+            "title": "Total Endpoints",
+            "rawConfiguration": {
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT uniqueCount(src_addr) AS 'Sources', uniqueCount(dst_addr) AS 'Destinations' WHERE instrumentation.name = 'netflow-events' TIMESERIES "
+                }
+              ],
+              "yAxisLeft": {
+                "zero": false
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 9,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - bps per Destination ASN",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT rate(sum(in_bytes)*8, 1 SECOND) FACET dst_as_name AS 'ASN' WHERE instrumentation.name = 'netflow-events' AND dst_as_name IS NOT NULL LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "38301291-54c7-4042-855f-777bbf9e9294.kentik-sankey"
+            },
+            "layout": {
+              "column": 8,
+              "row": 9,
+              "height": 8,
+              "width": 5
+            },
+            "title": "Source > Destination by ASN",
+            "rawConfiguration": {
+              "chartName": "",
+              "dimensionLeft": "src_as_name",
+              "dimensionRight": "dst_as_name",
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "select rate(sum(in_bytes*sample_rate)*8/1000/1000, 1 second) as mbits from KFlow facet src_as_name, dst_as_name where src_as_name is not null or dst_as_name is not null since 60 minutes ago"
+                }
+              ],
+              "showTable": false
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.line"
+            },
+            "layout": {
+              "column": 1,
+              "row": 13,
+              "height": 4,
+              "width": 4
+            },
+            "title": "Estimated Packets/sec (Flows * Sample Rate)",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT count(*) * latest(sample_rate) AS 'Packets/sec' WHERE instrumentation.name = 'netflow-events' FACET device_name TIMESERIES "
+                }
+              ],
+              "yAxisLeft": {
+                "zero": true
+              }
+            },
+            "linkedEntityGuids": null
+          },
+          {
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "layout": {
+              "column": 5,
+              "row": 13,
+              "height": 4,
+              "width": 3
+            },
+            "title": "Top 5 - bps per Source ASN",
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountId": 0,
+                  "query": "FROM KFlow SELECT rate(sum(in_bytes)*8, 1 SECOND) FACET src_as_name AS 'ASN' WHERE instrumentation.name = 'netflow-events' AND src_as_name IS NOT NULL LIMIT 5"
+                }
+              ]
+            },
+            "linkedEntityGuids": null
+          }
+        ]
+      }
+    ]
+  }
+  
