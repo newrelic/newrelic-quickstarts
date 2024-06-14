@@ -44,7 +44,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT filter(uniqueCount(k8s.nodeName), WHERE `label.eks.amazonaws.com/compute-type` IS NULL AND k8s.podName IS NULL) AS 'Nodes', filter(uniqueCount(k8s.nodeName), WHERE `label.eks.amazonaws.com/compute-type` IS NOT NULL AND k8s.podName IS NULL) as 'Serverless Nodes', uniqueCount(k8s.clusterName) as 'Clusters', filter(uniqueCount(k8s.namespaceName, k8s.clusterName), WHERE `metricName` = 'k8s.namespace.createdAt') as 'Namespaces', filter(uniqueCount(k8s.deploymentName, k8s.clusterName), WHERE `metricName` = 'k8s.deployment.createdAt') as 'Deployments', filter(uniqueCount(k8s.podName, k8s.nodeName, k8s.deploymentName, k8s.clusterName), WHERE metricName='k8s.pod.isScheduled' or metricName='k8s.pod.startTime') as 'Pods', uniqueCount(k8s.containerId) as 'Containers' FROM Metric UNTIL 1 minute ago"
+                "query": "SELECT uniqueCount(K8sNodeSample.entityId) as 'Nodes', uniqueCount(K8sNamespaceSample.clusterName) as 'Clusters', uniqueCount(K8sNamespaceSample.entityId) as 'Namespaces', uniqueCount(K8sDeploymentSample.entityId) as 'Deployments', uniqueCount(K8sPodSample.entityId) as 'Pods', uniqueCount(K8sContainerSample.containerID) as 'Containers' FROM K8sNodeSample, K8sNamespaceSample, K8sDeploymentSample, K8sPodSample, K8sContainerSample UNTIL 1 minute ago"
               }
             ],
             "thresholds": []
@@ -275,7 +275,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT filter(latest(status), WHERE (((`eventType`() IN ('K8sContainerSample', 'K8sPodSample')) AND (((NOT ((status = 'Running')) AND NOT ((status = 'Succeeded'))) AND NOT (status IS NULL)) AND NOT (podName IS NULL))) OR ((`eventType`() = 'K8sNamespaceSample') AND (((NOT ((status = 'Running')) AND NOT ((status = 'Succeeded'))) AND NOT (status IS NULL)) AND NOT (`k8s`.`podName` IS NULL))))) AS `Status`, max(timestamp) AS `Timestamp` FROM K8sContainerSample, K8sNamespaceSample, K8sPodSample FACET tuple(clusterName AS `Cluster Name`, namespaceName AS `Namespace`, (`conditional`(WHERE (`eventType`() IN ('K8sContainerSample', 'K8sPodSample')), podName) OR `conditional`(WHERE (`eventType`() = 'K8sNamespaceSample'), k8s.podName)) AS `Pod Name`) LIMIT 100 "
+                "query": "SELECT latest(status) as 'Status', max(timestamp) as 'Timestamp' from K8sPodSample WHERE status NOT IN ('Running', 'Succeeded') facet clusterName, namespace, podName since 10 minutes ago UNTIL 1 minute ago limit 100"
               }
             ]
           }
@@ -368,7 +368,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select latest('k8s.volume.fsUsedPercent') facet k8s.podName, k8s.volumeName, k8s.pvcName where k8s.volume.fsUsedPercent > 90 SINCE 10 minutes ago UNTIL 1 minute ago"
+                "query": "FROM K8sVolumeSample SELECT latest(fsUsedPercent) facet podName, volumeName, pvcName TIMESERIES"
               }
             ]
           }
@@ -538,7 +538,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT filter(uniqueCount(k8s.nodeName), WHERE `label.eks.amazonaws.com/compute-type` IS NULL AND k8s.podName IS NULL) as 'Nodes' since 30 minutes ago"
+                "query": "FROM K8sNodeSample SELECT uniqueCount(nodeName) as 'Nodes' WHERE `label.eks.amazonaws.com/compute-type` IS NULL since 30 minutes ago"
               }
             ],
             "thresholds": []
@@ -561,7 +561,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT filter(uniqueCount(k8s.nodeName), WHERE `label.eks.amazonaws.com/compute-type` IS NOT NULL AND k8s.podName IS NULL) as 'Serverless Nodes'"
+                "query": " FROM K8sNodeSample SELECT uniqueCount(nodeName) as 'Serverless Nodes' WHERE `label.eks.amazonaws.com/compute-type` IS NULL since 30 minutes ago"
               }
             ],
             "thresholds": []
@@ -604,7 +604,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select uniqueCount(k8s.podName) as 'Running Pods' where k8s.status = 'Running' since 30 minutes ago"
+                "query": "FROM K8sPodSample select uniqueCount(podName) as 'Running Pods' where status = 'Running' since 30 minutes ago"
               }
             ]
           }
@@ -625,7 +625,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select filter(uniqueCount(k8s.podName), where k8s.status = 'Running') / filter(uniqueCount(k8s.podName), where k8s.status in ('Running','Pending')) * 100 as '% Pods Running' since 30 minutes ago"
+                "query": "FROM K8sPodSample select filter(uniqueCount(podName), where status = 'Running') / filter(uniqueCount(podName), where status in ('Running','Pending')) * 100 as '% Pods Running' since 30 minutes ago"
               }
             ]
           }
@@ -647,7 +647,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric SELECT filter(uniqueCount(k8s.namespaceName, k8s.clusterName), WHERE `metricName` = 'k8s.namespace.createdAt') as 'Namespaces' since 30 minutes ago"
+                "query": "FROM K8sPodSample select uniqueCount(namespaceName) as 'Namespaces' since 30 minutes ago"
               }
             ],
             "thresholds": []
@@ -670,7 +670,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select filter(uniqueCount(k8s.deploymentName, k8s.clusterName), WHERE `metricName` = 'k8s.deployment.createdAt') as 'Deployments' since 30 minutes ago"
+                "query": "FROM K8sPodSample select uniqueCount(deploymentName) as 'Deployments' since 30 minutes ago"
               }
             ],
             "thresholds": []
@@ -761,7 +761,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "FROM Metric select uniqueCount(k8s.podName) as 'Total Pods', filter(uniqueCount(k8s.podName), where k8s.status = 'Running') as 'Running Pods', filter(uniqueCount(k8s.podName), where k8s.status = 'Pending') as 'Pending Pods', filter(uniqueCount(k8s.podName), where k8s.status = 'Failed') as 'Failed Pods' since 30 minutes ago"
+                "query": "from K8sPodSample select uniqueCount(podName) as 'Total Pods', filter(uniqueCount(podName), where status = 'Running') as 'Running Pods', filter(uniqueCount(podName), where status = 'Pending') as 'Pending Pods', filter(uniqueCount(podName), where status = 'Failed') as 'Failed Pods' since 30 minutes ago"
               }
             ]
           }
