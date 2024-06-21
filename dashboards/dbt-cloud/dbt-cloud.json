@@ -1,0 +1,790 @@
+{
+    "name": "Dbt Observability",
+    "description": "Dbt Observability Dashboard with metrics, history and status by run, resource, test and failed test rows",
+    "pages": [
+      {
+        "name": "Dbt Observability",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    percentage(count(*), where run_status = 10) as `Job Pass Rate`\nfrom dbt_job_run \nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nsince 7 days ago\n\n\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 3,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select percentage(count(*), where status = 'success') as `Model Pass Rate`\nfrom dbt_resource_run \nwhere resource_type != 'test'\nand status not in ('None', 'skipped')\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nsince 7 day ago\n\n\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 5,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select percentage(count(*), where status = 'pass') as `Test Pass Rate`\nfrom dbt_resource_run \nwhere resource_type = 'test'\nand status not in ('None', 'skipped')\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nsince 7 days ago\n\n\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 7,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select uniqueCount(run_id) as `Total Runs`\nfrom dbt_job_run\nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nsince 7 days ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 9,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select uniqueCount(unique_id) as `Total Model Runs`\nfrom dbt_resource_run\nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nand resource_type != 'test'\nand status not in ('None', 'skipped')\nsince 7 days ago\n\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 11,
+              "row": 1,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select count(*) as `Total Test Runs`\nfrom dbt_resource_run\nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nand resource_type = 'test'\nand status not in ('None', 'skipped')\nsince 7 days ago\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select uniqueCount(job_id) as `Total Jobs`\nfrom dbt_job_run\nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nsince 7 days ago\n"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 3,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    uniqueCount(unique_id) as `Total Models`\nfrom dbt_resource_run\nwhere resource_type != 'test'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 2,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    uniqueCount(unique_id) as `Total Tests`\nfrom dbt_resource_run\nwhere resource_type = 'test'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "",
+            "layout": {
+              "column": 7,
+              "row": 2,
+              "width": 6,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": " "
+            }
+          },
+          {
+            "title": "Jobs by Status Message",
+            "layout": {
+              "column": 1,
+              "row": 3,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "colors": {
+                "seriesOverrides": [
+                  {
+                    "color": "#35b171",
+                    "seriesName": "Success"
+                  },
+                  {
+                    "color": "#d91717",
+                    "seriesName": "Error"
+                  },
+                  {
+                    "color": "#d6d1d1",
+                    "seriesName": "Cancelled"
+                  }
+                ]
+              },
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    count(*)\nfrom dbt_job_run\nwhere run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nfacet run_status_humanized TIMESERIES \nsince 7 days ago "
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Models by Status",
+            "layout": {
+              "column": 5,
+              "row": 3,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "colors": {
+                "seriesOverrides": [
+                  {
+                    "color": "#35b171",
+                    "seriesName": "success"
+                  },
+                  {
+                    "color": "#d91717",
+                    "seriesName": "error"
+                  },
+                  {
+                    "color": "#d6d1d1",
+                    "seriesName": "skipped"
+                  }
+                ]
+              },
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    count(*)\nfrom dbt_resource_run\nwhere resource_type != 'test'\nand status != 'None'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet status\nTIMESERIES \nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tests by Status",
+            "layout": {
+              "column": 9,
+              "row": 3,
+              "width": 4,
+              "height": 2
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "colors": {
+                "seriesOverrides": [
+                  {
+                    "color": "#35b171",
+                    "seriesName": "pass"
+                  },
+                  {
+                    "color": "#d91717",
+                    "seriesName": "fail"
+                  },
+                  {
+                    "color": "#d7c614",
+                    "seriesName": "warn"
+                  },
+                  {
+                    "color": "#d6d1d1",
+                    "seriesName": "skipped"
+                  },
+                  {
+                    "color": "#d91717",
+                    "seriesName": "error"
+                  }
+                ]
+              },
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    count(*)\nfrom dbt_resource_run\nwhere resource_type = 'test'\nand status != 'None'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet status\nTIMESERIES \nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Failed Runs",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    run_team,\n    project_name,\n    environment_name,\n    job_name,\n    run_started_at,\n    run_status,\n    run_status_humanized,\n    run_status_message,\n    run_href\nfrom dbt_job_run\nwhere run_status != 10\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nsince 7 days ago\nlimit 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Failed Models",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    name,\n    run_team,\n    project_name,\n    environment_name,\n    job_name,\n    team,\n    run_started_at,\n    database_name,\n    schema_name,\n    alias,\n    error,\n    run_href\nfrom dbt_resource_run\nwhere resource_type != 'test'\nand status not in ('None', 'skipped', 'success')\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\n\nsince 7 days ago\nlimit 100"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Failed Tests",
+            "layout": {
+              "column": 1,
+              "row": 11,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    team,\n    job_id, \n    database_name, \n    schema_name, \n    test_model_name,\n    name, \n    status, \n    error,\n    test_parameters,\n    run_started_at,\n    run_href \nfrom dbt_resource_run \nwhere resource_type = 'test'\nand status not in ('pass', 'None', 'skipped')\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\n\nlimit 100\nsince 1 day ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Tests",
+        "description": null,
+        "widgets": [
+          {
+            "title": "",
+            "layout": {
+              "column": 1,
+              "row": 1,
+              "width": 12,
+              "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+              "text": "Click on the three visuals below to drill down to tests for individual models, tests, and statuses. "
+            }
+          },
+          {
+            "title": "Models",
+            "layout": {
+              "column": 1,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    latest(status) as status\nfrom dbt_resource_run \nwhere resource_type = 'test' \nand status != 'None'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet test_model_name \nsince 7 days ago limit 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tests",
+            "layout": {
+              "column": 5,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    latest(status) as status\nfrom dbt_resource_run \nwhere resource_type = 'test' \nand status != 'None'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet name \nsince 1 day ago limit 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Status",
+            "layout": {
+              "column": 9,
+              "row": 2,
+              "width": 4,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.bar"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select\n    count(*) as count\nfrom dbt_resource_run\nwhere resource_type = 'test'\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet status\nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Tests by Status",
+            "layout": {
+              "column": 1,
+              "row": 5,
+              "width": 12,
+              "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.area"
+            },
+            "rawConfiguration": {
+              "colors": {
+                "seriesOverrides": [
+                  {
+                    "color": "#35b171",
+                    "seriesName": "pass"
+                  },
+                  {
+                    "color": "#d91717",
+                    "seriesName": "fail"
+                  },
+                  {
+                    "color": "#d7c614",
+                    "seriesName": "warn"
+                  },
+                  {
+                    "color": "#d6d1d1",
+                    "seriesName": "skipped"
+                  }
+                ]
+              },
+              "facet": {
+                "showOtherSeries": false
+              },
+              "legend": {
+                "enabled": true
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n    count(*)\nfrom dbt_resource_run\nwhere resource_type = 'test'\nand status not in ('None')\nand run_team in ({{select_run_team}})\nand project_name in ({{select_project}})\nand environment_name in ({{select_environment}})\nand job_name in ({{select_job}})\nand team in ({{select_team}})\nfacet status\nTIMESERIES \nsince 7 days ago"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          },
+          {
+            "title": "Failed test rows",
+            "layout": {
+              "column": 1,
+              "row": 8,
+              "width": 12,
+              "height": 4
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+              "id": "viz.table"
+            },
+            "rawConfiguration": {
+              "facet": {
+                "showOtherSeries": false
+              },
+              "nrqlQueries": [
+                {
+                  "accountIds": [],
+                  "query": "select \n   alias,\n   test_model_name,\n   field_1,\n   field_2,\n   field_3,\n   field_4,\n   field_5\nfrom dbt_failed_test_row\nsince 1 day ago limit 1000"
+                }
+              ],
+              "platformOptions": {
+                "ignoreTimeRange": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "name": "select_run_team",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(run_team) from dbt_job_run since 7 days ago"
+        },
+        "options": {
+          "ignoreTimeRange": false
+        },
+        "title": "Run Team",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "select_project",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(project_name) from dbt_job_run since 7 days ago"
+        },
+        "options": {
+          "ignoreTimeRange": false
+        },
+        "title": "Project",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "select_environment",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(environment_name) from dbt_job_run since 7 days ago"
+        },
+        "options": {
+          "ignoreTimeRange": false
+        },
+        "title": "Environment",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "select_job",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(job_name) from dbt_job_run since 7 days ago"
+        },
+        "options": {
+          "ignoreTimeRange": false
+        },
+        "title": "Job",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      },
+      {
+        "name": "select_team",
+        "items": null,
+        "defaultValues": [
+          {
+            "value": {
+              "string": "*"
+            }
+          }
+        ],
+        "nrqlQuery": {
+          "accountIds": [],
+          "query": "select uniques(team) from dbt_resource_run since 7 days ago"
+        },
+        "options": {
+          "ignoreTimeRange": false
+        },
+        "title": "Team",
+        "type": "NRQL",
+        "isMultiSelection": true,
+        "replacementStrategy": "STRING"
+      }
+    ]
+  }
