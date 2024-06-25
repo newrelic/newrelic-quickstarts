@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@${{ vars.DAWIDD6_ACTION_DOWNLOAD_ARTIFACT_SHA }}
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
@@ -24,12 +24,12 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@${{ vars.ACTIONS_CHECKOUT_SHA }}
         with:
           ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup workspace
-        uses: './.github/actions/bootstrap'
+        uses: "./.github/actions/bootstrap"
 
       - name: Validate new files
         id: validation
@@ -49,7 +49,8 @@ jobs:
           cd utils && yarn create-validate-install-plans $URL $DRY_RUN
       - name: Add commit status
         if: always()
-        uses: './.github/actions/add-commit-status'
+        uses: "./.github/actions/add-commit-status"
         with:
           statusContext: "Validation / Install plan schema compliance"
           state: ${{ job.status }}
+
