@@ -10,100 +10,6 @@ env:
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
 jobs:
-  generate-schema-docs:
-    name: Generate GraphQL schema documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          ref: "main"
-          fetch-depth: 0
-
-      - name: Setup workspace
-        uses: './.github/actions/bootstrap'
-
-      - name: Generate schema docs for GraphQl
-        id: generate-schema
-        env:
-          NR_API_URL: ${{ secrets.NR_API_URL }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
-        run: cd utils && yarn generate-schema-docs
-
-      - name: Commit changes
-        id: commit-changes
-        run: |
-          git config --local user.email "${{ env.THIRD_PARTY_GIT_AUTHOR_EMAIL }}"
-          git config --local user.name "${{ env.THIRD_PARTY_GIT_AUTHOR_NAME }}"
-          git add ./docs/*
-          git diff-index --quiet HEAD ./docs/* || git commit -m 'chore: generate schema documentation [skip ci]'
-          echo "commit=true" >> $GITHUB_ENV
-
-      - name: Temporarily disable branch protections
-        id: disable-branch-protection
-        if: always()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          script: |
-            const result = await github.rest.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: null,
-              restrictions: null,
-              enforce_admins: null,
-              required_pull_request_reviews: null
-            })
-            console.log("Result:", result)
-
-      - name: Push Commit
-        if: env.commit == 'true'
-        run: git push origin HEAD
-
-      - name: Re-enable branch protections
-        id: enable-branch-protection
-        if: always()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
-          script: |
-            const result = await github.rest.repos.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: 'main',
-              required_status_checks: {
-                strict: true,
-                contexts: [
-                    'Validation / Image count and extension compliance',
-                    'Validation / Ensure icons exist',
-                    'Validation / Install plan ids exist',
-                    'Validation / Data source ids exist',
-                    'Validation / Install plan schema compliance',
-                    'Validation / Data source schema compliance',
-                    'Validation / Quickstart id are unique',
-                    'Validation / Validate Quickstart Schema',
-                    'Validation / Quickstart dashboard name is unique'
-                ]
-              },
-              restrictions: {
-                "users":[],
-                "teams":[],
-                "apps":[]
-              },
-              enforce_admins: true,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                required_approving_review_count: 1,
-                dismissal_restrictions: {
-                  users: [],
-                  teams: []
-                }
-              }
-            })
-            console.log("Result:", result)
-
   generate-third-party-notices:
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +21,7 @@ jobs:
           fetch-depth: 2
 
       - name: Setup workspace
-        uses: './.github/actions/bootstrap'
+        uses: "./.github/actions/bootstrap"
 
       - name: Install OSS CLI
         working-directory: ./utils
