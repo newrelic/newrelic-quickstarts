@@ -1,0 +1,27 @@
+name: dbt Job Failed
+
+description: |+
+  Generates critical alerts for dbt jobs that fail. A failed job is any job that does not return status = 10 from dbt Cloud.
+
+type: STATIC
+nrql:
+  query: "select count(*) from dbt_job_run where run_status != 10 facet run_team, project_name, environment_name, job_name, run_started_at, run_status_humanized, run_status_message, run_href"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 3
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
