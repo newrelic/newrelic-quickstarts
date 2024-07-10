@@ -44,11 +44,11 @@ export const handleErrors = (
   }
 
   if (errorMessages.length > 0) {
-    process.exitCode = 1; // fail the workflow
-
     for (const errorMessage of errorMessages) {
       console.log(errorMessage);
     }
+
+    process.exit(1);
   }
 };
 
