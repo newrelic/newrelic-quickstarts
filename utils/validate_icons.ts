@@ -47,8 +47,6 @@ export const handleErrors = (
     for (const errorMessage of errorMessages) {
       console.log(errorMessage);
     }
-
-    process.exit(1);
   }
 };
 
@@ -58,6 +56,10 @@ const main = () => {
   var errorMessages: string[] = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
+
+  if(errorMessages.length) {
+    process.exit(1);
+  }
 };
 
 /**

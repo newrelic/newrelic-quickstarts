@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import { validateIcon, handleErrors } from '../validate_icons';
 
 jest.mock('fs');
-const exitMock = jest.spyOn(process, 'exit').mockImplementation(() => {});
 
 describe('validate Icon tests', () => {
   afterEach(() => {
@@ -131,7 +130,6 @@ describe('validate Icon tests', () => {
       expect(logMock).toHaveBeenCalledWith(
         'No errors found. Icon validation passed.'
       );
-      expect(exitMock).not.toHaveBeenCalled();
     });
 
     test('when given errors, prints each error and sets exitCode to 1', () => {
@@ -140,7 +138,6 @@ describe('validate Icon tests', () => {
       handleErrors(['error1', 'error2', 'error3', 'error4']);
 
       expect(logMock).toBeCalledTimes(4);
-      expect(exitMock).toHaveBeenCalledWith(1);
     });
   });
 });
