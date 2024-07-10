@@ -96,7 +96,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       displayName: displayName && displayName.trim(),
       icon: this._getIconUrl(),
       install: this._parseInstall(),
-      categoryTerms: categoryTerms && categoryTerms.map((t) => t.trim()),
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()): [],
       keywords: keywords ? keywords.map((k) => k.trim()) : [],
       description: description && description.trim(),
     };
