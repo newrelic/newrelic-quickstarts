@@ -44,8 +44,6 @@ export const handleErrors = (
   }
 
   if (errorMessages.length > 0) {
-    process.exitCode = 1; // fail the workflow
-
     for (const errorMessage of errorMessages) {
       console.log(errorMessage);
     }
@@ -58,6 +56,10 @@ const main = () => {
   var errorMessages: string[] = validateIcon(mainConfigPaths);
   handleErrors(errorMessages);
   console.log(''); // add an extra new line for more visual separation in the workflow
+
+  if(errorMessages.length) {
+    process.exit(1);
+  }
 };
 
 /**
