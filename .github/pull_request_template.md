@@ -26,3 +26,4 @@ _The owners of this repo are not experts in the subject matter of the quickstart
 ### Alerts
 
 - [ ] Did you check that your alerts actually work?
+- [ ] Are you trying to create standalone alerts? Standalone alerts are deprecated. They should only be included in quickstarts.

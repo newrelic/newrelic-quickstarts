@@ -476,6 +476,8 @@ exmaple-screenshot2.png
 
 Alerts are defined as policies, which are composed of multiple alert conditions. They are located under the `alert-policies/` directory and CANNOT be nested, an alert policy named `example-policy` would live under `alert-policies/example-policy`. Each condition within a policy is defined using a yaml file. For more information on creating New Relic alert conditions, see [Introduction to alerts](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/learn-alerts/introduction-alerts)
 
+> **DEPRECATION WARNING** - Standalone alerts are deprecated and should only be used in quickstarts.
+
 ```yaml
 name: Example alert condition
 
@@ -684,7 +686,8 @@ icon.png
   ```
 
 ## Quickstart Preview
-⚠️  There is currently no way to preview Quickstarts locally.
+
+⚠️ There is currently no way to preview Quickstarts locally.
 
 <details>
   <summary>Deprecated preview steps</summary>
@@ -722,6 +725,7 @@ icon.png
 
     - Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
     - If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+
 </details>
 
 ### Feature requests
