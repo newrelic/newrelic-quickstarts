@@ -32,12 +32,6 @@ type ResponseWithErrors =
     name: string;
   };
 
-// filter out errors where install plan id does not exist
-const installPlanErrorExists = (error: Error | NerdGraphError): boolean =>
-  'extensions' in error &&
-  error?.extensions?.argumentPath?.includes('installPlanStepIds') &&
-  error?.message?.includes('contains an install plan step that does not exist');
-
 const dataSourceErrorExists = (error: Error | NerdGraphError): boolean =>
   'extensions' in error &&
   error?.extensions?.argumentPath?.includes('dataSourceIds') &&
@@ -47,19 +41,12 @@ export const countAndOutputErrors = (
   graphqlResponses: ResponseWithErrors[]
 ): number =>
   graphqlResponses.reduce((all, { errors, name }) => {
-    const installPlanErrors =
-      (errors?.filter(installPlanErrorExists) as NerdGraphError[]) ?? [];
     const dataSourceErrors =
       (errors?.filter(dataSourceErrorExists) as NerdGraphError[]) ?? [];
     const remainingErrors =
-      errors
-        ?.filter((error) => !installPlanErrorExists(error))
-        ?.filter((error) => !dataSourceErrorExists(error)) ?? [];
+      errors?.filter((error) => !dataSourceErrorExists(error)) ?? [];
 
-    translateMutationErrors(remainingErrors, name, [
-      ...installPlanErrors,
-      ...dataSourceErrors,
-    ]);
+    translateMutationErrors(remainingErrors, name, [...dataSourceErrors]);
 
     return all + remainingErrors.length;
   }, 0);
