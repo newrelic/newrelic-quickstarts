@@ -30,8 +30,9 @@
       - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
+
       - [Alert condition fields](#alert-condition-fields)
-    - [Install Plans (DEPRECATED)](#install-plans-deprecated)
+
     - [Data sources](#data-sources-1)
       - [Data source fields](#data-source-fields)
       - [Data source install fields](#data-source-install-fields)

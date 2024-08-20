@@ -15,7 +15,7 @@ export const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
 );
 
 export const COMPONENT_PREFIX_REGEXP =
-  /^(dashboards|alert-policies|install-plans|data-sources)\//;
+  /^(dashboards|alert-policies|data-sources)\//;
 
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
