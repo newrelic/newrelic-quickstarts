@@ -113,17 +113,6 @@ export const filterOutTestFiles = (
 };
 
 /**
- * Filters results from the Github API down to install plan config files
- * @param {Array} files the results from Github API
- * @returns {Array} install plan config files from Github API
- */
-export const filterInstallPlans = (
-  files: GithubAPIPullRequestFile[]
-): GithubAPIPullRequestFile[] => {
-  return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
-};
-
-/**
  * Filters results from the Github API down to data source config files
  * @param files the results from Github API
  * @returns data source config files from Github API

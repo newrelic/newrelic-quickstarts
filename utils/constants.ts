@@ -44,37 +44,6 @@ export const QUICKSTART_MUTATION = gql`
   }
 `;
 
-export const INSTALL_PLAN_MUTATION = gql`
-  # gql
-  mutation QuickstartRepoInstallPlanMutation(
-    $description: String!
-    $dryRun: Boolean
-    $displayName: String!
-    $fallback: Nr1CatalogInstallPlanDirectiveInput
-    $heading: String!
-    $id: ID!
-    $primary: Nr1CatalogInstallPlanDirectiveInput!
-    $target: Nr1CatalogInstallPlanTargetInput!
-  ) {
-    nr1CatalogSubmitInstallPlanStep(
-      dryRun: $dryRun
-      installPlanStep: {
-        description: $description
-        displayName: $displayName
-        fallback: $fallback
-        heading: $heading
-        id: $id
-        primary: $primary
-        target: $target
-      }
-    ) {
-      installPlanStep {
-        id
-      }
-    }
-  }
-`;
-
 export const DATA_SOURCE_MUTATION = gql`
   mutation QuickstartRepoDataSourceMutation(
     $dryRun: Boolean

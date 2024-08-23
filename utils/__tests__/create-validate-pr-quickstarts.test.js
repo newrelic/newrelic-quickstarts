@@ -31,7 +31,6 @@ const mockNGQuickstartErr = (data) => ({
   ],
 });
 
-
 const mockGithubAPIFiles = (filenames) =>
   filenames.map((filename) => ({
     sha: '',
@@ -58,9 +57,7 @@ describe('create-validate-pr-quickstarts', () => {
 
     Quickstart.mockImplementation(() => {
       return {
-        config: {
-          installPlans: ['valid-id'],
-        },
+        config: {},
         isValid: true,
         validate: jest.fn().mockImplementation(() => true),
         submitMutation: jest.fn().mockResolvedValueOnce({
@@ -81,9 +78,7 @@ describe('create-validate-pr-quickstarts', () => {
 
     Quickstart.mockImplementation(() => {
       return {
-        config: {
-          installPlans: ['valid-id'],
-        },
+        config: {},
         isValid: true,
         validate: jest.fn().mockImplementation(() => true),
         submitMutation: jest
@@ -95,31 +90,6 @@ describe('create-validate-pr-quickstarts', () => {
     const hasErrored = await createValidateQuickstarts('url', 'token');
     expect(hasErrored).toBe(true);
   });
-
-  // test('does not fail for install plan id error', async () => {
-  //   const files = mockGithubAPIFiles([validQuickstartFilename]);
-  //   githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
-  //   githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
-
-  //   Quickstart.mockImplementation(() => {
-  //     return {
-  //       config: {
-  //         installPlans: ['valid-id'],
-  //       },
-  //       isValid: true,
-  //       validate: jest.fn().mockImplementation(() => true),
-  //       submitMutation: jest
-  //         .fn()
-  //         .mockResolvedValueOnce(mockNGInstallPlanErr({})),
-  //     };
-  //   });
-  //   InstallPlan.mockImplementationOnce(() => {
-  //     return { isValid: true };
-  //   });
-
-  //   const hasErrored = await createValidateQuickstarts('url', 'token');
-  //   expect(hasErrored).toBe(false);
-  // });
 
   test('does not process removed file', async () => {
     const files = mockGithubAPIFiles([validQuickstartFilename]);

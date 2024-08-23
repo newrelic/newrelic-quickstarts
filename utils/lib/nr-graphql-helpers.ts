@@ -41,7 +41,7 @@ export type ErrorOrNerdGraphError = Error | NerdGraphError;
  * @returns {Promise<Object>} An object with the results or errors of a GraphQL request
  */
 export const fetchNRGraphqlResults = async <Variables, ResponseData>(
-  queryBody: NerdGraphRequest<Variables>,
+  queryBody: NerdGraphRequest<Variables>
 ): Promise<NerdGraphResponseWithLocalErrors<ResponseData>> => {
   const NR_API_URL = process.env.NR_API_URL || '';
   const NR_API_TOKEN = process.env.NR_API_TOKEN || '';
@@ -111,10 +111,6 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
 
 /**
  * Handle errors from GraphQL request for quickstart mutation
- * @param {Object[]} errors  - An array of any errors found
- * @param {String} filePath  - The path related to the validation error
- * @param {Object[]}  [installPlanErrors=[]] - Array of install plan errors which are handled differently
- * @returns {void}
  */
 export const translateMutationErrors = (
   errors: ErrorOrNerdGraphError[],

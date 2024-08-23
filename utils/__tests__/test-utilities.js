@@ -34,7 +34,6 @@ const mockGitHubResponseFilenames = [
   'dashboards/python/pysqlite/python.json',
   'quickstarts/python/pysqlite/logo.svg',
   '.github/workflows/validate_packs.yml',
-  'utils/__tests__/validate_install_plans.test.js',
   'utils/lib/github-api-helpers.js',
   'utils/helpers.js',
   'utils/package.json',
