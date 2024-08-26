@@ -5,7 +5,7 @@ import {
   DATA_SOURCE_CONFIG_REGEXP,
 } from '../constants';
 import logger from '../logger';
-const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
+
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 const TEMPLATE_REGEXP = new RegExp('_template/.+');
 
