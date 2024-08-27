@@ -27,7 +27,6 @@ export interface QuickstartConfig {
   icon: string;
   keywords?: string[];
   summary: string;
-  installPlans?: string[];
   id: string;
   level: QuickstartConfigSupportLevel;
   alertPolicies?: string[];

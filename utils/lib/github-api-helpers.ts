@@ -5,7 +5,7 @@ import {
   DATA_SOURCE_CONFIG_REGEXP,
 } from '../constants';
 import logger from '../logger';
-const INSTALL_CONFIG_REGEXP = new RegExp('install/.+/install.+(yml|yaml)');
+
 const MOCK_FILES_REGEXP = new RegExp('mock_files/.+');
 const TEMPLATE_REGEXP = new RegExp('_template/.+');
 
@@ -110,17 +110,6 @@ export const filterOutTestFiles = (
     ({ filename }) =>
       !MOCK_FILES_REGEXP.test(filename) && !TEMPLATE_REGEXP.test(filename)
   );
-};
-
-/**
- * Filters results from the Github API down to install plan config files
- * @param {Array} files the results from Github API
- * @returns {Array} install plan config files from Github API
- */
-export const filterInstallPlans = (
-  files: GithubAPIPullRequestFile[]
-): GithubAPIPullRequestFile[] => {
-  return files.filter(({ filename }) => INSTALL_CONFIG_REGEXP.test(filename));
 };
 
 /**

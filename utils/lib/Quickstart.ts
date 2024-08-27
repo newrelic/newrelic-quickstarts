@@ -153,7 +153,6 @@ class Quickstart {
       icon,
       keywords,
       summary,
-      installPlans,
       dataSourceIds,
       id,
       level,
@@ -179,7 +178,6 @@ class Quickstart {
       ),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
-      installPlanStepIds: installPlans,
       dataSourceIds: dataSourceIds,
     };
 
