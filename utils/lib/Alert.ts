@@ -297,6 +297,10 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
     return result;
   }
+
+  static getAll() {
+    return glob.sync(path.join(__dirname, '..', 'alert-policies', '**', '*.+(yml|yaml)')).map(alert => new Alert(alert));
+  }
 }
 
 export default Alert;
