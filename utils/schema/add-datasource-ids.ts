@@ -9,7 +9,6 @@ const ARTIFACT_SCHEMA_PATH = './artifact.json';
 const CORE_DATASOURCE_IDS_PATH = './core-datasource-ids.json';
 const DATASOURCE_BASE_PATH = '../../';
 
-// TODO: infer the type from the schema?
 type ArtifactSchema = {
   properties: {
     dataSourceIds: {
