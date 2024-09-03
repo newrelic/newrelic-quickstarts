@@ -14,7 +14,7 @@ const main = () => {
   const dashboards = Dashboard.getAll().map((dashboard) => dashboard.config);
 
   const coreDatasourceIds = require('./schema/core-datasource-ids.json');
-  //const communityDatasourceIds = datasources.map((ds) => { console.log(ds); return ds.id });
+  const communityDatasourceIds = datasources.map((ds) => { return ds?.id });
 
   // TODO: consider json-schema-to-ts package to infer type from JSON schema
   //  2. Create the artifact
@@ -23,7 +23,7 @@ const main = () => {
     datasources,
     alerts,
     dashboards,
-    datasourceIds: [...coreDatasourceIds]
+    datasourceIds: [...coreDatasourceIds, ...communityDatasourceIds]
   };
 
   // 3. Validate the artifact
