@@ -9,21 +9,21 @@ const main = () => {
 
   // 1. Fetch all quickstarts, datasources, alerts, and dashboards
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
-  const datasources = DataSource.getAll().map((datasource) => datasource?.config);
+  const dataSources = DataSource.getAll().map((dataSource) => dataSource?.config);
   const alerts = Alert.getAll().map((alert) => alert.config);
   const dashboards = Dashboard.getAll().map((dashboard) => dashboard.config);
 
-  const coreDatasourceIds = require('./schema/core-datasource-ids.json');
-  const communityDatasourceIds = datasources.map((ds) => { return ds?.id });
+  const coreDataSourceIds = require('./schema/core-datasource-ids.json');
+  const communityDataSourceIds = dataSources.map((ds) => { return ds?.id });
 
   // TODO: consider json-schema-to-ts package to infer type from JSON schema
   //  2. Create the artifact
   const artifact = {
     quickstarts,
-    datasources,
+    dataSources,
     alerts,
     dashboards,
-    datasourceIds: [...coreDatasourceIds, ...communityDatasourceIds]
+    dataSourceIds: [...coreDataSourceIds, ...communityDataSourceIds]
   };
 
   // 3. Validate the artifact
