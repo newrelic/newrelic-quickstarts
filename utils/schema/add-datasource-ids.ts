@@ -1,11 +1,9 @@
-import * as glob from 'glob';
-import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import type { DataSourceConfig } from '../types/DataSourceConfig';
 
-import DataSource, { getAllDataSourceFiles } from '../lib/DataSource';
+import { getAllDataSourceFiles } from '../lib/DataSource';
 
 const ARTIFACT_SCHEMA_PATH = './artifact.json';
 const CORE_DATASOURCE_IDS_PATH = './core-datasource-ids.json';
@@ -14,13 +12,13 @@ const DATASOURCE_BASE_PATH = '../../';
 // TODO: infer the type from the schema?
 type ArtifactSchema = {
   properties: {
-    datasourceIds: {
+    dataSourceIds: {
       enum: string[];
     };
   };
 };
 
-const getCommunityDatasourceIds = (): string[] => {
+const getCommunityDataSourceIds = (): string[] => {
   const allDataSources = getAllDataSourceFiles(DATASOURCE_BASE_PATH).map(
     (p) => ({
       filePath: p,
@@ -31,11 +29,11 @@ const getCommunityDatasourceIds = (): string[] => {
   );
 
   return allDataSources
-    .map((datasource) => datasource.content?.id)
+    .map((dataSource) => dataSource.content?.id)
     .filter(Boolean);
 };
 
-const getCoreDatasourceIds = (): string[] => {
+const getCoreDataSourceIds = (): string[] => {
   return yaml.load(
     fs.readFileSync(CORE_DATASOURCE_IDS_PATH).toString('utf8')
   ) as string[];
@@ -55,7 +53,7 @@ const updateSchema = (
     ...schema,
     properties: {
       ...schema.properties,
-      datasourceIds: { enum: ids },
+      dataSourceIds: { enum: ids },
     },
   };
 };
@@ -65,11 +63,11 @@ const saveSchema = (schema: ArtifactSchema, path: string): void => {
 };
 
 const main = (): void => {
-  const communityIds = getCommunityDatasourceIds();
-  console.log(`[*] Found ${communityIds.length} community datasources`);
+  const communityIds = getCommunityDataSourceIds();
+  console.log(`[*] Found ${communityIds.length} community dataSources`);
 
-  const coreIds = getCoreDatasourceIds();
-  console.log(`[*] Found ${coreIds.length} core datasources`);
+  const coreIds = getCoreDataSourceIds();
+  console.log(`[*] Found ${coreIds.length} core dataSources`);
 
   console.log('[*] Loading schema');
   const schema = loadSchema(ARTIFACT_SCHEMA_PATH);
