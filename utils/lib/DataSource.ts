@@ -191,7 +191,12 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   static getAll() {
-    return getAllDataSourceFiles().map((ds) => new DataSource(ds));
+    return getAllDataSourceFiles().map((ds) => {
+      const id = path.dirname(ds).split('/').pop();
+      if (id) {
+        return new DataSource(id);
+      }
+    }).filter(Boolean);
   }
 }
 
@@ -199,5 +204,6 @@ export const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
 ): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
+
 
 export default DataSource;
