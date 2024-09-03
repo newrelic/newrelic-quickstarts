@@ -31,12 +31,16 @@ const main = () => {
   ajv.validate(schema, artifact);
 
   if (ajv.errors?.length) {
+    console.error('*** Validation failed. See errors below. ***');
+    console.error('--------------------------------------------');
     parseErrors(ajv.errors, artifact);
+
+    process.exit(1);
   }
 }
 
 const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
-  return errors.forEach((e) => {
+  return errors.forEach((e, idx) => {
     const artifactItemPath = e.instancePath.split('/').filter(Boolean).map(segment => {
       if (parseInt(segment, 10)) {
         return parseInt(segment);
@@ -49,13 +53,21 @@ const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
       return acc[segment];
     }, artifact);
 
-    console.error('*** Validation failed ***');
-    console.error('-------------------------');
-    console.error(e);
-    console.error('-------------------------');
+    const invalidItem = artifact[artifactItemPath[0]][artifactItemPath[1]];
+
+    console.error(`Error #${idx + 1}:`, e);
+    console.error('                         ');
     console.error('Received value:', badValue);
-    console.error('-------------------------');
-    console.error('Invalid item:', artifact[artifactItemPath[0]][artifactItemPath[1]]);
+    console.error('                         ');
+    // All of our properties in the artifact are arrays so we can make some
+    // assumptions to grab the invalid item from the artifact
+    if (invalidItem !== badValue) {
+      console.error('Invalid item:', invalidItem);
+    }
+
+    if (idx + 1 !== errors.length) {
+      console.error('************************************');
+    }
   });
 }
 
