@@ -52,12 +52,10 @@ const getArtifactComponents = (): ArtifactComponents => {
 
 const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
   const coreDataSourceIds = yaml.load(
-      fs.readFileSync(filepath).toString('utf8')
-    ) as string[];
+    fs.readFileSync(filepath).toString('utf8')
+  ) as string[];
 
-  // NOTE: we do an extra `.filter(Boolean)` here because, for some reason, the
-  // array of dataources contains a few `undefined`s.
-  const communityDataSourceIds = communityDataSources.filter(Boolean).map((dataSource) => dataSource.id);
+  const communityDataSourceIds = communityDataSources.map((dataSource) => dataSource.id);
 
   return [...coreDataSourceIds, ...communityDataSourceIds];
 }
@@ -79,7 +77,7 @@ const main = () => {
   if (errors.length) {
     console.error('*** Validation failed. See errors below. ***');
     console.error('--------------------------------------------');
-    
+
     parseErrors(errors, artifact);
 
     process.exit(1);
