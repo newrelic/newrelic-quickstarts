@@ -15,7 +15,7 @@ export const DATA_SOURCE_CONFIG_REGEXP = new RegExp(
 );
 
 export const COMPONENT_PREFIX_REGEXP =
-  /^(dashboards|alert-policies|install-plans|data-sources)\//;
+  /^(dashboards|alert-policies|data-sources)\//;
 
 /**
  * Because brand new quickstarts added via a PR do not have an ID until they are assigned one at release,
@@ -38,37 +38,6 @@ export const QUICKSTART_MUTATION = gql`
       quickstartMetadata: $quickstartMetadata
     ) {
       quickstart {
-        id
-      }
-    }
-  }
-`;
-
-export const INSTALL_PLAN_MUTATION = gql`
-  # gql
-  mutation QuickstartRepoInstallPlanMutation(
-    $description: String!
-    $dryRun: Boolean
-    $displayName: String!
-    $fallback: Nr1CatalogInstallPlanDirectiveInput
-    $heading: String!
-    $id: ID!
-    $primary: Nr1CatalogInstallPlanDirectiveInput!
-    $target: Nr1CatalogInstallPlanTargetInput!
-  ) {
-    nr1CatalogSubmitInstallPlanStep(
-      dryRun: $dryRun
-      installPlanStep: {
-        description: $description
-        displayName: $displayName
-        fallback: $fallback
-        heading: $heading
-        id: $id
-        primary: $primary
-        target: $target
-      }
-    ) {
-      installPlanStep {
         id
       }
     }

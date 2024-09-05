@@ -3,7 +3,6 @@
 import { createValidateQuickstarts } from '../create_validate_pr_quickstarts';
 
 import Quickstart from '../lib/Quickstart';
-import InstallPlan from '../lib/InstallPlan';
 import * as githubHelpers from '../lib/github-api-helpers';
 
 jest.mock('@actions/core');
@@ -17,7 +16,6 @@ jest.mock('../lib/github-api-helpers', () => ({
 }));
 
 jest.mock('../lib/Quickstart');
-jest.mock('../lib/InstallPlan');
 
 const validQuickstartFilename = 'quickstarts/mock-quickstart-2/config.yml';
 
@@ -29,18 +27,6 @@ const mockNGQuickstartErr = (data) => ({
         argumentPath: [`slug`],
       },
       message: `slug must be lowercase`,
-    },
-  ],
-});
-
-const mockNGInstallPlanErr = (data) => ({
-  data,
-  errors: [
-    {
-      extensions: {
-        argumentPath: [`installPlanStepIds`],
-      },
-      message: `contains an install plan step that does not exist`,
     },
   ],
 });
@@ -71,9 +57,7 @@ describe('create-validate-pr-quickstarts', () => {
 
     Quickstart.mockImplementation(() => {
       return {
-        config: {
-          installPlans: ['valid-id'],
-        },
+        config: {},
         isValid: true,
         validate: jest.fn().mockImplementation(() => true),
         submitMutation: jest.fn().mockResolvedValueOnce({
@@ -81,9 +65,6 @@ describe('create-validate-pr-quickstarts', () => {
           errors: [],
         }),
       };
-    });
-    InstallPlan.mockImplementationOnce(() => {
-      return { isValid: true };
     });
 
     const hasErrored = await createValidateQuickstarts('url', 'token');
@@ -97,9 +78,7 @@ describe('create-validate-pr-quickstarts', () => {
 
     Quickstart.mockImplementation(() => {
       return {
-        config: {
-          installPlans: ['valid-id'],
-        },
+        config: {},
         isValid: true,
         validate: jest.fn().mockImplementation(() => true),
         submitMutation: jest
@@ -107,37 +86,9 @@ describe('create-validate-pr-quickstarts', () => {
           .mockResolvedValueOnce(mockNGQuickstartErr({})),
       };
     });
-    InstallPlan.mockImplementationOnce(() => {
-      return { isValid: true };
-    });
 
     const hasErrored = await createValidateQuickstarts('url', 'token');
     expect(hasErrored).toBe(true);
-  });
-
-  test('does not fail for install plan id error', async () => {
-    const files = mockGithubAPIFiles([validQuickstartFilename]);
-    githubHelpers.fetchPaginatedGHResults.mockResolvedValueOnce(files);
-    githubHelpers.filterQuickstartConfigFiles.mockReturnValueOnce(files);
-
-    Quickstart.mockImplementation(() => {
-      return {
-        config: {
-          installPlans: ['valid-id'],
-        },
-        isValid: true,
-        validate: jest.fn().mockImplementation(() => true),
-        submitMutation: jest
-          .fn()
-          .mockResolvedValueOnce(mockNGInstallPlanErr({})),
-      };
-    });
-    InstallPlan.mockImplementationOnce(() => {
-      return { isValid: true };
-    });
-
-    const hasErrored = await createValidateQuickstarts('url', 'token');
-    expect(hasErrored).toBe(false);
   });
 
   test('does not process removed file', async () => {

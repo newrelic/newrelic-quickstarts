@@ -119,14 +119,13 @@ describe('Quickstart', () => {
 
       qs.validate();
 
-      expect(invalidComponents).toHaveLength(1)
+      expect(invalidComponents).toHaveLength(1);
 
       const invalidComponent = invalidComponents[0];
-      expect(invalidComponent.identifier).toBe('mock-alert-policy-3')
+      expect(invalidComponent.identifier).toBe('mock-alert-policy-3');
 
       expect(qs.isValid).toBe(false);
-
-    })
+    });
   });
 
   describe('getMutationVariables', () => {
@@ -154,7 +153,6 @@ describe('Quickstart', () => {
           authors: [{ name: 'John Smith' }],
           keywords: ['list', 'of', 'searchable', 'keywords'],
           categoryTerms: undefined,
-          installPlanStepIds: ['mock-install-1'],
           dataSourceIds: ['test-data-source'],
           icon: `${GITHUB_RAW_BASE_URL}/quickstarts/mock-quickstart-1/logo.png`,
           sourceUrl: `${GITHUB_REPO_BASE_URL}/quickstarts/mock-quickstart-1`,
@@ -179,7 +177,6 @@ describe('Quickstart', () => {
       expect(variables.id).toEqual('mock-2-id');
       expect(variables.quickstartMetadata.alertConditions).toHaveLength(2);
       expect(variables.quickstartMetadata.dashboards).toHaveLength(1);
-      expect(variables.quickstartMetadata.installPlanStepIds).toHaveLength(1);
       expect(variables.quickstartMetadata.dataSourceIds).toHaveLength(1);
     });
 
