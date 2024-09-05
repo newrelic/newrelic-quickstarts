@@ -63,7 +63,7 @@ const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConf
 }
 
 const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
-  const ajv = new Ajv();
+  const ajv = new Ajv({ allErrors: true });
   ajv.validate(schema, artifact);
 
   return ajv.errors ?? [];
@@ -79,7 +79,7 @@ const main = () => {
   if (errors.length) {
     console.error('*** Validation failed. See errors below. ***');
     console.error('--------------------------------------------');
-    console.log(JSON.stringify(errors, null, 4));
+    
     parseErrors(errors, artifact);
 
     process.exit(1);

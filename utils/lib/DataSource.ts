@@ -41,7 +41,9 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     // find the matching data source ID from the config content
     const dataSource = allDataSources.find((i) => i.content?.id === id);
-
+    if (!dataSource) {
+      console.log('DATA SOURCE ID: ', id);
+    }
     // replace the identifier with the file path found from the id
     this.identifier = path.dirname(
       Component.removeBasePath(
@@ -194,7 +196,7 @@ class DataSource extends Component<DataSourceConfig, string> {
   static getAll(): DataSource[] {
     return getAllDataSourceFiles()
       .map((configFilePath) => {
-        const id = path.dirname(configFilePath).split('/').pop() as string;
+        const id = getDataSourceId(configFilePath);
         const dataSource = new DataSource(id);
         if (dataSource != undefined) {
           return dataSource;
@@ -203,6 +205,14 @@ class DataSource extends Component<DataSourceConfig, string> {
       .filter(Boolean) as DataSource[];
   }
 }
+
+const getDataSourceId = (filepath: string) => {
+  const yamlContent = yaml.load(
+    fs.readFileSync(filepath).toString('utf-8')
+  ) as DataSourceConfig;
+
+  return yamlContent.id;
+};
 
 export const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
