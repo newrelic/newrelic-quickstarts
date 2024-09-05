@@ -190,13 +190,17 @@ class DataSource extends Component<DataSourceConfig, string> {
     return directive;
   }
 
-  static getAll() {
-    return getAllDataSourceFiles().map((ds) => {
-      const id = path.dirname(ds).split('/').pop();
-      if (id) {
-        return new DataSource(id);
-      }
-    }).filter(Boolean);
+  // TODO: verify that this returns all data sources (confidence shaken)
+  static getAll(): DataSource[] {
+    return getAllDataSourceFiles()
+      .map((configFilePath) => {
+        const id = path.dirname(configFilePath).split('/').pop() as string;
+        const dataSource = new DataSource(id);
+        if (dataSource != undefined) {
+          return dataSource;
+        }
+      })
+      .filter(Boolean) as DataSource[];
   }
 }
 
@@ -204,6 +208,5 @@ export const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
 ): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
-
 
 export default DataSource;

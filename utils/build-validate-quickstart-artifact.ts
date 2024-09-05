@@ -1,44 +1,92 @@
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";
 import Alert from "./lib/Alert";
-import Dashboard from "./lib/Dashboard";
+import Dashboard, { DashboardConfig } from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
+import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
+import { DataSourceConfig } from './types/DataSourceConfig';
 
-const main = () => {
-  const schema = require('./schema/artifact.json');
+type ArtifactSchema = any; // NOTE: we might want to generate this, we might not care
 
-  // 1. Fetch all quickstarts, datasources, alerts, and dashboards
+type ArtifactComponents = {
+  quickstarts: QuickstartConfig[],
+  dataSources: DataSourceConfig[],
+  alerts: QuickstartConfigAlert[][],
+  dashboards: DashboardConfig[]
+}
+
+type Artifact = ArtifactComponents | {
+  dataSourceIds: string[]
+}
+
+const getSchema = (filepath: string): ArtifactSchema => {
+  return yaml.load(
+    fs.readFileSync(filepath).toString('utf8')
+  ) as ArtifactSchema;
+};
+
+// NOTE: we could run these in parallel to speed up the script
+const getArtifactComponents = (): ArtifactComponents => {
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
-  const dataSources = DataSource.getAll().map((dataSource) => dataSource?.config);
+  console.log(`[*] Found ${quickstarts.length} quickstarts`);
+
+  const dataSources = DataSource.getAll().map((dataSource) => dataSource.config);
+  console.log(`[*] Found ${dataSources.length} dataSources`);
+
   const alerts = Alert.getAll().map((alert) => alert.config);
+  console.log(`[*] Found ${alerts.length} alerts`);
+
   const dashboards = Dashboard.getAll().map((dashboard) => dashboard.config);
+  console.log(`[*] Found ${dashboards.length} dashboards`);
 
-  const coreDataSourceIds = require('./schema/core-datasource-ids.json');
-  const communityDataSourceIds = dataSources.map((ds) => { return ds?.id });
-
-  // TODO: consider json-schema-to-ts package to infer type from JSON schema
-  //  2. Create the artifact
-  const artifact = {
+  return {
     quickstarts,
     dataSources,
     alerts,
-    dashboards,
-    dataSourceIds: [...coreDataSourceIds, ...communityDataSourceIds]
-  };
+    dashboards
+  }
+};
 
-  // 3. Validate the artifact
+const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
+  const coreDataSourceIds = yaml.load(
+      fs.readFileSync(filepath).toString('utf8')
+    ) as string[];
+
+  // NOTE: we do an extra `.filter(Boolean)` here because, for some reason, the
+  // array of dataources contains a few `undefined`s.
+  const communityDataSourceIds = communityDataSources.filter(Boolean).map((dataSource) => dataSource.id);
+
+  return [...coreDataSourceIds, ...communityDataSourceIds];
+}
+
+const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
   const ajv = new Ajv();
   ajv.validate(schema, artifact);
 
-  if (ajv.errors?.length) {
+  return ajv.errors ?? [];
+}
+
+const main = () => {
+  const schema = getSchema('./schema/artifact.json');
+  const components = getArtifactComponents();
+  const dataSourceIds = getDataSourceIds('./schema/core-datasource-ids.json', components.dataSources);
+  const artifact = { ...components, dataSourceIds };
+  const errors = validateArtifact(schema, artifact);
+
+  if (errors.length) {
     console.error('*** Validation failed. See errors below. ***');
     console.error('--------------------------------------------');
-    parseErrors(ajv.errors, artifact);
+    console.log(JSON.stringify(errors, null, 4));
+    parseErrors(errors, artifact);
 
     process.exit(1);
   }
 }
 
+// TODO: refactor?
 const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
   return errors.forEach((e, idx) => {
     const artifactItemPath = e.instancePath.split('/').filter(Boolean).map(segment => {
