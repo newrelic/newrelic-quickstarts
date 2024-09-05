@@ -84,18 +84,16 @@ const main = () => {
   }
 }
 
-// TODO: refactor?
 const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
   return errors.forEach((e, idx) => {
     const artifactItemPath = e.instancePath.split('/').filter(Boolean).map(segment => {
-      if (parseInt(segment, 10)) {
-        return parseInt(segment);
-      }
-      return segment;
+      // If the segment is a numerical index, convert it to an int and return
+      // it, otherwise just return the segment string.
+      return parseInt(segment, 10) || segment;
     });
 
+    // Reduce over the segments to find the bad value in the artifact
     const badValue = artifactItemPath.reduce((acc, segment) => {
-      // @ts-ignore 
       return acc[segment];
     }, artifact);
 
