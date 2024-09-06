@@ -189,7 +189,10 @@ class DataSource extends Component<DataSourceConfig, string> {
     return directive;
   }
 
-  // TODO: verify that this returns all data sources (confidence shaken)
+  static isDataSource(x: DataSource | undefined): x is DataSource {
+    return x !== undefined;
+  }
+
   static getAll(): DataSource[] {
     return getAllDataSourceFiles()
       .map((configFilePath) => {
@@ -199,7 +202,7 @@ class DataSource extends Component<DataSourceConfig, string> {
           return dataSource;
         }
       })
-      .filter(Boolean) as DataSource[];
+      .filter(DataSource.isDataSource);
   }
 }
 
