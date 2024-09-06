@@ -87,7 +87,7 @@ const main = () => {
   console.log('[*] Validation succeeded');
 }
 
-const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
+const parseErrors = (errors: ErrorObject[], artifact: Record<string, unknown>) => {
   return errors.forEach((e, idx) => {
     // Get the path to the invalid value from the error `instancePath`.
     // NOTE: we're using `slice(1)` here to remove the leading `/` in the path.
