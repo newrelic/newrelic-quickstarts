@@ -82,6 +82,8 @@ const main = () => {
 
     process.exit(1);
   }
+
+  console.log('[*] Validation succeeded');
 }
 
 const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
