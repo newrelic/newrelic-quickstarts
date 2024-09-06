@@ -9,7 +9,7 @@ import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
 import { DataSourceConfig } from './types/DataSourceConfig';
 
-type ArtifactSchema = any; // NOTE: we might want to generate this, we might not care
+type ArtifactSchema = any;
 
 type ArtifactComponents = {
   quickstarts: QuickstartConfig[],
@@ -97,14 +97,15 @@ const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
       return acc[segment];
     }, artifact);
 
+    // All of our properties in the artifact are arrays so we can make some
+    // assumptions to grab the invalid item from the artifact
     const invalidItem = artifact[artifactItemPath[0]][artifactItemPath[1]];
 
     console.error(`Error #${idx + 1}:`, e);
     console.error('                         ');
     console.error('Received value:', badValue);
+
     console.error('                         ');
-    // All of our properties in the artifact are arrays so we can make some
-    // assumptions to grab the invalid item from the artifact
     if (invalidItem !== badValue) {
       console.error('Invalid item:', invalidItem);
     }
