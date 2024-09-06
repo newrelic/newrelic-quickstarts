@@ -10,7 +10,13 @@ import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
 import { DataSourceConfig } from './types/DataSourceConfig';
 
-type ArtifactSchema = any;
+type ArtifactSchema = Record<string, unknown>;
+
+type InvalidItem = {
+  value: unknown;
+  component: unknown;
+  error: ErrorObject;
+}
 
 type ArtifactComponents = {
   quickstarts: QuickstartConfig[],
@@ -76,43 +82,49 @@ const main = () => {
   const errors = validateArtifact(schema, artifact);
 
   if (errors.length) {
-    console.error('*** Validation failed. See errors below. ***');
-    console.error('--------------------------------------------');
-
-    parseErrors(errors, artifact);
-
+    const invalidItems = getInvalidItems(errors, artifact);
+    printErrors(invalidItems);
     process.exit(1);
   }
 
   console.log('[*] Validation succeeded');
 }
 
-const parseErrors = (errors: ErrorObject[], artifact: Record<string, unknown>) => {
-  return errors.forEach((e, idx) => {
+const getInvalidItems = (errors: ErrorObject[], artifact: ArtifactSchema): InvalidItem[] => {
+  return errors.map((error) => {
     // Get the path to the invalid value from the error `instancePath`.
     // NOTE: we're using `slice(1)` here to remove the leading `/` in the path.
-    const invalidValuePath = e.instancePath.split('/').slice(1);
+    const invalidValuePath = error.instancePath.split('/').slice(1);
 
-    const invalidValue = get(artifact, invalidValuePath);
+    const value = get(artifact, invalidValuePath);
 
     // Get the specific "component" (e.g. the alert or dashboard) that contains
     // the invalid value. This makes the assumption that the first two parts of
     // the "path" are the component type and the index in the array.
-    const invalidComponent = get(artifact, invalidValuePath.slice(0, 2));
+    const component = get(artifact, invalidValuePath.slice(0, 2));
 
-    console.error(`Error #${idx + 1}:`, e);
-    console.error('');
-    console.error('Received value:', invalidValue);
-
-    console.error('');
-    if (invalidComponent !== invalidValue) {
-      console.error('Invalid component:', invalidComponent);
-    }
-
-    if (idx + 1 !== errors.length) {
-      console.error('************************************');
-    }
+    return { value, component, error };
   });
+}
+
+const printErrors = (invalidItems: InvalidItem[]): void => {
+    console.error('*** Validation failed. See errors below. ***');
+    console.error('--------------------------------------------');
+
+    invalidItems.forEach(({ value, component, error }, idx) => {
+      console.error(`Error #${idx + 1}:`, error);
+      console.error('');
+      console.error('Received value:', value);
+
+      console.error('');
+      if (component !== value) {
+        console.error('Invalid component:', component);
+      }
+
+      if (idx < invalidItems.length - 1) {
+        console.error('************************************');
+      }
+    });
 }
 
 if (require.main === module) {
