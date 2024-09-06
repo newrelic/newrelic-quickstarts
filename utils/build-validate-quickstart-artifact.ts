@@ -36,7 +36,7 @@ const getSchema = (filepath: string): ArtifactSchema => {
 };
 
 // NOTE: we could run these in parallel to speed up the script
-const getArtifactComponents = (): ArtifactComponents => {
+export const getArtifactComponents = (): ArtifactComponents => {
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
 
@@ -57,7 +57,7 @@ const getArtifactComponents = (): ArtifactComponents => {
   }
 };
 
-const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
+export const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
   const coreDataSourceIds = yaml.load(
     fs.readFileSync(filepath).toString('utf8')
   ) as string[];
@@ -67,7 +67,7 @@ const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConf
   return [...coreDataSourceIds, ...communityDataSourceIds];
 }
 
-const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
+export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
   const ajv = new Ajv({ allErrors: true });
   ajv.validate(schema, artifact);
 
