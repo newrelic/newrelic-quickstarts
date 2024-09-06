@@ -41,9 +41,6 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     // find the matching data source ID from the config content
     const dataSource = allDataSources.find((i) => i.content?.id === id);
-    if (!dataSource) {
-      console.log('DATA SOURCE ID: ', id);
-    }
     // replace the identifier with the file path found from the id
     this.identifier = path.dirname(
       Component.removeBasePath(
