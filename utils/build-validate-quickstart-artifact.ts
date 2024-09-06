@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import get from 'lodash/get';
 
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";
@@ -88,28 +89,24 @@ const main = () => {
 
 const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
   return errors.forEach((e, idx) => {
-    const artifactItemPath = e.instancePath.split('/').filter(Boolean).map(segment => {
-      // If the segment is a numerical index, convert it to an int and return
-      // it, otherwise just return the segment string.
-      return parseInt(segment, 10) || segment;
-    });
+    // Get the path to the invalid value from the error `instancePath`.
+    // NOTE: we're using `slice(1)` here to remove the leading `/` in the path.
+    const invalidValuePath = e.instancePath.split('/').slice(1);
 
-    // Reduce over the segments to find the bad value in the artifact
-    const badValue = artifactItemPath.reduce((acc, segment) => {
-      return acc[segment];
-    }, artifact);
+    const invalidValue = get(artifact, invalidValuePath);
 
-    // All of our properties in the artifact are arrays so we can make some
-    // assumptions to grab the invalid item from the artifact
-    const invalidItem = artifact[artifactItemPath[0]][artifactItemPath[1]];
+    // Get the specific "component" (e.g. the alert or dashboard) that contains
+    // the invalid value. This makes the assumption that the first two parts of
+    // the "path" are the component type and the index in the array.
+    const invalidComponent = get(artifact, invalidValuePath.slice(0, 2));
 
     console.error(`Error #${idx + 1}:`, e);
     console.error('                         ');
-    console.error('Received value:', badValue);
+    console.error('Received value:', invalidValue);
 
     console.error('                         ');
-    if (invalidItem !== badValue) {
-      console.error('Invalid item:', invalidItem);
+    if (invalidComponent !== invalidValue) {
+      console.error('Invalid component:', invalidComponent);
     }
 
     if (idx + 1 !== errors.length) {
