@@ -101,10 +101,10 @@ const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
     const invalidComponent = get(artifact, invalidValuePath.slice(0, 2));
 
     console.error(`Error #${idx + 1}:`, e);
-    console.error('                         ');
+    console.error('');
     console.error('Received value:', invalidValue);
 
-    console.error('                         ');
+    console.error('');
     if (invalidComponent !== invalidValue) {
       console.error('Invalid component:', invalidComponent);
     }
