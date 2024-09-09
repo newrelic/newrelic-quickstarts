@@ -2,7 +2,11 @@
 name: Build Validate Quickstart Artifact
 
 on:
-  workflow_call:
+  workflow_run:
+    workflows:
+      - Validation Gate
+    types:
+      - completed
     inputs:
       pr-number:
         required: true
@@ -16,16 +20,30 @@ jobs:
     name: Build Validate Quickstart Artifact
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-        # Ensure we have the most recent commit to `main`
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
-          ref: "main"
-          fetch-depth: 0
+          workflow: validation_gate.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          ref: "refs/pull/${{ env.pr-number }}/merge"
 
       - name: Setup workspace
         uses: "./.github/actions/bootstrap"
-
-      - name: Run artifact validation
+      - name: Build & Validate Artifact
+        id: build-validate-artifact
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ env.pr-number }}
         run: |
           cd utils && yarn build-validate-quickstart-artifact
+
