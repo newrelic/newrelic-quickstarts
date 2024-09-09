@@ -78,8 +78,6 @@
         "summary",
         "title",
         "authors",
-        "documentation",
-        "level",
         "icon"
       ],
       "additionalProperties": false
@@ -113,7 +111,8 @@
     },
 
     "installDirective": {
-      "enum": [
+      "type": "object",
+      "oneOf": [
         {
           "type": "object",
           "properties": {
@@ -139,46 +138,55 @@
                 "nerdletState": { "type": "object" },
                 "requiresAccount": { "type": "boolean" }
               },
-              "required": ["nerdletId", "nerdletState", "requiresAccount"],
+              "required": ["nerdletId", "requiresAccount"],
               "additionalProperties": false
             }
           },
-          "required": "nerdlet",
+          "required": ["nerdlet"],
           "additionalProperties": false
         }
       ]
     },
 
     "alert": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "description": { "type": "string" },
-        "type": { "enum": ["BASELINE", "STATIC"] },
-        "nrql": { "type": "string" },
-        "runbookUrl": { "type": "string" },
-        "violationTimeLimitSeconds": { "type": "number" },
-        "enabled": { "type": "boolean" },
-        "terms": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "type": { "enum": ["BASELINE", "STATIC"], "type": "string", "nullable": true },
+          "nrql": {
             "type": "object",
             "properties": {
-              "duration": { "type": "number", "minimum": 5, "maximum": 120 },
-              "priority": { "enum": ["CRITICAL", "WARNING"] },
-              "operator": { "enum": ["ABOVE", "BELOW", "EQUAL"] },
-              "threshold": { "type": "number", "minimum": 0 },
-              "thresholdDuration": { "type": "number", "minimum": 0 },
-              "thresholdOccurances": { "enum": ["ALL", "AT_LEAST_ONCE"] }
+              "query": { "type": "string" }
             },
-            "required": ["duration"],
+            "required": ["query"],
             "additionalProperties": true
+          },
+          "runbookUrl": { "type": "string", "nullable": true },
+          "violationTimeLimitSeconds": { "type": "number" },
+          "enabled": { "type": "boolean" },
+          "terms": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "duration": { "type": "number", "minimum": 5, "maximum": 120 },
+                "priority": { "enum": ["CRITICAL", "WARNING"] },
+                "operator": { "enum": ["ABOVE", "BELOW", "EQUALS"] },
+                "threshold": { "type": "number", "minimum": 0 },
+                "thresholdDuration": { "type": "number", "minimum": 0 },
+                "thresholdOccurances": { "enum": ["ALL", "AT_LEAST_ONCE"] }
+              },
+              "additionalProperties": true
+            }
           }
-        }
-      },
-      "required": ["name", "description", "type"],
-      "additionalProperties": true
+        },
+        "required": ["name", "description", "type"],
+        "additionalProperties": true
+      }
     },
 
     "dashboard": {
@@ -186,7 +194,7 @@
       "properties": {
         "name": { "type": "string" },
         "pages": { "type": "array", "minItems": 1 },
-        "description": { "type": "string" },
+        "description": { "type": ["string", "null"] },
         "variables": { "type": "array" }
       },
       "required": ["name", "pages"],
