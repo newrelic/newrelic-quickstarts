@@ -1,0 +1,31 @@
+# Reusable workflow for creating, updating, or validating quickstarts for a single environment.
+name: Build Validate Quickstart Artifact
+
+on:
+  workflow_call:
+    inputs:
+      pr-number:
+        required: true
+        type: string
+
+env:
+  PR_NUMBER: ${{ inputs.pr-number }}
+
+jobs:
+  build-validate-artifact:
+    name: Build Validate Quickstart Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        # Ensure we have the most recent commit to `main`
+        with:
+          ref: "main"
+          fetch-depth: 0
+
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
+
+      - name: Run artifact validation
+        run: |
+          cd utils && yarn build-validate-quickstart-artifact
