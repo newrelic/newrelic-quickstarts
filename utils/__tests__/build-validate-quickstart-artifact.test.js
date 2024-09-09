@@ -35,8 +35,12 @@ describe('built-validate-quickstart-artifact', () => {
         .fn()
         .mockReturnValueOnce([{ config: 'test-dataSource-1' }]);
 
-      Alert.getAll = jest.fn().mockReturnValueOnce([]);
-      Dashboard.getAll = jest.fn().mockReturnValueOnce([]);
+      Alert.getAll = jest
+        .fn()
+        .mockReturnValueOnce([{ config: 'test-alert-1' }]);
+      Dashboard.getAll = jest
+        .fn()
+        .mockReturnValueOnce([{ config: 'test-dashboard-1' }]);
 
       const actual = getArtifactComponents();
 
@@ -45,8 +49,10 @@ describe('built-validate-quickstart-artifact', () => {
       expect(actual.quickstarts[1]).toEqual('test-quickstart-2');
       expect(actual.dataSources).toHaveLength(1);
       expect(actual.dataSources[0]).toEqual('test-dataSource-1');
-      expect(actual.alerts).toHaveLength(0);
-      expect(actual.dashboards).toHaveLength(0);
+      expect(actual.alerts).toHaveLength(1);
+      expect(actual.alerts[0]).toEqual('test-alert-1');
+      expect(actual.dashboards).toHaveLength(1);
+      expect(actual.dashboards[0]).toEqual('test-dashboard-1');
     });
 
     it('should produce a complete list of dataSource IDs', () => {
