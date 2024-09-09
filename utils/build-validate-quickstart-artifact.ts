@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import get from 'lodash/get';
 
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";
@@ -9,7 +10,13 @@ import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
 import { DataSourceConfig } from './types/DataSourceConfig';
 
-type ArtifactSchema = any;
+type ArtifactSchema = Record<string, unknown>;
+
+type InvalidItem = {
+  value: unknown;
+  component: unknown;
+  error: ErrorObject;
+}
 
 type ArtifactComponents = {
   quickstarts: QuickstartConfig[],
@@ -29,7 +36,7 @@ const getSchema = (filepath: string): ArtifactSchema => {
 };
 
 // NOTE: we could run these in parallel to speed up the script
-const getArtifactComponents = (): ArtifactComponents => {
+export const getArtifactComponents = (): ArtifactComponents => {
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
 
@@ -50,7 +57,7 @@ const getArtifactComponents = (): ArtifactComponents => {
   }
 };
 
-const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
+export const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
   const coreDataSourceIds = yaml.load(
     fs.readFileSync(filepath).toString('utf8')
   ) as string[];
@@ -60,7 +67,7 @@ const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConf
   return [...coreDataSourceIds, ...communityDataSourceIds];
 }
 
-const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
+export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): ErrorObject[] => {
   const ajv = new Ajv({ allErrors: true });
   ajv.validate(schema, artifact);
 
@@ -75,45 +82,49 @@ const main = () => {
   const errors = validateArtifact(schema, artifact);
 
   if (errors.length) {
+    const invalidItems = getInvalidItems(errors, artifact);
+    printErrors(invalidItems);
+    process.exit(1);
+  }
+
+  console.log('[*] Validation succeeded');
+}
+
+const getInvalidItems = (errors: ErrorObject[], artifact: ArtifactSchema): InvalidItem[] => {
+  return errors.map((error) => {
+    // Get the path to the invalid value from the error `instancePath`.
+    // NOTE: we're using `slice(1)` here to remove the leading `/` in the path.
+    const invalidValuePath = error.instancePath.split('/').slice(1);
+
+    const value = get(artifact, invalidValuePath);
+
+    // Get the specific "component" (e.g. the alert or dashboard) that contains
+    // the invalid value. This makes the assumption that the first two parts of
+    // the "path" are the component type and the index in the array.
+    const component = get(artifact, invalidValuePath.slice(0, 2));
+
+    return { value, component, error };
+  });
+}
+
+const printErrors = (invalidItems: InvalidItem[]): void => {
     console.error('*** Validation failed. See errors below. ***');
     console.error('--------------------------------------------');
 
-    parseErrors(errors, artifact);
+    invalidItems.forEach(({ value, component, error }, idx) => {
+      console.error(`Error #${idx + 1}:`, error);
+      console.error('');
+      console.error('Received value:', value);
 
-    process.exit(1);
-  }
-}
+      console.error('');
+      if (component !== value) {
+        console.error('Invalid component:', component);
+      }
 
-const parseErrors = (errors: ErrorObject[], artifact: Record<string, any>) => {
-  return errors.forEach((e, idx) => {
-    const artifactItemPath = e.instancePath.split('/').filter(Boolean).map(segment => {
-      // If the segment is a numerical index, convert it to an int and return
-      // it, otherwise just return the segment string.
-      return parseInt(segment, 10) || segment;
+      if (idx < invalidItems.length - 1) {
+        console.error('************************************');
+      }
     });
-
-    // Reduce over the segments to find the bad value in the artifact
-    const badValue = artifactItemPath.reduce((acc, segment) => {
-      return acc[segment];
-    }, artifact);
-
-    // All of our properties in the artifact are arrays so we can make some
-    // assumptions to grab the invalid item from the artifact
-    const invalidItem = artifact[artifactItemPath[0]][artifactItemPath[1]];
-
-    console.error(`Error #${idx + 1}:`, e);
-    console.error('                         ');
-    console.error('Received value:', badValue);
-
-    console.error('                         ');
-    if (invalidItem !== badValue) {
-      console.error('Invalid item:', invalidItem);
-    }
-
-    if (idx + 1 !== errors.length) {
-      console.error('************************************');
-    }
-  });
 }
 
 if (require.main === module) {
