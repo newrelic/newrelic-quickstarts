@@ -3,7 +3,13 @@ description: Reusable action to build and validate the component artifact
 runs:
   using: composite
   steps:
-    - name: Setup node
-      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+    - name: Checkout repository
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
-        node-version: 20
+        ref: ${{ github.sha }}
+    - name: Setup workspace
+      uses: "./.github/actions/bootstrap"
+    - name: Build & Validate Artifact
+      id: build-validate-artifact
+      run: |
+        cd utils && yarn build-validate-quickstart-artifact
