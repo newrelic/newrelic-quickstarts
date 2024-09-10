@@ -7,13 +7,27 @@ on:
       - main
 
 jobs:
-  validate-pr-artifact:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: ${{ github.sha }}
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
       - name: Validate PR Artifact
         uses: "./.github/actions/build-validate-artifact"
-  # add another job for creating/releasing artifact if it's a push to main here 
+  create-release:
+    needs: validate
+    runs-on: ubuntu-latest
+    # if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Create new release tag
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: minor
+          tag_prefix: v
+          create_annotated_tag: true
+
