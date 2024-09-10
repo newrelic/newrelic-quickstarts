@@ -7,13 +7,21 @@ on:
       - main
 
 jobs:
-  validate-pr-artifact:
+  setup-workspace:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           ref: ${{ github.sha }}
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
+
+  validate-pr-artifact:
+    needs: setup-workspace
+    runs-on: ubuntu-latest
+    steps:
       - name: Validate PR Artifact
         uses: "./.github/actions/build-validate-artifact"
+
   # add another job for creating/releasing artifact if it's a push to main here 
