@@ -99,7 +99,11 @@ const outputArtifact = (artifact: Artifact) => {
   console.log('[*] Outputting the artifact');
   try {
     fs.mkdirSync('./build', { recursive: true });
+
+    // Dump the artifact to artifact.json
     fs.writeFileSync('./build/artifact.json', JSON.stringify(artifact));
+    // Copy the schema to schema.json
+    fs.copyFileSync('./schema/artifact.json', './build/schema.json');
   } catch (e) {
     console.error('Error writing artifact to file:', e);
   }
