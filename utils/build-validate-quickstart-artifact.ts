@@ -9,6 +9,7 @@ import Dashboard, { DashboardConfig } from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
 import { DataSourceConfig } from './types/DataSourceConfig';
+import { passedProcessArguments } from './lib/helpers';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -74,7 +75,7 @@ export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): Er
   return ajv.errors ?? [];
 }
 
-const main = () => {
+const main = (shouldOutputArtifact: boolean = false) => {
   const schema = getSchema('./schema/artifact.json');
   const components = getArtifactComponents();
   const dataSourceIds = getDataSourceIds('./schema/core-datasource-ids.json', components.dataSources);
@@ -88,6 +89,20 @@ const main = () => {
   }
 
   console.log('[*] Validation succeeded');
+
+  if (shouldOutputArtifact) {
+    outputArtifact(artifact);
+  }
+}
+
+const outputArtifact = (artifact: Artifact) => {
+  console.log('[*] Outputting the artifact');
+  try {
+    fs.mkdirSync('./build', { recursive: true });
+    fs.writeFileSync('./build/artifact.json', JSON.stringify(artifact));
+  } catch (e) {
+    console.error('Error writing artifact to file:', e);
+  }
 }
 
 const getInvalidItems = (errors: ErrorObject[], artifact: ArtifactSchema): InvalidItem[] => {
@@ -108,25 +123,26 @@ const getInvalidItems = (errors: ErrorObject[], artifact: ArtifactSchema): Inval
 }
 
 const printErrors = (invalidItems: InvalidItem[]): void => {
-    console.error('*** Validation failed. See errors below. ***');
-    console.error('--------------------------------------------');
+  console.error('*** Validation failed. See errors below. ***');
+  console.error('--------------------------------------------');
 
-    invalidItems.forEach(({ value, component, error }, idx) => {
-      console.error(`Error #${idx + 1}:`, error);
-      console.error('');
-      console.error('Received value:', value);
+  invalidItems.forEach(({ value, component, error }, idx) => {
+    console.error(`Error #${idx + 1}:`, error);
+    console.error('');
+    console.error('Received value:', value);
 
-      console.error('');
-      if (component !== value) {
-        console.error('Invalid component:', component);
-      }
+    console.error('');
+    if (component !== value) {
+      console.error('Invalid component:', component);
+    }
 
-      if (idx < invalidItems.length - 1) {
-        console.error('************************************');
-      }
-    });
+    if (idx < invalidItems.length - 1) {
+      console.error('************************************');
+    }
+  });
 }
 
 if (require.main === module) {
-  main();
+  const shouldOutputArtifact = passedProcessArguments().includes('--output-artifact');
+  main(shouldOutputArtifact);
 }
