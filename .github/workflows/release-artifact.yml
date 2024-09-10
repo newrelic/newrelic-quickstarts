@@ -10,6 +10,7 @@ on:
   push:
     tags:
       - 'v*'
+# TODO: If this is triggered by a tag push, we don't want to bump versions
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -27,6 +28,7 @@ jobs:
       - name: Debugging output
         run: ls -la utils/build
       - name: Create new release tag
+        id: tag
         uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,3 +41,4 @@ jobs:
           files: utils/build/*
           fail_on_unmatched_files: true
           make_latest: true
+          tag_name: ${{ steps.tag.outputs.new_tag }}
