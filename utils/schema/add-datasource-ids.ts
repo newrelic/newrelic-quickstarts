@@ -10,7 +10,7 @@ const CORE_DATASOURCE_IDS_PATH = './core-datasource-ids.json';
 const DATASOURCE_BASE_PATH = '../../';
 
 type ArtifactSchema = {
-  properties: {
+  definitions: {
     dataSourceIds: {
       enum: string[];
     };
@@ -50,8 +50,8 @@ const updateSchema = (
 ): ArtifactSchema => {
   return {
     ...schema,
-    properties: {
-      ...schema.properties,
+    definitions: {
+      ...schema.definitions,
       dataSourceIds: { enum: ids },
     },
   };
