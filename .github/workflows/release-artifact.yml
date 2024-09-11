@@ -12,6 +12,13 @@ on:
       - andrew/NR-268466-main-validation
     tags:
       - 'v*'
+
+# Permissions for attestation
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -28,6 +35,10 @@ jobs:
           command-args: '--output-artifact'
       - name: Debugging output
         run: ls -la utils/build
+      - name: Attest artifact
+        uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c
+        with:
+          subject-path: utils/build/*
       - name: Create new release tag
         # Only run if this is a branch push (we'll need a new tag)
         if: ${{ startsWith(github.ref, 'refs/heads') }}
