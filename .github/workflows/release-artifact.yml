@@ -10,11 +10,6 @@ on:
       - main
     tags:
       - 'v*'
-
-# FIXME: We may need a different action for `Create new release tag` because
-# it uses semantic commits to determine the version bump type and we presumably
-# want this to always be a minor version bump.
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -34,13 +29,8 @@ jobs:
       - name: Create new release tag
         # Only run if this is a branch push (we'll need a new tag)
         if: ${{ startsWith(github.ref, 'refs/heads') }}
-        id: tag
-        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: minor
-          tag_prefix: v
-          create_annotated_tag: true
+        id: version
+        uses: "./.github/actions/bump-version-tag"
       - name: Create release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
         with:
@@ -49,4 +39,4 @@ jobs:
           make_latest: true
           # If we have a tag output from the previous step, use that as the tag
           # name, otherwise use the current ref which should be the tag.
-          tag_name: ${{ steps.tag.outputs.new_tag || github.ref }}
+          tag_name: ${{ steps.version.outputs.tag || github.ref }}
