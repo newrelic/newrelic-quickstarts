@@ -77,8 +77,6 @@ export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): Er
 
 const main = (shouldOutputArtifact: boolean = false) => {
   const schema = getSchema('./schema/artifact.json');
-
-  console.log(schema)
   const components = getArtifactComponents();
   const dataSourceIds = getDataSourceIds('./schema/core-datasource-ids.json', components.dataSources);
   const artifact = { ...components, dataSourceIds };
