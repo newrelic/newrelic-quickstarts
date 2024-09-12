@@ -17,7 +17,7 @@ import {
   ErrorOrNerdGraphError,
 } from './nr-graphql-helpers';
 
-interface DashboardConfig {
+export interface DashboardConfig {
   name: string;
   description?: string;
   pages: any;

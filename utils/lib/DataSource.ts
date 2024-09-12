@@ -41,7 +41,6 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     // find the matching data source ID from the config content
     const dataSource = allDataSources.find((i) => i.content?.id === id);
-
     // replace the identifier with the file path found from the id
     this.identifier = path.dirname(
       Component.removeBasePath(
@@ -96,7 +95,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       displayName: displayName && displayName.trim(),
       icon: this._getIconUrl(),
       install: this._parseInstall(),
-      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()): [],
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()) : [],
       keywords: keywords ? keywords.map((k) => k.trim()) : [],
       description: description && description.trim(),
     };
@@ -189,7 +188,31 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     return directive;
   }
+
+  static isDataSource(x: DataSource | undefined): x is DataSource {
+    return x !== undefined;
+  }
+
+  static getAll(): DataSource[] {
+    return getAllDataSourceFiles()
+      .map((configFilePath) => {
+        const id = getDataSourceId(configFilePath);
+        const dataSource = new DataSource(id);
+        if (dataSource != undefined) {
+          return dataSource;
+        }
+      })
+      .filter(DataSource.isDataSource);
+  }
 }
+
+const getDataSourceId = (filepath: string) => {
+  const yamlContent = yaml.load(
+    fs.readFileSync(filepath).toString('utf-8')
+  ) as DataSourceConfig;
+
+  return yamlContent.id;
+};
 
 export const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')

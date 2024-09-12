@@ -1,0 +1,25 @@
+name: Build and Validate Artifact
+description: Reusable action to build and validate the component artifact
+inputs:
+  output-artifact:
+    description: 'If provided, the action will output the artifact to the build directory'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Add data source ids to schema
+      shell: bash
+      run: |
+        cd utils && yarn add-datasource-ids
+
+    - name: Build & Validate Artifact
+      shell: bash
+      id: build-validate-artifact
+      run: |
+        cd utils && yarn build-validate-quickstart-artifact ${{ inputs.output-artifact && '--output-artifact' || '' }}
+
+    - name: Debugging output
+      shell: bash
+      if: ${{ runner.debug }}
+      run: ls -la utils/build

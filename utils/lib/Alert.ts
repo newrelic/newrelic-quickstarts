@@ -297,6 +297,16 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
     return result;
   }
+
+  static getAll() {
+    const alertPaths = glob.sync(path.join(__dirname, '..', '..', 'alert-policies', '**', '*.+(yml|yaml)'));
+    return alertPaths.map(alertPath => {
+      // The identifier for alerts is the folder and the file name
+      // e.g. `node-js/HighCpuUtilization.yml`
+      const identifier = path.join(...alertPath.split('/').slice(-2, -1));
+      return new Alert(identifier);
+    });
+  }
 }
 
 export default Alert;

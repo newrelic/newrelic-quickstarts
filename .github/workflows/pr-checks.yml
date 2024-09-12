@@ -1,0 +1,30 @@
+name: Validate PR Artifact
+
+on:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          ref: ${{ github.sha }}
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
+      - name: Validate PR Artifact
+        uses: "./.github/actions/build-validate-artifact"
+  validate-quickstart-ids:
+    runs-on: ubuntu-latest
+    if: ${{ github.base_ref == 'main' && github.head_ref == 'release' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          ref: ${{ github.sha }}
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
+      - name: Validate Quickstart IDs
+        run: |
+          cd utils && yarn validate-quickstart-ids
