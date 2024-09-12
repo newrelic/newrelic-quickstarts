@@ -106,6 +106,7 @@ const outputArtifact = (artifact: Artifact) => {
     fs.copyFileSync('./schema/artifact.json', './build/schema.json');
   } catch (e) {
     console.error('Error writing artifact to file:', e);
+    process.exit(1);
   }
 }
 
