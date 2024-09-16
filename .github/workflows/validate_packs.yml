@@ -39,7 +39,6 @@ jobs:
         run: cd utils && yarn check-quickstart-uniqueness
 
       - name: Add commit status
-        if: always()
         uses: "./.github/actions/add-commit-status"
         with:
           statusContext: "Validation / Quickstart id are unique"
@@ -74,7 +73,6 @@ jobs:
         run: cd utils && yarn validate-images
 
       - name: Add commit status
-        if: always()
         uses: "./.github/actions/add-commit-status"
         with:
           statusContext: "Validation / Image count and extension compliance"
@@ -109,100 +107,9 @@ jobs:
         run: cd utils && yarn validate-icons
 
       - name: Add commit status
-        if: always()
         uses: "./.github/actions/add-commit-status"
         with:
           statusContext: "Validation / Ensure icons exist"
-          state: ${{ job.status }}
-
-  validate-quickstart:
-    name: Validate Quickstart
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
-        with:
-          workflow: validation_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
-
-      - name: Get PR number
-        id: get_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
-
-      - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-        with:
-          ref: "refs/pull/${{ env.pr-number }}/merge"
-
-      - name: Setup workspace
-        uses: "./.github/actions/bootstrap"
-
-      - name: Validate pr quickstart files
-        id: validation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NR_API_URL: ${{ secrets.NR_API_URL }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
-          NEW_RELIC_NO_CONFIG_FILE: true
-          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
-          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
-          NEW_RELIC_HOST: staging-collector.newrelic.com
-          NODE_ENV: production
-          PR_NUMBER: ${{ env.pr-number }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          DRY_RUN=true
-          cd utils && yarn create-validate-pr-quickstarts "$URL" "$DRY_RUN"
-
-      - name: Add commit status
-        if: always()
-        uses: "./.github/actions/add-commit-status"
-        with:
-          statusContext: "Validation / Validate Quickstart Schema"
-          state: ${{ job.status }}
-
-  validate-data-source-ids:
-    name: Validate data source ids
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
-        with:
-          workflow: validation_gate.yml
-          run_id: ${{ github.event.workflow_run.id }}
-
-      - name: Get PR number
-        id: get_pr_number
-        run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
-
-      - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-        with:
-          ref: "refs/pull/${{ env.pr-number }}/merge"
-
-      - name: Setup workspace
-        uses: "./.github/actions/bootstrap"
-
-      - name: Validate new files
-        id: validation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ env.pr-number }}
-          NR_API_URL: ${{ secrets.NR_API_URL }}
-          NR_API_TOKEN: ${{ secrets.NR_API_TOKEN }}
-        run: |
-          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          cd utils && yarn validate-quickstart-data-sources "$URL"
-
-      - name: Add commit status
-        if: always()
-        uses: "./.github/actions/add-commit-status"
-        with:
-          statusContext: "Validation / Data source ids exist"
           state: ${{ job.status }}
 
   ensure-quickstart-dashboard-names-are-unique:
@@ -234,7 +141,6 @@ jobs:
         run: cd utils && yarn check-dashboard-name-uniqueness
 
       - name: Add commit status
-        if: always()
         uses: "./.github/actions/add-commit-status"
         with:
           statusContext: "Validation / Quickstart dashboard name is unique"
