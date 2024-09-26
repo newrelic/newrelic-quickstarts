@@ -11,7 +11,7 @@ New Relic One quickstarts help accelerate your New Relic journey by providing im
 - Clear instructions for instrumenting your services
 - Observability building blocks like dashboards and alerts
 
-All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observability) open source ecosystem where New Relic developers, partners, and customers contribute their best-practice solutions.
+All of this is available through our [Instant Observability](https://developer.newrelic.com/instant-observability) open source ecosystem where New Relic developers, partners, and customers contribute their best practice solutions.
 
 ## New Relic One Instant Observability
 
@@ -23,7 +23,7 @@ You can search for all the available quickstarts in the [New Relic Instant Obser
 
 > Review our comprehensive [Developer Guide](https://developer.newrelic.com/contribute-to-quickstarts/) to get starting building your quickstart!
 
-Head over to our [contributing guide](./CONTRIBUTING.md) to learn how to define your own quickstart! 
+Head over to our [contributing guide](./CONTRIBUTING.md) to learn how to define your own quickstart!
 
 ## Support
 
@@ -48,4 +48,3 @@ If you believe you have found a security vulnerability in this project or any of
 ## License
 
 New Relic One quickstarts is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
-
