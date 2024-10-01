@@ -15,7 +15,8 @@ import {
 } from '../constants';
 import {
   fetchNRGraphqlResults,
-  getCategoryTermsFromKeywords,
+  getAllCategoryTerms,
+  getValidCategoryTerms,
 } from './nr-graphql-helpers';
 import type {
   QuickstartMutationVariable,
@@ -134,10 +135,15 @@ class Quickstart {
 
   /**
    * Get mutation variables from quickstart config
+   * @param dryRun if true, will generate a mock UUID for the quickstart
+   * @param validTerms if provided, will only accept these keywords and filter
+   * out user-supplied keywords. If not provided, will fetch them from catalog
+   * service.
    * @returns - Promised mutation variables for quickstart
    */
   async getMutationVariables(
-    dryRun: boolean
+    dryRun: boolean,
+    validTerms?: string[]
   ): Promise<QuickstartMutationVariable> {
     if (!this.isValid) {
       console.error(
@@ -158,9 +164,13 @@ class Quickstart {
       level,
     } = this.config;
 
+    if (!validTerms) {
+      validTerms = await getAllCategoryTerms();
+    }
+
     const metadata = {
       authors: authors && authors.map((author) => ({ name: author })),
-      categoryTerms: await getCategoryTermsFromKeywords(keywords),
+      categoryTerms: getValidCategoryTerms(keywords, validTerms),
       description: description && description.trim(),
       displayName: title && title.trim(),
       slug: slug && slug.trim(),

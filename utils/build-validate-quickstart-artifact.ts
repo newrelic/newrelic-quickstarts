@@ -10,6 +10,8 @@ import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
 import { DataSourceConfig } from './types/DataSourceConfig';
 import { passedProcessArguments } from './lib/helpers';
+import { QuickstartMutationVariable } from './types/QuickstartMutationVariable';
+import { getAllCategoryTerms } from './lib/nr-graphql-helpers';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -28,6 +30,7 @@ type ArtifactComponents = {
 
 type Artifact = ArtifactComponents | {
   dataSourceIds: string[]
+  quickstarts: QuickstartMutationVariable[]
 }
 
 const getSchema = (filepath: string): ArtifactSchema => {
@@ -37,7 +40,8 @@ const getSchema = (filepath: string): ArtifactSchema => {
 };
 
 // NOTE: we could run these in parallel to speed up the script
-export const getArtifactComponents = (): ArtifactComponents => {
+export const getArtifactComponents = async (): Promise<ArtifactComponents> => {
+
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
 
@@ -75,9 +79,9 @@ export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): Er
   return ajv.errors ?? [];
 }
 
-const main = (shouldOutputArtifact: boolean = false) => {
+const main = async (shouldOutputArtifact: boolean = false) => {
   const schema = getSchema('./schema/artifact.json');
-  const components = getArtifactComponents();
+  const components = await getArtifactComponents();
   const dataSourceIds = getDataSourceIds('./schema/core-datasource-ids.json', components.dataSources);
   const artifact = { ...components, dataSourceIds };
   const errors = validateArtifact(schema, artifact);
@@ -91,7 +95,13 @@ const main = (shouldOutputArtifact: boolean = false) => {
   console.log('[*] Validation succeeded');
 
   if (shouldOutputArtifact) {
-    outputArtifact(artifact);
+    const categoryTerms = await getAllCategoryTerms();
+    const transformedQuickstarts = await Promise.all(Quickstart.getAll().map(async (qs) => {
+      return qs.getMutationVariables(false, categoryTerms);
+    }
+    ));
+
+    outputArtifact({ ...artifact, quickstarts: transformedQuickstarts });
   }
 }
 
