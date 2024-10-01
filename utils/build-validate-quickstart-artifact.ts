@@ -40,7 +40,7 @@ const getSchema = (filepath: string): ArtifactSchema => {
 };
 
 // NOTE: we could run these in parallel to speed up the script
-export const getArtifactComponents = async (): Promise<ArtifactComponents> => {
+export const getArtifactComponents = (): ArtifactComponents => {
 
   const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
@@ -81,7 +81,7 @@ export const validateArtifact = (schema: ArtifactSchema, artifact: Artifact): Er
 
 const main = async (shouldOutputArtifact: boolean = false) => {
   const schema = getSchema('./schema/artifact.json');
-  const components = await getArtifactComponents();
+  const components = getArtifactComponents();
   const dataSourceIds = getDataSourceIds('./schema/core-datasource-ids.json', components.dataSources);
   const artifact = { ...components, dataSourceIds };
   const errors = validateArtifact(schema, artifact);
