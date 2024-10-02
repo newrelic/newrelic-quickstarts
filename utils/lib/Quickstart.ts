@@ -198,6 +198,20 @@ class Quickstart {
     };
   }
 
+  public transformForArtifact(): QuickstartConfig | { authors: { name: string }[] } {
+    const config = {
+      ...this.config,
+      // @ts-ignore
+      displayName: this.config.title,
+      icon: this._constructIconUrl(this.config.icon),
+      authors: this.config.authors.map((author) => ({ name: author })),
+    }
+
+    // @ts-ignore
+    delete config.title;
+    return config;
+  }
+
   public async submitMutation(dryRun = true) {
     logger.info(`Submitting mutation for ${this.identifier}`, { dryRun });
     const { data, errors } = await fetchNRGraphqlResults<

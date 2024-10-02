@@ -73,6 +73,10 @@ class DataSource extends Component<DataSourceConfig, string> {
     return this._getYamlConfigContent();
   }
 
+  public transformForArtifact() {
+    return { ...this.config, icon: this._getIconUrl() };
+  }
+
   /**
    * Get the variables for the **Quickstart** mutation.
    *
