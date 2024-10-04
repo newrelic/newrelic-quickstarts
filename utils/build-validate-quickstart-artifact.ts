@@ -8,8 +8,8 @@ import Alert from "./lib/Alert";
 import Dashboard, { DashboardConfig } from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
 import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
-import { DataSourceConfig } from './types/DataSourceConfig';
 import { passedProcessArguments } from './lib/helpers';
+import { ArtifactDataSourceConfig } from './types/Artifact';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -21,7 +21,7 @@ type InvalidItem = {
 
 type ArtifactComponents = {
   quickstarts: QuickstartConfig[],
-  dataSources: DataSourceConfig[],
+  dataSources: ArtifactDataSourceConfig[],
   alerts: QuickstartConfigAlert[][],
   dashboards: DashboardConfig[]
 }
@@ -59,7 +59,7 @@ export const getArtifactComponents = (): ArtifactComponents => {
   }
 };
 
-export const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
+export const getDataSourceIds = (filepath: string, communityDataSources: ArtifactComponents['dataSources']): string[] => {
   const coreDataSourceIds = yaml.load(
     fs.readFileSync(filepath).toString('utf8')
   ) as string[];

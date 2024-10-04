@@ -17,6 +17,7 @@ import type {
   DataSourceInstallDirectiveInput,
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
+import { ArtifactInstall, ArtifactInstallDirective } from '../types/Artifact';
 
 export interface DataSourceMutationResponse {
   dataSource: {
@@ -74,7 +75,26 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   public transformForArtifact() {
-    return { ...this.config, icon: this._getIconUrl() };
+    const { keywords, description, categoryTerms, icon, ...rest } = this.config;
+
+    return {
+      ...rest,
+      iconUrl: this._getIconUrl(),
+      install: this._parseInstallsForArtifact(),
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()) : [],
+      keywords: keywords ? keywords.map((k) => k.trim()) : [],
+      description: description && description.trim(),
+    };
+  }
+
+  private _parseInstallsForArtifact() {
+    const { install } = this.config;
+
+    return {
+      primary: this._parseInstallDirectiveForArtifact(install.primary),
+      fallback:
+        install.fallback && this._parseInstallDirectiveForArtifact(install.fallback),
+    };
   }
 
   /**
@@ -187,6 +207,33 @@ class DataSource extends Component<DataSourceConfig, string> {
           nerdletState: nerdletState && JSON.stringify(nerdletState),
           requiresAccount: requiresAccount,
         },
+      };
+    }
+
+    return directive;
+  }
+
+  /**
+   * Helper method that returns the directive, based on its type.
+   */
+  private _parseInstallDirectiveForArtifact(
+    directive: DataSourceConfigInstallDirective
+  ): ArtifactInstall {
+    if ('link' in directive) {
+      const { url } = directive.link;
+
+      return {
+        url: url?.trim() ?? '',
+      };
+    }
+
+    if ('nerdlet' in directive) {
+      const { nerdletId, nerdletState, requiresAccount } = directive.nerdlet;
+
+      return {
+        nerdletId: nerdletId?.trim() ?? '',
+        nerdletState: nerdletState,
+        requiresAccount: requiresAccount,
       };
     }
 

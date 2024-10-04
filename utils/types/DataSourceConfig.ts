@@ -8,9 +8,9 @@ export interface DataSourceConfig {
   icon?: string;
 }
 
-export type DataSourceConfigInstall = {
-  primary: DataSourceConfigInstallDirective;
-  fallback?: DataSourceConfigInstallDirective;
+export type DataSourceConfigInstall<T = DataSourceConfigInstallDirective> = {
+  primary: T;
+  fallback?: T;
 };
 
 export type DataSourceConfigInstallDirective =
@@ -23,7 +23,7 @@ interface DataSourceConfigLinkDirective {
   };
 }
 
-interface DataSourceConfigNerdletDirective {
+export interface DataSourceConfigNerdletDirective {
   nerdlet: {
     nerdletId: string;
     nerdletState: Record<string, string>;
