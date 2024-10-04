@@ -3,7 +3,7 @@ import * as nrGraphQlHelpers from '../nr-graphql-helpers';
 import { GITHUB_RAW_BASE_URL, GITHUB_REPO_BASE_URL } from '../../constants';
 import Quickstart from '../Quickstart';
 
-nrGraphQlHelpers.getCategoryTermsFromKeywords = jest.fn();
+nrGraphQlHelpers.getValidCategoryTerms = jest.fn();
 
 const MOCK_FILES_BASEPATH = path.resolve(__dirname, '../../mock_files');
 
@@ -23,7 +23,7 @@ describe('Quickstart', () => {
     });
 
     test('Creates invalid quickstart', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {});
+      jest.spyOn(global.console, 'error').mockImplementation(() => { });
 
       const qs = new Quickstart('', MOCK_FILES_BASEPATH);
 
@@ -33,7 +33,7 @@ describe('Quickstart', () => {
 
   describe('getConfigContent', () => {
     test('Handles invalid quickstart', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {});
+      jest.spyOn(global.console, 'error').mockImplementation(() => { });
 
       const qs = new Quickstart('', MOCK_FILES_BASEPATH);
 
@@ -80,7 +80,7 @@ describe('Quickstart', () => {
     });
 
     test('Ensure quickstart is invalid from invalid components', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {});
+      jest.spyOn(global.console, 'error').mockImplementation(() => { });
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-8/config.yml',
         MOCK_FILES_BASEPATH
@@ -102,8 +102,8 @@ describe('Quickstart', () => {
     });
 
     test('Ensure quickstart is invalid from an invalid Alert', () => {
-      jest.spyOn(global.console, 'error').mockImplementation(() => {});
-      jest.spyOn(global.console, 'log').mockImplementation(() => {});
+      jest.spyOn(global.console, 'error').mockImplementation(() => { });
+      jest.spyOn(global.console, 'log').mockImplementation(() => { });
       const qs = new Quickstart(
         'quickstarts/mock-quickstart-6/config.yml',
         MOCK_FILES_BASEPATH
@@ -135,7 +135,7 @@ describe('Quickstart', () => {
         MOCK_FILES_BASEPATH
       );
 
-      nrGraphQlHelpers.getCategoryTermsFromKeywords.mockResolvedValueOnce(
+      nrGraphQlHelpers.getValidCategoryTerms.mockResolvedValueOnce(
         undefined
       );
       const variables = await qs.getMutationVariables(true);
