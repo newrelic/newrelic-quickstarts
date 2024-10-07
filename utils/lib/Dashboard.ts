@@ -104,6 +104,21 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     }
   }
 
+  public transformForArtifact() {
+    const { name, description } = this.config;
+    const screenshotPaths = this.getScreenshotPaths();
+
+    return {
+      id: this.identifier,
+      description: description && description.trim(),
+      displayName: name && name.trim(),
+      rawConfiguration: JSON.stringify(this.config),
+      sourceUrl: Component.getAssetSourceUrl(this.configPath),
+      screenshots:
+        screenshotPaths && screenshotPaths.map((s) => this.getScreenshotUrl(s)),
+    };
+  }
+
   /**
    * Get mutation variables from dashboard config
    * @returns - mutation variables for dashboard.

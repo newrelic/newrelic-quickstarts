@@ -17,7 +17,7 @@ import type {
   DataSourceInstallDirectiveInput,
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
-import { ArtifactInstall, ArtifactInstallDirective } from '../types/Artifact';
+import { ArtifactInstall } from '../types/Artifact';
 
 export interface DataSourceMutationResponse {
   dataSource: {
