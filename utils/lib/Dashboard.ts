@@ -109,6 +109,7 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     const screenshotPaths = this.getScreenshotPaths();
 
     return {
+      id: this.identifier,
       description: description && description.trim(),
       displayName: name && name.trim(),
       rawConfiguration: JSON.stringify(this.config),
