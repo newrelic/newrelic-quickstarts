@@ -5,11 +5,11 @@ import get from 'lodash/get';
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";
 import Alert from "./lib/Alert";
-import Dashboard, { DashboardConfig } from "./lib/Dashboard";
+import Dashboard from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
-import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
+import { QuickstartConfigAlert } from './types/QuickstartConfig';
 import { passedProcessArguments } from './lib/helpers';
-import { ArtifactDataSourceConfig } from './types/Artifact';
+import { ArtifactDataSourceConfig, ArtifactDashboardConfig, ArtifactQuickstartConfig } from './types/Artifact';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -20,10 +20,10 @@ type InvalidItem = {
 }
 
 type ArtifactComponents = {
-  quickstarts: QuickstartConfig[],
+  quickstarts: ArtifactQuickstartConfig[],
   dataSources: ArtifactDataSourceConfig[],
   alerts: QuickstartConfigAlert[][],
-  dashboards: DashboardConfig[]
+  dashboards: ArtifactDashboardConfig[]
 }
 
 type Artifact = ArtifactComponents | {
@@ -47,11 +47,10 @@ export const getArtifactComponents = (): ArtifactComponents => {
   const alerts = Alert.getAll().map((alert) => alert.config);
   console.log(`[*] Found ${alerts.length} alerts`);
 
-  const dashboards = Dashboard.getAll().map((dashboard) => dashboard.config);
+  const dashboards = Dashboard.getAll().map((dashboard) => dashboard.transformForArtifact());
   console.log(`[*] Found ${dashboards.length} dashboards`);
 
   return {
-    // @ts-ignore
     quickstarts,
     dataSources,
     alerts,

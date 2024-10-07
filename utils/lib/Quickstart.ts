@@ -23,6 +23,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
+import {ArtifactQuickstartConfig} from '../types/Artifact';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -198,7 +199,7 @@ class Quickstart {
     };
   }
 
-  public transformForArtifact(): QuickstartConfig | { authors: { name: string }[] } {
+  public transformForArtifact(): ArtifactQuickstartConfig {
     const config = {
       ...this.config,
       // @ts-ignore

@@ -30,3 +30,45 @@ interface ArtifactDataSourceConfigNerdletDirective {
   nerdletState: Record<string, string>;
   requiresAccount: boolean;
 }
+
+type DashboardScreenshot = {
+  url: string;
+}
+
+export interface ArtifactDashboardConfig {
+  description?: string;
+  displayName: string;
+  rawConfiguration: string;
+  sourceUrl?: string;
+  screenshots?: DashboardScreenshot[];
+}
+
+type QuickstartConfigDocumentation = {
+  name: string;
+  description: string;
+  url: string;
+}
+
+export type QuickstartConfigSupportLevel =
+  | 'New Relic'
+  | 'Community'
+  | 'Verified';
+
+type QuickstartConfig = {
+  id: string;
+  description: string;
+  title: string;
+  slug?: string;
+  documentation: QuickstartConfigDocumentation[];
+  icon: string;
+  keywords?: string[];
+  summary: string;
+  level: QuickstartConfigSupportLevel;
+  alertPolicies?: string[];
+  dashboards?: string[];
+  dataSourceIds?: string[];
+}
+
+export interface ArtifactQuickstartConfig extends QuickstartConfig {
+  authors: Array<{ name: string; }>
+}
