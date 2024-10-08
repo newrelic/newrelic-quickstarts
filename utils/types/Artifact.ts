@@ -44,26 +44,27 @@ export interface ArtifactDashboardConfig {
 }
 
 type QuickstartConfigDocumentation = {
-  name: string;
+  displayName: string;
   description: string;
   url: string;
 }
 
 export type QuickstartConfigSupportLevel =
-  | 'New Relic'
-  | 'Community'
-  | 'Verified';
+  |'NEW_RELIC'
+  |'COMMUNITY'
+  |'VERIFIED'
+  |'ENTERPRISE';
 
 type QuickstartConfig = {
-  id: string;
+  quickstartUuid: string;
   description: string;
-  title: string;
+  displayName: string;
   slug?: string;
   documentation: QuickstartConfigDocumentation[];
-  icon: string;
+  iconUrl: string;
   keywords?: string[];
   summary: string;
-  level: QuickstartConfigSupportLevel;
+  supportLevel: QuickstartConfigSupportLevel;
   alertPolicies?: string[];
   dashboards?: string[];
   dataSourceIds?: string[];
