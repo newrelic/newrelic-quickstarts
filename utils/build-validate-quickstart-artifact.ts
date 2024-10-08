@@ -22,7 +22,7 @@ type ArtifactComponents = {
   quickstarts: ArtifactQuickstartConfig[],
   dataSources: ArtifactDataSourceConfig[],
   alerts: ArtifactAlertConfig,
-  dashboards: ArtifactDashboardConfig[]
+  dashboards: ArtifactDashboardConfig
 }
 
 type Artifact = ArtifactComponents | {
@@ -51,8 +51,12 @@ export const getArtifactComponents = (): ArtifactComponents => {
   }, {});
   console.log(`[*] Found ${Object.keys(alerts).length} alerts`);
 
-  const dashboards = Dashboard.getAll().map((dashboard) => dashboard.transformForArtifact());
-  console.log(`[*] Found ${dashboards.length} dashboards`);
+  const dashboards = Dashboard.getAll().reduce((acc, dash) => {
+    const dashboard =  dash.transformForArtifact()
+    return { ...acc, ...dashboard }
+
+  }, {});
+  console.log(`[*] Found ${Object.keys(dashboards).length} dashboards`);
 
   return {
     quickstarts,

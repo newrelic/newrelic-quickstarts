@@ -36,11 +36,13 @@ type DashboardScreenshot = {
 }
 
 export interface ArtifactDashboardConfig {
-  description?: string;
-  displayName: string;
-  rawConfiguration: string;
-  sourceUrl?: string;
-  screenshots?: DashboardScreenshot[];
+  [id: string]: {
+    description?: string;
+    displayName: string;
+    rawConfiguration: string;
+    sourceUrl?: string;
+    screenshots?: DashboardScreenshot[];
+  }
 }
 
 type QuickstartConfigDocumentation = {
