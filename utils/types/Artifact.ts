@@ -73,3 +73,17 @@ type QuickstartConfig = {
 export interface ArtifactQuickstartConfig extends QuickstartConfig {
   authors: Array<{ name: string; }>
 }
+
+type AlertType = 'BASELINE' | 'STATIC';
+
+type ArtifactAlert  = {
+  description?: string;
+  displayName: string;
+  rawConfiguration: string;
+  sourceUrl?: string;
+  type: AlertType;
+}
+
+export interface ArtifactAlertConfig {
+  [id: string]: ArtifactAlert[]
+}

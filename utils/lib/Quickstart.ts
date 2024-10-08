@@ -212,6 +212,8 @@ class Quickstart {
       dataSourceIds,
       id,
       level,
+      dashboards = [],
+      alertPolicies = [],
     } = this.config;
 
 
@@ -236,6 +238,8 @@ class Quickstart {
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       dataSourceIds: dataSourceIds,
+      dashboards,
+      alertPolicies,
     };
 
 
