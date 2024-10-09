@@ -23,7 +23,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
-import {ArtifactQuickstartConfig} from '../types/Artifact';
+import { ArtifactQuickstartConfig } from '../types/Artifact';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -199,6 +199,10 @@ class Quickstart {
     };
   }
 
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
   public transformForArtifact(): ArtifactQuickstartConfig {
     const {
       authors,
@@ -215,7 +219,6 @@ class Quickstart {
       dashboards = [],
       alertPolicies = [],
     } = this.config;
-
 
     const metadata = {
       quickstartUuid: id,
@@ -241,7 +244,6 @@ class Quickstart {
       dashboards,
       alertPolicies,
     };
-
 
     return metadata;
   }

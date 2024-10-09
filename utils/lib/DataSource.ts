@@ -17,7 +17,7 @@ import type {
   DataSourceInstallDirectiveInput,
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
-import { ArtifactInstall } from '../types/Artifact';
+import { ArtifactDataSourceConfig, ArtifactInstall } from '../types/Artifact';
 
 export interface DataSourceMutationResponse {
   dataSource: {
@@ -25,7 +25,11 @@ export interface DataSourceMutationResponse {
   };
 }
 
-class DataSource extends Component<DataSourceConfig, string> {
+class DataSource extends Component<
+  DataSourceConfig,
+  string,
+  ArtifactDataSourceConfig
+> {
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
@@ -74,6 +78,10 @@ class DataSource extends Component<DataSourceConfig, string> {
     return this._getYamlConfigContent();
   }
 
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
   public transformForArtifact() {
     const { keywords, description, categoryTerms, icon, ...rest } = this.config;
 
@@ -93,7 +101,8 @@ class DataSource extends Component<DataSourceConfig, string> {
     return {
       primary: this._parseInstallDirectiveForArtifact(install.primary),
       fallback:
-        install.fallback && this._parseInstallDirectiveForArtifact(install.fallback),
+        install.fallback &&
+        this._parseInstallDirectiveForArtifact(install.fallback),
     };
   }
 

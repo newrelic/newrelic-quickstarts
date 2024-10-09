@@ -1,3 +1,4 @@
+/* -- Data source -- */
 export interface ArtifactDataSourceConfig {
   id: string;
   displayName: string;
@@ -9,11 +10,13 @@ export interface ArtifactDataSourceConfig {
 }
 
 export type ArtifactInstallDirective = {
-  primary: ArtifactInstall,
-  fallback?: ArtifactInstall
-}
+  primary: ArtifactInstall;
+  fallback?: ArtifactInstall;
+};
 
-export type ArtifactInstall = ArtifactDataSourceConfigNerdletDirective | ArtifactDataSourceConfigLinkDirective;
+export type ArtifactInstall =
+  | ArtifactDataSourceConfigNerdletDirective
+  | ArtifactDataSourceConfigLinkDirective;
 
 interface ArtifactDataSourceConfigNerdletDirective {
   nerdletId: string;
@@ -31,31 +34,21 @@ interface ArtifactDataSourceConfigNerdletDirective {
   requiresAccount: boolean;
 }
 
-type DashboardScreenshot = {
-  url: string;
-}
-
-export interface ArtifactDashboardConfig {
-  [id: string]: {
-    description?: string;
-    displayName: string;
-    rawConfiguration: string;
-    sourceUrl?: string;
-    screenshots?: DashboardScreenshot[];
-  }
-}
+/* -- Quickstart -- */
 
 type QuickstartConfigDocumentation = {
   displayName: string;
   description: string;
   url: string;
-}
+};
 
 export type QuickstartConfigSupportLevel =
-  |'NEW_RELIC'
-  |'COMMUNITY'
-  |'VERIFIED'
-  |'ENTERPRISE';
+  | 'NEW_RELIC'
+  | 'COMMUNITY'
+  | 'VERIFIED'
+  // Enterprise is deprecated. However some quickstarts still have this support
+  // level within their config.
+  | 'ENTERPRISE';
 
 type QuickstartConfig = {
   quickstartUuid: string;
@@ -70,22 +63,40 @@ type QuickstartConfig = {
   alertPolicies?: string[];
   dashboards?: string[];
   dataSourceIds?: string[];
-}
+};
 
 export interface ArtifactQuickstartConfig extends QuickstartConfig {
-  authors: Array<{ name: string; }>
+  authors: Array<{ name: string }>;
 }
+
+/* -- Dashboard -- */
+
+type DashboardScreenshot = {
+  url: string;
+};
+
+export interface ArtifactDashboardConfig {
+  [id: string]: {
+    description?: string;
+    displayName: string;
+    rawConfiguration: string;
+    sourceUrl?: string;
+    screenshots?: DashboardScreenshot[];
+  };
+}
+
+/* --- Alert --- */
 
 type AlertType = 'BASELINE' | 'STATIC';
 
-type ArtifactAlert  = {
+type ArtifactAlert = {
   description?: string;
   displayName: string;
   rawConfiguration: string;
   sourceUrl?: string;
   type: AlertType;
-}
+};
 
 export interface ArtifactAlertConfig {
-  [id: string]: ArtifactAlert[]
+  [id: string]: ArtifactAlert[];
 }

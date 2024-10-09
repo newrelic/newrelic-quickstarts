@@ -16,6 +16,7 @@ import {
   fetchNRGraphqlResults,
   ErrorOrNerdGraphError,
 } from './nr-graphql-helpers';
+import { ArtifactDashboardConfig } from '../types/Artifact';
 
 export interface DashboardConfig {
   name: string;
@@ -61,7 +62,11 @@ export type SubmitSetRequiredDataSourcesMutationResult =
   | NerdGraphResponseWithLocalErrors<DashboardSetRequiredDataSourcesMutationResults>
   | { errors: ErrorOrNerdGraphError[] };
 
-class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
+class Dashboard extends Component<
+  DashboardConfig,
+  QuickstartDashboardInput,
+  ArtifactDashboardConfig
+> {
   /**
    * @returns - filepath from top level directory.
    */
@@ -104,7 +109,18 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
     }
   }
 
-  public transformForArtifact() {
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  transformForArtifact() {
+    if (!this.isValid) {
+      console.error(
+        `Dashboard is invalid.\nPlease check the dashboard at ${this.identifier}\n`
+      );
+      return {};
+    }
+
     const { name, description } = this.config;
     const screenshotPaths = this.getScreenshotPaths();
 
@@ -115,9 +131,10 @@ class Dashboard extends Component<DashboardConfig, QuickstartDashboardInput> {
         rawConfiguration: JSON.stringify(this.config),
         sourceUrl: Component.getAssetSourceUrl(this.configPath),
         screenshots:
-          screenshotPaths && screenshotPaths.map((s) => this.getScreenshotUrl(s)),
-        }
-      };
+          screenshotPaths &&
+          screenshotPaths.map((s) => this.getScreenshotUrl(s)),
+      },
+    };
   }
 
   /**
