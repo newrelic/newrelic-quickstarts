@@ -1,20 +1,36 @@
-import * as fs from 'fs';
+import * as path from 'path';
 import Quickstart from '../lib/Quickstart';
 import DataSource from '../lib/DataSource';
 import Alert from '../lib/Alert';
 import Dashboard from '../lib/Dashboard';
-
 import {
   getArtifactComponents,
-  getDataSourceIds,
   validateArtifact,
 } from '../build-validate-quickstart-artifact';
 
-jest.mock('../lib/Quickstart');
-jest.mock('../lib/DataSource');
-jest.mock('../lib/Alert');
-jest.mock('../lib/Dashboard');
-jest.mock('fs');
+const MOCK_FILES_BASEPATH = path.resolve(__dirname, '..', 'mock_files');
+
+const mockQuickstart1 = new Quickstart(
+  '/quickstarts/mock-quickstart-1/config.yml',
+  MOCK_FILES_BASEPATH
+);
+
+const mockQuickstart2 = new Quickstart(
+  'quickstarts/mock-quickstart-2/config.yml',
+  MOCK_FILES_BASEPATH
+);
+
+const mockDataSource1 = new DataSource(
+  'test-data-source',
+  MOCK_FILES_BASEPATH
+)
+
+const mockAlert1 = new Alert(
+  'mock-alert-policy-1',
+  MOCK_FILES_BASEPATH
+);
+
+const mockDashboard1 = new Dashboard('mock-dashboard-1', MOCK_FILES_BASEPATH);
 
 describe('built-validate-quickstart-artifact', () => {
   beforeEach(() => {
@@ -26,58 +42,27 @@ describe('built-validate-quickstart-artifact', () => {
     it('should find all of the components', () => {
       Quickstart.getAll = jest
         .fn()
-        .mockReturnValueOnce([
-          { config: 'test-quickstart-1' },
-          { config: 'test-quickstart-2' },
-        ]);
+        .mockReturnValueOnce([mockQuickstart1, mockQuickstart2]);
 
-      DataSource.getAll = jest
-        .fn()
-        .mockReturnValueOnce([{ config: 'test-dataSource-1' }]);
+      DataSource.getAll = jest.fn().mockReturnValueOnce([mockDataSource1]);
 
-      Alert.getAll = jest
-        .fn()
-        .mockReturnValueOnce([{ config: 'test-alert-1' }]);
-      Dashboard.getAll = jest
-        .fn()
-        .mockReturnValueOnce([{ config: 'test-dashboard-1' }]);
+      Alert.getAll = jest.fn().mockReturnValueOnce([mockAlert1]);
+      Dashboard.getAll = jest.fn().mockReturnValueOnce([mockDashboard1]);
 
       const actual = getArtifactComponents();
 
       expect(actual.quickstarts).toHaveLength(2);
-      expect(actual.quickstarts[0]).toEqual('test-quickstart-1');
-      expect(actual.quickstarts[1]).toEqual('test-quickstart-2');
+      expect(actual.quickstarts[0].dashboards).toEqual([]);
+      expect(actual.quickstarts[1].dashboards).toEqual(['mock-dashboard-1']);
+
       expect(actual.dataSources).toHaveLength(1);
-      expect(actual.dataSources[0]).toEqual('test-dataSource-1');
-      expect(actual.alerts).toHaveLength(1);
-      expect(actual.alerts[0]).toEqual('test-alert-1');
-      expect(actual.dashboards).toHaveLength(1);
-      expect(actual.dashboards[0]).toEqual('test-dashboard-1');
-    });
+      expect(actual.dataSources[0].id).toEqual('test-data-source');
 
-    it('should produce a complete list of dataSource IDs', () => {
-      Quickstart.getAll = jest.fn().mockReturnValueOnce([]);
-      Alert.getAll = jest.fn().mockReturnValueOnce([]);
-      Dashboard.getAll = jest.fn().mockReturnValueOnce([]);
-      DataSource.getAll = jest
-        .fn()
-        .mockReturnValueOnce([
-          { config: { id: 'community-1' } },
-          { config: { id: 'community-2' } },
-          { config: { id: 'community-3' } },
-        ]);
+      expect(Object.keys(actual.alerts)).toHaveLength(1);
+      expect(Object.keys(actual.alerts)).toContain('mock-alert-policy-1');
 
-      const { dataSources } = getArtifactComponents();
-      fs.readFileSync.mockReturnValueOnce(JSON.stringify(['core-1', 'core-2']));
-
-      const actual = getDataSourceIds('dummy-file.json', dataSources);
-
-      expect(actual).toHaveLength(5);
-      expect(actual).toContain('community-1');
-      expect(actual).toContain('community-2');
-      expect(actual).toContain('community-3');
-      expect(actual).toContain('core-1');
-      expect(actual).toContain('core-2');
+      expect(Object.keys(actual.dashboards)).toHaveLength(1);
+      expect(Object.keys(actual.dashboards)).toContain('mock-dashboard-1');
     });
   });
 
@@ -86,8 +71,8 @@ describe('built-validate-quickstart-artifact', () => {
       type: 'object',
       properties: {
         quickstarts: { type: 'array' },
-        alerts: { type: 'array' },
-        dashboards: { type: 'array' },
+        alerts: { type: 'object' },
+        dashboards: { type: 'object' },
         dataSources: {
           type: 'array',
           items: {
@@ -109,20 +94,12 @@ describe('built-validate-quickstart-artifact', () => {
       DataSource.getAll = jest
         .fn()
         .mockReturnValueOnce([
-          { config: { id: 'community-1', title: 'DataSource 1' } },
-          { config: { id: 'community-2', title: 'DataSource 2' } },
-          { config: { id: 'community-3', title: 'DataSource 3' } },
+          mockDataSource1
         ]);
 
       const components = getArtifactComponents();
 
-      fs.readFileSync.mockReturnValueOnce(JSON.stringify(['core-1', 'core-2']));
-      const dataSourceIds = getDataSourceIds(
-        'dummy-file.json',
-        components.dataSources
-      );
-
-      const artifact = { ...components, dataSourceIds };
+      const artifact = { ...components, dataSourceIds: ['core-1', 'core-2'] };
 
       const actual = validateArtifact(TEST_SCHEMA, artifact);
 
@@ -133,23 +110,19 @@ describe('built-validate-quickstart-artifact', () => {
       Quickstart.getAll = jest.fn().mockReturnValueOnce([]);
       Alert.getAll = jest.fn().mockReturnValueOnce([]);
       Dashboard.getAll = jest.fn().mockReturnValueOnce([]);
-      DataSource.getAll = jest
-        .fn()
-        .mockReturnValueOnce([
-          { config: { id: 'community-1', title: 'DataSource 1' } },
-          { config: { id: false, title: 'DataSource 2' } },
-          { config: { id: 'community-3', title: 3 } },
-        ]);
+      DataSource.getAll = jest.fn().mockReturnValueOnce([]);
 
       const components = getArtifactComponents();
 
-      fs.readFileSync.mockReturnValueOnce(JSON.stringify(['core-1', 'core-2']));
-      const dataSourceIds = getDataSourceIds(
-        'dummy-file.json',
-        components.dataSources
-      );
-
-      const artifact = { ...components, dataSourceIds };
+      const artifact = {
+        ...components,
+        dataSources: [
+          { id: 'community-1', title: 'DataSource 1' },
+          { id: false, title: 'DataSource 2' },
+          { id: 'community-3', title: 3 },
+        ],
+        dataSourceIds: ['core-1', 'core-2'],
+      };
 
       const actual = validateArtifact(TEST_SCHEMA, artifact);
 

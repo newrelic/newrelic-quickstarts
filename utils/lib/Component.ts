@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import { GITHUB_REPO_BASE_URL } from '../constants';
-abstract class Component<ConfigType, MutationVariablesType> {
+abstract class Component<ConfigType, MutationVariablesType, ArtifactType> {
   public identifier: string; // Local path to the component. Ex: python/flask
   public configPath: string; // Absolute path to the config file within the repository
   public config: ConfigType;
@@ -23,6 +23,7 @@ abstract class Component<ConfigType, MutationVariablesType> {
   abstract getConfigFilePath(): string;
   abstract getConfigContent(): ConfigType;
   abstract getMutationVariables(): MutationVariablesType;
+  abstract transformForArtifact(): ArtifactType;
 
   get fullPath() {
     return path.join(this.basePath, this.configPath);

@@ -23,6 +23,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
+import { ArtifactQuickstartConfig } from '../types/Artifact';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -196,6 +197,55 @@ class Quickstart {
       dryRun,
       quickstartMetadata,
     };
+  }
+
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  public transformForArtifact(): ArtifactQuickstartConfig {
+    const {
+      authors,
+      description,
+      title,
+      slug,
+      documentation,
+      icon,
+      keywords,
+      summary,
+      dataSourceIds,
+      id,
+      level,
+      dashboards = [],
+      alertPolicies = [],
+    } = this.config;
+
+    const metadata = {
+      quickstartUuid: id,
+      authors: authors && authors.map((author) => ({ name: author })),
+      description: description && description.trim(),
+      displayName: title && title.trim(),
+      slug: slug && slug.trim(),
+      documentation:
+        documentation &&
+        documentation.map((doc) => ({
+          displayName: doc.name,
+          url: doc.url,
+          description: doc.description,
+        })),
+      iconUrl: this._constructIconUrl(icon),
+      keywords: keywords ?? [],
+      sourceUrl: Component.getAssetSourceUrl(
+        Component.removeBasePath(path.dirname(this.configPath), this.basePath)
+      ),
+      summary: summary && summary.trim(),
+      supportLevel: SUPPORT_LEVEL_ENUMS[level],
+      dataSourceIds: dataSourceIds,
+      dashboards,
+      alertPolicies,
+    };
+
+    return metadata;
   }
 
   public async submitMutation(dryRun = true) {
