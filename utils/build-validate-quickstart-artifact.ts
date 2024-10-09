@@ -37,10 +37,16 @@ const getSchema = (filepath: string): ArtifactSchema => {
 
 // NOTE: we could run these in parallel to speed up the script
 export const getArtifactComponents = (): ArtifactComponents => {
-  const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.transformForArtifact());
+  const quickstarts = Quickstart
+    .getAll()
+    .map((quickstart) => quickstart.transformForArtifact());
+  
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
 
-  const dataSources = DataSource.getAll().map((dataSource) => dataSource.transformForArtifact());
+  const dataSources = DataSource
+    .getAll()
+    .map((dataSource) => dataSource.transformForArtifact());
+
   console.log(`[*] Found ${dataSources.length} dataSources`);
 
   const alerts = Alert.getAll().reduce((acc, alert) => {
@@ -49,6 +55,7 @@ export const getArtifactComponents = (): ArtifactComponents => {
     return { ...acc, ...conditions }
 
   }, {});
+  
   console.log(`[*] Found ${Object.keys(alerts).length} alerts`);
 
   const dashboards = Dashboard.getAll().reduce((acc, dash) => {
