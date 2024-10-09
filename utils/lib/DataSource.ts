@@ -82,7 +82,7 @@ class DataSource extends Component<
    * Method extracts criteria from the config and returns an object appropriately
    * structured for the artifact.
    */
-  transformForArtifact() {
+  public transformForArtifact() {
     const { keywords, description, categoryTerms, icon, ...rest } = this.config;
 
     return {
