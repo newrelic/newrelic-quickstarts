@@ -199,7 +199,7 @@ class Quickstart {
     };
   }
 
-  public transformForArtifact(): ArtifactQuickstartConfig {
+  transformForArtifact(): ArtifactQuickstartConfig {
     const {
       authors,
       description,
