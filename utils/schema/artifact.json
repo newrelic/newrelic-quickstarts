@@ -15,15 +15,19 @@
       }
     },
     "alerts": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/alert"
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/alert"
+        }
       }
     },
     "dashboards": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/dashboard"
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/dashboard"
+        }
       }
     },
     "dataSourceIds": {
@@ -211,81 +215,39 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
           "type": {
             "enum": ["BASELINE", "STATIC"],
             "type": "string",
             "nullable": true
           },
-          "nrql": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string"
-              }
-            },
-            "required": ["query"],
-            "additionalProperties": true
+          "displayName": {
+            "type": "string"
           },
-          "runbookUrl": {
-            "type": "string",
-            "nullable": true
+          "description": {
+            "type": ["string", "null"]
           },
-          "violationTimeLimitSeconds": {
-            "type": "number"
-          },
-          "enabled": {
-            "type": "boolean"
-          },
-          "terms": {
+          "rawConfiguration": { "type": "string" },
+          "sourceUrl": { "type": "string" },
+          "screenshots": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "object",
               "properties": {
-                "duration": {
-                  "type": "number",
-                  "minimum": 5,
-                  "maximum": 120
-                },
-                "priority": {
-                  "enum": ["CRITICAL", "WARNING"]
-                },
-                "operator": {
-                  "enum": ["ABOVE", "BELOW", "EQUALS"]
-                },
-                "threshold": {
-                  "type": "number",
-                  "minimum": 0
-                },
-                "thresholdDuration": {
-                  "type": "number",
-                  "minimum": 0
-                },
-                "thresholdOccurances": {
-                  "enum": ["ALL", "AT_LEAST_ONCE"]
+                "url": {
+                  "type": "string"
                 }
               },
-              "additionalProperties": true
+              "required": ["url"]
             }
           }
         },
-        "required": ["name", "description", "type"],
-        "additionalProperties": true
+        "required": ["displayName", "rawConfiguration"],
+        "additionalProperties": false
       }
     },
     "dashboard": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
         "displayName": {
           "type": "string"
         },
@@ -307,7 +269,7 @@
           }
         }
       },
-      "required": ["id", "displayName", "rawConfiguration"],
+      "required": ["displayName", "rawConfiguration"],
       "additionalProperties": false
     },
     "dataSourceIds": {

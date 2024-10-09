@@ -7,9 +7,8 @@ import DataSource from "./lib/DataSource";
 import Alert from "./lib/Alert";
 import Dashboard from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
-import { QuickstartConfigAlert } from './types/QuickstartConfig';
 import { passedProcessArguments } from './lib/helpers';
-import { ArtifactDataSourceConfig, ArtifactDashboardConfig, ArtifactQuickstartConfig } from './types/Artifact';
+import { ArtifactDataSourceConfig, ArtifactDashboardConfig, ArtifactQuickstartConfig, ArtifactAlertConfig } from './types/Artifact';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -22,8 +21,8 @@ type InvalidItem = {
 type ArtifactComponents = {
   quickstarts: ArtifactQuickstartConfig[],
   dataSources: ArtifactDataSourceConfig[],
-  alerts: QuickstartConfigAlert[][],
-  dashboards: ArtifactDashboardConfig[]
+  alerts: ArtifactAlertConfig,
+  dashboards: ArtifactDashboardConfig
 }
 
 type Artifact = ArtifactComponents | {
@@ -44,11 +43,20 @@ export const getArtifactComponents = (): ArtifactComponents => {
   const dataSources = DataSource.getAll().map((dataSource) => dataSource.transformForArtifact());
   console.log(`[*] Found ${dataSources.length} dataSources`);
 
-  const alerts = Alert.getAll().map((alert) => alert.config);
-  console.log(`[*] Found ${alerts.length} alerts`);
+  const alerts = Alert.getAll().reduce((acc, alert) => {
+    const conditions = alert.transformForArtifact()
 
-  const dashboards = Dashboard.getAll().map((dashboard) => dashboard.transformForArtifact());
-  console.log(`[*] Found ${dashboards.length} dashboards`);
+    return { ...acc, ...conditions }
+
+  }, {});
+  console.log(`[*] Found ${Object.keys(alerts).length} alerts`);
+
+  const dashboards = Dashboard.getAll().reduce((acc, dash) => {
+    const dashboard =  dash.transformForArtifact()
+    return { ...acc, ...dashboard }
+
+  }, {});
+  console.log(`[*] Found ${Object.keys(dashboards).length} dashboards`);
 
   return {
     quickstarts,

@@ -134,6 +134,22 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     }
   }
 
+  public transformForArtifact() {
+    const alertPolicy = this.config.map((condition) => {
+      const { description, name, type } = condition;
+
+      return {
+        description: description && description.trim(),
+        displayName: name && name.trim(),
+        rawConfiguration: JSON.stringify(condition),
+        sourceUrl: Component.getAssetSourceUrl(this.configPath),
+        type: type && (type.trim() as AlertType),
+      };
+    });
+
+    return { [this.identifier]: alertPolicy }
+  }
+
   getMutationVariables() {
     if (!this.isValid) {
       console.error(
