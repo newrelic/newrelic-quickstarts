@@ -60,7 +60,7 @@ type QuickstartConfig = {
   keywords?: string[];
   summary: string;
   supportLevel: QuickstartConfigSupportLevel;
-  alertPolicies?: string[];
+  alertConditions?: string[];
   dashboards?: string[];
   dataSourceIds?: string[];
 };

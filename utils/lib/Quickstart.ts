@@ -242,7 +242,7 @@ class Quickstart {
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       dataSourceIds: dataSourceIds,
       dashboards,
-      alertPolicies,
+      alertConditions: alertPolicies,
     };
 
     return metadata;
