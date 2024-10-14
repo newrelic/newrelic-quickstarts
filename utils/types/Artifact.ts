@@ -87,14 +87,14 @@ export interface ArtifactDashboardConfig {
 
 /* --- Alert --- */
 
-type AlertType = 'BASELINE' | 'STATIC';
+export type ArtifactAlertType = 'baseline' | 'static';
 
 type ArtifactAlert = {
   description?: string;
   displayName: string;
   rawConfiguration: string;
   sourceUrl?: string;
-  type: AlertType;
+  type: ArtifactAlertType;
 };
 
 export interface ArtifactAlertConfig {

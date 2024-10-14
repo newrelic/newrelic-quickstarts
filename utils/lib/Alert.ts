@@ -10,7 +10,7 @@ import type {
   AlertType,
   QuickstartAlertInput,
 } from '../types/QuickstartMutationVariable';
-import type { ArtifactAlertConfig } from '../types/Artifact';
+import type { ArtifactAlertConfig, ArtifactAlertType } from '../types/Artifact';
 import type { QuickstartConfigAlert } from '../types/QuickstartConfig';
 import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
@@ -159,7 +159,7 @@ class Alert extends Component<
         displayName: name && name.trim(),
         rawConfiguration: JSON.stringify(condition),
         sourceUrl: Component.getAssetSourceUrl(this.configPath),
-        type: type && (type.trim() as AlertType),
+        type: type && (type.trim().toLowerCase() as ArtifactAlertType),
       };
     });
 
