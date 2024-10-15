@@ -166,6 +166,11 @@ class Alert extends Component<
     return { [this.identifier]: alertPolicy };
   }
 
+  /**
+   * Method creates mutation variables for a given Alert.
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
+   */
   getMutationVariables() {
     if (!this.isValid) {
       console.error(

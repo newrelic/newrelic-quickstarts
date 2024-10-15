@@ -1,4 +1,5 @@
 /* -- Data source -- */
+
 export interface ArtifactDataSourceConfig {
   id: string;
   displayName: string;

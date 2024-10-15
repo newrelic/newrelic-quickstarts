@@ -109,6 +109,8 @@ class DataSource extends Component<
   /**
    * Get the variables for the **Quickstart** mutation.
    *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
+   *
    * @returns The ID for this data source
    */
   getMutationVariables(): DataSourceConfig['id'] {

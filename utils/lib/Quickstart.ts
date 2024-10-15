@@ -135,7 +135,11 @@ class Quickstart {
 
   /**
    * Get mutation variables from quickstart config
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
+   *
    * @returns - Promised mutation variables for quickstart
+   *
    */
   async getMutationVariables(
     dryRun: boolean
@@ -241,8 +245,8 @@ class Quickstart {
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
       dataSourceIds: dataSourceIds,
-      dashboards,
       alertConditions: alertPolicies,
+      dashboards,
     };
 
     return metadata;
