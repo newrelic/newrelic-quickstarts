@@ -43,15 +43,15 @@ type QuickstartConfigDocumentation = {
   url: string;
 };
 
-export type QuickstartConfigSupportLevel =
-  | 'NEW_RELIC'
-  | 'COMMUNITY'
-  | 'VERIFIED'
+export type ArtifactQuickstartConfigSupportLevel =
+  | 'new_relic'
+  | 'community'
+  | 'verified'
   // Enterprise is deprecated. However some quickstarts still have this support
   // level within their config.
-  | 'ENTERPRISE';
+  | 'enterprise';
 
-type QuickstartConfig = {
+export interface ArtifactQuickstartConfig {
   quickstartUuid: string;
   description: string;
   displayName: string;
@@ -60,15 +60,12 @@ type QuickstartConfig = {
   iconUrl: string;
   keywords?: string[];
   summary: string;
-  supportLevel: QuickstartConfigSupportLevel;
+  supportLevel: ArtifactQuickstartConfigSupportLevel;
   alertConditions?: string[];
   dashboards?: string[];
   dataSourceIds?: string[];
-};
-
-export interface ArtifactQuickstartConfig extends QuickstartConfig {
   authors: Array<{ name: string }>;
-}
+};
 
 /* -- Dashboard -- */
 

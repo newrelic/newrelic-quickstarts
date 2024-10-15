@@ -23,7 +23,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
-import { ArtifactQuickstartConfig } from '../types/Artifact';
+import { ArtifactQuickstartConfig, ArtifactQuickstartConfigSupportLevel } from '../types/Artifact';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -35,6 +35,9 @@ interface SupportLevelMap {
   [key: string]: QuickstartSupportLevel;
 }
 
+// FIXME: We will want to clean this up and conform to the `Artifact` types 
+// when we go to cleanup the deprecated mutation functionality after we have 
+// finalized the new quickstart publishing pipeline.
 const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   'New Relic': 'NEW_RELIC',
   Community: 'COMMUNITY',
@@ -243,7 +246,9 @@ class Quickstart {
         Component.removeBasePath(path.dirname(this.configPath), this.basePath)
       ),
       summary: summary && summary.trim(),
-      supportLevel: SUPPORT_LEVEL_ENUMS[level],
+      supportLevel: SUPPORT_LEVEL_ENUMS[
+        level
+      ]?.toLowerCase() as ArtifactQuickstartConfigSupportLevel,
       dataSourceIds: dataSourceIds,
       alertConditions: alertPolicies,
       dashboards,
