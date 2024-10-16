@@ -64,7 +64,7 @@ export interface ArtifactQuickstartConfig {
   alertConditions?: string[];
   dashboards?: string[];
   dataSourceIds?: string[];
-  authors: Array<{ name: string }>;
+  authors: string[];
 };
 
 /* -- Dashboard -- */

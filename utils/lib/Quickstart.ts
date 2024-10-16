@@ -212,7 +212,6 @@ class Quickstart {
    */
   public transformForArtifact(): ArtifactQuickstartConfig {
     const {
-      authors,
       description,
       title,
       slug,
@@ -223,13 +222,13 @@ class Quickstart {
       dataSourceIds,
       id,
       level,
+      authors = [],
       dashboards = [],
       alertPolicies = [],
     } = this.config;
 
     const metadata = {
       quickstartUuid: id,
-      authors: authors && authors.map((author) => ({ name: author })),
       description: description && description.trim(),
       displayName: title && title.trim(),
       slug: slug && slug.trim(),
@@ -252,7 +251,9 @@ class Quickstart {
       dataSourceIds: dataSourceIds,
       alertConditions: alertPolicies,
       dashboards,
+      authors,
     };
+
 
     return metadata;
   }
