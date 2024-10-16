@@ -37,7 +37,7 @@ describe('getCategoryTermsFromKeywords', () => {
     const mockKeywords = undefined;
 
     const categoriesFromKeywords =
-      await nrGraphQlHelpers.getCategoryTermsFromKeywords(mockKeywords);
+      await nrGraphQlHelpers.getValidCategoryTerms(mockKeywords);
 
     expect(nrGraphQlHelpers.fetchNRGraphqlResults).toHaveBeenCalledTimes(1);
     expect(categoriesFromKeywords).toEqual(undefined);
@@ -46,7 +46,7 @@ describe('getCategoryTermsFromKeywords', () => {
   test('getCategoryTermsFromKeywords returns undefined if no keywords match a category', async () => {
     const mockKeywords = ['python', 'apm', 'http'];
     const categoriesFromKeywords =
-      await nrGraphQlHelpers.getCategoryTermsFromKeywords(mockKeywords);
+      await nrGraphQlHelpers.getValidCategoryTerms(mockKeywords);
 
     expect(nrGraphQlHelpers.fetchNRGraphqlResults).toHaveBeenCalledTimes(1);
     expect(categoriesFromKeywords).toEqual(undefined);
@@ -55,7 +55,7 @@ describe('getCategoryTermsFromKeywords', () => {
   test('getCategoryTermsFromKeywords returns 1 categoryTerm given a set of keywords where a keyword belong to 1 category', async () => {
     const mockKeywords = ['python', 'azure'];
     const categoriesFromKeywords =
-      await nrGraphQlHelpers.getCategoryTermsFromKeywords(mockKeywords);
+      await nrGraphQlHelpers.getValidCategoryTerms(mockKeywords);
 
     expect(nrGraphQlHelpers.fetchNRGraphqlResults).toHaveBeenCalledTimes(1);
     expect(categoriesFromKeywords).toEqual(['azure']);
@@ -64,7 +64,7 @@ describe('getCategoryTermsFromKeywords', () => {
   test('getCategoryTermsFromKeywords returns 2 categoryTerms given a set of keywords where keywords belong to 2 categories', async () => {
     const mockKeywords = ['python', 'os', 'containers'];
     const categoriesFromKeywords =
-      await nrGraphQlHelpers.getCategoryTermsFromKeywords(mockKeywords);
+      await nrGraphQlHelpers.getValidCategoryTerms(mockKeywords);
 
     expect(nrGraphQlHelpers.fetchNRGraphqlResults).toHaveBeenCalledTimes(1);
     expect(categoriesFromKeywords).toEqual(['os', 'containers']);

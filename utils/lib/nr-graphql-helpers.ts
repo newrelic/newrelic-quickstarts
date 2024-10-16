@@ -176,8 +176,9 @@ type CategoryTermsNRGraphqlResults = {
 
 /**
  * Method which filters out user supplied keywords to only keywords which are valid categoryTerms.
- * @param {String[] | undefined} configKeywords  - An array of keywords specified in a quickstart config.yml
- * @returns {Promise<String[] | undefined>} An array of quickstart categoryTerms
+ * @param configKeywords  - An array of keywords specified in a quickstart config.yml
+ * @param validTerms - An array of valid categoryTerms (use getAllCategoryTerms)
+ * @returns An array of quickstart categoryTerms
  *
  * @example
  * // input
@@ -186,9 +187,20 @@ type CategoryTermsNRGraphqlResults = {
  * // return
  * ['azure', 'infrastructure']
  */
-export const getCategoryTermsFromKeywords = async (
-  configKeywords: string[] | undefined = []
-): Promise<string[] | undefined> => {
+export const getValidCategoryTerms = (
+  configKeywords: string[] | undefined = [], validTerms: string[]
+): string[] | undefined => {
+  const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
+    if (validTerms && validTerms.includes(keyword)) {
+      acc.push(keyword);
+    }
+    return acc;
+  }, []);
+
+  return categoryKeywords.length > 0 ? categoryKeywords : undefined;
+};
+
+export const getAllCategoryTerms = async () => {
   logger.debug(`Fetching categories...`);
 
   // TODO: handles errors!!
@@ -203,16 +215,7 @@ export const getCategoryTermsFromKeywords = async (
 
   const { categories } = data.actor.nr1Catalog;
 
-  const allCategoryKeywords = categories.flatMap((category) => category.terms);
-
-  const categoryKeywords = configKeywords.reduce<string[]>((acc, keyword) => {
-    if (allCategoryKeywords && allCategoryKeywords.includes(keyword)) {
-      acc.push(keyword);
-    }
-    return acc;
-  }, []);
-
-  return categoryKeywords.length > 0 ? categoryKeywords : undefined;
+  return categories?.flatMap((category) => category.terms);
 };
 
 type CoreDataSourceSearchResults = {
