@@ -10,6 +10,7 @@ import type {
   AlertType,
   QuickstartAlertInput,
 } from '../types/QuickstartMutationVariable';
+import type { ArtifactAlertConfig, ArtifactAlertType } from '../types/Artifact';
 import type { QuickstartConfigAlert } from '../types/QuickstartConfig';
 import type { NerdGraphResponseWithLocalErrors } from '../types/nerdgraph';
 
@@ -79,7 +80,11 @@ export type SubmitSetRequiredDataSourcesMutationResult =
   | NerdGraphResponseWithLocalErrors<AlertPolicySetRequiredDataSourcesMutationResults>
   | { errors: ErrorOrNerdGraphError[] };
 
-class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
+class Alert extends Component<
+  QuickstartConfigAlert[],
+  QuickstartAlertInput[],
+  ArtifactAlertConfig
+> {
   constructor(identifier: string, basePath?: string) {
     super(identifier, basePath);
     this.isValid = this.validate();
@@ -134,6 +139,38 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
     }
   }
 
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  transformForArtifact() {
+    if (!this.isValid) {
+      console.error(
+        `Alert is invalid.\nPlease check if the path at ${this.identifier} exists.`
+      );
+      return {};
+    }
+
+    const alertPolicy = this.config.map((condition) => {
+      const { description, name, type } = condition;
+
+      return {
+        description: description && description.trim(),
+        displayName: name && name.trim(),
+        rawConfiguration: JSON.stringify(condition),
+        sourceUrl: Component.getAssetSourceUrl(this.configPath),
+        type: type && (type.trim().toLowerCase() as ArtifactAlertType),
+      };
+    });
+
+    return { [this.identifier]: alertPolicy };
+  }
+
+  /**
+   * Method creates mutation variables for a given Alert.
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
+   */
   getMutationVariables() {
     if (!this.isValid) {
       console.error(
@@ -190,13 +227,17 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
 
         return true;
       } catch (error) {
-        logger.error(`Alert Condition: Validaiton for ${displayName} failed with an error`);
+        logger.error(
+          `Alert Condition: Validaiton for ${displayName} failed with an error`
+        );
 
         return false;
       }
     });
 
-    logger.debug(`Alert condition: Finished validation for alert at ${this.identifier}`);
+    logger.debug(
+      `Alert condition: Finished validation for alert at ${this.identifier}`
+    );
 
     return validations.every(Boolean);
   }
@@ -299,8 +340,10 @@ class Alert extends Component<QuickstartConfigAlert[], QuickstartAlertInput[]> {
   }
 
   static getAll() {
-    const alertPaths = glob.sync(path.join(__dirname, '..', '..', 'alert-policies', '**', '*.+(yml|yaml)'));
-    return alertPaths.map(alertPath => {
+    const alertPaths = glob.sync(
+      path.join(__dirname, '..', '..', 'alert-policies', '**', '*.+(yml|yaml)')
+    );
+    return alertPaths.map((alertPath) => {
       // The identifier for alerts is the folder and the file name
       // e.g. `node-js/HighCpuUtilization.yml`
       const identifier = path.join(...alertPath.split('/').slice(-2, -1));
