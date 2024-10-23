@@ -658,7 +658,7 @@
       "description": null,
       "widgets": [
         {
-          "title": "Executed Queries Scanning Over 100 Million Events",
+          "title": "Scanned Events (estimate) By Query and Source URL",
           "layout": {
             "column": 1,
             "row": 1,
@@ -691,91 +691,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT status, user, query.eventType as 'Schema(s) Scanned', source.name as 'Executor', durationMs / 1000 as 'Duration in Secs', inspectedCount as 'Events Scanned', query from NrdbQuery where inspectedCount > 1e8 limit MAX"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Executed Queries Sorted by Avg Duration (excluding Nerd Graph and Byte Count Estimate Queries)",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 12,
-            "height": 9
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Avg Duration in Secs",
-                "precision": 2,
-                "type": "decimal"
-              },
-              {
-                "name": "Avg scannedEvents",
-                "type": "decimal"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "initialSorting": {
-              "direction": "desc",
-              "name": "Timeouts"
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM NrdbQuery SELECT average(inspectedCount) as 'Avg Events Scanned', average(durationMs) / 1000 as 'Avg Duration in Secs', filter(count(query), WHERE status = 'timedout') AS 'Timeouts', filter(count(query), WHERE status = 'successful') AS 'Successful', count(query) AS 'Total', ((count(query) - filter(count(query), WHERE status = 'timedout')) / count(query)) * 100 AS '% Successful' LIMIT MAX WHERE nr.source NOT LIKE 'NerdGraph' AND query NOT LIKE '%bytecountestimate()%' FACET query, user as 'User', source.name as 'Query Executor', source.dashboardId as 'Dashboard ID', query.eventType as 'Schema(s)' ORDER BY 'Avg Duration in Secs'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Executed Queries Scanning Over 100 Million Events",
-          "layout": {
-            "column": 1,
-            "row": 18,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Duration in Secs",
-                "precision": 2,
-                "type": "decimal"
-              },
-              {
-                "name": "Events Scanned",
-                "type": "humanized"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": true
-            },
-            "initialSorting": {
-              "direction": "desc",
-              "name": "Events Scanned"
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT status, user, query.eventType as 'Schema(s) Scanned', source.name as 'Executor', durationMs / 1000 as 'Duration in Secs', inspectedCount as 'Events Scanned', query from NrdbQuery where inspectedCount > 1e8 limit MAX"
+                "query": "FROM NrComputeUsage SELECT sum((usage)*1.21*1000000000) as 'estimated avg. scanned events' facet dimension_productCapability, dimension_sourceUrl, dimension_query  where  (usage > 1.21) limit MAX"
               }
             ],
             "platformOptions": {
@@ -874,4 +790,3 @@
     }
   ],
   "variables": []
-}
