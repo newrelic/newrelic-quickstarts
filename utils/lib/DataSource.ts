@@ -17,6 +17,7 @@ import type {
   DataSourceInstallDirectiveInput,
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
+import { ArtifactDataSourceConfig, ArtifactInstall } from '../types/Artifact';
 
 export interface DataSourceMutationResponse {
   dataSource: {
@@ -24,7 +25,11 @@ export interface DataSourceMutationResponse {
   };
 }
 
-class DataSource extends Component<DataSourceConfig, string> {
+class DataSource extends Component<
+  DataSourceConfig,
+  string,
+  ArtifactDataSourceConfig
+> {
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
@@ -74,7 +79,37 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  public transformForArtifact() {
+    const { keywords, description, categoryTerms, icon, ...rest } = this.config;
+
+    return {
+      ...rest,
+      iconUrl: this._getIconUrl(),
+      install: this._parseInstallsForArtifact(),
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()) : [],
+      keywords: keywords ? keywords.map((k) => k.trim()) : [],
+      description: description && description.trim(),
+    };
+  }
+
+  private _parseInstallsForArtifact() {
+    const { install } = this.config;
+
+    return {
+      primary: this._parseInstallDirectiveForArtifact(install.primary),
+      fallback:
+        install.fallback &&
+        this._parseInstallDirectiveForArtifact(install.fallback),
+    };
+  }
+
+  /**
    * Get the variables for the **Quickstart** mutation.
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
    *
    * @returns The ID for this data source
    */
@@ -183,6 +218,33 @@ class DataSource extends Component<DataSourceConfig, string> {
           nerdletState: nerdletState && JSON.stringify(nerdletState),
           requiresAccount: requiresAccount,
         },
+      };
+    }
+
+    return directive;
+  }
+
+  /**
+   * Helper method that returns the directive, based on its type.
+   */
+  private _parseInstallDirectiveForArtifact(
+    directive: DataSourceConfigInstallDirective
+  ): ArtifactInstall {
+    if ('link' in directive) {
+      const { url } = directive.link;
+
+      return {
+        url: url?.trim() ?? '',
+      };
+    }
+
+    if ('nerdlet' in directive) {
+      const { nerdletId, nerdletState, requiresAccount } = directive.nerdlet;
+
+      return {
+        nerdletId: nerdletId?.trim() ?? '',
+        nerdletState: nerdletState,
+        requiresAccount: requiresAccount,
       };
     }
 

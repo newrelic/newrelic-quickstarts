@@ -5,11 +5,10 @@ import get from 'lodash/get';
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";
 import Alert from "./lib/Alert";
-import Dashboard, { DashboardConfig } from "./lib/Dashboard";
+import Dashboard from "./lib/Dashboard";
 import Ajv, { type ErrorObject } from 'ajv';
-import { QuickstartConfig, QuickstartConfigAlert } from './types/QuickstartConfig';
-import { DataSourceConfig } from './types/DataSourceConfig';
 import { passedProcessArguments } from './lib/helpers';
+import { ArtifactDataSourceConfig, ArtifactDashboardConfig, ArtifactQuickstartConfig, ArtifactAlertConfig } from './types/Artifact';
 
 type ArtifactSchema = Record<string, unknown>;
 
@@ -20,10 +19,10 @@ type InvalidItem = {
 }
 
 type ArtifactComponents = {
-  quickstarts: QuickstartConfig[],
-  dataSources: DataSourceConfig[],
-  alerts: QuickstartConfigAlert[][],
-  dashboards: DashboardConfig[]
+  quickstarts: ArtifactQuickstartConfig[],
+  dataSources: ArtifactDataSourceConfig[],
+  alerts: ArtifactAlertConfig,
+  dashboards: ArtifactDashboardConfig
 }
 
 type Artifact = ArtifactComponents | {
@@ -38,17 +37,33 @@ const getSchema = (filepath: string): ArtifactSchema => {
 
 // NOTE: we could run these in parallel to speed up the script
 export const getArtifactComponents = (): ArtifactComponents => {
-  const quickstarts = Quickstart.getAll().map((quickstart) => quickstart.config);
+  const quickstarts = Quickstart
+    .getAll()
+    .map((quickstart) => quickstart.transformForArtifact());
+  
   console.log(`[*] Found ${quickstarts.length} quickstarts`);
 
-  const dataSources = DataSource.getAll().map((dataSource) => dataSource.config);
+  const dataSources = DataSource
+    .getAll()
+    .map((dataSource) => dataSource.transformForArtifact());
+
   console.log(`[*] Found ${dataSources.length} dataSources`);
 
-  const alerts = Alert.getAll().map((alert) => alert.config);
-  console.log(`[*] Found ${alerts.length} alerts`);
+  const alerts = Alert.getAll().reduce((acc, alert) => {
+    const conditions = alert.transformForArtifact()
 
-  const dashboards = Dashboard.getAll().map((dashboard) => dashboard.config);
-  console.log(`[*] Found ${dashboards.length} dashboards`);
+    return { ...acc, ...conditions }
+
+  }, {});
+  
+  console.log(`[*] Found ${Object.keys(alerts).length} alerts`);
+
+  const dashboards = Dashboard.getAll().reduce((acc, dash) => {
+    const dashboard =  dash.transformForArtifact()
+    return { ...acc, ...dashboard }
+
+  }, {});
+  console.log(`[*] Found ${Object.keys(dashboards).length} dashboards`);
 
   return {
     quickstarts,
@@ -58,7 +73,7 @@ export const getArtifactComponents = (): ArtifactComponents => {
   }
 };
 
-export const getDataSourceIds = (filepath: string, communityDataSources: DataSourceConfig[]): string[] => {
+export const getDataSourceIds = (filepath: string, communityDataSources: ArtifactComponents['dataSources']): string[] => {
   const coreDataSourceIds = yaml.load(
     fs.readFileSync(filepath).toString('utf8')
   ) as string[];
