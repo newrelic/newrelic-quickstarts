@@ -1,0 +1,793 @@
+{
+  "name": "NRQL Query Performance",
+  "description": "This dashboard provides resources to better understand your NRQL query performance.",
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Timeouts by Event Type",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM NrdbQuery WHERE status = 'timedout'  FACET query.eventType limit 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Long Running (> 30 secs) By Event Type",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg Duration in Secs",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Avg Duration in Secs"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT average(durationMs) / 1000 as 'Avg Duration in Secs' where durationMs > 30000 and status != 'timedout' FACET query.eventType LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 30,
+                "severity": "warning",
+                "to": 39.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 40,
+                "severity": "severe",
+                "to": 49.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 50,
+                "severity": "critical",
+                "to": 80
+              }
+            ]
+          }
+        },
+        {
+          "title": "Long Running (> 30 secs) By Event Type & Time Window",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg Duration in Secs",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Avg Duration in Secs"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery \n  WITH timeWindowMinutes/86400 AS timeWindowDays\nSELECT average(durationMs) / 1000 as 'Avg Duration in Secs' where durationMs > 30000  WHERE status != 'timedout' FACET query.eventType, timeWindowMinutes, timeWindowDays LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 30,
+                "severity": "warning",
+                "to": 39.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 40,
+                "severity": "severe",
+                "to": 49.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 50,
+                "severity": "critical",
+                "to": 80
+              }
+            ]
+          }
+        },
+        {
+          "title": "Long Running (> 30 secs) Queries Stats",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg Duration in Secs",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Avg Duration in Secs"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT average(durationMs) / 1000 as 'Avg Duration in Secs' where durationMs > 30000 and status != 'timedout' FACET query LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 30,
+                "severity": "warning",
+                "to": 39.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 40,
+                "severity": "severe",
+                "to": 49.999
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 50,
+                "severity": "critical",
+                "to": 80
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 2,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Reference\n## Source Types:\n- apm: Application performance monitoring\n- dashboard: Dashboards displayed on the New Relic platform\n- Distributed tracing: Distributed tracing\n- nerdgraph: NerdGraph, our GraphQL API\n- New Relic user interface: A New Relic curated UI\n- query-api: Insights query API\n- query-builder: Query builder\n [more](https://docs.newrelic.com/attribute-dictionary/?event=NrdbQuery&attribute=source.name)\n---\n### Data Types —[data types](https://docs.newrelic.com/attribute-dictionary/).\nlet me know if you have question: srohatgi@newrelic.com"
+          }
+        },
+        {
+          "title": "Queries That Timed Out Stats",
+          "layout": {
+            "column": 3,
+            "row": 14,
+            "width": 10,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT count(*) where status = 'timedout' FACET nr.source, query LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Successful Execuations",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT ((count(query) - filter(count(query), WHERE status !='successful' AND status !='error')) / count(query)) * 100 AS '% Successful' FACET cases(WHERE query LIKE '%bytecountestimate()%' AS 'bytecountestimate()', WHERE query NOT LIKE '%bytecountestimate()%' AS 'Normal') TIMESERIES 30 minutes  EXTRAPOLATE "
+              }
+            ],
+            "nullValues": {
+              "nullValue": "remove"
+            },
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": false
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Timedout",
+          "layout": {
+            "column": 7,
+            "row": 19,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(query), WHERE query LIKE '%bytecountestimate()%') AS bytecountestimate, filter(count(query), WHERE query NOT LIKE '%bytecountestimate()%' ) as 'Normal' FROM NrdbQuery WHERE status = 'timedout' TIMESERIES 30 minutes FACET status "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Errors",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(query), WHERE query LIKE '%bytecountestimate()%') AS bytecountestimate, filter(count(query), WHERE query NOT LIKE '%bytecountestimate()%' ) as 'Normal' FROM NrdbQuery WHERE status = 'error'  TIMESERIES 30 minutes FACET status "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "NRDB query API requests per minute",
+          "layout": {
+            "column": 7,
+            "row": 22,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(newrelic.resourceConsumption.currentValue) AS 'Usage' WHERE limitName = 'NRDB query API requests per minute'  TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Detail Stats",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Log Query Performance MoM (Time Window >= 1 day)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT FILTER(COUNT(*), WHERE timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS queries, FILTER(COUNT(*), WHERE status = 'timedout' AND timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS query_timedout, FILTER(COUNT(*), WHERE status = 'error' AND timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS query_error, FILTER(MEDIAN(durationMs) / 1000, WHERE timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS median_duration_sec, FILTER(MEDIAN(timeWindowMinutes) / 60, WHERE timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS median_window_hours, FILTER(MEDIAN(inspectedCount), WHERE timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS inspectedCounts, FILTER(MEDIAN((inspectedCount / 1000000) / (durationMs / 1000)), WHERE timeWindowMinutes >= 1440 AND query.eventType LIKE '%') AS meps FROM NrdbQuery  LIMIT MAX since 1 month ago compare with 1 month ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Log Query Performance MoM (Time Window < 1 day)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT FILTER(COUNT(*), WHERE timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS queries, FILTER(COUNT(*), WHERE status = 'timedout' AND timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS query_timedout, FILTER(COUNT(*), WHERE status = 'error' AND timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS query_error, FILTER(MEDIAN(durationMs) / 1000, WHERE timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS median_duration_sec, FILTER(MEDIAN(timeWindowMinutes) / 60, WHERE timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS median_window_hours, FILTER(MEDIAN(inspectedCount), WHERE timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS inspectedCounts, FILTER(MEDIAN((inspectedCount / 1000000) / (durationMs / 1000)), WHERE timeWindowMinutes < 1440 AND query.eventType LIKE '%') AS meps FROM NrdbQuery LIMIT MAX since 1 month ago compare with 1 month ago UNTIL now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Timedout Queries (TimeWindow >= 1 day) Past 7 Days",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM NrdbQuery WHERE status = 'timedout' AND timeWindowMinutes >= 1440  TIMESERIES auto FACET productCapability since 7 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Timedout Queries (TimeWindow < 1 day) Past 7 Days",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM NrdbQuery WHERE status = 'timedout' AND timeWindowMinutes < 1440  TIMESERIES auto FACET productCapability  since 7 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Long Running (> 10 secs) Log Queries Stats",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Avg Duration in Secs",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Executions"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT average(durationMs) / 1000 as 'Avg Duration in Secs', average(inspectedCount) as 'Inspected Count', count(*) as 'Executions', average(timeWindowMinutes)/60/24 as 'Time Window (days)'  where durationMs > 10000 and status != 'timedout' FACET query LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 20,
+                "severity": "warning",
+                "to": 40
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 40,
+                "severity": "severe",
+                "to": 70
+              },
+              {
+                "columnName": "Avg Duration in Secs",
+                "from": 70,
+                "severity": "critical",
+                "to": 60000
+              }
+            ]
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 2,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Reference\n## Source Types:\n- apm: Application performance monitoring\n- dashboard: Dashboards displayed on the New Relic platform\n- Distributed tracing: Distributed tracing\n- nerdgraph: NerdGraph, our GraphQL API\n- New Relic user interface: A New Relic curated UI\n- query-api: Insights query API\n- query-builder: Query builder\n [more](https://docs.newrelic.com/attribute-dictionary/?event=NrdbQuery&attribute=source.name)\n---\n### Data Types —[data types](https://docs.newrelic.com/attribute-dictionary/).\nlet me know if you have question: srohatgi@newrelic.com"
+          }
+        },
+        {
+          "title": "Queries That Timed Out Stats",
+          "layout": {
+            "column": 3,
+            "row": 14,
+            "width": 10,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT count(*) where status = 'timedout' FACET nr.source, query LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Users with Slow Queries [Duration 20+ seconds & Time window 1+ days]",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 12,
+            "height": 8
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT  average(timeWindowMinutes)/60/24 as 'Time Window (days)' where durationMs > 20000 and status != 'timedout' and query LIKE '%from log%' and timeWindowMinutes > 1440 FACET user LIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scanned Events",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Scanned Events (estimate) By Query and Source URL",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 8
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Duration in Secs",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Events Scanned",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Events Scanned"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrComputeUsage SELECT sum((usage)*1.21*1000000000) as 'estimated avg. scanned events' facet dimension_productCapability, dimension_sourceUrl, dimension_query  where  (usage > 1.21) limit MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Usage (unsucsessful)",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Impacted Dashboards",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT count(*) WHERE source.dashboardId IS NOT NULL and status != 'successful' FACET status, source.url, source.dashboardId, source.name LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Impacted Dashboard Users",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT count(*) WHERE source.dashboardId IS NOT NULL and status != 'successful' FACET user, status LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Impacted Dashboard Queries (By User)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM NrdbQuery SELECT count(*) WHERE source.dashboardId IS NOT NULL and status != 'successful' FACET user, status, source.url, source.dashboardId, source.name, query, query.eventType LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}

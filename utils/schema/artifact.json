@@ -1,0 +1,620 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "quickstarts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/quickstart"
+      }
+    },
+    "dataSources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataSource"
+      }
+    },
+    "alerts": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/alert"
+        }
+      }
+    },
+    "dashboards": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/dashboard"
+        }
+      }
+    },
+    "dataSourceIds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataSourceIds"
+      }
+    }
+  },
+  "required": [
+    "quickstarts",
+    "dataSources",
+    "alerts",
+    "dashboards",
+    "dataSourceIds"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "quickstart": {
+      "type": "object",
+      "properties": {
+        "quickstartUuid": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "documentation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "displayName": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": ["displayName", "description", "url"],
+            "additionalProperties": false
+          }
+        },
+        "supportLevel": {
+          "enum": ["new_relic", "community", "verified", "enterprise"]
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "slug": {
+          "type": "string"
+        },
+        "alertConditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dashboards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dataSourceIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dataSourceIds"
+          }
+        }
+      },
+      "required": [
+        "description",
+        "summary",
+        "displayName",
+        "authors",
+        "iconUrl"
+      ],
+      "additionalProperties": false
+    },
+    "dataSource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "install": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "$ref": "#/definitions/installDirective"
+            },
+            "fallback": {
+              "$ref": "#/definitions/installDirective"
+            }
+          },
+          "required": ["primary"],
+          "additionalProperties": false
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categoryTerms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "iconUrl": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "displayName", "install"],
+      "additionalProperties": false
+    },
+    "installDirective": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": ["url"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "nerdletId": {
+              "type": "string"
+            },
+            "nerdletState": {
+              "type": "object"
+            },
+            "requiresAccount": {
+              "type": "boolean"
+            }
+          },
+          "required": ["nerdletId", "requiresAccount"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "alert": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": ["baseline", "static"],
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "rawConfiguration": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "screenshots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": ["url"]
+            }
+          }
+        },
+        "required": ["displayName", "rawConfiguration"],
+        "additionalProperties": false
+      }
+    },
+    "dashboard": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": ["string", "null"]
+        },
+        "rawConfiguration": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "screenshots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": ["url"]
+          }
+        }
+      },
+      "required": ["displayName", "rawConfiguration"],
+      "additionalProperties": false
+    },
+    "dataSourceIds": {
+      "enum": [
+        "active-directory",
+        "ads-web-gpt",
+        "ads-web-prebid",
+        "aerospike",
+        "akamai",
+        "alert-quality-management",
+        "amazon-cloudwatch-metric-streams",
+        "amazon-eks-on-aws-fargate",
+        "ansible-automation-controller",
+        "apache-druid",
+        "apache-flink",
+        "apache-hadoop",
+        "apache-mesos",
+        "apache-traffic-server",
+        "apache-zookeeper",
+        "apdex-optimizer",
+        "apigee-api",
+        "apm-signals",
+        "argocd",
+        "atlassian-jira",
+        "audit-events-analysis",
+        "aws-cloudfront-logs",
+        "azure-monitor",
+        "azure-virtual-machines",
+        "battlesnake",
+        "bitbucket",
+        "third-party-biztalk360",
+        "blameless",
+        "blazemeter",
+        "blazor-webassembly",
+        "boomi",
+        "browser-segment-investigation",
+        "browser-signals",
+        "cacti",
+        "camel",
+        "catchpoint-quickstart",
+        "circleci",
+        "cloud-spanner",
+        "cloudflare",
+        "contentsquare",
+        "conviva",
+        "cribl",
+        "customer-experience-bottom-funnel-analysis",
+        "customer-experience-quality-foundation",
+        "dapr",
+        "databricks",
+        "datazoom",
+        "dbmarlin",
+        "dbt-cloud",
+        "deeper-network",
+        "delphix",
+        "docker-otel",
+        "dojo",
+        "elasticsearch-query",
+        "elixir",
+        "email-notifications",
+        "envoy",
+        "event-api",
+        "fastly",
+        "fivetran",
+        "flutter-android",
+        "flutter-ios",
+        "flutter-web",
+        "full-story",
+        "gatsby-build-newrelic",
+        "gcp-pubsub",
+        "gh-gates",
+        "gigamon-appinsights",
+        "github-repo",
+        "gitlab-integration",
+        "glassbox",
+        "grafana-dashboard-migration",
+        "grafana-prometheus-integration",
+        "gridgain-data-source",
+        "hardware-sentry",
+        "hcp-consul-otel",
+        "hcp-consul",
+        "hcp-envoy",
+        "hcp-vault-logs",
+        "hcp-vault-metrics",
+        "hivemq-integration-docs",
+        "ibmmq-integration-docs",
+        "infrastructure-signals",
+        "jdbc-executebatch",
+        "otel-jenkins-integration",
+        "jfrog-platform-cloud",
+        "jfrog-platform",
+        "jira-errors-inbox",
+        "k6-prometheus",
+        "k6",
+        "kentik",
+        "lacework",
+        "lambdatest",
+        "langchain-vectordb",
+        "langchain",
+        "launchdarkly",
+        "lighthouse",
+        "lighttpd",
+        "linkerd",
+        "logs-api",
+        "logs-default",
+        "metric-api",
+        "mobile-getting-started",
+        "mobile-network-performance-install",
+        "mobile-signals",
+        "mongodb-prometheus-integration-docs",
+        "mule-esb",
+        "mux-video",
+        "netlify-builds",
+        "netlify-logs",
+        "netscaler",
+        "network-data-ingest-and-cardinality",
+        "network-routers-and-switches",
+        "network-syslog",
+        "newrelic-cli",
+        "nextcloud",
+        "nr-reports",
+        "nuxtjs",
+        "nvidia-dcgm",
+        "nvidia-gpu",
+        "nvidia-jetson",
+        "nvidia-triton",
+        "nvml",
+        "ocsf",
+        "okhttp",
+        "onepane",
+        "opencensus",
+        "openstack-controller",
+        "opslevel",
+        "pagerduty",
+        "perfmon",
+        "pihole",
+        "port-monitoring",
+        "postfix",
+        "postman",
+        "pulumi",
+        "quantum-metric",
+        "rafay",
+        "ray",
+        "redis-enterprise",
+        "redis-otel",
+        "redmine",
+        "redpanda",
+        "releaseiq",
+        "newrelic-java-rmi",
+        "roku-http-analytics",
+        "roku",
+        "salesforce-eventlog-for-logs",
+        "sendgrid-integration",
+        "sendmail",
+        "servicenow-notifications",
+        "shopify-hydrogen",
+        "shopify",
+        "signl4",
+        "singlestore",
+        "skykit",
+        "slack-notifications",
+        "snowflake",
+        "solutions-hub-dashboards",
+        "sonarqube",
+        "speedscale",
+        "split",
+        "squid-prometheus-integration-docs",
+        "stripe",
+        "sybase-integration",
+        "synthetics-private-locations",
+        "telemetry-data-platform",
+        "temporal-cloud",
+        "temporal",
+        "terraform",
+        "tidbcloud",
+        "trace-and-span-api",
+        "traceloop",
+        "trendmicro-cloudone-conformity",
+        "tvos-mobile",
+        "unix",
+        "vercel",
+        "vertica",
+        "newrelic-java-vertx",
+        "newrelic-java-vertx-extensions",
+        "video-android",
+        "video-chromecast",
+        "video-ios-tvos",
+        "video-web-akamai",
+        "video-web-html5",
+        "video-web-jwplayer",
+        "video-web-theplatform",
+        "video-web-videojs",
+        "webhook-notifications",
+        "windows-certs",
+        "winservices-integration-docs",
+        "xmatters",
+        "zebrium",
+        "zenduty",
+        "zipkin",
+        "activemq",
+        "amazon-cloudwatch",
+        "amazon-kinesis",
+        "amazon-linux",
+        "amazon-linux-logs",
+        "amazon-s3",
+        "amazon-sagemaker",
+        "amazon-web-services",
+        "android",
+        "angular",
+        "angular-js",
+        "ansible-install",
+        "apache",
+        "apm-logs",
+        "aporia",
+        "aws-firelens",
+        "aws-lambda",
+        "aws-migrate-metricStream",
+        "aws-security-hub",
+        "aws-vpc-flow-logs",
+        "azure-openai",
+        "backbone",
+        "bring-your-own-data",
+        "capacitor",
+        "cassandra",
+        "centos",
+        "centos-logs",
+        "change-tracking",
+        "chef-install",
+        "comet",
+        "confluent-cloud",
+        "consul",
+        "cordova",
+        "couchbase",
+        "dagshub",
+        "debian",
+        "debian-logs",
+        "dependabot",
+        "distributed-tracing",
+        "docker",
+        "dropwizard",
+        "elasticsearch",
+        "ember",
+        "f5",
+        "fluent-bit",
+        "fluentd",
+        "flutter",
+        "gatsby",
+        "gcp-vpc-flow-logs",
+        "golang",
+        "google-cloud-platform",
+        "google-cloud-platform-logs",
+        "govcloud",
+        "guided-install",
+        "haproxy",
+        "headerless-log-api",
+        "heroku",
+        "heroku-http",
+        "ios",
+        "java",
+        "java-logs",
+        "jmx",
+        "jquery",
+        "kafka",
+        "kamon",
+        "kubernetes",
+        "kubernetes-logs",
+        "linux",
+        "linux-infra",
+        "linux-logs",
+        "llm-application",
+        "logstash",
+        "macos",
+        "maui",
+        "memcached",
+        "micrometer",
+        "microsoft-azure",
+        "microsoft-azure-blob-storage",
+        "microsoft-azure-event-hub",
+        "microsoft-sql-server",
+        "microsoftnet",
+        "microsoftnet-logs",
+        "mona",
+        "mongodb",
+        "mysql",
+        "nagios",
+        "network-devices",
+        "network-flows",
+        "network-synthetics",
+        "new-relic-browser",
+        "new-relic-infrastructure-agent",
+        "new-relic-synthetics",
+        "next-js",
+        "nginx",
+        "node-js",
+        "nr-ai-monitoring",
+        "nvidia-nim",
+        "opentelemetry",
+        "oracle-database",
+        "php",
+        "pixie",
+        "postgresql",
+        "powerdns",
+        "prometheus",
+        "prometheus-agent-mode",
+        "puppet-install",
+        "python",
+        "rabbitmq",
+        "react",
+        "react-native",
+        "redis",
+        "rhel",
+        "rhel-logs",
+        "ruby",
+        "ruby-logs",
+        "security-api",
+        "sles",
+        "sles-logs",
+        "snmp",
+        "snyk",
+        "statsd",
+        "super-agent",
+        "syslog",
+        "trivy",
+        "truera",
+        "ubuntu",
+        "ubuntu-logs",
+        "unity",
+        "unreal",
+        "varnish",
+        "vmware-tanzu",
+        "vmware-vsphere",
+        "vue",
+        "windows",
+        "windows-infra",
+        "windows-logs",
+        "xamarin",
+        "xcframework",
+        "zepto"
+      ]
+    }
+  }
+}
+

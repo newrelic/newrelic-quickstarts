@@ -23,6 +23,7 @@ import type {
   QuickstartSupportLevel,
 } from '../types/QuickstartMutationVariable';
 import type { QuickstartConfig } from '../types/QuickstartConfig';
+import { ArtifactQuickstartConfig, ArtifactQuickstartConfigSupportLevel } from '../types/Artifact';
 
 export interface QuickstartMutationResponse {
   quickstart: {
@@ -34,6 +35,9 @@ interface SupportLevelMap {
   [key: string]: QuickstartSupportLevel;
 }
 
+// FIXME: We will want to clean this up and conform to the `Artifact` types 
+// when we go to cleanup the deprecated mutation functionality after we have 
+// finalized the new quickstart publishing pipeline.
 const SUPPORT_LEVEL_ENUMS: SupportLevelMap = {
   'New Relic': 'NEW_RELIC',
   Community: 'COMMUNITY',
@@ -134,7 +138,11 @@ class Quickstart {
 
   /**
    * Get mutation variables from quickstart config
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
+   *
    * @returns - Promised mutation variables for quickstart
+   *
    */
   async getMutationVariables(
     dryRun: boolean
@@ -153,7 +161,6 @@ class Quickstart {
       icon,
       keywords,
       summary,
-      installPlans,
       dataSourceIds,
       id,
       level,
@@ -179,7 +186,6 @@ class Quickstart {
       ),
       summary: summary && summary.trim(),
       supportLevel: SUPPORT_LEVEL_ENUMS[level],
-      installPlanStepIds: installPlans,
       dataSourceIds: dataSourceIds,
     };
 
@@ -198,6 +204,58 @@ class Quickstart {
       dryRun,
       quickstartMetadata,
     };
+  }
+
+  /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  public transformForArtifact(): ArtifactQuickstartConfig {
+    const {
+      description,
+      title,
+      slug,
+      documentation,
+      icon,
+      keywords,
+      summary,
+      dataSourceIds,
+      id,
+      level,
+      authors = [],
+      dashboards = [],
+      alertPolicies = [],
+    } = this.config;
+
+    const metadata = {
+      quickstartUuid: id,
+      description: description && description.trim(),
+      displayName: title && title.trim(),
+      slug: slug && slug.trim(),
+      documentation:
+        documentation &&
+        documentation.map((doc) => ({
+          displayName: doc.name,
+          url: doc.url,
+          description: doc.description,
+        })),
+      iconUrl: this._constructIconUrl(icon),
+      keywords: keywords ?? [],
+      sourceUrl: Component.getAssetSourceUrl(
+        Component.removeBasePath(path.dirname(this.configPath), this.basePath)
+      ),
+      summary: summary && summary.trim(),
+      supportLevel: SUPPORT_LEVEL_ENUMS[
+        level
+      ]?.toLowerCase() as ArtifactQuickstartConfigSupportLevel,
+      dataSourceIds: dataSourceIds,
+      alertConditions: alertPolicies,
+      dashboards,
+      authors,
+    };
+
+
+    return metadata;
   }
 
   public async submitMutation(dryRun = true) {

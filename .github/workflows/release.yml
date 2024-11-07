@@ -4,13 +4,27 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 env:
   THIRD_PARTY_GIT_AUTHOR_EMAIL: opensource+bot@newrelic.com
   THIRD_PARTY_GIT_AUTHOR_NAME: nr-opensource-bot
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./utils
+
+permissions:
+  id-token: write # Required for attestation
+  attestations: write # Required for attestation
+  contents: write
+
 jobs:
   generate-third-party-notices:
+    # Don't run this if it's a tag push
+    if: ${{ startsWith(github.ref, 'refs/heads') }}
     runs-on: ubuntu-latest
     steps:
       # Checkout fetch-depth: 2 because there's a check to see if package.json
@@ -24,13 +38,11 @@ jobs:
         uses: "./.github/actions/bootstrap"
 
       - name: Install OSS CLI
-        working-directory: ./utils
         run: |
           yarn global add @newrelic/newrelic-oss-cli
 
       - name: Generate Third Party Notices
         id: generate-notices
-        working-directory: ./utils
         run: |
           if [ ! -f "third_party_manifest.json" ]; then
             echo "::error::third_party_manifest.json is missing. Must generate using the newrelic-oss-cli."
@@ -55,3 +67,34 @@ jobs:
           else
             echo "No change in package.json, not regenerating third-party notices"
           fi
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          ref: ${{ github.ref }}
+      - name: Setup workspace
+        uses: "./.github/actions/bootstrap"
+      - name: Validate and generate artifact
+        uses: "./.github/actions/build-validate-artifact"
+        with:
+          output-artifact: 'true'
+      - name: Attest artifact
+        uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c
+        with:
+          subject-path: utils/build/*
+      - name: Create new release tag
+        # Only run if this is a branch push (we'll need a new tag)
+        if: ${{ startsWith(github.ref, 'refs/heads') }}
+        id: version
+        uses: "./.github/actions/bump-version-tag"
+      - name: Create release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
+        with:
+          files: utils/build/*
+          fail_on_unmatched_files: true
+          make_latest: true
+          # If we have a tag output from the previous step, use that as the tag
+          # name, otherwise use the current ref which should be the tag.
+          tag_name: ${{ steps.version.outputs.tag || github.ref }}

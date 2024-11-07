@@ -43,7 +43,6 @@ export interface QuickstartMetaData {
   sourceUrl?: string;
   summary: string;
   supportLevel?: QuickstartSupportLevel;
-  installPlanStepIds?: string[];
   dashboards?: QuickstartDashboardInput[];
   dataSourceIds?: string[];
 }

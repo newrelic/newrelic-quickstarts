@@ -17,6 +17,7 @@ import type {
   DataSourceInstallDirectiveInput,
   DataSourceMutationVariable,
 } from '../types/DataSourceMutationVariable';
+import { ArtifactDataSourceConfig, ArtifactInstall } from '../types/Artifact';
 
 export interface DataSourceMutationResponse {
   dataSource: {
@@ -24,7 +25,11 @@ export interface DataSourceMutationResponse {
   };
 }
 
-class DataSource extends Component<DataSourceConfig, string> {
+class DataSource extends Component<
+  DataSourceConfig,
+  string,
+  ArtifactDataSourceConfig
+> {
   /**
    * @returns Filepath for the configuration file (from top-level directory).
    */
@@ -41,7 +46,6 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     // find the matching data source ID from the config content
     const dataSource = allDataSources.find((i) => i.content?.id === id);
-
     // replace the identifier with the file path found from the id
     this.identifier = path.dirname(
       Component.removeBasePath(
@@ -75,7 +79,37 @@ class DataSource extends Component<DataSourceConfig, string> {
   }
 
   /**
+   * Method extracts criteria from the config and returns an object appropriately
+   * structured for the artifact.
+   */
+  public transformForArtifact() {
+    const { keywords, description, categoryTerms, icon, ...rest } = this.config;
+
+    return {
+      ...rest,
+      iconUrl: this._getIconUrl(),
+      install: this._parseInstallsForArtifact(),
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()) : [],
+      keywords: keywords ? keywords.map((k) => k.trim()) : [],
+      description: description && description.trim(),
+    };
+  }
+
+  private _parseInstallsForArtifact() {
+    const { install } = this.config;
+
+    return {
+      primary: this._parseInstallDirectiveForArtifact(install.primary),
+      fallback:
+        install.fallback &&
+        this._parseInstallDirectiveForArtifact(install.fallback),
+    };
+  }
+
+  /**
    * Get the variables for the **Quickstart** mutation.
+   *
+   * @deprecated This function should be removed once we have finished our new build publishing pipeline
    *
    * @returns The ID for this data source
    */
@@ -96,7 +130,7 @@ class DataSource extends Component<DataSourceConfig, string> {
       displayName: displayName && displayName.trim(),
       icon: this._getIconUrl(),
       install: this._parseInstall(),
-      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()): [],
+      categoryTerms: categoryTerms ? categoryTerms.map((t) => t.trim()) : [],
       keywords: keywords ? keywords.map((k) => k.trim()) : [],
       description: description && description.trim(),
     };
@@ -189,9 +223,60 @@ class DataSource extends Component<DataSourceConfig, string> {
 
     return directive;
   }
+
+  /**
+   * Helper method that returns the directive, based on its type.
+   */
+  private _parseInstallDirectiveForArtifact(
+    directive: DataSourceConfigInstallDirective
+  ): ArtifactInstall {
+    if ('link' in directive) {
+      const { url } = directive.link;
+
+      return {
+        url: url?.trim() ?? '',
+      };
+    }
+
+    if ('nerdlet' in directive) {
+      const { nerdletId, nerdletState, requiresAccount } = directive.nerdlet;
+
+      return {
+        nerdletId: nerdletId?.trim() ?? '',
+        nerdletState: nerdletState,
+        requiresAccount: requiresAccount,
+      };
+    }
+
+    return directive;
+  }
+
+  static isDataSource(x: DataSource | undefined): x is DataSource {
+    return x !== undefined;
+  }
+
+  static getAll(): DataSource[] {
+    return getAllDataSourceFiles()
+      .map((configFilePath) => {
+        const id = getDataSourceId(configFilePath);
+        const dataSource = new DataSource(id);
+        if (dataSource != undefined) {
+          return dataSource;
+        }
+      })
+      .filter(DataSource.isDataSource);
+  }
 }
 
-const getAllDataSourceFiles = (
+const getDataSourceId = (filepath: string) => {
+  const yamlContent = yaml.load(
+    fs.readFileSync(filepath).toString('utf-8')
+  ) as DataSourceConfig;
+
+  return yamlContent.id;
+};
+
+export const getAllDataSourceFiles = (
   basePath: string = path.join(__dirname, '..', '..')
 ): string[] =>
   glob.sync(path.join(basePath, 'data-sources', '**', 'config.+(yml|yaml)'));
