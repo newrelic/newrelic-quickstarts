@@ -457,8 +457,8 @@ exmaple-screenshot2.png
 
 #### Dashboard name uniqueness
 
-- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `yarn run check_dashboard_name_uniqueness` from the `utils` directory.
-- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.js) will check and notify you of duplicate dashboard names in the repository.
+- A dashboard's name must be unique. After providing a name in the `dashboard.json` file, you can check if your dashboard's name already exists by running `yarn run check-dashboard-name-uniqueness` from the `utils` directory.
+- this [script](https://github.com/newrelic/newrelic-quickstarts/blob/main/utils/check_dashboard_name_uniqueness.ts) will check and notify you of duplicate dashboard names in the repository.
 - As a best practice you should run this script when creating a new dashboard.
 
 #### Dashboard screenshots
