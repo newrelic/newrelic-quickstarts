@@ -1,0 +1,439 @@
+{
+  "name": "Browser page resources",
+  "description": null,
+  "pages": [
+    {
+      "name": "Browser page resources",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Calls",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance Select count(*) where entryType = 'resource' timeseries facet initiatorType"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average Duration",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT average(entryDuration) as 'ms' WHERE entryType = 'resource' facet initiatorType limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT average(connectEnd - connectStart) as 'TCP Handshake', average(domainLookupEnd - domainLookupStart) as 'DNS Lookup', average(redirectEnd - redirectStart) as 'Redirection Time', average(responseStart - requestStart) as 'Request Time' timeseries 3 minutes"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Non-Compressed Payloads",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT percentage(count(*), where decodedBodySize <= encodedBodySize) as 'Compressed Payloads' where entryType = 'resource'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Outdated Network Protocols",
+          "layout": {
+            "column": 12,
+            "row": 1,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT percentage(count(*), where nextHopProtocol = 'h1') as 'Legacy Network Calls' where entryType = 'resource'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Cached Payloads",
+          "layout": {
+            "column": 11,
+            "row": 2,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT percentage(count(*), where transferSize = 0) as 'Cached Payloads' where entryType = 'resource'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Render Blocking Resources",
+          "layout": {
+            "column": 12,
+            "row": 2,
+            "width": 1,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT percentage(count(*), where renderBlockingStatus is NOT NULL ) as 'Render Blocking Resources' where entryType = 'resource'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Non-Cached Resources",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance select count(*) as 'Non-Cached Payloads' where entryType = 'resource' where transferSize != 0 facet entryName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Non-Compressed Resources",
+          "layout": {
+            "column": 10,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance select count(*) as 'Non-Compressed Payloads' where entryType = 'resource' where decodedBodySize = encodedBodySize facet entryName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Longest Request Time Pages",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT max(responseStart - requestStart) as 'Request Time' facet currentUrl"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Slowest TCP Handshake",
+          "layout": {
+            "column": 4,
+            "row": 6,
+            "width": 3,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT max(connectEnd - connectStart) as 'TCP Handshake Time' facet entryName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "First Party Assets",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT count(*) where firstParty is true facet initiatorType limit 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "First Party Vs Other Assets - Duration",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT average(entryDuration) facet cases(where firstParty is true as 'First Party Asset', where 1=1 as Other)"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Slowest Assets",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT max(responseStart - requestStart) as 'Request Time' facet entryName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Slowest DNS Lookup",
+          "layout": {
+            "column": 4,
+            "row": 10,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT max(domainLookupEnd - domainLookupStart) as 'DNS Lookup Time' facet entryName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "First Party Vs Other Assets",
+          "layout": {
+            "column": 7,
+            "row": 11,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM BrowserPerformance SELECT count(*) facet cases(where firstParty is true as 'First Party Asset')"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
