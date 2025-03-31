@@ -1,0 +1,32 @@
+name: High error rate
+
+# Description and details
+description: |
+  Gateway has experienced over 20 errors in the last 5 minutes
+
+# Type of alert: BASELINE | STATIC
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT rate(sum(otelcol_nrreceiver_incoming_request_errors), 1 second) + rate(sum(otelcol_nrexporter_outgoing_requests_errors), 1 second) AS ERROR FROM Metric  WHERE clusterName = {{YOUR_CLUSTER_NAME}} FACET podName"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE_OR_EQUALS
+    # Value that triggers a violation
+    threshold: 20
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 259200
