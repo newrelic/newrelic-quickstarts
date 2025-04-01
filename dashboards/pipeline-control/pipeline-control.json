@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(version) FROM Metric WHERE clusterName = {{cluster_name}}  AND metricName = 'otelcol_nrreceiver_health_status' SINCE 5 minutes ago"
+                "query": "SELECT latest(version) FROM Metric WHERE clusterName = {{cluster_name}}  AND metricName = 'otelcol_nrreceiver_health_status' and serviceName = {{ service_name }}  SINCE 5 minutes ago"
               }
             ],
             "platformOptions": {
@@ -79,7 +79,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT uniqueCount(podName) AS 'Active Gateway Pods' FROM Metric WHERE clusterName = {{cluster_name}}  AND metricName='otelcol_nrreceiver_health_status' SINCE 2 minutes ago"
+                "query": "SELECT uniqueCount(podName) AS 'Active Gateway Pods' FROM Metric WHERE clusterName = {{cluster_name}}  AND metricName='otelcol_nrreceiver_health_status' and serviceName = {{ service_name }} SINCE 2 minutes ago"
               }
             ],
             "platformOptions": {
@@ -90,7 +90,7 @@
         {
           "title": "Rules",
           "layout": {
-            "column": 9,
+            "column": 7,
             "row": 1,
             "width": 2,
             "height": 2
@@ -106,11 +106,61 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(registered) AS 'Total Rule Registered' , max(failed) As 'Total Rule Failed' FROM (\n  SELECT latest(otelcol_nrprocessor_rules_registered) AS registered , latest (otelcol_nrprocessor_rules_failed) as failed\n  FROM Metric \n  WHERE metricName IN ('otelcol_nrprocessor_rules_registered' , 'otelcol_nrprocessor_rules_failed') \n  FACET processor\n)"
+                "query": "SELECT sum(registered) AS 'Total Rule Registered' , max(failed) As 'Total Rule Failed' FROM (\n  SELECT latest(otelcol_nrprocessor_rules_registered) AS registered , latest (otelcol_nrprocessor_rules_failed) as failed\n  FROM Metric \n  WHERE metricName IN ('otelcol_nrprocessor_rules_registered' , 'otelcol_nrprocessor_rules_failed') and serviceName = {{ service_name }}\n  FACET processor\n)"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Number of Records",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(otelcol_nrprocessor_incoming_count), 1 second) AS 'INCOMING' , rate(sum(otelcol_nrprocessor_outgoing_count), 1 second) AS 'OUTGOING', rate(sum(otelcol_nrprocessor_dropped_count), 1 second) AS 'DROPPED' FROM Metric WHERE clusterName = {{cluster_name}}  AND meltType IN ({{melt_type}}) and serviceName = {{ service_name }} TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "REQUESTS_PER_SECOND"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
             }
           }
         },
@@ -144,7 +194,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_requests), 1 seconds) AS INCOMING_RATE, rate(sum(otelcol_nrexporter_outgoing_requests) + sum(otelcol_nrprocessor_outgoing_requests) + sum(otelcol_nrreceiver_outgoing_requests), 1 seconds) AS OUTGOING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}})  TIMESERIES"
+                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_requests), 1 seconds) AS INCOMING_RATE, rate(sum(otelcol_nrexporter_outgoing_requests) + sum(otelcol_nrprocessor_outgoing_requests) + sum(otelcol_nrreceiver_outgoing_requests), 1 seconds) AS OUTGOING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}})  and serviceName = {{ service_name }} TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -191,7 +241,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrexporter_outgoing_requests), 1 seconds) + rate(sum(otelcol_nrreceiver_outgoing_requests), 1 seconds) + rate(sum(otelcol_nrprocessor_outgoing_requests), 1 seconds)  FROM Metric WHERE clusterName = {{cluster_name}}  AND meltType IN ({{melt_type}}) FACET StatusCode TIMESERIES "
+                "query": "SELECT rate(sum(otelcol_nrexporter_outgoing_requests), 1 seconds) + rate(sum(otelcol_nrreceiver_outgoing_requests), 1 seconds) + rate(sum(otelcol_nrprocessor_outgoing_requests), 1 seconds)  FROM Metric WHERE clusterName = {{cluster_name}}  AND meltType IN ({{melt_type}}) and serviceName = {{ service_name }} FACET StatusCode TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -209,10 +259,10 @@
           }
         },
         {
-          "title": "Number of Records",
+          "title": "Error rate",
           "layout": {
             "column": 9,
-            "row": 3,
+            "row": 4,
             "width": 4,
             "height": 3
           },
@@ -238,7 +288,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrprocessor_incoming_count), 1 second) AS 'INCOMING' , rate(sum(otelcol_nrprocessor_outgoing_count), 1 second) AS 'OUTGOING', rate(sum(otelcol_nrprocessor_dropped_count), 1 second) AS 'DROPPED' FROM Metric WHERE clusterName = {{cluster_name}}  AND meltType IN ({{melt_type}}) TIMESERIES "
+                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_request_errors), 1 second) + rate(sum(otelcol_nrprocessor_rules_evaluation_failed), 1 second) + rate(sum(otelcol_nrexporter_outgoing_requests_errors), 1 second) AS ERROR FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}}) and serviceName = {{ service_name }} TIMESERIES "
               }
             ],
             "platformOptions": {
@@ -361,10 +411,10 @@
           }
         },
         {
-          "title": "Error rate",
+          "title": "Queue Sizes",
           "layout": {
             "column": 9,
-            "row": 6,
+            "row": 7,
             "width": 4,
             "height": 3
           },
@@ -390,7 +440,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_request_errors), 1 second) + rate(sum(otelcol_nrprocessor_rules_evaluation_failed), 1 second) + rate(sum(otelcol_nrexporter_outgoing_requests_errors), 1 second) AS ERROR FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}}) TIMESERIES "
+                "query": "SELECT max(otelcol_nrprocessor_queue_size) FROM Metric WHERE metricName = 'otelcol_nrprocessor_queue_size' AND clusterName={{cluster_name}} and serviceName = {{ service_name }}  Facet podName TIMESERIES LIMIT 3 Since 5 minutes ago"
               }
             ],
             "platformOptions": {
@@ -398,9 +448,6 @@
             },
             "thresholds": {
               "isLabelVisible": true
-            },
-            "units": {
-              "unit": "REQUESTS_PER_SECOND"
             },
             "yAxisLeft": {
               "zero": true
@@ -440,7 +487,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT percentile(otelcol_nrexporter_pcg_requests_latency, 99)/1000 AS E2E_LATENCY FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}})  TIMESERIES"
+                "query": "SELECT percentile(otelcol_nrexporter_pcg_requests_latency, 99)/1000 AS E2E_LATENCY FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}}) and serviceName = {{ service_name }} TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -487,11 +534,11 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_request_proxy), 1 seconds) AS PROXY_INCOMING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}})  TIMESERIES"
+                "query": "SELECT rate(sum(otelcol_nrreceiver_incoming_request_proxy), 1 seconds) AS PROXY_INCOMING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND meltType IN ({{melt_type}}) and serviceName = {{ service_name }} TIMESERIES"
               },
               {
                 "accountIds": [],
-                "query": "SELECT rate(sum(otelcol_nrexporter_outgoing_requests), 1 seconds) AS PROXY_OUTGOING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND metricName= 'otelcol_nrexporter_outgoing_requests' AND isProxied=true AND meltType IN ({{melt_type}})  TIMESERIES"
+                "query": "SELECT rate(sum(otelcol_nrexporter_outgoing_requests), 1 seconds) AS PROXY_OUTGOING_RATE FROM Metric WHERE clusterName = {{cluster_name}} AND metricName= 'otelcol_nrexporter_outgoing_requests' AND isProxied=true AND meltType IN ({{melt_type}})  and serviceName = {{ service_name }} TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -502,53 +549,6 @@
             },
             "units": {
               "unit": "REQUESTS_PER_SECOND"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Queue Sizes",
-          "layout": {
-            "column": 9,
-            "row": 9,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "markers": {
-              "displayedTypes": {
-                "criticalViolations": false,
-                "deployments": true,
-                "relatedDeployments": true,
-                "warningViolations": false
-              }
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "SELECT max(otelcol_nrprocessor_queue_size) FROM Metric WHERE metricName = 'otelcol_nrprocessor_queue_size' AND clusterName={{cluster_name}}  Facet podName TIMESERIES LIMIT 3 Since 5 minutes ago"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
             },
             "yAxisLeft": {
               "zero": true
@@ -688,6 +688,23 @@
       "title": "melt_type",
       "type": "NRQL",
       "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "service_name",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(serviceName) FROM Metric WHERE metricName = 'otelcol_nrreceiver_health_status' and clusterName = {{cluster_name}}"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "service_name",
+      "type": "NRQL",
+      "isMultiSelection": false,
       "replacementStrategy": "STRING"
     }
   ]
