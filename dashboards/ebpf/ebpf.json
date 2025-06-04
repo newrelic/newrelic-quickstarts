@@ -1,0 +1,1189 @@
+{
+  "name": "eBPF",
+  "pages": [
+    {
+      "name": "TCP",
+      "description": null,
+      "widgets": [
+        {
+          "title": "DNS Resolution (success/failure)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Span SELECT count(*) WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) FACET dns.resolved_status, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "DNS Resolution Count",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Span SELECT count(*) WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) FACET dns.resolved_status, entity.name LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "DNS Resolution (failure)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Span SELECT count(*) AS 'Failure Count' WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) AND dns.resolved=false FACET entity.name, dns.query LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] Bytes Sent",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.tx) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name, local_addr, local_port limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] Bytes Received",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.rx) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name, local_addr, local_port limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] Bytes Dropped",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.retransmits) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name, local_addr, local_port limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] Bytes Sent",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.tx) as 'Bytes Sent' where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] Bytes Received",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.rx) as 'Bytes Received' where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] Bytes Dropped",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(ebpf.tcp.retransmits) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name,  remote_addr limit max TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Connection Count (success/failure)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) AS Success where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET tcp_established, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Connection Count (success/failure)",
+          "layout": {
+            "column": 7,
+            "row": 13,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) AS Success where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET tcp_established, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Connection (success)",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) where entity.name IN ({{entity_name}}) and tcp_established='Success' and direction='INCOMING' FACET entity.name,  local_addr, local_port LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Connection (success)",
+          "layout": {
+            "column": 4,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) where entity.name IN ({{entity_name}}) and tcp_established='Success' and direction='OUTGOING' FACET entity.name,  remote_addr LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Connection (failure)",
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and tcp_established='Failure' and direction='INCOMING' FACET entity.name,  local_addr, local_port LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Connection (failure)",
+          "layout": {
+            "column": 10,
+            "row": 16,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(ebpf.tcp.handshake_latency) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and tcp_established='Failure' and direction='OUTGOING' FACET entity.name,  remote_addr LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Handshake Latency",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.handshake_latency,{{percentile_value}})/1000000 where entity.name IN ({{entity_name}}) and ebpf.tcp.handshake_latency is NOT NULL and direction='INCOMING' FACET entity.name, local_addr, local_port order by max(ebpf.tcp.handshake_latency) TIMESERIES limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Socket Connection Duration",
+          "layout": {
+            "column": 5,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.connection_duration, {{percentile_value}}) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name,  local_addr, local_port LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] Data Transmit Duration",
+          "layout": {
+            "column": 9,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.data_transmit_duration, {{percentile_value}}) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name,  local_addr, local_port LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Handshake Latency",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.handshake_latency, {{percentile_value}})/1000000 where entity.name IN ({{entity_name}}) and ebpf.tcp.handshake_latency is NOT NULL and direction='OUTGOING' FACET entity.name order by max(ebpf.tcp.handshake_latency) TIMESERIES limit max"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Socket Connection Duration",
+          "layout": {
+            "column": 5,
+            "row": 22,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.connection_duration, {{percentile_value}}) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] Data Transmit Duration",
+          "layout": {
+            "column": 9,
+            "row": 22,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.data_transmit_duration, {{percentile_value}}) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] TCP Packet Delivery Latency",
+          "layout": {
+            "column": 1,
+            "row": 25,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.packet_latency_avg, {{percentile_value}})/1000000 where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' FACET entity.name,  local_addr, local_port order by max(ebpf.tcp.packet_latency_avg) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] TCP Packet Delivery Latency",
+          "layout": {
+            "column": 7,
+            "row": 25,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(ebpf.tcp.packet_latency_avg, {{percentile_value}})/1000000 where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name order by max(ebpf.tcp.packet_latency_avg) LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "[INBOUND CONNECTIONS] Short Lived Connection Duration (ms)",
+          "layout": {
+            "column": 1,
+            "row": 28,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.heatmap"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT histogram(ebpf.tcp.connection_duration, width: 30000) where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='INCOMING' AND local_port != 0 FACET entity.name, local_addr, local_port LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "[OUTBOUND CONNECTIONS] Short Lived Connection Duration (ms)",
+          "layout": {
+            "column": 1,
+            "row": 31,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.heatmap"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT histogram(ebpf.tcp.connection_duration, width: 30000) AS 'Duration' where entity.name IN ({{entity_name}}) and protocol.name='tcp' and direction='OUTGOING' FACET entity.name LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "entity_name",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(entity.name) limit max"
+      },
+      "options": {
+        "ignoreTimeRange": false,
+        "excluded": false
+      },
+      "title": "Entity Name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "percentile_value",
+      "items": [
+        {
+          "title": null,
+          "value": "50"
+        },
+        {
+          "title": null,
+          "value": "95"
+        },
+        {
+          "title": null,
+          "value": "99.9"
+        },
+        {
+          "title": null,
+          "value": "100"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "100"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "options": {
+        "excluded": false
+      },
+      "title": "Chart Projection %ile",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER"
+    }
+  ]
+}
