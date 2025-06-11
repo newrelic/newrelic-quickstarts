@@ -700,7 +700,7 @@ icon.png
     ### Pull Request Quickstart Preview
 
     - Once a PR is open for a quickstart, a comment will be automatically generated with a link to the quickstart associated with the PR.
-    - If a PR has multiple quickstarts, a link will be generated in the PR for each quickstart.
+    - If a pull request includes more than one quickstart, a separate link will be provided in the PR for each quickstart.
 
 </details>
 
