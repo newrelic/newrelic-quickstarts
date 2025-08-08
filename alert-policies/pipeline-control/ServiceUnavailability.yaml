@@ -1,15 +1,15 @@
-name: Drop Rule Registration Failed
+name: Service Unavailability
 
 # Description and details
 description: |
-  One or more gateway drop rules failed to register. Immediate attention required
+  The service health status metric has not been reported in the last 5 minutes, indicating potential unavailability.
 
 # Type of alert: BASELINE | STATIC
 type: STATIC
 
 # NRQL query
 nrql:
-  query: "SELECT latest(otelcol_nrprocessor_rules_failed) FROM Metric WHERE serviceName = 'pipeline-control-gateway' FACET podName, clusterName"
+  query: "SELECT average(otelcol_nrreceiver_health_status) FROM Metric WHERE metricName = 'otelcol_nrreceiver_health_status' AND serviceName = 'pipeline-control-gateway' facet podName, clusterName"
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
@@ -18,15 +18,14 @@ valueFunction: SINGLE_VALUE
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
-    operator: ABOVE
+    operator: BELOW
     # Value that triggers a violation
-    threshold: 0
+    threshold: 1
     # Time in seconds; 120 - 3600
-    thresholdDuration: 120
+    thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
 
-
 # Duration after which a violation automatically closes
 # Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
-violationTimeLimitSeconds: 259200
+violationTimeLimitSeconds: 86400
