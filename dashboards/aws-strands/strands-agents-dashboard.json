@@ -1,0 +1,726 @@
+{
+  "name": "Strands-Agents-Dashboard",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "guid": "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIy",
+      "name": "App level",
+      "description": null,
+      "widgets": [
+        {
+          "id": "465947042",
+          "title": "Tokens",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.input_tokens) AS 'Input tokens', sum(gen_ai.usage.output_tokens) AS 'Output tokens' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "id": "465947043",
+          "title": "Requests/Operations",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "visual": {
+                "alignment": "stacked",
+                "display": "all"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "duration.ms",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT uniqueCount(trace.id) AS Requests, count(id) AS Operations FROM Span WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947044",
+          "title": "Req. duration(P95) in sec",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "visual": {
+                "display": "value"
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT percentile(trace_duration, 95) FROM(SELECT sum(duration.ms)/1000 AS trace_duration FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}})"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947045",
+          "title": "Tool calls with status",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxNzQyNzUw"
+          ],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT count(id) FROM Span FACET gen_ai.tool.name, tool.status WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} AND gen_ai.operation.name = 'execute_tool'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947046",
+          "title": "Token cost (USD)",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.input_tokens) * {{input_token_cost}}/1000000 AS 'Input token cost',  sum(gen_ai.usage.output_tokens) * {{output_token_cost}}/1000000 AS 'Output token cost' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "id": "465947047",
+          "title": "Operations per status code",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxNzQyNzUw"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT count(id) FROM Span FACET otel.status_code WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947048",
+          "title": "Requests per model",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT uniqueCount(trace.id) FROM Span facet gen_ai.request.model WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "guid": "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz",
+      "name": "Request level",
+      "description": null,
+      "widgets": [
+        {
+          "id": "465947049",
+          "title": "Input tokens per request(trace)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODUzMjMy"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.input_tokens) AS 'Input tokens' FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947050",
+          "title": "Output tokens per request(trace)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.output_tokens) AS 'Output tokens' FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947051",
+          "title": "Total tokens per request(trace)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.total_tokens) AS 'Total tokens' FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947052",
+          "title": "Duration per request(trace) in sec",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(duration.ms)/1000 AS 'Duration(sec)' FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947053",
+          "title": "Tools calls per request(trace)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT count(id) FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} AND gen_ai.operation.name = 'execute_tool'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947054",
+          "title": "Errors per request(trace)",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODIz"
+          ],
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT count(id) FROM Span FACET trace.id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} AND otel.status_code = 'ERROR'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "guid": "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODY0ODI0",
+      "name": "Operation level",
+      "description": null,
+      "widgets": [
+        {
+          "id": "465947055",
+          "title": "Input tokens per operation(span)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODUzMjM0"
+          ],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.input_tokens) FROM Span FACET gen_ai.operation.name, id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947056",
+          "title": "Output tokens per operation(span)",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODUzMjM0"
+          ],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.output_tokens) FROM Span FACET gen_ai.operation.name, id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947057",
+          "title": "Total tokens per operation(span)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODUzMjM0"
+          ],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(gen_ai.usage.total_tokens) FROM Span FACET gen_ai.operation.name, id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947058",
+          "title": "Operation duration(sec)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [
+            "NDM4MzU0MHxWSVp8REFTSEJPQVJEfDQxODUzMjM0"
+          ],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT sum(duration.ms)/1000 FROM Span FACET gen_ai.operation.name, id WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "id": "465947059",
+          "title": "Operation description",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [
+                  4383540
+                ],
+                "query": "SELECT gen_ai.operation.name AS Operation, id AS 'Span ID', otel.status_description AS 'Description' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND service.name = {{service.name}} WHERE otel.status_description IS NOT NULL"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "service.name",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [
+          4383540
+        ],
+        "query": "SELECT uniques(service.name) from Span where instrumentation.provider = 'opentelemetry'"
+      },
+      "options": {
+        "ignoreTimeRange": false,
+        "excluded": false
+      },
+      "title": "Service name",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "input_token_cost",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0.04"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "options": {},
+      "title": "Input token cost(1M)",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    },
+    {
+      "name": "output_token_cost",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0.14"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "options": {},
+      "title": "Output token cost(1M)",
+      "type": "STRING",
+      "isMultiSelection": null,
+      "replacementStrategy": "NUMBER"
+    }
+  ]
+}
