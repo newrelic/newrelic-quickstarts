@@ -1,0 +1,1563 @@
+{
+  "name" : "NGINX OTel overview",
+  "variables" : [ ],
+  "pages" : [ {
+      "name": "NGINX OTel overview",
+      "widgets": [
+        {
+          "title": "Requests per second",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`nginx.requests`) / sum((endTimestamp - timestamp) / 1000) AS 'Requests per second' WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginx.requests' FACET nginx.deployment.name TIMESERIES AUTO"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`nginxplus_http_requests_total`) / sum((endTimestamp - timestamp) / 1000) WHERE  metricName = 'nginxplus_http_requests_total' AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total number of client requests",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`nginx.requests` or `nginxplus_http_requests_total`) AS `Total number of client requests` WHERE instrumentation.provider = 'opentelemetry' AND ((metricName = 'nginx.requests' AND nginxplus_http_requests_total is NULL) OR (metricName = 'nginxplus_http_requests_total' AND nginx.requests is NULL)) FACET nginx.deployment.name "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![NGINX logo](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nginx_logo.svg/500px-Nginx_logo.svg.png)\n\n### Overview\n[NGINX](https://nginx.org/) is a web server which can also be used as a reverse proxy, load balancer, mail proxy, and HTTP cache. NGINX is designed for high performance and stability, making it one of the most popular web servers in the world."
+          }
+        },
+        {
+          "title": "Active connections",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(nginx.connections_current) AS `Active connections` WHERE metricName = 'nginx.connections_current' AND state = 'active' AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`nginxplus_connections_active`) AS 'Active connections' WHERE metricName = 'nginxplus_connections_active' AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Dropped connections",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (sum(`nginx.connections_accepted`) - sum(`nginx.connections_handled`)) / sum((endTimestamp - timestamp) / 1000) AS 'Connections dropped' WHERE (metricName = 'nginx.connections_accepted' OR metricName = 'nginx.connections_handled') AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name  TIMESERIES AUTO"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (sum(`nginxplus_connections_dropped`)) / sum((endTimestamp - timestamp) / 1000) AS 'Connections dropped' WHERE (metricName = 'nginxplus_connections_dropped' AND instrumentation.provider = 'opentelemetry') FACET nginx.deployment.name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Total number of handled connections",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`nginx.connections_handled`) + (sum(`nginxplus_connections_accepted`) - sum(`nginxplus_connections_dropped`)) AS `Total number of handled connections` WHERE instrumentation.provider = 'opentelemetry' AND (((metricName = 'nginxplus_connections_accepted' OR metricName = 'nginxplus_connections_dropped') AND nginx.connections_handled is NULL) OR (nginxplus_connections_accepted is NULL AND nginxplus_connections_dropped is NULL AND metricName = 'nginx.connections_handled')) FACET nginx.deployment.name "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests: reading, writing and waiting per minute",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM \n Metric, \n Metric, \n Metric \nSELECT \n filter(\n   rate(sum(nginx.connections_current), 1 minute), \n   WHERE metricName = 'nginx.connections_current' AND state = 'reading' AND instrumentation.provider = 'opentelemetry' \n ) AS `Reading`,\n filter(\n  rate(sum(nginx.connections_current), 1 minute),\n  WHERE metricName = 'nginx.connections_current' AND state = 'writing' AND instrumentation.provider = 'opentelemetry' \n ) AS `Writing`, \n filter(\n  rate(sum(nginx.connections_current), 1 minute),\n  WHERE metricName = 'nginx.connections_current' AND state = 'waiting' AND instrumentation.provider = 'opentelemetry'\n ) AS `Waiting`  FACET nginx.deployment.name TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+            "title": null,
+            "layout": {
+                "column": 1,
+                "row": 10,
+                "width": 12,
+                "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+                "text": "# 📋 Http status code and error logs\n\n**Note:** These metrics are based on NGINX access and error logs sent to New Relic using the OpenTelemetry collector."
+            }
+        },
+        {
+          "title": "Critical error messages",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) AS 'Critical errors'\nWHERE (message LIKE '%[crit]%' OR message LIKE '%[emerg]%') AND file.name = 'error.log' FACET nginx.deployment.name \nSINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 0
+                },
+                {
+                  "from": 1,
+                  "severity": "warning",
+                  "to": 10
+                },
+                {
+                  "from": 10,
+                  "severity": "severe",
+                  "to": 25
+                },
+                {
+                  "from": 25,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Top 5 critical messages",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": true
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Count"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) WHERE instrumentation.provider = 'opentelemetry' AND file.name = 'error.log' AND errormessage is NOT NULL FACET errormessage AS `Message`, server AS `Server`, nginx.deployment.name AS `Deployment` LIMIT 5"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "4xx codes by server",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) WHERE instrumentation.provider = 'opentelemetry' AND nginx.deployment.name is NOT NULL AND response LIKE '4%%' AND file.name = 'access.log' FACET nginx.deployment.name, response "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 0
+                },
+                {
+                  "from": 1,
+                  "severity": "warning",
+                  "to": 10
+                },
+                {
+                  "from": 10,
+                  "severity": "severe",
+                  "to": 25
+                },
+                {
+                  "from": 25,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Top 10 urls with 4xx errors",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "count"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) AS `count` WHERE instrumentation.provider = 'opentelemetry' AND request is NOT NULL AND response LIKE '4%%' AND file.name = 'access.log' FACET request AS `URL`, response AS `Status code`, nginx.deployment.name AS `Deployment` LIMIT 10 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "5xx codes by server",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) WHERE instrumentation.provider = 'opentelemetry' AND nginx.deployment.name is NOT NULL AND response LIKE '5%%' AND file.name ='access.log' FACET nginx.deployment.name, response "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 0
+                },
+                {
+                  "from": 1,
+                  "severity": "warning",
+                  "to": 10
+                },
+                {
+                  "from": 10,
+                  "severity": "severe",
+                  "to": 25
+                },
+                {
+                  "from": 25,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Top 10 urls with 5xx errors",
+          "layout": {
+            "column": 5,
+            "row": 17,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "count"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT count(*) AS `count` WHERE instrumentation.provider = 'opentelemetry' AND request is NOT NULL AND response LIKE '5%%' AND file.name = 'access.log' FACET request AS `URL`, response AS `Status code`, nginx.deployment.name AS `Deployment` LIMIT 10 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Client os platform",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT percentage(count(*), WHERE message RLIKE '.*(iPad|iPhone|BlackBerry|SAMSUNG|Galaxy|Windows Phone|Android).*') AS 'Mobile %',\n       percentage(count(*), WHERE message RLIKE '.*(Macintosh|iMac).*') AS 'Mac %',\n       percentage(count(*), WHERE NOT message RLIKE '.*(iPad|iPhone|BlackBerry|SAMSUNG|Galaxy|Windows Phone|Android|Macintosh|iMac).*') AS 'PC %'\nWHERE message IS NOT NULL AND instrumentation.provider = 'opentelemetry' AND file.name = 'access.log' FACET nginx.deployment.name \nSINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+            "title": null,
+            "layout": {
+                "column": 1,
+                "row": 23,
+                "width": 12,
+                "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+                "text": "# 💾 Cache metrics\n\n**Note:** These metrics are only available when monitoring an NGINX Plus server using the OpenTelemetry collector sending data to New Relic."
+            }
+        },
+        {
+            "title": "Avg cache bytes hit",
+            "layout": {
+                "column": 1,
+                "row": 24,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT average(nginxplus_cache_hit_bytes) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_cache_hit_bytes' FACET nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        },
+        {
+            "title": "Bytes hit in cache",
+            "layout": {
+                "column": 5,
+                "row": 24,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT average(nginxplus_cache_hit_bytes) AS 'Hit bytes' WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_cache_hit_bytes' FACET nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Bypassed bytes in cache",
+            "layout": {
+                "column": 9,
+                "row": 24,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT average(nginxplus_cache_bypass_bytes) AS 'Bytes read', sum(nginxplus_cache_bypass_bytes_written) AS 'Bytes written' WHERE instrumentation.provider = 'opentelemetry' AND (metricName = 'nginxplus_cache_bypass_bytes_written' or metricName = 'nginxplus_cache_bypass_bytes') FACET nginx.deployment.name TIMESERIES  "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Hosts loading cache (cold)",
+            "layout": {
+                "column": 1,
+                "row": 27,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_cache_cold) AS 'Cold caches' WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_cache_cold' FACET nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        },
+        {
+            "title": "Cache size",
+            "layout": {
+                "column": 5,
+                "row": 27,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT latest(nginxplus_cache_size) AS 'Size', latest(nginxplus_cache_max_size) AS 'Max size' WHERE instrumentation.provider = 'opentelemetry' AND (metricName = 'nginxplus_cache_size' or metricName = 'nginxplus_cache_max_size') FACET nginx.deployment.name TIMESERIES"
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Missed bytes in cache",
+            "layout": {
+                "column": 9,
+                "row": 27,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_cache_miss_bytes) AS 'Bytes read' WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_cache_miss_bytes' FACET nginx.deployment.name TIMESERIES"
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": null,
+            "layout": {
+                "column": 1,
+                "row": 30,
+                "width": 12,
+                "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+                "text": "# Location zones metrics\n\n**Note:** These metrics are only available when monitoring an NGINX Plus server using the OpenTelemetry collector sending data to New Relic."
+            }
+        },
+        {
+            "title": "Requests per second",
+            "layout": {
+                "column": 1,
+                "row": 31,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_location_zone_requests), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_location_zone_requests' FACET location_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Total responses per second",
+            "layout": {
+                "column": 5,
+                "row": 31,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_location_zone_responses), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_location_zone_responses' FACET location_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Location zone responses",
+            "layout": {
+                "column": 9,
+                "row": 31,
+                "width": 4,
+                "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.pie"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": true
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_location_zone_responses_codes) WHERE metricName = 'nginxplus_location_zone_responses_codes' AND instrumentation.provider = 'opentelemetry' FACET code, location_zone, nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        },
+        {
+            "title": "4xx responses per second",
+            "layout": {
+                "column": 1,
+                "row": 34,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_location_zone_responses), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_location_zone_responses' AND code = '4xx' FACET location_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "5xx responses per second",
+            "layout": {
+                "column": 5,
+                "row": 34,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_location_zone_responses), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_location_zone_responses' AND code = '5xx' FACET location_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Total discarded requests",
+            "layout": {
+                "column": 1,
+                "row": 37,
+                "width": 6,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_location_zone_discarded) WHERE metricName = 'nginxplus_location_zone_discarded' AND instrumentation.provider = 'opentelemetry' FACET location_zone, nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholdsWithSeriesOverrides": {
+                    "thresholds": [
+                        {
+                            "from": 0,
+                            "severity": "success",
+                            "to": 0
+                        },
+                        {
+                            "from": 1,
+                            "severity": "warning",
+                            "to": 100000000000000
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "title": "Received and sent bytes per second",
+            "layout": {
+                "column": 7,
+                "row": 37,
+                "width": 6,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.area"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_location_zone_received), 1 second) AS `Received bytes per second`, rate(sum(nginxplus_location_zone_sent), 1 second) AS `Sent bytes per second` WHERE (metricName = 'nginxplus_location_zone_received' or metricName = 'nginxplus_location_zone_sent') AND instrumentation.provider = 'opentelemetry' FACET location_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        },
+        {
+            "title": null,
+            "layout": {
+                "column": 1,
+                "row": 40,
+                "width": 12,
+                "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+                "text": "# Ssl handshakes metrics\n\n**Note:** These metrics are only available when monitoring an NGINX Plus server using the OpenTelemetry collector sending data to New Relic."
+            }
+        },
+        {
+            "title": "Success vs failed ssl handsakes",
+            "layout": {
+                "column": 1,
+                "row": 41,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_ssl_handshakes), sum(nginxplus_ssl_handshakes_failed) WHERE (metricName = 'nginxplus_ssl_handshakes' OR metricName = 'nginxplus_ssl_handshakes_failed') AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Ssl session reuses",
+            "layout": {
+                "column": 5,
+                "row": 41,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_ssl_session_reuses) WHERE metricName = 'nginxplus_ssl_session_reuses' AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": null,
+            "layout": {
+                "column": 1,
+                "row": 44,
+                "width": 12,
+                "height": 1
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.markdown"
+            },
+            "rawConfiguration": {
+                "text": "# Http server zone metrics\n\n**Note:** These metrics are only available when monitoring an NGINX Plus server using the OpenTelemetry collector sending data to New Relic."
+            }
+        },
+        {
+            "title": "Requests vs responses per second",
+            "layout": {
+                "column": 1,
+                "row": 45,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_server_zone_requests), 1 second) AS 'Requests per second' , rate(sum(nginxplus_server_zone_responses), 1 second) AS 'Responses per second' WHERE instrumentation.provider = 'opentelemetry' AND (metricName = 'nginxplus_server_zone_requests' or metricName = 'nginxplus_server_zone_responses') FACET server_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Success vs failed ssl handsakes",
+            "layout": {
+                "column": 5,
+                "row": 45,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_server_ssl_handshakes), sum(nginxplus_server_ssl_handshakes_failed) WHERE (metricName = 'nginxplus_server_ssl_handshakes' OR metricName = 'nginxplus_server_ssl_handshakes_failed') AND instrumentation.provider = 'opentelemetry' FACET nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Server zone responses",
+            "layout": {
+                "column": 9,
+                "row": 45,
+                "width": 4,
+                "height": 6
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.pie"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": true
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_server_zone_responses_codes) WHERE metricName = 'nginxplus_server_zone_responses_codes' AND instrumentation.provider = 'opentelemetry' FACET code, server_zone, nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        },
+        {
+            "title": "4xx responses per second",
+            "layout": {
+                "column": 1,
+                "row": 48,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_server_zone_responses), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_server_zone_responses' AND code = '4xx' FACET server_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "5xx responses per second",
+            "layout": {
+                "column": 5,
+                "row": 48,
+                "width": 4,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.line"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_server_zone_responses), 1 second) WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'nginxplus_server_zone_responses' AND code = '5xx' FACET server_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholds": {
+                    "isLabelVisible": true
+                },
+                "yAxisLeft": {
+                    "zero": true
+                },
+                "yAxisRight": {
+                    "zero": true
+                }
+            }
+        },
+        {
+            "title": "Total discarded requests",
+            "layout": {
+                "column": 1,
+                "row": 51,
+                "width": 6,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.billboard"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT sum(nginxplus_server_zone_discarded) WHERE metricName = 'nginxplus_server_zone_discarded' AND instrumentation.provider = 'opentelemetry' FACET server_zone, nginx.deployment.name "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                },
+                "thresholdsWithSeriesOverrides": {
+                    "thresholds": [
+                        {
+                            "from": 0.1,
+                            "severity": "critical",
+                            "to": 100000000000000000
+                        },
+                        {
+                            "from": 0,
+                            "severity": "success",
+                            "to": 0
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "title": "Received and sent bytes per second",
+            "layout": {
+                "column": 7,
+                "row": 51,
+                "width": 6,
+                "height": 3
+            },
+            "linkedEntityGuids": null,
+            "visualization": {
+                "id": "viz.area"
+            },
+            "rawConfiguration": {
+                "facet": {
+                    "showOtherSeries": false
+                },
+                "legend": {
+                    "enabled": true
+                },
+                "markers": {
+                    "displayedTypes": {
+                        "criticalViolations": false,
+                        "deployments": true,
+                        "relatedDeployments": true,
+                        "warningViolations": false
+                    }
+                },
+                "nrqlQueries": [
+                    {
+                        "accountIds": [],
+                        "query": "FROM Metric SELECT rate(sum(nginxplus_server_zone_received), 1 second) AS `Received bytes per second`, rate(sum(nginxplus_server_zone_sent), 1 second) AS `Sent bytes per second` WHERE (metricName = 'nginxplus_server_zone_received' or metricName = 'nginxplus_server_zone_sent') AND instrumentation.provider = 'opentelemetry' FACET server_zone, nginx.deployment.name TIMESERIES AUTO "
+                    }
+                ],
+                "platformOptions": {
+                    "ignoreTimeRange": false
+                }
+            }
+        }
+      ]
+    }]
+}
