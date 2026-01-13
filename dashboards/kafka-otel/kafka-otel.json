@@ -1,0 +1,4015 @@
+{
+  "name": "OpenTelemetry Kafka",
+  "description": null,
+  "pages": [
+    {
+      "name": "Clusters",
+      "description": null,
+      "widgets": [
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### .\n\n### .\n![Kafka logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/kafka/logo.png?)\n\n\n"
+          }
+        },
+        {
+          "title": "Total clusters",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "visual": {
+                "alignment": "stacked"
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT uniqueCount(kafka.cluster.name) as 'Total clusters' FROM Metric where kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Network throughput",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 38
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "dataFormatters": [
+              {
+                "name": "Bytes out/s",
+                "type": "humanized"
+              },
+              {
+                "name": "Bytes in/s",
+                "type": "humanized"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(rate(sum(kafka.network.io), 1 second), WHERE (state = 'in' or direction = 'in')) AS 'Bytes in/s', filter(rate(sum(kafka.network.io), 1 second), WHERE (state = 'in' or direction = 'in')) AS 'Bytes out/s' FROM Metric WHERE  metricName = 'kafka.network.io' and kafka.cluster.name in ({{cluster}}) COMPARE WITH 1 hour ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "> **Tip:** Use the `Kafka cluster name` variable (top-left) to filter this view to a specific environment.\n\n####  Kafka Health Cheatsheet\n**Critical Thresholds (Action Required):**\n* **Unstable clusters:** Should be exactly `0`. If `>1`, that means clusters has more than one active controllers or no active controllers in it.\n* **Offline Partitions:** Should be `0`. If `>0`, clients cannot read/write. Check broker logs immediately.\n* **Under-replicated Partitions:** Should be `0`. If high, verify broker connectivity and disk space.\n* **Under min ISR partitions:** Should be `0`. If `>0`, indicates partitions have fewer in-sync replicas than the minimum required.\n\n\n\n---\n\n#### Useful Links:\n\n[New Relic OTel Kafka Documentation](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/overview/)\n\n[Kafka Metrics Reference](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/metrics-reference/)\n\n[Troubleshoot and get support](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/introduction-opentelemetry-new-relic/)"
+          }
+        },
+        {
+          "title": "Cluster health",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "label": 13,
+                "value": 30
+              },
+              "visual": {
+                "alignment": "inline",
+                "display": "all"
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Unstable clusters' FROM (SELECT sum(active_controllers) as 'Active_controllers' FROM (SELECT latest(kafka.controller.active.count) as 'active_controllers' FROM Metric where metricName='kafka.controller.active.count' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name LIMIT MAX)  facet kafka.cluster.name LIMIT MAX) where (Active_controllers > 1 or Active_controllers = 0)"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) AS 'Offline partitions' FROM (SELECT latest(`kafka.partition.offline`) AS 'partitions' FROM Metric WHERE metricName='kafka.partition.offline' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": " SELECT sum(under_replicated_partitions) as 'Under-replicated partitions' FROM (SELECT latest(kafka.partition.under_replicated) as 'under_replicated_partitions' FROM Metric where metricName='kafka.partition.under_replicated' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name LIMIT MAX)"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) as 'Under min ISR partitions' FROM (SELECT max(kafka.partition.under_min_isr) AS 'partitions' FROM Metric WHERE metricName = 'kafka.partition.under_min_isr' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              }
+            ],
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 1,
+                  "severity": "critical"
+                },
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Cluster summary",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 5,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "label": 13,
+                "value": 30
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "all"
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(topics) as 'Total topics' FROM (SELECT latest(kafka.cluster.topic.count) AS 'topics' FROM Metric WHERE metricName='kafka.cluster.topic.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(groups) AS 'Consumer groups' FROM (SELECT uniqueCount(group) as 'groups' FROM Metric WHERE metricName='kafka.consumer_group.members'  FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(service.name) as 'Active services' where metricName in ('kafka.consumer.select_total', 'kafka.producer.outgoing_byte_total') AND kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(`client-id`) AS 'Active producers' WHERE metricName ='kafka.producer.outgoing_byte_total' AND kafka.cluster.name in ({{cluster}})"
+              },
+              {
+                "accountIds": [],
+                "query": "SELECT sum(clients) as 'Active consumers' FROM (FROM Metric SELECT uniqueCount(`client-id`) AS 'clients' WHERE metricName='kafka.consumer.incoming_byte_total' AND kafka.cluster.name in ({{cluster}}) FACET service.name LIMIT MAX)"
+              }
+            ],
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "warning"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Active brokers by cluster",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active topics by cluster",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Partitions by cluster",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Messages in per second",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "colors": {
+              "colorPalette": "consistent"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.message.count), 1 second) AS `messages in/sec` FROM Metric WHERE metricName = 'kafka.message.count' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Bytes in per second",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(rate(sum(kafka.network.io), 1 second), WHERE (state = 'in' or direction = 'in')) AS 'Bytes in/s' FROM Metric WHERE  metricName = 'kafka.network.io' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Bytes out per second",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(rate(sum(kafka.network.io), 1 second), WHERE (state = 'out' or direction = 'out')) AS 'Bytes out/s' FROM Metric WHERE  metricName = 'kafka.network.io' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Active controllers",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(active_controllers) as 'Active_controllers' FROM (SELECT latest(kafka.controller.active.count) as 'active_controllers' FROM Metric where metricName='kafka.controller.active.count' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name LIMIT MAX TIMESERIES AUTO) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Under-replicated partitions",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " SELECT sum(under_replicated_partitions) as 'Under-replicated partitions' FROM (SELECT latest(kafka.partition.under_replicated) as 'under_replicated_partitions' FROM Metric where metricName='kafka.partition.under_replicated' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name LIMIT MAX) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Offline partitions",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(`kafka.partition.offline`) AS 'Offline partitions' FROM Metric WHERE metricName='kafka.partition.offline' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Partitions with non-preferred leader",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.partition.non_preferred_leader) AS 'Partitions with non-preferred leader' FROM Metric WHERE metricName = 'kafka.partition.non_preferred_leader' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Leader elections rate per minute",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.leader.election.rate), 1 minute) AS 'Leader elections' FROM Metric WHERE metricName = 'kafka.leader.election.rate' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Unclean leader elections rate per minute",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.unclean.election.rate), 1 minute) AS 'Unclean Leader Elections/min' FROM Metric WHERE metricName = 'kafka.unclean.election.rate' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer group lag (messages)",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`Consumer Lag`) as `Consumer Lag` FROM (SELECT max(kafka.consumer_group.lag_sum) as `Consumer Lag` FROM Metric WHERE (metricName = 'kafka.consumer_group.lag_sum' and kafka.cluster.name in ({{cluster}})) FACET `group`, `topic` AS 'Topic', kafka.cluster.name LIMIT MAX TIMESERIES) FACET `group`, kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Produce failed requests per second",
+          "layout": {
+            "column": 5,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.request.failed), 1 second) AS `Produce failed requests per second` FROM Metric WHERE metricName = 'kafka.request.failed' and kafka.cluster.name in ({{cluster}}) and type='produce' facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Replica fetcher max lag (messages)",
+          "layout": {
+            "column": 9,
+            "row": 17,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": " SELECT sum(max_lag) as 'Messages' FROM (SELECT max(kafka.max.lag) as 'max_lag' FROM Metric where metricName='kafka.max.lag' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name TIMESERIES AUTO limit max) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Produce request latency in ms (99th percentile)",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`kafka.request.time.99p`) AS `Produce` FROM Metric WHERE metricName = 'kafka.request.time.99p' and type='Produce' and kafka.cluster.name in ({{cluster}})  facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Follower fetch request latency in ms (99th percentile)",
+          "layout": {
+            "column": 5,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`kafka.request.time.99p`) AS `FetchFollower` FROM Metric WHERE metricName = 'kafka.request.time.99p' and type='FetchFollower' and kafka.cluster.name in ({{cluster}})  facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer fetch request latency in ms (99th percentile)",
+          "layout": {
+            "column": 9,
+            "row": 20,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`kafka.request.time.99p`) AS `FetchConsumer` FROM Metric WHERE metricName = 'kafka.request.time.99p' and type='FetchConsumer' and kafka.cluster.name in ({{cluster}})  facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "ISR shrink rate per minute",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.isr.operation.count), 1 minute) AS 'ISR Shrink' FROM Metric WHERE metricName = 'kafka.isr.operation.count' and operation='shrink' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "ISR expand rate per minute",
+          "layout": {
+            "column": 5,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.isr.operation.count), 1 minute) AS 'ISR Shrink' FROM Metric WHERE metricName = 'kafka.isr.operation.count' and operation='expand' and kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request queue size",
+          "layout": {
+            "column": 9,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(queue_size) as 'Messages' FROM (SELECT max(kafka.request.queue) as 'queue_size' FROM Metric where metricName='kafka.request.queue' and kafka.cluster.name in ({{cluster}}) facet broker.id, kafka.cluster.name TIMESERIES AUTO limit max) facet kafka.cluster.name LIMIT 10 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Brokers",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Active brokers",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Total partitions",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active controllers",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT uniqueCount(broker.id) FROM Metric where metricName='kafka.controller.active.count' and kafka.controller.active.count>0 and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Active broker count",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(kafka.brokers) as 'Brokers' FROM Metric WHERE metricName='kafka.brokers' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Broker uptime",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric select  latest(`kafka.broker.uptime`) AS 'Broker uptime'   where metricName='kafka.broker.uptime' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "System CPU usage %",
+          "layout": {
+            "column": 5,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.system.cpu.utilization) AS 'System CPU %' WHERE metricName = 'jvm.system.cpu.utilization' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average heap used %",
+          "layout": {
+            "column": 9,
+            "row": 3,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (average(`jvm.memory.heap.used`)/ average(`jvm.memory.heap.max`)) AS `Heap used %` FROM Metric WHERE metricName IN ('jvm.memory.heap.used', 'jvm.memory.heap.max') and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Partition replicas by broker",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(kafka.partition.count) as 'Partition replicas' FROM Metric WHERE metricName='kafka.partition.count' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Replica fetcher lag",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.max.lag) as 'Messages' FROM Metric WHERE metricName = 'kafka.max.lag' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Produce request latency in ms (99th percentile)",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`kafka.request.time.99p`) AS `Produce` FROM Metric WHERE metricName = 'kafka.request.time.99p' and type='Produce' and kafka.cluster.name in ({{cluster}})  facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Bytes in per second",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.network.io), 1 second) AS `Bytes In` FROM Metric WHERE metricName = 'kafka.network.io' and (direction='in' or state = 'in') and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Bytes out per second",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.network.io), 1 second) AS `Bytes Out` FROM Metric WHERE metricName = 'kafka.network.io' and (direction='out' or state = 'out') and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Messages in per second",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.message.count), 1 second) AS `messages in/sec` FROM Metric WHERE metricName = 'kafka.message.count' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "ISR shrink rate per minute",
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.isr.operation.count), 1 minute) AS 'ISR Shrink' FROM Metric WHERE metricName = 'kafka.isr.operation.count' and operation='shrink' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Under-replicated partitions",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.partition.under_replicated) AS 'Under Replicated Partitions' FROM Metric WHERE metricName='kafka.partition.under_replicated' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Under min ISR partitions",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.partition.under_min_isr) AS '' FROM Metric WHERE metricName = 'kafka.partition.under_min_isr' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request queue size",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.request.queue) FROM Metric where metricName='kafka.request.queue' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "ISR expand rate per minute",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.isr.operation.count), 1 minute) AS 'ISR expands' FROM Metric WHERE metricName = 'kafka.isr.operation.count' and operation='expand' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Throughput by broker",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Leader replicas",
+                "type": "humanized"
+              },
+              {
+                "name": "Partition replicas",
+                "type": "humanized"
+              },
+              {
+                "name": "Messages in/sec",
+                "type": "humanized"
+              },
+              {
+                "name": "Bytes out/sec",
+                "type": "humanized"
+              },
+              {
+                "name": "Bytes in/sec",
+                "type": "humanized"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(rate(sum(kafka.network.io), 1 second), WHERE direction = 'in' and metricName = 'kafka.network.io') AS 'Bytes in/sec', filter(rate(sum(kafka.network.io), 1 second), WHERE direction = 'out' and metricName = 'kafka.network.io') AS 'Bytes out/sec', filter(rate(sum(kafka.message.count), 1 second), where metricName = 'kafka.message.count') AS 'Messages in/sec', latest(kafka.partition.count) AS 'Partition replicas', latest(kafka.broker.leader.count) AS 'Leader replicas' WHERE kafka.cluster.name in ({{cluster}}) and entity.type='KAFKABROKER' FACET entity.name as 'Broker' limit 100"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Broker replication health",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Under-replicated",
+                "type": "humanized"
+              },
+              {
+                "name": "Partition replicas",
+                "type": "humanized"
+              },
+              {
+                "name": "Under min ISR",
+                "type": "humanized"
+              },
+              {
+                "name": "Max replica lag (messages)",
+                "type": "humanized"
+              },
+              {
+                "name": "ISR shrinks/min",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Avg request queue",
+                "precision": 1,
+                "type": "decimal"
+              },
+              {
+                "name": "Fetch purgatory",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Produce purgatory",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(kafka.partition.under_replicated) AS 'Under-replicated', latest(kafka.partition.count) AS 'Partition replicas', max(kafka.partition.under_min_isr) AS 'Under min ISR', max(kafka.max.lag) AS 'Max replica lag (messages)', filter(rate(sum(kafka.isr.operation.count), 1 minute), WHERE operation='shrink' AND metricName='kafka.isr.operation.count') AS 'ISR shrinks/min', average(kafka.request.queue) AS 'Avg request queue', filter(average(kafka.purgatory.size), WHERE type='Fetch') AS 'Fetch purgatory', filter(average(kafka.purgatory.size), WHERE type='Produce') AS 'Fetch purgatory' WHERE kafka.cluster.name IN ({{cluster}}) and entity.type='KAFKABROKER' FACET entity.name AS 'Broker' LIMIT 100"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Garbage collections count",
+          "layout": {
+            "column": 1,
+            "row": 26,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`jvm.gc.collections.count`) AS 'Garbage collections count' FROM Metric WHERE metricName = 'jvm.gc.collections.count' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "JVM threads count",
+          "layout": {
+            "column": 7,
+            "row": 26,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`jvm.thread.count`) AS `Thread Count` FROM Metric WHERE metricName = 'jvm.thread.count' and kafka.cluster.name in ({{cluster}}) facet entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Topics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Active topics",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Total partitions",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Topic replication health",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Partitions",
+                "type": "humanized"
+              },
+              {
+                "name": "Under-replicated",
+                "type": "humanized"
+              },
+              {
+                "name": "Replication factor",
+                "type": "humanized"
+              },
+              {
+                "name": "In-sync replicas",
+                "type": "humanized"
+              }
+            ],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(kafka.topic.partitions) AS 'Partitions', latest(kafka.topic.replication_factor) AS 'Replication factor', latest(kafka.partition.replicas_in_sync.total) AS 'In-sync replicas', (latest(kafka.topic.partitions)*latest(kafka.topic.replication_factor) - latest(kafka.partition.replicas_in_sync.total)) AS 'Under-replicated' WHERE kafka.cluster.name in ({{cluster}}) and metricName in ('kafka.partition.replicas_in_sync.total', 'kafka.topic.partitions', 'kafka.topic.replication_factor') and entity.type='KAFKATOPIC' FACET entity.name as 'topic'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top topics by partition count",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 4,
+            "height": 5
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(kafka.topic.partitions) AS `Topic partitions` FROM Metric WHERE kafka.topic.partitions IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET entity.name LIMIT 20"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Under-replicated partitions by topic",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "select (latest(kafka.topic.partitions)*latest(kafka.topic.replication_factor) - latest(kafka.partition.replicas_in_sync.total)) AS 'Under replicated partitions' from Metric where metricName in ('kafka.partition.replicas_in_sync.total', 'kafka.topic.partitions', 'kafka.topic.replication_factor') facet entity.name LIMIT 15 TIMESERIES AUTO "
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer group lag by topic (messages)",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(kafka.consumer_group.lag_sum) AS 'Consumer Lag' WHERE metricName = 'kafka.consumer_group.lag_sum' AND kafka.cluster.name in ({{cluster}}) FACET entity.name TIMESERIES AUTO LIMIT 10"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Top partitions with max lag (messages)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.consumer_group.lag) AS `Max lag` FROM Metric WHERE metricName = 'kafka.consumer_group.lag' FACET  entity.name as 'Topic', group as 'Group', partition as 'Partition'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top topics by ingest",
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(rate(sum(kafka.topic.io), 1 second), WHERE direction = 'in' and metricName = 'kafka.topic.io') AS 'Bytes in/sec', filter(rate(sum(kafka.topic.io), 1 second), WHERE direction = 'out' and metricName = 'kafka.topic.io') AS 'Bytes out/sec', filter(rate(sum(kafka.prod.msg.count), 1 second), where metricName = 'kafka.prod.msg.count') AS 'Messages in/sec'  WHERE kafka.cluster.name in ({{cluster}}) FACET entity.name as 'Topic' limit 100"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Bytes in per second by topic",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(rate(sum(kafka.topic.io), 1 second), WHERE direction = 'in') AS 'Bytes In' WHERE metricName = 'kafka.topic.io' AND kafka.cluster.name in ({{cluster}}) FACET entity.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Bytes out per second by topic",
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(rate(sum(kafka.topic.io), 1 second), WHERE direction = 'out') AS 'Bytes Out' WHERE metricName = 'kafka.topic.io' AND kafka.cluster.name in ({{cluster}}) FACET entity.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES_PER_SECOND"
+            }
+          }
+        },
+        {
+          "title": "Messages in per second by topic",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.prod.msg.count), 1 second) AS 'Messages in per second' WHERE metricName = 'kafka.prod.msg.count' AND kafka.cluster.name in ({{cluster}}) FACET entity.name TIMESERIES AUTO LIMIT 20"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Producers",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Active producer services",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(service.name) as 'Active producer services' where metricName = 'kafka.producer.outgoing_byte_total' AND kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active producer clients",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(clients) as 'Active producer clients' FROM (FROM Metric SELECT uniqueCount(`client-id`) AS 'clients' WHERE metricName='kafka.producer.outgoing_byte_total' AND kafka.cluster.name in ({{cluster}}) FACET service.name LIMIT MAX)"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Average records sent per second",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "label": 20,
+                "value": 45
+              }
+            },
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "dataFormatters": [
+              {
+                "name": "Records per second",
+                "type": "decimal"
+              }
+            ],
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.record_send_total), 1 second) as 'Records per second' WHERE metricName = 'kafka.producer.record_send_total' and kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "\n> Check the [instrumentation documentation](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/self-hosted/#instrument-apps) to see which application agent languages support this dashboard.\n\n#### Useful Links:\n\n[How to instrument your applications](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/self-hosted/#instrument-apps)\n\n[Otel Kafka monitoring quick start guide](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/introduction-opentelemetry-new-relic/)\n\n[Kafka client metrics reference](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/metrics-reference/#kafka-client-metrics)"
+          }
+        },
+        {
+          "title": "Outgoing byte rate (bytes/sec)",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.outgoing_byte_total), 1 second) AS 'Bytes/sec' WHERE kafka.producer.outgoing_byte_total IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Record send rate (records/sec)",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.record_send_total), 1 second) AS 'Records/sec' WHERE kafka.producer.record_send_total IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Request rate (requests/sec)",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.request_total), 1 second) AS 'Requests/sec' WHERE kafka.producer.request_total IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Average request latency (ms)",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.producer.request_latency_avg) AS 'Avg latency (ms)' WHERE kafka.producer.request_latency_avg IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average requests in flight",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.producer.requests_in_flight) AS 'Requests In Flight' WHERE metricName='kafka.producer.requests_in_flight' AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average batch size (bytes)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.producer.batch_size_avg) AS 'Avg Batch Size (bytes)' WHERE kafka.producer.batch_size_avg IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average record size (bytes)",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.producer.record_size_avg) AS 'Avg record size (bytes)' WHERE kafka.producer.record_size_avg IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Record error rate (errors/sec)",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.record_error_total), 1 second) AS 'Errors/sec' WHERE kafka.producer.record_error_total IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Producer performance summary",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.record_send_total), 1 second) AS 'Records/sec', rate(sum(kafka.producer.outgoing_byte_total), 1 second) AS 'Bytes/sec', average(kafka.producer.request_latency_avg) AS 'Avg latency (ms)', average(kafka.producer.batch_size_avg) AS 'Avg batch size (bytes)', average(kafka.producer.record_queue_time_avg) AS 'Avg queue time (ms)', rate(sum(kafka.producer.record_error_total), 1 second) AS 'Errors/sec', rate(sum(kafka.producer.record_retry_total), 1 second) AS 'Retries/sec' WHERE kafka.cluster.name in ({{cluster}}) AND metricName LIKE 'kafka.producer.%' FACET (`client-id`) as 'Client ID', service.name as 'Service name' LIMIT 100"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Record retry rate (retries/sec)",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.producer.record_retry_total), 1 second) AS 'Retries/sec' WHERE kafka.producer.record_retry_total IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average compression rate",
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.producer.compression_rate_avg) AS 'Average compression rate' WHERE kafka.producer.compression_rate_avg IS NOT NULL AND kafka.cluster.name in ({{cluster}}) FACET `client-id`, service.name TIMESERIES AUTO LIMIT 15"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consumers",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total consumer services",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "dataFormatters": [
+              {
+                "name": "Records per second",
+                "type": "decimal"
+              }
+            ],
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT uniqueCount(service.name) as 'Total consumer services' where metricName = 'kafka.consumer.select_total' AND kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active consumer clients",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(clients) as 'Active consumer clients' FROM (FROM Metric SELECT uniqueCount(`client-id`) AS 'clients' WHERE metricName='kafka.consumer.incoming_byte_total' AND kafka.cluster.name in ({{cluster}}) FACET service.name LIMIT MAX)"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Average records received per second",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "dataFormatters": [
+              {
+                "name": "Records per second",
+                "type": "decimal"
+              }
+            ],
+            "line": {
+              "interpolation": "linear"
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.consumer.select_total), 1 second) as 'Records per second' WHERE metricName = 'kafka.consumer.select_total' and kafka.cluster.name in ({{cluster}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "\n> Check the [instrumentation documentation](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/self-hosted/#instrument-apps) to see which application agent languages support this dashboard.\n\n#### Useful Links:\n\n[How to instrument your applications](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/self-hosted/#instrument-apps)\n\n[Otel Kafka monitoring quick start guide](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/introduction-opentelemetry-new-relic/)\n\n[Kafka client metrics reference](https://docs.newrelic.com/docs/opentelemetry/integrations/kafka/metrics-reference/#kafka-client-metrics)"
+          }
+        },
+        {
+          "title": "Consumer group members count",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(kafka.consumer_group.members) AS 'Consumer group members count' WHERE metricName = 'kafka.consumer_group.members' AND kafka.cluster.name in ({{cluster}}) FACET group as 'Group', kafka.cluster.name as 'Cluster name' LIMIT 100"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Consumer group lag (messages)",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`Consumer Lag`) as `Consumer Lag` FROM (SELECT max(kafka.consumer_group.lag_sum) as `Consumer Lag` FROM Metric WHERE (metricName = 'kafka.consumer_group.lag_sum' and kafka.cluster.name in ({{cluster}})) FACET `group`, `topic`, kafka.cluster.name LIMIT MAX TIMESERIES) FACET `group`, kafka.cluster.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Average incoming byte rate (bytes/sec)",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.consumer.incoming_byte_total), 1 second) FROM Metric WHERE metricName='kafka.consumer.incoming_byte_total' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average records consumed (records/sec)",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.consumer.records_consumed_total), 1 second) FROM Metric WHERE metricName='kafka.consumer.records_consumed_total' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Average fetch request rate (req/sec)",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.request_rate) as 'Average fetch request rate (req/sec)' FROM Metric WHERE metricName='kafka.consumer.request_rate' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer max lag by client (messages)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(kafka.consumer.records_lag_max) as 'Max Lag' WHERE metricName='kafka.consumer.records_lag_max' AND kafka.cluster.name IN ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer average lag by client (messages)",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(kafka.consumer.records_lag_avg) as 'Avg Lag' WHERE metricName='kafka.consumer.records_lag_avg' AND kafka.cluster.name IN ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average fetch latency (ms)",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.fetch_latency_avg) as 'Average fetch latency (ms)' FROM Metric WHERE metricName='kafka.consumer.fetch_latency_avg' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average commit latency (ms)",
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.commit_latency_avg) as 'Average commit latency (ms)' FROM Metric WHERE metricName='kafka.consumer.commit_latency_avg' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average time between poll calls (ms)",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.time_between_poll_avg) as 'Average time between poll calls (ms)' FROM Metric WHERE metricName='kafka.consumer.time_between_poll_avg' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Max assigned partitions",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.consumer.assigned_partitions) AS 'Max assigned partitions' FROM Metric WHERE  metricName='kafka.consumer.assigned_partitions' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Max time since last poll (seconds)",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(kafka.consumer.last_poll_seconds_ago) as 'Max time since last poll (seconds)' FROM Metric WHERE metricName='kafka.consumer.last_poll_seconds_ago'  and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average heartbeat rate (req/sec)",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.consumer.heartbeat_total), 1 second) as 'Average heartbeat rate (req/sec)' FROM Metric WHERE metricName='kafka.consumer.heartbeat_total' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average fetch size (bytes)",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.fetch_size_avg) AS 'Average fetch size (bytes)' FROM Metric WHERE metricName='kafka.consumer.fetch_size_avg' AND kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average records per fetch request",
+          "layout": {
+            "column": 5,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(kafka.consumer.records_per_request_avg) FROM Metric WHERE metricName='kafka.consumer.records_per_request_avg' and kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average commit rate (req/sec)",
+          "layout": {
+            "column": 9,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(kafka.consumer.commit_total), 1 second) AS 'Average commit rate (req/sec)' FROM Metric WHERE metricName='kafka.consumer.commit_total' AND kafka.cluster.name in ({{cluster}}) FACET `client-id` OR `clientId`, service.name LIMIT 15 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Consumer performance summary",
+          "layout": {
+            "column": 1,
+            "row": 21,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(kafka.consumer.records_consumed_total), 1 second) AS 'Records/sec', rate(sum(kafka.consumer.incoming_byte_total), 1 second) AS 'Bytes/sec', average(kafka.consumer.fetch_latency_avg) AS 'Avg fetch latency (ms)', average(kafka.consumer.commit_latency_avg) AS 'Avg commit latency (ms)', average(kafka.consumer.records_per_request_avg) AS 'Records per request', max(kafka.consumer.assigned_partitions) AS 'Partitions' WHERE kafka.cluster.name in ({{cluster}}) FACET (`client-id`) as 'Client ID', service.name as 'Service name' LIMIT 100"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "JVM & system",
+      "description": null,
+      "widgets": [
+        {
+          "title": "System CPU usage %",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.system.cpu.utilization) AS 'System CPU %' WHERE metricName = 'jvm.system.cpu.utilization' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "JVM CPU usage %",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.cpu.recent_utilization) AS 'CPU Usage %' WHERE metricName = 'jvm.cpu.recent_utilization' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": " Garbage collection: CPU usage %",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (rate(sum(jvm.gc.collections.elapsed), 1 second) / 1000) AS 'GC CPU %' WHERE metricName = 'jvm.gc.collections.elapsed' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name, name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "PERCENTAGE"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "System load average (1m)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.system.cpu.load_1m) AS 'Load Average (1m)' WHERE metricName = 'jvm.system.cpu.load_1m' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Thread count",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.thread.count) AS 'Thread Count' WHERE metricName = 'jvm.thread.count' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Heap memory\n\nHeap memory is used by the JVM to store objects at runtime. \nIn a Kafka broker, heap memory is primarily used for:\n\n- Network buffers: Kafka uses heap memory to handle network requests and responses.\n- Partition metadata: Information about partitions and topics.\n- Message cache: Messages that are in transit or in the process of being sent.\n\n## Charts\n\n- **Heap Memory - used & max** show the average of heap memory in use and the amount of heap configured\n- **Heap Memory - max used ratio** gets the percentage of the heap use in the peaks between Garbage Collection\n- **Heap Memory - max vs committed** show the amount of heap configured and the process committed to use\n"
+          }
+        },
+        {
+          "title": "Heap memory: used, committed, & max",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(average(jvm.memory.heap.used), WHERE metricName='jvm.memory.heap.used') AS 'Heap Used', filter(average(jvm.memory.heap.max), WHERE metricName='jvm.memory.heap.max') AS 'Heap Max', filter(average(jvm.memory.heap.committed), WHERE metricName='jvm.memory.heap.committed') AS 'Heap Committed' WHERE metricName in ('jvm.memory.heap.used', 'jvm.memory.heap.max', 'jvm.memory.heap.committed') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Heap memory: max used %",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (average(jvm.memory.heap.used) / average(jvm.memory.heap.max)) * 100 AS 'Heap Usage %' WHERE metricName in ('jvm.memory.heap.used', 'jvm.memory.heap.max') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Heap Generations\n\nThe JVM heap is divided into generations to optimize garbage collection (GC).\n\nThe heap generations are:\n\n- **Young Generation**: Composed of Eden Space and two Survivor Spaces (S0 and S1). This is where new objects are initially created. Most objects are short-lived and collected frequently here.\n- **Old Generation (Tenured)**: Long-lived objects that survive multiple Young GC cycles are promoted here. Collection is less frequent but more costly.\n\n## Charts\n\n- **Young Gen Heap - usage & committed & max**: Shows memory usage in the Young Generation (Eden + Survivor spaces)\n- **Old Gen Heap - usage & committed & max**: Shows memory usage in the Old Generation (Tenured space)\n\n**Tip**: Monitor these to understand memory allocation patterns and identify potential memory issues before they impact performance."
+          }
+        },
+        {
+          "title": "Young gen heap: used, committed, & max",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(average(jvm.memory.pool.used), WHERE metricName='jvm.memory.pool.used') AS 'Used', filter(average(jvm.memory.pool.committed), WHERE metricName='jvm.memory.pool.committed') AS 'Committed', filter(average(jvm.memory.pool.max), WHERE metricName='jvm.memory.pool.max') AS 'Max' WHERE metricName in ('jvm.memory.pool.used', 'jvm.memory.pool.committed', 'jvm.memory.pool.max') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%Eden%' OR name LIKE '%Survivor%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Old gen heap: used, committed, & max",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(average(jvm.memory.pool.used), WHERE metricName='jvm.memory.pool.used') AS 'Used', filter(average(jvm.memory.pool.committed), WHERE metricName='jvm.memory.pool.committed') AS 'Committed', filter(average(jvm.memory.pool.max), WHERE metricName='jvm.memory.pool.max') AS 'Max' WHERE metricName in ('jvm.memory.pool.used', 'jvm.memory.pool.committed', 'jvm.memory.pool.max') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%Old Gen%' OR name LIKE '%Tenured%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 4,
+            "height": 6
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Young GC\n\nIn the JVM, the heap memory is divided into several generations to optimize garbage collection (GC).\n\nThe Young Generation is composed by:\n\n- Eden Space: This is where new objects are initially created. Most objects are created and die quickly, so the Eden Space is collected frequently.\n- Survivor Spaces (S0 and S1): After a collection in the Eden Space, the objects that survive are moved to one of the Survivor Spaces. There are two Survivor Spaces, and objects are copied between them during minor collections (Young GC).\n\nThe Young GC focuses on the Young Generation cleanup\n\n- It is fast and occurs frequently, as most objects in the Eden Space are short-lived.\n- Objects that survive are moved to the Survivor Spaces and eventually to the Old Generation if they survive enough cycles.\n- The Young GC don't freeze the JVM\n\n## Charts\n\n- **Young GC - count per minute**: the number of GC in the Young Generation, that should be a few executions per minute\n- **Young GC - CPU usage %**: the relation between time waste in GC and time working. A value of 100% means that the JVM only run GC and not the application, so this value should be low to allow the process work as expected\n- **Young GC - max time**: indicates the maximum time that a Young GC has taken\n- **Young GC - avg time**: indicates the average time that a Young GC has taken\n"
+          }
+        },
+        {
+          "title": "Young GC: Count per minute (frequency)",
+          "layout": {
+            "column": 5,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(jvm.gc.collections.count), 1 minute) AS 'GC Count (per min)' WHERE metricName = 'jvm.gc.collections.count' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Young%' OR name LIKE '%PS Scavenge%' OR name LIKE '%ParNew%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Young GC: CPU usage %",
+          "layout": {
+            "column": 9,
+            "row": 13,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (rate(sum(jvm.gc.collections.elapsed), 1 second) / 1000) * 100 AS 'GC CPU %' WHERE metricName = 'jvm.gc.collections.elapsed' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Young%' OR name LIKE '%PS Scavenge%' OR name LIKE '%ParNew%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Young GC: Average time (ms)",
+          "layout": {
+            "column": 5,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (filter(rate(sum(jvm.gc.collections.elapsed), 1 second), WHERE metricName='jvm.gc.collections.elapsed') / filter(rate(sum(jvm.gc.collections.count), 1 second), WHERE metricName='jvm.gc.collections.count')) or 0 AS 'Avg GC Time (ms)' WHERE metricName in ('jvm.gc.collections.elapsed', 'jvm.gc.collections.count') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Young%' OR name LIKE '%PS Scavenge%' OR name LIKE '%ParNew%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Young GC: Max time (ms)",
+          "layout": {
+            "column": 9,
+            "row": 16,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(jvm.gc.collections.elapsed) / max(jvm.gc.collections.count) or 0 AS 'Max GC Time (ms)' WHERE metricName in ('jvm.gc.collections.elapsed', 'jvm.gc.collections.count') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Young%' OR name LIKE '%PS Scavenge%' OR name LIKE '%ParNew%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Old GC\n\nIn the JVM, the heap memory is divided into several generations to optimize garbage collection (GC).\n\nThe Old Generation characteristics:\n\n- Objects that survive multiple collection cycles in the Young Generation are promoted to the Old Generation. This generation contains long-lived objects.\n- Garbage collection in the Old Generation is less frequent but more costly in terms of time, as it involves a major collection (Full GC).\n\nThe Old GC focuses on the Old Generation cleanup:\n\n- It is less frequent but more costly in terms of time, as it involves a complete memory collection.\n- It can cause longer pauses in the application, potentially impacting Kafka broker performance.\n- Frequent Old GC events may indicate memory pressure or undersized heap.\n\n## Charts\n\n- **Old GC - count per hour**: the number of GC in the Old Generation, which should be infrequent (a few times per hour or less)\n- **Old GC - max pause time**: indicates the maximum time that an Old GC has taken\n\n**Important**: Low or zero values are expected and healthy. Frequent Old GC events require investigation."
+          }
+        },
+        {
+          "title": "Old GC: Count per hour (frequency",
+          "layout": {
+            "column": 5,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(jvm.gc.collections.count), 1 hour) AS 'GC Count (per hour)' WHERE metricName = 'jvm.gc.collections.count' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Old%' OR name LIKE '%ConcurrentMarkSweep%' OR name LIKE '%PS MarkSweep%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Old GC: Max pause time (ms)",
+          "layout": {
+            "column": 9,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(jvm.gc.collections.elapsed) / max(jvm.gc.collections.count) or 0 AS 'Max Pause Time (ms)' WHERE metricName in ('jvm.gc.collections.elapsed', 'jvm.gc.collections.count') AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' AND (name LIKE '%G1 Old%' OR name LIKE '%ConcurrentMarkSweep%' OR name LIKE '%PS MarkSweep%') FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Classes loaded",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.class.count) AS 'Classes Loaded' WHERE metricName = 'jvm.class.count' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "File descriptors",
+          "layout": {
+            "column": 7,
+            "row": 22,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(jvm.file_descriptor.count) AS 'File Descriptors' WHERE metricName = 'jvm.file_descriptor.count' AND kafka.cluster.name in ({{cluster}}) AND entity.type='KAFKABROKER' FACET entity.name LIMIT 25 TIMESERIES AUTO"
+              }
+            ],
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "cluster",
+      "items": null,
+      "defaultValues": [
+        {
+          "value": {
+            "string": "*"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM Metric SELECT uniques(entity.name) where entity.type='KAFKACLUSTER'"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false,
+        "showApplyAction": false
+      },
+      "title": "Kafka cluster name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
