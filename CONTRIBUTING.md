@@ -3,14 +3,12 @@
 <!-- toc -->
 
 - [Contributing](#contributing)
-
   - [Welcome 👋](#welcome-)
   - [Quickstarts contributor guidelines](#quickstarts-contributor-guidelines)
     - [Quickstart PR review workflow](#quickstart-pr-review-workflow)
     - [Pull requests](#pull-requests)
     - [Contributor license agreement](#contributor-license-agreement)
   - [Quickstart definitions](#quickstart-definitions)
-
     - [Quickstarts](#quickstarts)
       - [Fields](#fields)
       - [Style tips](#style-tips)
@@ -30,7 +28,6 @@
       - [Dashboard name uniqueness](#dashboard-name-uniqueness)
       - [Dashboard screenshots](#dashboard-screenshots)
     - [Alerts](#alerts)
-
       - [Alert condition fields](#alert-condition-fields)
 
     - [Data sources](#data-sources-1)
@@ -637,7 +634,6 @@ icon.png
 #### Data source install fields
 
 - `nerdlet`
-
   - Directs the user to a nerdlet to finish installing instrumentation
   - Example:
 
