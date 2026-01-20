@@ -66,17 +66,17 @@ export const fetchPaginatedGHResults = async (
       const resp = await fetch(nextPageLink, {
         headers,
       });
-      // TODO: this should happen after the resp.ok check
-      const responseJson = await resp.json();
-
       if (!resp.ok) {
+        const errorJson = (await resp.json()) as { message?: string };
         logger.error(`Error from Github API`, {
           url: nextPageLink,
           status: resp.statusText,
           code: resp.status,
         });
-        throw new Error(`Github API returned: ${responseJson.message}`);
+        throw new Error(`Github API returned: ${errorJson.message}`);
       }
+      const responseJson =
+        (await resp.json()) as GithubAPIPullRequestFile[];
       nextPageLink = getNextLink(resp.headers.get('Link'));
       files = [...files, ...responseJson];
     }

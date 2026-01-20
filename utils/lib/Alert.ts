@@ -116,7 +116,7 @@ class Alert extends Component<
 
     const filePaths = glob.sync(
       path.join(this.basePath, this.configPath, '*.+(yml|yaml)')
-    );
+    ).sort();
 
     // if there are no YAML files in this directory, it's invalid
     if (!Array.isArray(filePaths) || !filePaths.length) {

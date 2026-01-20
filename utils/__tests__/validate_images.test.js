@@ -11,18 +11,20 @@ import * as glob from 'glob';
 import * as path from 'path';
 
 jest.mock('@actions/core');
-jest.mock('fs', () => ({
-  promises: {
-    access: jest.fn(),
-  },
-  statSync: jest.fn(),
-}));
+jest.mock('fs', () => {
+  const actualFs = jest.requireActual('fs');
+  return {
+    ...actualFs,
+    promises: {
+      ...actualFs.promises,
+      access: jest.fn(),
+    },
+    statSync: jest.fn(),
+  };
+});
 
 jest.mock('glob');
 jest.spyOn(global.console, 'warn').mockImplementation(() => {});
-jest.mock('../validate_images', () => ({
-  ...jest.requireActual('../validate_images'),
-}));
 
 const globMockSize = ['test/path/logo.png'];
 const mockGlobSync = (files) => glob.sync.mockReturnValueOnce(files);

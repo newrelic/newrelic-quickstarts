@@ -14,7 +14,7 @@ import {
   CORE_DATA_SOURCES_QUERY,
   QUICKSTART_COMPONENTS_IDS_QUERY,
 } from '../constants';
-import { Policy } from 'cockatiel';
+import { retry, handleResultType, ExponentialBackoff } from 'cockatiel';
 import fetch, { Response } from 'node-fetch';
 import logger from '../logger';
 
@@ -52,20 +52,17 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
   // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
-  const retry = Policy.handleResultType(
-    Response,
-    (response) => response.status >= 400
-  )
-    .retry()
-    .attempts(3)
-    .exponential();
+  const retryPolicy = retry(
+    handleResultType(Response, (response: Response) => response.status >= 400),
+    { maxAttempts: 3, backoff: new ExponentialBackoff() }
+  );
 
   try {
     const body = buildRequestBody<Variables>(queryBody);
 
     logger.debug(`Running NerdGraph request...`, { url: NR_API_URL, body });
 
-    const res = await retry.execute(() =>
+    const res = await retryPolicy.execute(() =>
       fetch(NR_API_URL, {
         method: 'POST',
         body,
@@ -91,7 +88,10 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
         code: res.status,
       });
     } else {
-      const { data, errors } = await res.json();
+      const { data, errors } = (await res.json()) as {
+        data: ResponseData;
+        errors?: NerdGraphError[];
+      };
       results = data;
       if (errors) {
         graphqlErrors = [...graphqlErrors, ...errors];
@@ -106,7 +106,7 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
     logger.error(`Request errored out`, { error: error });
   }
 
-  return { data: results, errors: graphqlErrors };
+  return { data: results as ResponseData, errors: graphqlErrors };
 };
 
 /**
