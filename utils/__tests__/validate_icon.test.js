@@ -137,7 +137,7 @@ describe('validate Icon tests', () => {
 
       handleErrors(['error1', 'error2', 'error3', 'error4']);
 
-      expect(logMock).toBeCalledTimes(4);
+      expect(logMock).toHaveBeenCalledTimes(4);
     });
   });
 });

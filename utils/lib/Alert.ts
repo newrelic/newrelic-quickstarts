@@ -342,7 +342,7 @@ class Alert extends Component<
   static getAll() {
     const alertPaths = glob.sync(
       path.join(__dirname, '..', '..', 'alert-policies', '**', '*.+(yml|yaml)')
-    );
+    ).sort();
     return alertPaths.map((alertPath) => {
       // The identifier for alerts is the folder and the file name
       // e.g. `node-js/HighCpuUtilization.yml`

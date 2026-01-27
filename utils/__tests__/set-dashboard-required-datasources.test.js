@@ -127,6 +127,6 @@ describe('set-dashboards-required-datasources', () => {
       `Multiple Quickstart data sources detected for Quickstart: Template Quickstart, Dashboards must be updated manually`
     );
 
-    expect(Dashboard.submitSetRequiredDataSourcesMutation).not.toBeCalled();
+    expect(Dashboard.submitSetRequiredDataSourcesMutation).not.toHaveBeenCalled();
   });
 });

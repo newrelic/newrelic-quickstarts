@@ -52,20 +52,20 @@ export const fetchNRGraphqlResults = async <Variables, ResponseData>(
   // To help us ensure that the request hits and is processed by nerdgraph
   // This will try the request 3 times, waiting a little longer between each attempt
   // It will retry on status codes 400+, 2** would be success and we wouldn't want to retry for a 3**
-  const retry = Policy.handleResultType(
+  const retryPolicy = Policy.handleResultType(
     Response,
     (response) => response.status >= 400
   )
     .retry()
-    .attempts(3)
-    .exponential();
+    .exponential()
+    .attempts(3);
 
   try {
     const body = buildRequestBody<Variables>(queryBody);
 
     logger.debug(`Running NerdGraph request...`, { url: NR_API_URL, body });
 
-    const res = await retry.execute(() =>
+    const res = await retryPolicy.execute(() =>
       fetch(NR_API_URL, {
         method: 'POST',
         body,
