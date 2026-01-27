@@ -1,7 +1,5 @@
 import 'dotenv/config';
-import { input, password } from '@inquirer/prompts';
-import confirm from '@inquirer/confirm';
-import select from '@inquirer/select';
+import { input, password, confirm, select } from '@inquirer/prompts';
 import { appendFileSync } from 'node:fs';
 import { createValidateQuickstarts } from './create_validate_pr_quickstarts';
 import { createValidateDataSources } from './create-validate-data-sources';
@@ -100,8 +98,8 @@ const bootstrap = async (): Promise<Context> => {
 
   return {
     ENVIRONMENT,
-    GH_TOKEN,
-    NR_API_TOKEN,
+    GH_TOKEN: GH_TOKEN ?? '',
+    NR_API_TOKEN: NR_API_TOKEN!,
     PR_NUMBER,
     PR_URL,
     API_ENDPOINT: API_ENDPOINTS[ENVIRONMENT],
