@@ -1,18 +1,18 @@
 {
-  "name": "Databricks Spark",
-  "description": null,
+  "name": "Apache Spark",
+  "description": "Monitor the performance of your Apache Spark applications running on Databricks. Gain insights into job execution, stage performance, task efficiency, and executor utilization to optimize your Spark workloads.",
   "pages": [
     {
       "name": "Jobs",
       "description": null,
       "widgets": [
         {
-          "title": "Jobs Running",
+          "title": "Jobs succeeded",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 3,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -25,7 +25,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.jobs) AS 'Jobs' WHERE sparkAppJobStatus = 'running'"
+                "query": "FROM SparkJob\nSELECT count(*) AS 'Jobs'\nWHERE status = 'succeeded'"
               }
             ],
             "platformOptions": {
@@ -34,12 +34,12 @@
           }
         },
         {
-          "title": "Stages Running",
+          "title": "Jobs failed",
           "layout": {
-            "column": 4,
+            "column": 3,
             "row": 1,
-            "width": 3,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -52,7 +52,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stages) AS 'Stages' WHERE sparkAppStageStatus = 'active'"
+                "query": "FROM SparkJob\nSELECT count(*) AS 'Jobs'\nWHERE status = 'failed'"
               }
             ],
             "platformOptions": {
@@ -61,448 +61,118 @@
           }
         },
         {
-          "title": "Tasks Running",
-          "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.job.tasks) AS 'Tasks' WHERE sparkAppTaskStatus = 'active'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Executors",
-          "layout": {
-            "column": 10,
-            "row": 1,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT uniqueCount(sparkAppExecutorId) AS 'Executors' WHERE metricName = 'spark.app.executor.maxMemory'"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Jobs By Status",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.jobs) AS 'Jobs' FACET sparkAppJobStatus TIMESERIES"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Job Tasks By Status",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.job.tasks) AS 'Tasks' FACET sparkAppTaskStatus TIMESERIES"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Job Stages By Status",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.job.stages) AS 'Stages' FACET sparkAppStageStatus TIMESERIES"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "zero"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Stages",
-      "description": null,
-      "widgets": [
-        {
-          "title": "Average Executor Total Task Run Time",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.executor.runTime) WHERE spark.app.stage.executor.runTime IS NOT NULL TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Executor Total Task CPU Time",
+          "title": "Stages completed",
           "layout": {
             "column": 5,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.executor.cpuTime) / 1000000 WHERE spark.app.stage.executor.cpuTime IS NOT NULL TIMESERIES"
+                "query": "FROM SparkStage\nSELECT count(*) AS 'Stages'\nWHERE status = 'complete'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Average JVM GC Time",
+          "title": "Stages failed",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkStage\nSELECT count(*) AS 'Stages'\nWHERE status = 'failed'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Tasks completed",
           "layout": {
             "column": 9,
             "row": 1,
-            "width": 4,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
             "facet": {
               "showOtherSeries": false
             },
-            "legend": {
-              "enabled": true
-            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.jvmGcTime) WHERE spark.app.stage.jvmGcTime IS NOT NULL TIMESERIES"
+                "query": "FROM SparkTask\nSELECT count(*) AS 'Tasks'\nWHERE status = 'success'"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         },
         {
-          "title": "Average Task Deserialization Time",
+          "title": "Tasks failed",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkTask\nSELECT count(*) AS 'Tasks'\nWHERE status = 'failed'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job count",
           "layout": {
             "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.executor.deserializeTime) WHERE spark.app.stage.executor.deserializeTime IS NOT NULL TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Task Deserialization CPU Time",
-          "layout": {
-            "column": 5,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.executor.deserializeCpuTime) / 1000000 WHERE spark.app.stage.executor.deserializeCpuTime IS NOT NULL TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Result Serialization Time",
-          "layout": {
-            "column": 9,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.stage.resultSerializationTime) WHERE spark.app.stage.resultSerializationTime IS NOT NULL TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "MS"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "I/O Bytes",
-          "layout": {
-            "column": 1,
-            "row": 7,
+            "row": 3,
             "width": 6,
             "height": 3
           },
@@ -517,14 +187,18 @@
             "legend": {
               "enabled": true
             },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.inputBytes) AS 'Bytes In' WHERE spark.app.stage.inputBytes IS NOT NULL TIMESERIES"
-              },
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.outputBytes) AS 'Bytes Out' WHERE spark.app.stage.outputBytes IS NOT NULL TIMESERIES"
+                "query": "FROM SparkJob\nSELECT filter(count(*), WHERE event = 'start') AS 'Jobs started', filter(count(*), WHERE event = 'complete') AS 'Jobs complete'\nLIMIT MAX\nTIMESERIES"
               }
             ],
             "platformOptions": {
@@ -542,10 +216,10 @@
           }
         },
         {
-          "title": "I/O Records",
+          "title": "Average job duration",
           "layout": {
             "column": 7,
-            "row": 7,
+            "row": 3,
             "width": 6,
             "height": 3
           },
@@ -560,14 +234,18 @@
             "legend": {
               "enabled": true
             },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.inputRecords) AS 'Records In' WHERE spark.app.stage.inputRecords IS NOT NULL TIMESERIES"
-              },
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.outputRecords) AS 'Records Out' WHERE spark.app.stage.outputRecords IS NOT NULL TIMESERIES"
+                "query": "FROM SparkJob\nSELECT average(duration / 1000) AS 'Job duration'\nWHERE event = 'complete'\nLIMIT MAX\nTIMESERIES"
               }
             ],
             "platformOptions": {
@@ -575,6 +253,9 @@
             },
             "thresholds": {
               "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
             },
             "yAxisLeft": {
               "zero": true
@@ -585,12 +266,315 @@
           }
         },
         {
-          "title": "Shuffle I/O Bytes",
+          "title": "Running jobs",
           "layout": {
             "column": 1,
-            "row": 10,
+            "row": 6,
             "width": 6,
             "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "jobId",
+                "type": "decimal"
+              },
+              {
+                "name": "taskCount",
+                "type": "decimal"
+              },
+              {
+                "name": "Skipped Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Failed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Completed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "jobDuration",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*)\nFROM (\n FROM SparkJob\n SELECT\n  uniqueCount(event) as 'total',\n  latest(event) as 'state'\n FACET jobId, description, submissionTime\n ORDER BY max(timestamp)\n LIMIT MAX)\nWHERE total = 1 AND state = 'start'\nFACET jobId AS 'Job ID', description\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Running stages",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "jobId",
+                "type": "decimal"
+              },
+              {
+                "name": "taskCount",
+                "type": "decimal"
+              },
+              {
+                "name": "Skipped Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Failed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Completed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "jobDuration",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*)\nFROM (\n FROM SparkStage\n SELECT\n  uniqueCount(event) as 'total',\n  latest(event) as 'state'\n FACET stageId, jobDescription, firstTaskLaunchedTime\n ORDER BY max(timestamp)\n LIMIT MAX)\nWHERE total = 1 AND state = 'start'\nFACET stageId AS 'Stage ID', jobDescription\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completed jobs by duration",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "jobId",
+                "type": "decimal"
+              },
+              {
+                "name": "taskCount",
+                "type": "decimal"
+              },
+              {
+                "name": "Skipped Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Failed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "Completed Stages",
+                "type": "decimal"
+              },
+              {
+                "name": "jobDuration",
+                "precision": null,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH duration / 1000 AS jobDuration FROM SparkJob\nSELECT sparkAppName AS Application, jobId AS 'Job ID', description, status, submissionTime, completionTime, completedStageCount AS 'Completed Stages', failedStageCount AS 'Failed Stages', skippedStageCount AS 'Skipped Stages', taskCount\nWHERE event = 'complete'\nLIMIT MAX\nORDER BY jobDuration DESC"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completed stages by duration",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "attemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageId",
+                "type": "decimal"
+              },
+              {
+                "name": "Killed Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "Failed Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "Completed Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "stageDuration",
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH duration / 1000 AS stageDuration FROM SparkStage\nSELECT sparkAppName AS Application, stageId AS 'Stage ID', jobDescription, attemptId AS 'Attempt ID', status, firstTaskLaunchedTime, completionTime, completedTaskCount AS 'Completed Tasks', failedTaskCount AS 'Failed Tasks', killedTaskCount AS 'Killed Tasks'\nWHERE event = 'complete'\nLIMIT MAX\nORDER BY stageDuration DESC"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Failed stage details",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkStage\nSELECT sparkAppName as Application, stageId AS 'Stage ID', jobDescription, attemptId AS 'Attempt ID', firstTaskLaunchedTime, completionTime, stageName, details\nWHERE event = 'complete' AND status = 'failed'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completed tasks by duration",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "taskDuration",
+                "type": "humanized"
+              },
+              {
+                "name": "gettingResultDuration",
+                "type": "decimal"
+              },
+              {
+                "name": "schedulerDelay",
+                "type": "decimal"
+              },
+              {
+                "name": "executorId",
+                "type": "decimal"
+              },
+              {
+                "name": "taskId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageAttemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "attemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageId",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH duration / 1000 AS taskDuration FROM SparkTask\nSELECT sparkAppName AS Application, stageId AS 'Stage ID', stageAttemptId AS 'Stage Attempt ID', taskId AS 'Task ID', attemptId AS 'Attempt ID', executorId AS 'Executor ID', status, launchTime, completionTime, schedulerDelay, gettingResultDuration\nWHERE event = 'complete'\nLIMIT MAX\nORDER BY taskDuration DESC"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Stage I/O rate per second",
+          "layout": {
+            "column": 1,
+            "row": 24,
+            "width": 6,
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -603,14 +587,18 @@
             "legend": {
               "enabled": true
             },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.shuffle.readBytes) AS 'Bytes Written' WHERE spark.app.stage.shuffle.readBytes IS NOT NULL TIMESERIES"
-              },
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.shuffle.writeBytes) AS 'Bytes Out' WHERE spark.app.stage.shuffle.writeBytes IS NOT NULL TIMESERIES"
+                "query": "FROM SparkStage\nSELECT rate(sum(inputBytes), 1 second) AS 'Bytes in', rate(sum(inputRecords), 1 second) AS 'Records in', rate(sum(outputBytes), 1 second) AS 'Bytes out', rate(sum(outputRecords), 1 second) AS 'Records out'\nWHERE event = 'complete'\nTIMESERIES "
               }
             ],
             "platformOptions": {
@@ -618,6 +606,26 @@
             },
             "thresholds": {
               "isLabelVisible": true
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Bytes In",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records In",
+                  "unit": "REQUESTS_PER_SECOND"
+                },
+                {
+                  "seriesName": "Bytes Out",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records Out",
+                  "unit": "REQUESTS_PER_SECOND"
+                }
+              ]
             },
             "yAxisLeft": {
               "zero": true
@@ -628,12 +636,12 @@
           }
         },
         {
-          "title": "Shuffle I/O Records",
+          "title": "Average stage shuffle I/O rate per second",
           "layout": {
             "column": 7,
-            "row": 10,
+            "row": 24,
             "width": 6,
-            "height": 3
+            "height": 4
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -646,14 +654,18 @@
             "legend": {
               "enabled": true
             },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.shuffle.readRecords) AS 'Records Read' WHERE spark.app.stage.shuffle.readRecords IS NOT NULL TIMESERIES"
-              },
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.stage.shuffle.writeRecords) AS 'Records Written' WHERE spark.app.stage.shuffle.writeRecords IS NOT NULL TIMESERIES"
+                "query": "FROM SparkStage\nSELECT rate(sum(shuffleReadBytes), 1 second) AS 'Bytes read', rate(sum(shuffleReadRecords), 1 second) AS 'Records read', rate(sum(shuffleWriteBytes), 1 second) AS 'Bytes written', rate(sum(shuffleWriteRecords), 1 second) AS 'Records written'\nWHERE event = 'complete'\nTIMESERIES "
               }
             ],
             "platformOptions": {
@@ -662,11 +674,311 @@
             "thresholds": {
               "isLabelVisible": true
             },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Bytes Read",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records Read",
+                  "unit": "REQUESTS_PER_SECOND"
+                },
+                {
+                  "seriesName": "Bytes Written",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records Written",
+                  "unit": "REQUESTS_PER_SECOND"
+                }
+              ]
+            },
             "yAxisLeft": {
               "zero": true
             },
             "yAxisRight": {
               "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average stage memory bytes spilled to disk",
+          "layout": {
+            "column": 1,
+            "row": 28,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkStage\nSELECT average(memorySpilledBytes) AS 'Memory bytes spilled'\nWHERE event = 'complete'\nTIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Bytes In",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records In",
+                  "unit": "REQUESTS_PER_SECOND"
+                },
+                {
+                  "seriesName": "Bytes Out",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records Out",
+                  "unit": "REQUESTS_PER_SECOND"
+                }
+              ]
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average stage disk bytes spilled during shuffles",
+          "layout": {
+            "column": 7,
+            "row": 28,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkStage\nSELECT average(diskSpilledBytes) AS 'Disk bytes spilled'\nWHERE event = 'complete'\nTIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "seriesOverrides": [
+                {
+                  "seriesName": "Bytes In",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records In",
+                  "unit": "REQUESTS_PER_SECOND"
+                },
+                {
+                  "seriesName": "Bytes Out",
+                  "unit": "BYTES_PER_SECOND"
+                },
+                {
+                  "seriesName": "Records Out",
+                  "unit": "REQUESTS_PER_SECOND"
+                }
+              ]
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Executor statistics by stage",
+          "layout": {
+            "column": 1,
+            "row": 32,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Result Serialization Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "GC Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "attemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageId",
+                "type": "decimal"
+              },
+              {
+                "name": "CPU Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Run Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Deserialize CPU Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Deserialize Duration",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkStage\nSELECT sparkAppName as Application, stageId AS 'Stage ID', jobDescription, attemptId AS 'Attempt ID', submissionTime, executorDeserializeDuration / 1000 AS 'Deserialize Duration', executorDeserializeCpuDuration / 1000000000 AS 'Deserialize CPU Duration', executorRunDuration / 1000 AS 'Run Duration', executorCpuDuration / 1000000000 AS 'CPU Duration', gcDuration / 1000 AS 'GC Duration', resultSerializationDuration / 1000 AS 'Result Serialization Duration'\nWHERE event = 'complete'\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Executor statistics by task",
+          "layout": {
+            "column": 1,
+            "row": 36,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "executorId",
+                "type": "decimal"
+              },
+              {
+                "name": "Result Serialization Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "GC Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "attemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "taskId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageAttemptId",
+                "type": "decimal"
+              },
+              {
+                "name": "stageId",
+                "type": "decimal"
+              },
+              {
+                "name": "CPU Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Run Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Deserialize CPU Duration",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "Deserialize Duration",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkTask\nSELECT sparkAppName as Application, stageId AS 'Stage ID', stageAttemptId AS 'Stage Attempt ID', taskId AS 'Task ID', attemptId AS 'Attempt ID', launchTime, executorId AS 'Executor ID', executorDeserializeDuration / 1000 AS 'Deserialize Duration', executorDeserializeCpuDuration / 1000000000 AS 'Deserialize CPU Duration', executorRunDuration / 1000 AS 'Run Duration', executorCpuDuration / 1000000000 AS 'CPU Duration', gcDuration / 1000 AS 'GC Duration', resultSerializationDuration / 1000 AS 'Result Serialization Duration'\nWHERE event = 'complete'\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
             }
           }
         }
@@ -677,231 +989,12 @@
       "description": null,
       "widgets": [
         {
-          "title": "Average Driver Memory Used",
+          "title": "Executors",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memoryUsed) AS 'Bytes' WHERE sparkAppExecutorId = 'driver' AND spark.app.executor.memoryUsed IS NOT NULL TIMESERIES"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "default"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Driver Disk Used",
-          "layout": {
-            "column": 7,
-            "row": 1,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.diskUsed) AS 'Bytes' WHERE sparkAppExecutorId = 'driver' AND spark.app.executor.diskUsed IS NOT NULL TIMESERIES "
-              }
-            ],
-            "nullValues": {
-              "nullValue": "default"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Executor Memory Used",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memoryUsed) as 'Bytes' WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.memoryUsed IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "default"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Executor Disk Used",
-          "layout": {
-            "column": 7,
-            "row": 4,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.diskUsed) AS 'Bytes' WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.diskUsed IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
-              }
-            ],
-            "nullValues": {
-              "nullValue": "default"
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Active Tasks",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.activeTasks) AS 'Tasks' TIMESERIES WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Complete Tasks",
-          "layout": {
-            "column": 5,
-            "row": 7,
-            "width": 4,
-            "height": 3
+            "width": 2,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
@@ -914,7 +1007,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.completedTasks) AS 'Tasks' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT uniqueCount(executorId) AS Executors"
               }
             ],
             "platformOptions": {
@@ -923,206 +1016,711 @@
           }
         },
         {
-          "title": "Failed Tasks",
+          "title": "Current executors by application",
           "layout": {
-            "column": 9,
-            "row": 7,
-            "width": 4,
+            "column": 3,
+            "row": 1,
+            "width": 10,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total Memory (GiB)",
+                "precision": 2,
+                "type": "humanized"
+              },
+              {
+                "name": "maxTasks",
+                "type": "decimal"
+              },
+              {
+                "name": "coreCount",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT latest(isActive), latest(addTime), latest(coreCount), latest(maxTasks), latest(memoryTotalBytes) / 1024 / 1024 / 1024 AS 'Total Memory (GiB)'\nFACET sparkAppName AS Application, executorId AS 'Executor ID'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Current executor task counters by application",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 12,
             "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "GC Duration (s)",
+                "type": "humanized"
+              },
+              {
+                "name": "Task Duration (s)",
+                "type": "humanized"
+              },
+              {
+                "name": "Failed Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "Completed Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "Active Tasks",
+                "type": "decimal"
+              },
+              {
+                "name": "Total Tasks",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT latest(taskCount) AS 'Total Tasks', latest(completedTaskCount) AS 'Completed Tasks', latest(failedTaskCount) AS 'Failed Tasks', latest(taskDuration) / 1000 AS 'Task Duration (s)', latest(gcDuration) / 1000 AS 'GC Duration (s)'\nFACET sparkAppName AS Application, executorId AS 'Executor ID'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Storage memory usage by application and executor",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(memoryUsedBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Disk usage by application and executor",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(diskUsedBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average on-heap storage memory usage by application and executor",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(onHeapMemoryUsedBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average on-heap storage memory total by application and executor",
+          "layout": {
+            "column": 4,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(onHeapMemoryTotalBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average off-heap storage memory usage by application and executor",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(offHeapMemoryUsedBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average off-heap storage memory total by application and executor",
+          "layout": {
+            "column": 10,
+            "row": 9,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(offHeapMemoryTotalBytes)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current peak on-heap JVM memory usage (MiB) by application and executor",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 6,
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
             "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.failedTasks) AS 'Tasks' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakJvmHeapMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId\n"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Average Executor Used On Heap Memory",
-          "layout": {
-            "column": 1,
-            "row": 10,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memory.usedOnHeapStorageMemory) WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.memory.usedOnHeapStorageMemory IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Executor Used Off Heap Memory",
+          "title": "Current peak off-heap JVM memory usage (MiB) by application and executor",
           "layout": {
             "column": 7,
-            "row": 10,
+            "row": 12,
             "width": 6,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memory.usedOffHeapStorageMemory) WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.memory.usedOffHeapStorageMemory IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakJvmOffHeapMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Average Executor Peak JVM Heap Memory",
+          "title": "Current peak on-heap tracked execution memory usage (MiB) by application and executor",
           "layout": {
             "column": 1,
-            "row": 13,
+            "row": 14,
             "width": 6,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memory.peak.jvmHeap) WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.memory.peak.jvmHeap IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakOnHeapExecutionMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId\n"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Average Executor Peak JVM Off Heap Memory",
+          "title": "Current peak off-heap tracked execution memory usage (MiB) by application and executor",
           "layout": {
             "column": 7,
-            "row": 13,
+            "row": 14,
             "width": 6,
-            "height": 3
+            "height": 2
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.billboard"
           },
           "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.executor.memory.peak.jvmOffHeap) WHERE sparkAppExecutorId != 'driver' AND spark.app.executor.memory.peak.jvmOffHeap IS NOT NULL TIMESERIES FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakOffHeapExecutionMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Total Executor JVM Task Duration (seconds)",
+          "title": "Current peak on-heap storage memory usage (MiB) by application and executor",
           "layout": {
             "column": 1,
             "row": 16,
-            "width": 4,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakOnHeapStorageMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Current peak off-heap storage memory usage (MiB) by application and executor",
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "billboardSettings": {
+              "gridOptions": {
+                "value": 35
+              },
+              "visual": {
+                "alignment": "stacked",
+                "display": "auto"
+              }
+            },
+            "dataFormatters": [
+              {
+                "name": "Used (MiB)",
+                "precision": 4,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT latest(peakOffHeapStorageMemoryUsedBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": true
+            }
+          }
+        },
+        {
+          "title": "Average RDD blocks by application and executor",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkExecutorSample\nSELECT average(rddBlockCount)\nFACET sparkAppName, executorId\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Current input bytes (MiB) by application and executor",
+          "layout": {
+            "column": 7,
+            "row": 18,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1136,20 +1734,20 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.totalDuration) / 1000 AS 'Seconds' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(inputBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "Total Executor JVM GC Time (seconds)",
+          "title": "Current shuffle read bytes (MiB) by application and executor",
           "layout": {
-            "column": 5,
-            "row": 16,
-            "width": 4,
+            "column": 1,
+            "row": 21,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1163,164 +1761,134 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.totalGCTime) / 1000 AS 'Seconds' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(shuffleReadBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
+              "ignoreTimeRange": true
             }
           }
         },
         {
-          "title": "RDD Blocks",
+          "title": "Current shuffle write bytes (MiB) by application and executor",
           "layout": {
-            "column": 9,
-            "row": 16,
-            "width": 4,
+            "column": 7,
+            "row": 21,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.bar"
           },
           "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.rddBlocks) AS 'RDD Blocks' WHERE sparkAppExecutorId != 'driver' TIMESERIES FACET sparkAppExecutorId"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Total Input Bytes Summed",
-          "layout": {
-            "column": 1,
-            "row": 19,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Bytes",
-                "type": "humanized"
-              }
-            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.totalInputBytes) AS 'Bytes' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
+                "query": "FROM SparkExecutorSample\nSELECT latest(shuffleWriteBytes) / 1024 / 1024\nFACET sparkAppName, executorId"
               }
             ],
             "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Total Shuffle Read Bytes Summed",
-          "layout": {
-            "column": 5,
-            "row": 19,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Bytes",
-                "type": "humanized"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.totalShuffleRead) AS 'Bytes' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Total Shuffle Write Bytes Summed",
-          "layout": {
-            "column": 9,
-            "row": 19,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "dataFormatters": [
-              {
-                "name": "Bytes",
-                "type": "humanized"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.executor.totalShuffleWrite) AS 'Bytes' WHERE sparkAppExecutorId != 'driver' FACET sparkAppExecutorId"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
+              "ignoreTimeRange": true
             }
           }
         }
       ]
     },
     {
-      "name": "RDDs",
+      "name": "Storage",
       "description": null,
       "widgets": [
         {
-          "title": "Total Partitions By App & RDD",
+          "title": "RDDs",
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 6,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDSample\nSELECT uniqueCount(concat(rddId, rddName)) AS 'RDDs'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Distributions",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDDistributionSample\nSELECT uniqueCount(concat(rddId, rddName, distributionIndex)) AS 'Distributions'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Partitions",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDPartitionSample\nSELECT uniqueCount(concat(rddId, rddName, blockName)) AS 'Partitions'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "RDDs by application",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 12,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1328,13 +1896,31 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Average disk used (MiB)",
+                "type": "decimal"
+              },
+              {
+                "name": "Average memory used (MiB)",
+                "type": "decimal"
+              },
+              {
+                "name": "Cached Partitions",
+                "type": "decimal"
+              },
+              {
+                "name": "Partitions",
+                "type": "decimal"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.storage.rdd.partitions) AS 'Partitions' WHERE spark.app.storage.rdd.partitions IS NOT NULL FACET sparkAppName, sparkAppRDDName "
+                "query": "FROM SparkRDDSample\nSELECT latest(partitionCount) AS 'Partitions', latest(cachedPartitionCount) AS 'Cached Partitions', average(memoryUsedBytes) / 1024 / 1024 AS 'Average Memory Used (MiB)', average(diskUsedBytes) / 1024 / 1024 AS 'Average Disk Used (MiB)'\nFACET sparkAppName AS Application, rddId AS 'RDD ID', rddName AS 'RDD Name'"
               }
             ],
             "platformOptions": {
@@ -1343,11 +1929,171 @@
           }
         },
         {
-          "title": "Cached Partitions By App & RDD",
+          "title": "Average memory used by application and RDD",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDSample\nSELECT average(memoryUsedBytes)\nFACET sparkAppName, rddId, rddName \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average disk used by application and RDD",
           "layout": {
             "column": 7,
-            "row": 1,
+            "row": 6,
             "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDSample\nSELECT average(diskUsedBytes)\nFACET sparkAppName, rddId, rddName\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "BYTES"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average partition size (MiB) by application and RDD",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDPartitionSample\nSELECT average(memoryUsedBytes + diskUsedBytes) / 1024 / 1024 AS 'MiB'\nFACET sparkAppName, rddId, rddName, blockName"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average distribution size (MiB) by application and RDD",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM SparkRDDDistributionSample\nSELECT average(memoryUsedBytes + diskUsedBytes) / 1024 / 1024 AS 'MiB'\nFACET sparkAppName, rddId, rddName, distributionIndex"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Partitions by application and RDD",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1355,13 +2101,23 @@
             "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Average disk used (MiB)",
+                "type": "humanized"
+              },
+              {
+                "name": "Average memory used (MiB)",
+                "type": "humanized"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(spark.app.storage.rdd.cachedPartitions) AS 'Partitions' WHERE spark.app.storage.rdd.cachedPartitions IS NOT NULL FACET sparkAppName, sparkAppRDDName "
+                "query": "FROM SparkRDDPartitionSample\nSELECT latest(storageLevel), latest(executorIds) AS 'Executor IDs', average(memoryUsedBytes) / 1024 / 1024 AS 'Average Memory Used (MiB)', average(diskUsedBytes) / 1024 / 1024 AS 'Average Disk Used (MiB)'\nFACET sparkAppName AS Application, rddId AS 'RDD ID', rddName AS 'RDD Name', blockName AS 'Block Name'"
               }
             ],
             "platformOptions": {
@@ -1370,174 +2126,52 @@
           }
         },
         {
-          "title": "Average Memory Used By App & RDD",
+          "title": "Distributions by application and RDD",
           "layout": {
             "column": 1,
-            "row": 4,
-            "width": 6,
+            "row": 15,
+            "width": 12,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.table"
           },
           "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Average disk used (MiB)",
+                "type": "humanized"
+              },
+              {
+                "name": "Average memory used (MiB)",
+                "type": "humanized"
+              },
+              {
+                "name": "Cached Partitions",
+                "type": "decimal"
+              },
+              {
+                "name": "Partitions",
+                "type": "decimal"
+              }
+            ],
             "facet": {
               "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
             },
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.storage.rdd.memory.used) WHERE spark.app.storage.rdd.memory.used IS NOT NULL TIMESERIES FACET sparkAppName, sparkAppRDDName"
+                "query": "FROM SparkRDDDistributionSample\nSELECT average(memoryUsedBytes) / 1024 / 1024 AS 'Average Memory Used (MiB)', average(diskUsedBytes) / 1024 / 1024 AS 'Average Disk Used (MiB)', average(onHeapMemoryUsedBytes) / 1024 / 1024 AS 'Average On-heap Memory Used (MiB)', average(offHeapMemoryUsedBytes) / 1024 / 1024 AS 'Average Off-heap Memory Used (MiB)'\nFACET sparkAppName AS Application, rddId AS 'RDD ID', rddName AS 'RDD Name', distributionIndex AS 'Distribution Index'  "
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Disk Used By App & RDD",
-          "layout": {
-            "column": 7,
-            "row": 4,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.storage.rdd.disk.used) WHERE spark.app.storage.rdd.disk.used IS NOT NULL TIMESERIES FACET sparkAppName, sparkAppRDDName"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Memory Used by RDD Partition Block Name",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.storage.rdd.partition.memory.used) WHERE spark.app.storage.rdd.partition.memory.used IS NOT NULL TIMESERIES FACET sparkAppRDDName, sparkAppRddPartitionBlockName"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
-            }
-          }
-        },
-        {
-          "title": "Average Disk Used by RDD Partition Block Name",
-          "layout": {
-            "column": 7,
-            "row": 7,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "legend": {
-              "enabled": true
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT average(spark.app.storage.rdd.partition.disk.used) WHERE spark.app.storage.rdd.partition.disk.used IS NOT NULL TIMESERIES FACET sparkAppRDDName, sparkAppRddPartitionBlockName"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": {
-              "isLabelVisible": true
-            },
-            "units": {
-              "unit": "BYTES"
-            },
-            "yAxisLeft": {
-              "zero": true
-            },
-            "yAxisRight": {
-              "zero": true
             }
           }
         }
       ]
     }
-  ]
+  ],
+  "variables": []
 }
