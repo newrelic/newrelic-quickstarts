@@ -10,8 +10,8 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
 
-jest.mock('@actions/core');
 jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
   promises: {
     access: jest.fn(),
   },

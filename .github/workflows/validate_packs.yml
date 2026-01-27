@@ -6,6 +6,11 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+  statuses: write
+  pull-requests: write
+
 env:
   COMMIT_SHA: ${{ github.event.workflow_run.head_commit.id }}
 
@@ -14,16 +19,24 @@ jobs:
     name: Ensure quickstart ids are unique
     runs-on: ubuntu-latest
     steps:
+      - name: Create temp directory
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/artifacts/
 
-      - name: Get PR number
+      - name: Get and validate PR number
         id: get_pr_number
         run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          PR_NUMBER=$(cat ${{ runner.temp }}/artifacts/artifact/pr_number.txt)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number"
+            exit 1
+          fi
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
@@ -36,7 +49,7 @@ jobs:
 
       - name: Check for unique names and ids
         id: validation
-        run: cd utils && yarn check-quickstart-uniqueness
+        run: cd utils && npm run check-quickstart-uniqueness
 
       - name: Add commit status
         uses: "./.github/actions/add-commit-status"
@@ -48,16 +61,24 @@ jobs:
     name: Ensure images are valid
     runs-on: ubuntu-latest
     steps:
+      - name: Create temp directory
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/artifacts/
 
-      - name: Get PR number
+      - name: Get and validate PR number
         id: get_pr_number
         run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          PR_NUMBER=$(cat ${{ runner.temp }}/artifacts/artifact/pr_number.txt)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number"
+            exit 1
+          fi
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
@@ -70,7 +91,7 @@ jobs:
 
       - name: Validate Images
         id: validation
-        run: cd utils && yarn validate-images
+        run: cd utils && npm run validate-images
 
       - name: Add commit status
         uses: "./.github/actions/add-commit-status"
@@ -82,16 +103,24 @@ jobs:
     name: Ensure icons exist
     runs-on: ubuntu-latest
     steps:
+      - name: Create temp directory
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/artifacts/
 
-      - name: Get PR number
+      - name: Get and validate PR number
         id: get_pr_number
         run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          PR_NUMBER=$(cat ${{ runner.temp }}/artifacts/artifact/pr_number.txt)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number"
+            exit 1
+          fi
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
@@ -104,7 +133,7 @@ jobs:
 
       - name: Validate Icons
         id: validation
-        run: cd utils && yarn validate-icons
+        run: cd utils && npm run validate-icons
 
       - name: Add commit status
         uses: "./.github/actions/add-commit-status"
@@ -116,16 +145,24 @@ jobs:
     name: Ensure quickstart dashboard names are unique
     runs-on: ubuntu-latest
     steps:
+      - name: Create temp directory
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/artifacts/
 
-      - name: Get PR number
+      - name: Get and validate PR number
         id: get_pr_number
         run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          PR_NUMBER=$(cat ${{ runner.temp }}/artifacts/artifact/pr_number.txt)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number"
+            exit 1
+          fi
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
@@ -138,7 +175,7 @@ jobs:
 
       - name: Check for unique dashboard names
         id: validation
-        run: cd utils && yarn check-dashboard-name-uniqueness
+        run: cd utils && npm run check-dashboard-name-uniqueness
 
       - name: Add commit status
         uses: "./.github/actions/add-commit-status"
@@ -149,16 +186,24 @@ jobs:
   dashboard-helper:
     runs-on: ubuntu-latest
     steps:
+      - name: Create temp directory
+        run: mkdir -p ${{ runner.temp }}/artifacts/
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e
         with:
           workflow: validation_gate.yml
           run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ runner.temp }}/artifacts/
 
-      - name: Get PR number
+      - name: Get and validate PR number
         id: get_pr_number
         run: |
-          export PR_NUMBER=$(cat artifact/pr_number.txt)
+          PR_NUMBER=$(cat ${{ runner.temp }}/artifacts/artifact/pr_number.txt)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Error: Invalid PR number"
+            exit 1
+          fi
           echo "pr-number=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Checkout repository
@@ -176,7 +221,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER/files"
-          cd utils && yarn dashboard-helper $URL
+          cd utils && npm run dashboard-helper -- $URL
       - name: Comment
         if: steps.helper.outputs.comment != ''
         env:
