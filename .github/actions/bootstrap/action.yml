@@ -6,22 +6,10 @@ runs:
     - name: Setup node
       uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
       with:
-        node-version: 20
-
-    - name: Get yarn cache directory path
-      shell: bash
-      id: yarn-cache-dir-path
-      working-directory: utils
-      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache@v4
-      id: yarn-cache
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        node-version: 22
+        cache: 'npm'
+        cache-dependency-path: utils/package-lock.json
 
     - name: Install dependencies
       shell: bash
-      run: cd utils && yarn install --frozen-lockfile
+      run: cd utils && npm ci
