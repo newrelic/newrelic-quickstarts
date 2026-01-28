@@ -1,0 +1,1049 @@
+{
+  "name": "Databricks Job Runs",
+  "description": "Monitor the status and performance of your Databricks job runs and tasks, including success and failure rates and job and task durations.",
+  "pages": [
+    {
+      "name": "Job Runs",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Jobs running",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(runningJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job runs succeeded",
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun\nSELECT count(*) AS Runs\nWHERE event = 'complete' AND terminationType = 'SUCCESS' AND databricksWorkspaceName = {{workspace}}\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job runs failed",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun \nSELECT count(*) AS Runs\nWHERE event = 'complete' AND terminationType != 'SUCCESS' AND databricksWorkspaceName = {{workspace}}\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Tasks running",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(runningTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Task runs succeeded",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksTaskRun \nSELECT count(*) AS Runs\nWHERE event = 'complete' AND terminationType = 'SUCCESS' AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Task runs failed",
+          "layout": {
+            "column": 11,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksTaskRun \nSELECT count(*) AS Runs\nWHERE event = 'complete' AND terminationType != 'SUCCESS' AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job run count",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun\nSELECT filter(count(*), WHERE event = 'start') AS 'Runs started', filter(count(*), WHERE event = 'complete') AS 'Runs complete'\nLIMIT MAX\nWHERE databricksWorkspaceName = {{workspace}}\nFACET substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.'))\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average job run duration",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun\nSELECT average(duration / 1000) AS 'Run duration'\nWHERE event = 'complete' AND databricksWorkspaceName = {{workspace}}\nFACET substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.'))\nTIMESERIES\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Running jobs",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS workspace,\n concat(databricksWorkspaceUrl, '/jobs/', jobId, '/runs/', jobRunId) AS databricksJobRunURL\nSELECT count(*)\nFROM (\n FROM DatabricksJobRun\n SELECT\n  uniqueCount(event) as 'total',\n  latest(event) as 'state'\n FACET databricksWorkspaceName, databricksWorkspaceUrl, jobId, jobRunId, jobRunName, toDatetime(jobRunStartTime, 'MMMM dd, YYYY HH:mm:ss') AS startTime\n ORDER BY max(timestamp)\n LIMIT 100)\nWHERE total = 1 AND state = 'start'\nFACET workspace AS Workspace, jobRunId AS 'Job Run ID', jobRunName AS 'Job Run Name', startTime AS 'Job Run Start Time', databricksJobRunURL AS 'Databricks Link'\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Running tasks",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS workspace,\n concat(databricksWorkspaceUrl, '/jobs/', jobId, '/runs/', taskRunId) AS databricksJobRunURL\nSELECT count(*)\nFROM (\n FROM DatabricksTaskRun\n SELECT\n  uniqueCount(event) as 'total',\n  latest(event) as 'state'\n FACET databricksWorkspaceName, databricksWorkspaceUrl, jobId, taskRunId, taskName, toDatetime(taskRunStartTime, 'MMMM dd, YYYY HH:mm:ss') AS startTime\n ORDER BY max(timestamp)\n LIMIT 100)\nWHERE total = 1 AND state = 'start'\nFACET workspace AS Workspace, taskRunId AS 'Task Run ID', taskName AS 'Task Name', startTime AS 'Task Run Start Time', databricksJobRunURL AS 'Databricks Link'\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Blocked job runs",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(blockedJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Waiting job runs",
+          "layout": {
+            "column": 3,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(waitingJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pending job runs",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(pendingJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Queued job runs",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(queuedJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Terminating job runs",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(terminatingJobRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completed job runs by duration",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "duration",
+                "precision": null,
+                "type": "decimal"
+              },
+              {
+                "name": "attempt",
+                "type": "decimal"
+              },
+              {
+                "name": "jobRunId",
+                "precision": null,
+                "type": "decimal"
+              },
+              {
+                "name": "jobId",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS workspace,\n concat(databricksWorkspaceUrl, '/jobs/', jobId, '/runs/', jobRunId) AS databricksJobRunURL\nFROM DatabricksJobRun\nSELECT workspace AS Workspace,\n jobId AS 'Job ID',\n jobRunId AS 'Job Run ID',\n jobRunName, attempt,\n jobRunStartTime,\n jobRunEndTime,\n jobRunType,\n jobRunTrigger,\n terminationCode,\n terminationType,\n duration,\n databricksJobRunURL AS 'Databricks Link'\nWHERE event = 'complete' AND databricksWorkspaceName = {{workspace}}\nORDER BY duration DESC\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Blocked task runs",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(blockedTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Waiting task runs",
+          "layout": {
+            "column": 3,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(waitingTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Pending task runs",
+          "layout": {
+            "column": 5,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(pendingTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Queued task runs",
+          "layout": {
+            "column": 7,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(queuedTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Terminating task runs",
+          "layout": {
+            "column": 9,
+            "row": 15,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRunSummary\nSELECT latest(terminatingTaskRunCount) AS Runs\nWHERE databricksWorkspaceName = {{workspace}}"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completed task runs by duration",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "taskRunId",
+                "type": "decimal"
+              },
+              {
+                "name": "duration",
+                "precision": null,
+                "type": "decimal"
+              },
+              {
+                "name": "attempt",
+                "type": "decimal"
+              },
+              {
+                "name": "jobRunId",
+                "type": "decimal"
+              },
+              {
+                "name": "jobId",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS workspace,\n concat(databricksWorkspaceUrl, '/jobs/', jobId, '/runs/', taskRunId) AS databricksJobRunURL\nFROM DatabricksTaskRun\nSELECT workspace AS Workspace,\n databricksClusterName AS Cluster,\n jobId AS 'Job ID',\n jobRunId AS 'Job Run ID',\n jobRunName,\n taskRunId AS 'Task Run ID',\n taskName,\n attempt,\n taskRunStartTime,\n taskRunEndTime,\n terminationCode,\n terminationType,\n duration,\n databricksJobRunURL AS 'Databricks Link'\nWHERE event = 'complete' AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nORDER BY duration DESC\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average duration by job",
+          "layout": {
+            "column": 1,
+            "row": 21,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun\nSELECT average(duration / 1000)\nWHERE event = 'complete' AND state = 'TERMINATED' AND databricksWorkspaceName = {{workspace}}\nFACET jobRunName\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average duration by task",
+          "layout": {
+            "column": 7,
+            "row": 21,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksTaskRun\nSELECT average(duration / 1000)\nWHERE event = 'complete' AND state = 'TERMINATED' AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nFACET taskName\nTIMESERIES SINCE 3 hours ago UNTIL now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average queue duration by job",
+          "layout": {
+            "column": 1,
+            "row": 25,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksJobRun\nSELECT average(queueDuration / 1000)\nWHERE event = 'complete' AND state = 'TERMINATED' AND databricksWorkspaceName = {{workspace}}\nFACET jobRunName\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average queue duration by task",
+          "layout": {
+            "column": 7,
+            "row": 25,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksTaskRun\nSELECT average(queueDuration / 1000)\nWHERE event = 'complete' AND state = 'TERMINATED' AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nFACET taskName\nTIMESERIES SINCE 3 hours ago UNTIL now"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "SECONDS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spark Metrics",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Spark jobs by job run",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Spark Job ID",
+                "precision": 0,
+                "type": "decimal"
+              },
+              {
+                "name": "Duration",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n concat(databricksWorkspaceUrl, '/jobs/', databricksJobId, '/runs/', databricksJobRunTaskRunId) AS databricksJobRunURL\nFROM SparkJob\nSELECT\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS Workspace,\n databricksClusterName AS Cluster,\n sparkAppName AS 'Spark App Name',\n description AS 'Job Description',\n jobId AS 'Spark Job ID',\n duration / 1000 AS Duration,\n databricksJobId AS 'Databricks Job ID',\n databricksJobRunTaskRunId as 'Databricks Task Run ID',\n databricksJobRunURL AS 'Databricks Link'\nWHERE event = 'complete' AND databricksJobId IS NOT NULL AND databricksJobRunTaskRunId IS NOT NULL AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nLIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Spark stages by job run",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Spark Stage ID",
+                "type": "decimal"
+              },
+              {
+                "name": "Duration",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n concat(databricksWorkspaceUrl, '/jobs/', databricksJobId, '/runs/', databricksJobRunTaskRunId) AS databricksJobRunURL\nFROM SparkStage\nSELECT\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS Workspace,\n databricksClusterName AS Cluster,\n sparkAppName AS 'Spark App Name',\n jobDescription,\n stageId AS 'Spark Stage ID',\n duration / 1000 AS Duration,\n databricksJobId AS 'Job ID',\n databricksJobRunTaskRunId as 'Task Run ID',\n databricksJobRunURL AS 'Databricks Link'\nWHERE event = 'complete' AND databricksJobId IS NOT NULL AND databricksJobRunTaskRunId IS NOT NULL AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nLIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Spark tasks by job run",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Spark Task ID",
+                "type": "decimal"
+              },
+              {
+                "name": "Duration",
+                "precision": 2,
+                "type": "humanized"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "WITH\n concat(databricksWorkspaceUrl, '/jobs/', databricksJobId, '/runs/', databricksJobRunTaskRunId) AS databricksJobRunURL\nFROM SparkTask\nSELECT\n substring(databricksWorkspaceName, 0, position(databricksWorkspaceName, '.')) AS Workspace,\n databricksClusterName AS Cluster,\n sparkAppName AS 'Spark App Name',\n jobDescription,\n taskId AS 'Spark Task ID',\n duration / 1000 AS Duration,\n databricksJobId AS 'Job ID',\n databricksJobRunTaskRunId as 'Task Run ID',\n databricksJobRunURL AS 'Databricks Link'\nWHERE event = 'complete' AND databricksJobId IS NOT NULL AND databricksJobRunTaskRunId IS NOT NULL AND databricksWorkspaceName = {{workspace}} AND databricksClusterName = {{cluster}}\nLIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "workspace",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM DatabricksJobRunSummary\nSELECT uniques(databricksWorkspaceName)"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": true
+      },
+      "title": "Workspace",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "cluster",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "FROM DatabricksTaskRun\nSELECT uniques(databricksClusterName)"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": true
+      },
+      "title": "Cluster",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
