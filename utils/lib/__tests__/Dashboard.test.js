@@ -54,7 +54,7 @@ describe('Dashboard', () => {
       );
       expect(dash.isValid).toBe(false);
       expect(dash.config).not.toBeDefined();
-      expect(console.error).toBeCalled();
+      expect(console.error).toHaveBeenCalled();
     });
   });
 
@@ -73,7 +73,7 @@ describe('Dashboard', () => {
       );
       expect(dash.configPath).toEqual('');
       expect(dash.isValid).toBe(false);
-      expect(console.error).toBeCalled();
+      expect(console.error).toHaveBeenCalled();
     });
 
     test('Fails to create valid config path, basePath is invalid', () => {
@@ -81,7 +81,7 @@ describe('Dashboard', () => {
       const dash = new Dashboard('mock-dashboard-2', __dirname);
       expect(dash.configPath).toEqual('');
       expect(dash.isValid).toBe(false);
-      expect(console.error).toBeCalled();
+      expect(console.error).toHaveBeenCalled();
     });
   });
 

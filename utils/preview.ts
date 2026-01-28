@@ -1,6 +1,6 @@
-import * as express from 'express';
+import express from 'express';
 import * as path from 'path';
-import * as cors from 'cors';
+import cors from 'cors';
 import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import * as fs from 'fs';

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import get from 'lodash/get';
+import get from 'lodash.get';
 
 import Quickstart from "./lib/Quickstart";
 import DataSource from "./lib/DataSource";

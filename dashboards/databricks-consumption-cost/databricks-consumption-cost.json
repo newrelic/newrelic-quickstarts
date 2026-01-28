@@ -1,0 +1,840 @@
+{
+  "name": "Databricks Consumption & Cost",
+  "description": "Monitor your Databricks consumption and associated costs. Track total and SKU-level usage and costs over time, analyze spending by clusters and warehouses, and gain insights into job-related expenses to optimize your Databricks environment.",
+  "pages": [
+    {
+      "name": "Billable Usage",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total consumption last 30 days compared to 60 days ago",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) AS 'DBUs' SINCE 31 days ago UNTIL TODAY COMPARE WITH 61 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total cost last 30 days compared to 60 days ago",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name SINCE 31 days ago UNTIL today COMPARE WITH 61 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total cost by SKU last 30 days compared to 60 days ago",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name FACET sku_name SINCE 31 days ago UNTIL today COMPARE WITH 61 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Daily consumption last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) AS 'DBUs' SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Daily cost last 30 days",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Daily consumption by SKU last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) FACET sku_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Daily cost by SKU last 30 days",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name SINCE 31 days ago UNTIL today FACET sku_name TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Daily consumption by cluster last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) WHERE cluster_name IS NOT NULL AND cluster_name NOT LIKE 'job%' FACET cluster_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Daily consumption by warehouse last 30 days",
+          "layout": {
+            "column": 5,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) WHERE warehouse_name IS NOT NULL FACET warehouse_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Daily consumption by job cluster last 30 days",
+          "layout": {
+            "column": 9,
+            "row": 9,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DatabricksUsage SELECT sum(usage_quantity) WHERE cluster_name IS NOT NULL AND cluster_name LIKE 'job%' FACET cluster_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Daily cost by cluster last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name WHERE cluster_name IS NOT NULL AND cluster_name NOT LIKE 'job%' FACET cluster_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Daily cost by warehouse last 30 days",
+          "layout": {
+            "column": 5,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name WHERE warehouse_name IS NOT NULL FACET warehouse_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Daily cost by job cluster last 30 days",
+          "layout": {
+            "column": 9,
+            "row": 12,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(usage_quantity * list_price) AS '$$' FROM DatabricksUsage JOIN (FROM lookup(DatabricksListPrices) SELECT list_price, sku_name AS price_sku_name) ON sku_name = price_sku_name WHERE cluster_name IS NOT NULL AND cluster_name LIKE 'job%' FACET cluster_name SINCE 31 days ago UNTIL today TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Job Cost",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total job spend last 30 days compared to 60 days ago",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Total list_cost",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost)\nWITH usage_quantity * list_price AS list_cost\nFROM DatabricksUsage\nJOIN (\n SELECT list_price, sku_name AS price_sku_name\n FROM lookup(DatabricksListPrices)\n) ON sku_name = price_sku_name\nWHERE sku_name LIKE '%JOBS%'\nSINCE 31 days ago UNTIL today\nCOMPARE with 61 days ago\nLIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Weekly job spend by workspace last 3 months compared to 6 months ago",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost)\nWITH usage_quantity * list_price AS list_cost\nFROM DatabricksUsage\nJOIN (\n SELECT list_price, sku_name AS price_sku_name\n FROM lookup(DatabricksListPrices)\n) ON sku_name = price_sku_name\nWHERE sku_name LIKE '%JOBS%'\nSINCE 3 months ago\nCOMPARE WITH 6 months ago\nFACET workspace_instance_name\nLIMIT 100\nTIMESERIES 1 week"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Most expensive jobs by workspace and user last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost)\nWITH usage_quantity * list_price AS list_cost\nFROM DatabricksUsage\nJOIN (\n SELECT list_price, sku_name AS price_sku_name\n FROM lookup(DatabricksListPrices)\n) ON sku_name = price_sku_name\nWHERE sku_name LIKE '%JOBS%' AND job_id IS NOT NULL\nSINCE 31 days ago UNTIL today\nFACET job_name, workspace_instance_name, run_as\nLIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Most expensive jobs by workspace this week compared to 2 weeks ago",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost)\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_list_cost_per_job'\nSINCE 8 days ago UNTIL today\nCOMPARE with 15 days ago\nFACET job_name, workspace_instance_name\nLIMIT 20\nTIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Highest change in weekly spend last 2 weeks",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Last 7 Day Growth",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Last 14 day cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Last 7 Day Cost",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost) as 'Last 7 Day Cost',\n latest(list_cost_14_day) as 'Last 14 day cost',\n sum(list_cost) - latest(list_cost_14_day) as 'Last 7 Day Growth'\nFROM DatabricksJobCost\nJOIN (\n SELECT sum(list_cost) as list_cost_14_day\n FROM DatabricksJobCost\n WHERE query_id = 'jobs_cost_list_cost_per_job'\n SINCE 15 days ago until 8 days ago\n FACET workspace_id, job_id, job_name, run_as\n LIMIT 100\n) ON job_id\nWHERE query_id = 'jobs_cost_list_cost_per_job'\nSINCE 8 days ago UNTIL today\nFACET workspace_id, job_id, job_name, run_as\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Most expensive jobs last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "list_cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "runs",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost), latest(runs), latest(last_seen_date)\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_list_cost_per_job'\nSINCE 31 days ago UNTIL today\nFACET workspace_id, workspace_instance_name, job_id, job_name, run_as\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Most expensive job runs last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "list_cost",
+                "precision": 2,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(list_cost), latest(last_seen_date)\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_list_cost_per_job_run'\nSINCE 31 days ago UNTIL today\nFACET workspace_id, workspace_instance_name, job_id, job_name, run_id, run_as\nLIMIT 100\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Highest failure jobs last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "Failure Cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "failures",
+                "type": "decimal"
+              },
+              {
+                "name": "runs",
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(runs), sum(failures), sum(list_cost) AS 'Failure Cost', max(last_seen_date) AS 'Last Seen Date'\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_frequent_failures'\nSINCE 31 days ago UNTIL today\nFACET workspace_id, workspace_instance_name, job_id, job_name, run_as\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Most retried runs last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(run_as), sum(repairs), sum(repair_time_seconds), sum(list_cost) AS 'Repair Cost'\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_most_retries'\nSINCE 31 days ago UNTIL today\nFACET workspace_id, workspace_instance_name, job_id, job_name, run_id\nLIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Job cost deviation across runs last 30 days",
+          "layout": {
+            "column": 1,
+            "row": 27,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [
+              {
+                "name": "List Cost Deviation",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "list_cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Max list_cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Avg list_cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Total list_cost",
+                "precision": 2,
+                "type": "decimal"
+              },
+              {
+                "name": "Runs",
+                "precision": 0,
+                "type": "decimal"
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT\n count(run_id) as 'Runs',\n sum(list_cost),\n average(list_cost),\n max(list_cost),\n percentile(list_cost, 90),\n max(list_cost) - percentile(list_cost, 90) AS 'List Cost Deviation'\nFROM DatabricksJobCost\nWHERE query_id = 'jobs_cost_list_cost_per_job_run'\nSINCE 31 days ago UNTIL today\nFACET workspace_id, workspace_instance_name, job_id, job_name\nLIMIT 100 "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
