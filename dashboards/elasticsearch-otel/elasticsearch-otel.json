@@ -1,0 +1,1613 @@
+{
+  "name": "Elasticsearch OpenTelemetry Dashboard",
+  "pages": [
+    {
+      "name": "elasticsearch-otel",
+      "widgets": [
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 2,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Elasticsearch](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Elasticsearch_logo.svg/1024px-Elasticsearch_logo.svg.png)\n\n### 🔍 **Filter View**\n---\n⚠️ **Note:** Use the clickable entity names on the widgets marked `Filterable` to isolate your target data."
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 3,
+            "row": 1,
+            "width": 1,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Kafka logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/opentelemetry/logo.svg)"
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Overview\n\n> ### 📊 **What is this dashboard?**\n> This dashboard provides a **high-fidelity**, **real-time** view of your distributed search infrastructure. It utilizes the OpenTelemetry (OTel) Collector to ingest deep system and cluster-level metrics directly from your Elasticsearch nodes.\n>\n\n> ### 👥 **Who is this for?**\n> * **DevOps/SRE:** To monitor infrastructure stability and resource saturation.\n> * **Developers:** To identify slow code paths and trace cross-service dependencies.\n> * **Product Owners:** To understand high-level system availability and user impact.\n>\n\n>\n> ### 🎯 **Core Purpose**\n> * **Availability Monitoring:** Track the live status and health of all active service nodes.\n> * **Performance Benchmarking:** Visualize request latency, throughput, and error rates.\n> * **Resource Correlation:** Map infrastructure health (CPU/Memory) to application performance.\n>\n\n> ### 🔗 **Quick Navigation**\n> * [**New Relic OTel Elasticsearch Documentation**](https://docs.newrelic.com/docs/infrastructure/host-integrations/host-integrations-list/elasticsearch-otel/elasticsearch-otel-integration-overview/)\n> * [**Troubleshoot and get support**](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/introduction-opentelemetry-new-relic/) "
+          }
+        },
+        {
+          "title": "Total Cluster",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT uniqueCount(elasticsearch.cluster.name) AS 'Cluster Count' WHERE instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Unassigned Shards",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.cluster.shards) AS 'Unassigned shard count'\nWHERE state = 'unassigned'  AND instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "severity": "success",
+                  "to": 0
+                },
+                {
+                  "from": 1,
+                  "severity": "warning",
+                  "to": 10
+                },
+                {
+                  "from": 10,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Heap Pressure",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(jvm.memory.heap.utilization) * 100 AS 'Avg Heap Pressure %' WHERE instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 70
+                },
+                {
+                  "from": 70,
+                  "severity": "warning",
+                  "to": 85
+                },
+                {
+                  "from": 85,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "CPU usage %",
+          "layout": {
+            "column": 10,
+            "row": 3,
+            "width": 3,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(elasticsearch.os.cpu.usage) AS 'CPU usage %' WHERE instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholdsWithSeriesOverrides": {
+              "thresholds": [
+                {
+                  "from": 0,
+                  "severity": "success",
+                  "to": 60
+                },
+                {
+                  "from": 60,
+                  "severity": "warning",
+                  "to": 85
+                },
+                {
+                  "from": 85,
+                  "severity": "critical"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# 🔗 Cluster"
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## ⚡ Cluster Health cheetsheet\n> | Status | Meaning | Action |\n> | :--- | :--- | :--- |\n> | **🟢 Green** | All shards (Primary & Replica) are healthy. | **None** |\n> | **🟡 Yellow** | Primaries are healthy; some Replicas are missing. | **Monitor** |\n> | **🔴 Red** | At least one Primary shard is offline. | **Investigate** |\n>\n"
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "\n>\n> ### 🧩 Shard Allocation States\n> * **Active:** Fully operational and searchable.\n> * **Initializing:** Shard is being created or recovering from a restart.\n> * **Relocating:** Shard is moving between nodes (common during rebalancing).\n> * **Unassigned:** Shard exists but has no home. Check for node/disk issues.\n>\n"
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## 🧠 JVM Memory Cheat Sheet\n\n> ### **Threshold Guide**\n> * **0% - 70% (Healthy):** Normal operating range.\n> * **71% - 85% (Warning):** Garbage collection is likely becoming more frequent.\n> * **86%+ (Critical):** High risk of **Out of Memory (OOM)** errors or long \"Stop-the-world\" GC pauses.\n>\n> ### **Pro-Tip**\n> If you see this percentage climb steadily without dropping, you may have a **memory leak** or need to increase your `ES_JAVA_OPTS` heap settings."
+          }
+        },
+        {
+          "title": "Overview",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT \n    latest(status) AS `Cluster Status`, \n    latest(elasticsearch.cluster.nodes) AS `Cluster Nodes`, \n    latest(elasticsearch.cluster.data_nodes) AS `Data Nodes` \nWHERE instrumentation.provider = 'opentelemetry' FACET elasticsearch.cluster.name \n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Shard Status",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT filter(latest(elasticsearch.cluster.shards), WHERE state='active') AS 'Active',\n filter(latest(elasticsearch.cluster.shards), WHERE state='active_primary') AS 'Active Primary',\n  filter(latest(elasticsearch.cluster.shards), WHERE state='unassigned_delayed') AS 'Unassigned delayed',\n  filter(latest(elasticsearch.cluster.shards), WHERE state='relocating') AS 'Realocating',\n  filter(latest(elasticsearch.cluster.shards), WHERE state='initializing') AS 'Initializing',\n   filter(latest(elasticsearch.cluster.shards), WHERE state='unassigned') AS 'Unassigned'\n WHERE instrumentation.provider = 'opentelemetry'\nFACET  elasticsearch.cluster.name "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average JVM Heap Utilization",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT average(jvm.memory.heap.utilization) * 100 AS `avg jvm.memory.heap.utilization` FACET elasticsearch.cluster.name TIMESERIES  AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Search Rate/min",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(elasticsearch.node.operations.completed), 1 minute) AS `Search Rate` WHERE operation = 'query' FACET elasticsearch.cluster.name TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Indexing Rate/min",
+          "layout": {
+            "column": 5,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(elasticsearch.node.operations.completed), 1 minute)  AS `Indexing Rate` WHERE operation = 'index' FACET elasticsearch.cluster.name TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "tooltip": {
+              "mode": "single"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Pending Tasks",
+          "layout": {
+            "column": 9,
+            "row": 11,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT  latest(elasticsearch.cluster.pending_tasks) as `pending tasks` FACET elasticsearch.cluster.name "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Shard Count by Cluster",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(elasticsearch.cluster.shards) WHERE instrumentation.provider = 'opentelemetry' FACET elasticsearch.cluster.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "System Memory(GB)",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT\nfilter(latest(elasticsearch.os.memory / 1073741824),  WHERE state = 'used')  AS 'Used',\nfilter(latest(elasticsearch.os.memory / 1073741824),  WHERE state = 'free')  AS 'Free'\nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.cluster.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "JVM GC Performance Grade(ms)",
+          "layout": {
+            "column": 9,
+            "row": 14,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "initialSorting": {
+              "direction": "desc",
+              "name": "Avg Pause (ms)"
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT sum(jvm.gc.collections.elapsed) / sum(jvm.gc.collections.count) AS 'Avg Pause (ms)' \nFACET elasticsearch.cluster.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "columnName": "Avg Pause (ms)",
+                "from": 0,
+                "severity": "success",
+                "to": 50
+              },
+              {
+                "columnName": "Avg Pause (ms)",
+                "from": 100,
+                "severity": "critical",
+                "to": 500
+              },
+              {
+                "columnName": "Avg Pause (ms)",
+                "from": 1000,
+                "severity": "critical"
+              }
+            ]
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# 🖥️ Node"
+          }
+        },
+        {
+          "title": "File System ",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT\n    latest(elasticsearch.node.fs.disk.available) / 1073741824 AS `Free GB`,\n    latest(elasticsearch.node.fs.disk.total) / 1073741824 AS `Total GB`,\n    FILTER (rate(sum(elasticsearch.node.cluster.io), 1 minute), WHERE direction = 'received') AS `Read IO Throughput (Bytes/min)`,\n    FILTER(rate(sum(elasticsearch.node.cluster.io), 1 minute), WHERE direction = 'sent') AS `Write IO Throughput (Bytes/min)`\nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "HTTP Connection Volume",
+          "layout": {
+            "column": 5,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.node.http.connections) AS `Total HTTP Connections` \nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Open File Descriptors",
+          "layout": {
+            "column": 9,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.node.open_files) \nAS `Open File Descriptors` \nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "JVM Heap Used Percent",
+          "layout": {
+            "column": 1,
+            "row": 21,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT average(jvm.memory.heap.utilization) * 100 AS `Heap Used (%)` \nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "JVM Heap Allocation vs. Actual Usage(GB)",
+          "layout": {
+            "column": 5,
+            "row": 21,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT \n    average(jvm.memory.heap.used) / 1073741824 AS `Heap Used (GB)`, \n    latest(jvm.memory.heap.max) / 1073741824 AS `Max Heap (GB)`\nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES AUTO \nSINCE 1 week ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Ingest Error Count",
+          "layout": {
+            "column": 9,
+            "row": 21,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT sum(elasticsearch.node.ingest.operations.failed) AS 'Total Errors' \nWHERE instrumentation.provider = 'opentelemetry' \nFACET elasticsearch.node.name TIMESERIES AUTO "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Data Distribution (GB)",
+          "layout": {
+            "column": 1,
+            "row": 24,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.node.shards.size / 1073741824) AS 'Data Size (GB)' \nWHERE instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nLIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Search Latency(p99)",
+          "layout": {
+            "column": 5,
+            "row": 24,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT rate(sum(elasticsearch.node.operations.time), 1 minute) / rate(sum(elasticsearch.node.operations.completed), 1 minute) AS 'Avg Search Latency (ms)' \nWHERE operation = 'query' AND instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Indexing Latency (ms/op)",
+          "layout": {
+            "column": 9,
+            "row": 24,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT rate(sum(elasticsearch.node.operations.time), 1 minute) / \n       rate(sum(elasticsearch.node.operations.completed), 1 minute) \nAS 'Avg Indexing Latency (ms)' \nWHERE operation = 'index' \nAND instrumentation.provider = 'opentelemetry'\nFACET elasticsearch.node.name \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 27,
+            "width": 12,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# 📑 Indices"
+          }
+        },
+        {
+          "title": "Top Indices by Merge Activity",
+          "layout": {
+            "column": 1,
+            "row": 28,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.index.operations.merge.current) AS 'Active Merges' \nWHERE instrumentation.provider = 'opentelemetry'\nAND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name \nORDER BY latest(elasticsearch.index.operations.merge.current)\nLIMIT 25 \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Index Document & Deletion Health",
+          "layout": {
+            "column": 5,
+            "row": 28,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT \n  filter(latest(elasticsearch.index.documents), WHERE state = 'active' AND aggregation = 'total') AS 'Active Docs',\n  filter(latest(elasticsearch.index.documents), WHERE state = 'deleted' AND aggregation = 'total') AS 'Deleted Docs',\n  (filter(latest(elasticsearch.index.documents), WHERE state = 'deleted' AND aggregation = 'total') / \n   filter(latest(elasticsearch.index.documents), WHERE state = 'active' AND aggregation = 'total')) * 100 AS '% Waste'\nWHERE instrumentation.provider = 'opentelemetry' \n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name\nORDER BY latest(elasticsearch.index.documents)\nLIMIT 25"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Index Fragmentation (Segment Count)",
+          "layout": {
+            "column": 9,
+            "row": 28,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.index.segments.count) AS 'Segment Count' \nWHERE instrumentation.provider = 'opentelemetry' \n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name \nORDER BY latest(elasticsearch.index.segments.count) \nLIMIT 25\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Index Search Latency (ms/op)",
+          "layout": {
+            "column": 1,
+            "row": 31,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT rate(sum(elasticsearch.index.operations.time), 1 minute) / \n       rate(sum(elasticsearch.index.operations.completed), 1 minute) \nAS 'Search Latency (ms/op)' \nWHERE operation = 'query' \n  AND instrumentation.provider = 'opentelemetry'\n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name \nORDER BY max(elasticsearch.index.operations.time) \nLIMIT 25\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Top Indices by Storage (GB)",
+          "layout": {
+            "column": 5,
+            "row": 31,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT latest(elasticsearch.index.shards.size / 1073741824) AS 'Index Size (GB)' \nWHERE instrumentation.provider = 'opentelemetry'\n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name \nORDER BY latest(elasticsearch.index.shards.size)\nLIMIT 25"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Indexing Throughput (Docs/sec)",
+          "layout": {
+            "column": 9,
+            "row": 31,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT rate(sum(elasticsearch.index.operations.completed), 1 second) AS 'Docs/sec' \nWHERE operation = 'index' \n  AND instrumentation.provider = 'opentelemetry'\n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name \nORDER BY rate(sum(elasticsearch.index.operations.completed), 1 second) \nLIMIT 25 \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Background Operation Latency (Merge vs. Warmer)",
+          "layout": {
+            "column": 1,
+            "row": 34,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": false
+              },
+              "lineInterpolation": "linear",
+              "stacked": {
+                "enabled": true
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT rate(sum(elasticsearch.index.operations.time), 1 minute) AS 'Processing Time (ms/min)' \nWHERE operation IN ('merge', 'warmer')\n  AND instrumentation.provider = 'opentelemetry'\n  AND elasticsearch.index.name IS NOT NULL\nFACET elasticsearch.index.name, operation\nORDER BY rate(sum(elasticsearch.index.operations.time), 1 minute) \nLIMIT 25\nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 37,
+            "width": 12,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# 📦 Cache"
+          }
+        },
+        {
+          "title": "Node Cache Distribution (GB)",
+          "layout": {
+            "column": 1,
+            "row": 38,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT \nfilter(latest(elasticsearch.node.cache.memory.usage / 1073741824), WHERE cache_name='fielddata') AS 'Fielddata(GB)',\nfilter(latest(elasticsearch.node.cache.memory.usage / 1073741824), WHERE cache_name='query') AS 'Query(GB)'\nFACET elasticsearch.node.name\n\n"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Fielddata Cache Evictions Rate",
+          "layout": {
+            "column": 5,
+            "row": 38,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(elasticsearch.node.cache.evictions), 1 minute) AS 'Fielddata Evictions/Min' WHERE cache_name = 'fielddata' FACET elasticsearch.node.name  TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Query Cache Evictions Rate",
+          "layout": {
+            "column": 9,
+            "row": 38,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(elasticsearch.node.cache.evictions), 1 minute) AS 'Query Evictions/Min' WHERE cache_name = 'query' FACET elasticsearch.cluster.name  TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Miss Rate (%)",
+          "layout": {
+            "column": 1,
+            "row": 41,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT (rate(filter(sum(elasticsearch.node.cache.count), WHERE type = 'miss'), 1 minute) / \n        rate(sum(elasticsearch.node.cache.count), 1 minute)) * 100 AS 'Miss Rate %' \nWHERE instrumentation.provider = 'opentelemetry'\n  AND cache_name IS NOT NULL\nFACET elasticsearch.node.name, cache_name \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cache Hit Ratio (%)",
+          "layout": {
+            "column": 5,
+            "row": 41,
+            "width": 4,
+            "height": 3
+          },
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "linear"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric \nSELECT (rate(filter(sum(elasticsearch.node.cache.count), WHERE type = 'hit'), 1 minute) / \n        rate(sum(elasticsearch.node.cache.count), 1 minute)) * 100 AS 'Hit Rate %' \nWHERE instrumentation.provider = 'opentelemetry'\n  AND cache_name IS NOT NULL\nFACET elasticsearch.node.name, cache_name \nTIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
