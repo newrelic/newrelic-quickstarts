@@ -143,7 +143,7 @@
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) AS 'Offline partitions' FROM (SELECT latest(`kafka.partition.offline`) AS 'partitions' FROM Metric WHERE metricName='kafka.partition.offline' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(partitions) AS 'Offline partitions' FROM (SELECT latest(`kafka.partition.offline`) AS 'partitions' FROM Metric WHERE metricName='kafka.partition.offline' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
@@ -151,7 +151,7 @@
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) as 'Under min ISR partitions' FROM (SELECT max(kafka.partition.under_min_isr) AS 'partitions' FROM Metric WHERE metricName = 'kafka.partition.under_min_isr' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(partitions) as 'Under min ISR partitions' FROM (SELECT max(kafka.partition.under_min_isr) AS 'partitions' FROM Metric WHERE metricName = 'kafka.partition.under_min_isr' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               }
             ],
             "thresholdsWithSeriesOverrides": {
@@ -201,23 +201,23 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(topics) as 'Total topics' FROM (SELECT latest(kafka.cluster.topic.count) AS 'topics' FROM Metric WHERE metricName='kafka.cluster.topic.count' AND kafka.cluster.topic.count>0 FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(topics) as 'Total topics' FROM (SELECT latest(kafka.cluster.topic.count) AS 'topics' FROM Metric WHERE metricName='kafka.cluster.topic.count' AND kafka.cluster.topic.count>0 AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(active_topics) as 'Active Topics' FROM (SELECT uniqueCount(topic) as 'active_topics' FROM Metric WHERE metricName='kafka.topic.io' AND kafka.topic.io > 0 and kafka.cluster.name in ({{cluster}}) facet topic, kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(groups) AS 'Consumer groups' FROM (SELECT uniqueCount(group) as 'groups' FROM Metric WHERE metricName='kafka.consumer_group.members'  FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(groups) AS 'Consumer groups' FROM (SELECT uniqueCount(group) as 'groups' FROM Metric WHERE metricName='kafka.consumer_group.members' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT latest(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName = 'kafka.cluster.partition.count' AND kafka.cluster.partition.count>0 FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT latest(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName = 'kafka.cluster.partition.count' AND kafka.cluster.partition.count>0 AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               },
               {
                 "accountIds": [],
@@ -258,7 +258,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX) facet kafka.cluster.name"
               }
             ]
           }
@@ -279,7 +279,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX) facet kafka.cluster.name"
               }
             ]
           }
@@ -300,7 +300,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}}) facet kafka.cluster.name"
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX) facet kafka.cluster.name"
               }
             ]
           }
@@ -987,7 +987,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(brokers) as 'Active brokers' FROM (SELECT latest(kafka.brokers) AS 'brokers' FROM Metric WHERE metricName='kafka.brokers' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               }
             ]
           }
@@ -1014,7 +1014,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               }
             ]
           }
@@ -1812,7 +1812,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(topics) as 'Active topics' FROM (SELECT uniqueCount(topic) AS 'topics' FROM Metric WHERE metricName='kafka.topic.partitions' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(active_topics) as 'Active Topics' FROM (SELECT uniqueCount(topic) as 'active_topics' FROM Metric WHERE metricName='kafka.topic.io' AND kafka.topic.io > 0 and kafka.cluster.name in ({{cluster}}) facet topic, kafka.cluster.name LIMIT MAX)"
               }
             ]
           }
@@ -1839,7 +1839,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' FACET kafka.cluster.name LIMIT MAX) where kafka.cluster.name in ({{cluster}})"
+                "query": "SELECT sum(partitions) as 'Total partitions' FROM (SELECT max(kafka.cluster.partition.count) AS 'partitions' FROM Metric WHERE metricName='kafka.cluster.partition.count' AND kafka.cluster.name in ({{cluster}}) FACET kafka.cluster.name LIMIT MAX)"
               }
             ]
           }
