@@ -9,7 +9,16 @@ type: STATIC
 
 # NRQL query
 nrql:
-  query: "from K8sNodeSample select latest(condition.Ready) where clusterName in ('YOUR_CLUSTER_NAME') facet nodeName, clusterName"
+  query: >
+    from InfrastructureEvent
+    select if(latest(event.reason) = 'NodeReady', 1, 0) as 'Ready'
+    where (
+      k8s.cluster.name = 'YOUR_CLUSTER_NAME' and
+      category = 'kubernetes' and
+      event.involvedObject.kind = 'Node' and
+      event.reason in ('NodeReady', 'NodeNotReady')
+    )
+    facet event.source.host
 
 # Direction in which baseline is set (Default: LOWER_ONLY)
 # baselineDirection: LOWER_ONLY | UPPER_AND_LOWER | UPPER_ONLY
