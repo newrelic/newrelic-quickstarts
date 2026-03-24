@@ -9,7 +9,16 @@ type: STATIC
 
 # NRQL query
 nrql:
-  query: "from Metric select if(latest(condition) = 'Ready', 0, 1) where k8s.cluster.name in ('YOUR_CLUSTER_NAME') facet k8s.node.name, k8s.cluster.name"
+  query: >
+    FROM OtlpInfrastructureEvent
+    SELECT if(latest(k8s.event.reason) = 'NodeReady', 1, 0) as 'Ready'
+    WHERE (
+      k8s.cluster.name = 'YOUR_CLUSTER_NAME' and
+      category = 'kubernetes' and
+      k8s.object.kind = 'Node' and
+      k8s.event.reason in ('NodeReady', 'NodeNotReady')
+    )
+    facet k8s.object.name, k8s.cluster.name
 
 # Direction in which baseline is set (Default: LOWER_ONLY)
 # baselineDirection: LOWER_ONLY | UPPER_AND_LOWER | UPPER_ONLY
