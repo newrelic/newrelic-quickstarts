@@ -1,0 +1,1558 @@
+{
+  "name": "eBPF - AI Monitoring",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Summary",
+      "description": null,
+      "widgets": [
+        {
+          "title": "AI Models used",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "\nSELECT\n   sum(gen_ai.client.request.count) AS 'Requests',\n   filter(average(gen_ai.client.token.usage), WHERE gen_ai.token.type='input') as 'Average input tokens (prompt)',\n   filter(average(gen_ai.client.token.usage), WHERE gen_ai.token.type='output') as 'Average output tokens (completion)',\n   filter(percentage(count(gen_ai.client.operation.duration), WHERE error.type != '' AND error.type IS NOT NULL), WHERE entity.name IN ({{entity_name}})) AS 'Error rate(%)',\n   round(average(gen_ai.client.operation.duration) / (1000*1000*1000), 0.001) as 'Average response time (s)'\nFROM Metric\nWHERE entity.name IN ({{entity_name}}) \nFACET entity.name AS 'Entity name', gen_ai.system AS 'Provider', gen_ai.request.model AS 'Model' LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": [
+              {
+                "columnName": "Error rate(%)",
+                "from": 0,
+                "severity": "unavailable",
+                "to": 0
+              },
+              {
+                "columnName": "Error rate(%)",
+                "from": 0.01,
+                "severity": "warning",
+                "to": 0.1
+              },
+              {
+                "columnName": "Error rate(%)",
+                "from": 0.11,
+                "severity": "severe",
+                "to": 0.5
+              },
+              {
+                "columnName": "Error rate(%)",
+                "from": 0.51,
+                "severity": "critical",
+                "to": 1
+              }
+            ]
+          }
+        },
+        {
+          "title": "Total AI requests",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "linkedEntityGuids": [],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET entity.name LIMIT MAX COMPARE WITH 30 minutes ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Average response time (s)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  average(gen_ai.client.operation.duration)/(1000*1000*1000)\nWHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET entity.name LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Error rate",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentage(count(*), WHERE metricName='gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL) AS 'Error rate' WHERE metricName='gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) COMPARE WITH 30 minutes ago FACET gen_ai.system, entity.name EXTRAPOLATE LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Requests",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Total AI requests",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "linkedEntityGuids": [],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET entity.name LIMIT MAX COMPARE WITH 30 minutes ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "AI Requests",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET string('Total Requests'), entity.name LIMIT MAX TIMESERIES"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET gen_ai.system, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "AI Requests by model",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET string('Total Requests'), entity.name LIMIT MAX TIMESERIES"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "AI Requests by operation type (application)",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET string('Total Requests'), entity.name LIMIT MAX TIMESERIES"
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.request.count) as Requests WHERE entity.name IN ({{entity_name}}) AND ai.enabled=true FACET gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Error rate",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "linkedEntityGuids": [],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentage(count(*), WHERE metricName='gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL) AS 'Error rate' WHERE metricName='gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) COMPARE WITH 30 minutes ago FACET entity.name EXTRAPOLATE LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Response errors",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(*) AS 'Error count' WHERE metricName = 'gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) AND metricName = 'gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL FACET entity.name as 'Entity Name', gen_ai.system AS 'Provider', gen_ai.request.model OR gen_ai.response.model AS 'Model', gen_ai.operation.name AS 'Operation', http.response.status_code AS 'Error Code', error.type AS 'Error Type', error.message AS 'Error' LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Error rate by model",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "linkedEntityGuids": [],
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentage(count(*), WHERE metricName='gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL) AS 'Error rate' WHERE metricName='gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) COMPARE WITH 30 minutes ago FACET gen_ai.response.model OR gen_ai.request.model, entity.name EXTRAPOLATE LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Response Errors",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(*) AS 'Error count' WHERE entity.name IN ({{entity_name}}) AND metricName = 'gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL FACET string('Total Errors'), entity.name LIMIT MAX TIMESERIES  "
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(*) AS 'Error count' WHERE entity.name IN ({{entity_name}}) AND metricName = 'gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL FACET gen_ai.system, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response error by model",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(*) AS 'Error rate' WHERE metricName = 'gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) AND metricName = 'gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL FACET gen_ai.response.model OR gen_ai.request.model, entity.name EXTRAPOLATE LIMIT MAX SINCE 30 minutes ago UNTIL now TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response error by type",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT count(*) AS 'Error rate' WHERE metricName = 'gen_ai.client.operation.duration' AND entity.name IN ({{entity_name}}) AND metricName = 'gen_ai.client.operation.duration' AND error.type != '' AND error.type IS NOT NULL FACET error.type, entity.name LIMIT MAX SINCE 30 minutes ago UNTIL now TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Token usage",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Tokens used",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) WHERE entity.name IN ({{entity_name}}) COMPARE WITH 60 minutes ago FACET gen_ai.token.type, entity.name EXTRAPOLATE LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Total token usage",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": false
+              }
+            },
+            "colors": {
+              "colorPalette": "dynamic"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) WHERE entity.name IN ({{entity_name}}) FACET gen_ai.token.type, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# By model\nToken usage by model"
+          }
+        },
+        {
+          "title": "Total token usage by model",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) WHERE entity.name IN ({{entity_name}}) FACET string('Total tokens'), gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES "
+              },
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) WHERE entity.name IN ({{entity_name}}) FACET gen_ai.token.type, gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES  "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Average token usage per request (by model)",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage)/sum(gen_ai.client.request.count) WHERE entity.name IN ({{entity_name}}) FACET gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Input (prompt)  token by model",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) AS 'Prompt Token' WHERE entity.name IN ({{entity_name}}) AND gen_ai.token.type='input' FACET gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Output (completion) token by model",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) AS 'Completion Token' WHERE entity.name IN ({{entity_name}}) AND gen_ai.token.type='output' FACET gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": null,
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# By operation type\nToken usage by operation type"
+          }
+        },
+        {
+          "title": "Total token usage by operation type (application)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) WHERE entity.name IN ({{entity_name}}) FACET gen_ai.token.type, gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Average token usage per request (by operation)",
+          "layout": {
+            "column": 4,
+            "row": 8,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "gradient": {
+                "enabled": true
+              },
+              "lineInterpolation": "smooth",
+              "stacked": {
+                "enabled": false
+              }
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage)/sum(gen_ai.client.request.count) WHERE entity.name IN ({{entity_name}}) FACET gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            }
+          }
+        },
+        {
+          "title": "Input (prompt) token by operation",
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) AS 'Prompt Token' WHERE entity.name IN ({{entity_name}}) AND gen_ai.token.type='input' FACET gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Output (completion) token by operation",
+          "layout": {
+            "column": 10,
+            "row": 8,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(gen_ai.client.token.usage) AS 'Completion Token' WHERE entity.name IN ({{entity_name}}) AND gen_ai.token.type='output' FACET gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "COUNT"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Response time",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Response time",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": [],
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "linkedEntityGuids": [],
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(gen_ai.client.operation.duration)/(1000*1000) OR 0 as 'Average', percentile(gen_ai.client.operation.duration, 95)/(1000*1000) as '95th percentile',\n  percentile(gen_ai.client.operation.duration, 99)/(1000*1000) as '99th percentile', median(gen_ai.client.operation.duration)/(1000*1000) as 'Median' WHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response time by model",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(gen_ai.client.operation.duration)/(1000*1000) OR 0 as 'Average' WHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET gen_ai.response.model OR gen_ai.request.model, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response time by operation",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(gen_ai.client.operation.duration)/(1000*1000) OR 0 as 'Average' WHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET gen_ai.operation.name, entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average response time (s)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT \n  average(gen_ai.client.operation.duration)/(1000*1000*1000) OR 0 as 'Average'\nWHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET entity.name LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Median response time (s)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "dataFormatters": [],
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  median(gen_ai.client.operation.duration)/(1000*1000*1000) as 'Median'\nWHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET entity.name LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "Response time (s) 99th percentile",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "chartStyles": {
+              "lineInterpolation": "smooth"
+            },
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT\n  percentile(gen_ai.client.operation.duration, {{percentile_value}})/(1000*1000*1000)\nWHERE entity.name IN ({{entity_name}}) AND metricName='gen_ai.client.operation.duration' FACET concat(string({{percentile_value}}), 'th percentile'), entity.name LIMIT MAX "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "entity_name",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [
+          11815527
+        ],
+        "query": "FROM Metric SELECT uniques(entity.name) WHERE instrumentation.name = 'nr_ebpf' limit max"
+      },
+      "options": {
+        "hiddenOnVariablesBar": false,
+        "ignoreTimeRange": false,
+        "excluded": false,
+        "showApplyAction": false
+      },
+      "title": "Entity name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "percentile_value",
+      "items": [
+        {
+          "title": null,
+          "value": "50"
+        },
+        {
+          "title": null,
+          "value": "95"
+        },
+        {
+          "title": null,
+          "value": "99"
+        }
+      ],
+      "defaultValues": [
+        {
+          "value": {
+            "string": "99"
+          }
+        }
+      ],
+      "nrqlQuery": null,
+      "options": {
+        "hiddenOnVariablesBar": false,
+        "excluded": false
+      },
+      "title": "chart projection%",
+      "type": "ENUM",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER"
+    }
+  ]
+}
