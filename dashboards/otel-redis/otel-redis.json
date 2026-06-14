@@ -1,0 +1,159 @@
+{
+  "name": "Redis OTel — DEMO",
+  "description": "DEMO clone for AFA2026 hackathon (EPIC NR-576657). Cluster-aware NRQL facets on redis.cluster.name when present.",
+  "pages": [
+    {
+      "name": "Redis OTel — DEMO",
+      "description": "5 panels: throughput, latency, memory, connections, replication.",
+      "widgets": [
+        {
+          "title": "About this DEMO dashboard",
+          "layout": { "column": 1, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.markdown" },
+          "rawConfiguration": {
+            "text": "## DEMO Redis OTel Dashboard\n\nClone created for **AFA2026 hackathon** (EPIC NR-576657).\n\nFive panels covering the core SRE signals for Redis:\n\n1. Throughput (commands/sec)\n2. Latency (network I/O)\n3. Memory pressure (used / maxmemory)\n4. Connections (active + blocked)\n5. Replication lag\n\nQueries automatically facet on `redis.cluster.name` when present, falling back to `server.address` for standalone instances.\n\nSee the [OpenTelemetry Redis receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/redisreceiver) for setup."
+          }
+        },
+        {
+          "title": "Throughput — Commands per second",
+          "layout": { "column": 5, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(redis.commands.processed), 1 second) AS 'cmd/s' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Latency — Network I/O (avg bytes/sec)",
+          "layout": { "column": 9, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(redis.net.input.bytes), 1 second) AS 'in B/s', rate(sum(redis.net.output.bytes), 1 second) AS 'out B/s' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Memory pressure (% of maxmemory)",
+          "layout": { "column": 1, "row": 4, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (max(redis.memory.used) / max(redis.maxmemory)) * 100 AS 'mem %' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [
+              { "value": 75, "alertSeverity": "WARNING" },
+              { "value": 90, "alertSeverity": "CRITICAL" }
+            ],
+            "yAxisLeft": { "zero": true, "max": 100 }
+          }
+        },
+        {
+          "title": "Connections — connected vs blocked",
+          "layout": { "column": 5, "row": 4, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(redis.clients.connected) AS 'connected', average(redis.clients.blocked) AS 'blocked' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Replication lag (master − replica offset, bytes)",
+          "layout": { "column": 9, "row": 4, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(redis.replication.backlog_first_byte_offset) - max(redis.replication.offset) AS 'lag bytes' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [
+              { "value": 1000000, "alertSeverity": "WARNING" },
+              { "value": 10000000, "alertSeverity": "CRITICAL" }
+            ],
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Keyspace miss ratio (%)",
+          "layout": { "column": 1, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (sum(redis.keyspace.misses) / (sum(redis.keyspace.hits) + sum(redis.keyspace.misses))) * 100 AS 'miss %' FACET cases(WHERE redis.cluster.name IS NOT NULL AS redis.cluster.name, WHERE redis.cluster.name IS NULL AS server.address) TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [
+              { "value": 50, "alertSeverity": "WARNING" },
+              { "value": 80, "alertSeverity": "CRITICAL" }
+            ],
+            "yAxisLeft": { "zero": true, "max": 100 }
+          }
+        },
+        {
+          "title": "Top instances by memory %",
+          "layout": { "column": 7, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.bar" },
+          "rawConfiguration": {
+            "facet": { "showOtherSeries": false },
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT (max(redis.memory.used) / max(redis.maxmemory)) * 100 AS 'mem %' FACET server.address LIMIT 10"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
