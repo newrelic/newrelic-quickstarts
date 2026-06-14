@@ -1,0 +1,29 @@
+# DEMO clone for AFA2026 hackathon (EPIC NR-576657)
+name: Redis replication lag
+
+description: |
+  Triggers when the replication offset gap between master and replica grows beyond safe bounds.
+  Computed as (master.offset − replica.offset) using `redis.replication.backlog_first_byte_offset`
+  and `redis.replication.offset` metrics from the OTel Redis receiver.
+  Warning at 1MB (1,000,000 bytes) — replicas falling behind. Critical at 10MB (10,000,000 bytes) — risk of failover data loss.
+
+type: STATIC
+
+valueFunction: SINGLE_VALUE
+
+nrql:
+  query: "FROM Metric SELECT max(redis.replication.backlog_first_byte_offset) - max(redis.replication.offset)"
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 10000000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 1000000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
