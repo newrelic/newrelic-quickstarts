@@ -1,6 +1,6 @@
 {
   "name": "IBM MQ OTel - Dashboard",
-  "description": "Monitor IBM MQ infrastructure instrumented via the OpenTelemetry collector. Tracks queue manager health, queue depth and throughput, channel performance, and filesystem utilization.",
+  "description": "Monitor IBM MQ infrastructure instrumented via the OpenTelemetry collector (NRDot scraping the IBM MQ Prometheus exporter). Tracks queue manager health, queue depth and throughput, channel performance, and filesystem utilization.",
   "pages": [
     {
       "name": "Queue Managers",
@@ -19,7 +19,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": " ![IBM-MQ logo](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/ibmmq-otel/logo.png?raw=true)\n\n\n\n To scope page to a single cluster, filter by `ibmmq.queue_manager=<queueManagerName>`\n \n Dashboard gives an overview of your Queue Managers, their queues, and their channels — sourced from an OpenTelemetry collector.\n\n [IBM MQ OTel instrumentation guide](https://docs.newrelic.com/docs/opentelemetry/get-started/collector-infrastructure-monitoring/opentelemetry-collector-infra-hosts/)\n"
+            "text": " ![IBM-MQ logo](https://github.com/newrelic/newrelic-quickstarts/blob/main/quickstarts/ibmmq-otel/logo.png?raw=true)\n\n\n\n To scope page to a single cluster, filter by `qmgr=<queueManagerName>`\n \n Dashboard gives an overview of your Queue Managers, their queues, and their channels — sourced from an OpenTelemetry collector (NRDot) scraping the IBM MQ Prometheus exporter.\n\n [IBM MQ OTel instrumentation guide](https://docs.newrelic.com/docs/opentelemetry/get-started/collector-infrastructure-monitoring/opentelemetry-collector-infra-hosts/)\n"
           }
         },
         {
@@ -39,7 +39,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.qmgr.connection_count) AS 'Connections' FROM Metric COMPARE WITH 1 hour ago"
+                "query": "SELECT latest(ibmmq_qmgr_connection_count) AS 'Connections' FROM Metric WHERE instrumentation.provider = 'opentelemetry' COMPARE WITH 1 hour ago"
               }
             ],
             "thresholds": []
@@ -68,7 +68,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.qmgr.connection_count) AS 'Connections' FROM Metric FACET ibmmq.queue_manager TIMESERIES AUTO"
+                "query": "SELECT latest(ibmmq_qmgr_connection_count) AS 'Connections' FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET qmgr TIMESERIES AUTO"
               }
             ],
             "yAxisLeft": {
@@ -98,7 +98,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.qmgr.failed.mqopen.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqclose.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqinq.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqset.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqcb.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqget.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqput.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqput1.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqsubrq.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.mqconn.mqconnx.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.browse.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.create.alter.resume.subscription.count), 1 minute) + rate(sum(ibmmq.qmgr.failed.topic.mqput.count), 1 minute) AS 'Errors/min' FROM Metric TIMESERIES AUTO FACET ibmmq.queue_manager"
+                "query": "SELECT average(ibmmq_qmgr_failed_browse_count) + average(ibmmq_qmgr_failed_mqcb_count) + average(ibmmq_qmgr_failed_mqclose_count) + average(ibmmq_qmgr_failed_mqconn_mqconnx_count) + average(ibmmq_qmgr_failed_mqget_count) + average(ibmmq_qmgr_failed_mqinq_count) + average(ibmmq_qmgr_failed_mqopen_count) + average(ibmmq_qmgr_failed_mqput1_count) + average(ibmmq_qmgr_failed_mqput_count) + average(ibmmq_qmgr_failed_mqset_count) + average(ibmmq_qmgr_failed_mqsubrq_count) + average(ibmmq_qmgr_failed_create_alter_resume_subscription_count) + average(ibmmq_qmgr_failed_topic_mqput_mqput1_count) AS 'Errors' FROM Metric WHERE instrumentation.provider = 'opentelemetry' TIMESERIES AUTO FACET qmgr"
               }
             ],
             "yAxisLeft": {
@@ -123,7 +123,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniqueCount(ibmmq.queue_manager) AS 'Queue Managers' FROM Metric WHERE metricName LIKE 'ibmmq.qmgr.%' LIMIT MAX"
+                "query": "SELECT uniqueCount(qmgr) AS 'Queue Managers' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND metricName LIKE 'ibmmq_qmgr_%' LIMIT MAX"
               }
             ],
             "thresholds": []
@@ -146,7 +146,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.qmgr.published.to.subscribers.message.count), 1 minute) + rate(sum(ibmmq.qmgr.interval.mqput.mqput1.total.count), 1 minute) + rate(sum(ibmmq.qmgr.interval.destructive.get.total.count), 1 minute) AS 'Messages/min' FROM Metric COMPARE WITH 1 hour ago"
+                "query": "FROM Metric SELECT average(ibmmq_qmgr_published_to_subscribers_message_count) + average(ibmmq_qmgr_interval_mqput_mqput1_total_count) + average(ibmmq_qmgr_interval_destructive_get_total_count) AS 'Messages' WHERE instrumentation.provider = 'opentelemetry' COMPARE WITH 1 hour ago"
               }
             ],
             "thresholds": []
@@ -174,7 +174,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.qmgr.published.to.subscribers.message.count), 1 minute) + rate(sum(ibmmq.qmgr.interval.mqput.mqput1.total.count), 1 minute) + rate(sum(ibmmq.qmgr.interval.destructive.get.total.count), 1 minute) AS 'Messages/min' FROM Metric TIMESERIES AUTO FACET ibmmq.queue_manager"
+                "query": "FROM Metric SELECT average(ibmmq_qmgr_published_to_subscribers_message_count) + average(ibmmq_qmgr_interval_mqput_mqput1_total_count) + average(ibmmq_qmgr_interval_destructive_get_total_count) AS 'Messages' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES AUTO FACET qmgr"
               }
             ],
             "yAxisLeft": {
@@ -199,7 +199,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT uniqueCount(ibmmq.queue) AS 'Queues' FROM Metric WHERE metricName LIKE 'ibmmq.queue.%' LIMIT MAX"
+                "query": "SELECT uniqueCount(queue) AS 'Queues' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND metricName LIKE 'ibmmq_queue_%' LIMIT MAX"
               }
             ],
             "thresholds": []
@@ -220,12 +220,12 @@
           "rawConfiguration": {
             "dataFormatters": [
               {
-                "name": "Put/min",
+                "name": "Put",
                 "precision": null,
                 "type": "humanized"
               },
               {
-                "name": "Get/min",
+                "name": "Get",
                 "precision": null,
                 "type": "humanized"
               },
@@ -251,7 +251,36 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.queue.depth) AS 'Depth', latest(ibmmq.queue.depth) * 100 / latest(ibmmq.queue.attribute.max.depth) AS 'Depth %', rate(sum(ibmmq.queue.mqput.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.persistent.message.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.non.persistent.message.count), 1 minute) AS 'Put/min', rate(sum(ibmmq.queue.mqget.count), 1 minute) AS 'Get/min', sum(ibmmq.queue.expired.messages) AS 'Expired' FROM Metric FACET ibmmq.queue_manager, ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Depth', latest(ibmmq_queue_depth) * 100 / latest(ibmmq_queue_attribute_max_depth) AS 'Depth %', latest(ibmmq_queue_mqput_mqput1_count) AS 'Put', latest(ibmmq_queue_mqget_count) AS 'Get', latest(ibmmq_queue_expired_messages) AS 'Expired' WHERE instrumentation.provider = 'opentelemetry' FACET qmgr, queue LIMIT MAX"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Queue Manager Status",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "dataFormatters": [],
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "SELECT filter(count(*), WHERE status = 2) AS 'Active', filter(count(*), WHERE status != 2) AS 'Inactive' FROM (SELECT latest(ibmmq_qmgr_status) AS status FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET qmgr)"
+              }
+            ],
+            "thresholds": [
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 1,
+                "name": "Inactive"
               }
             ]
           }
@@ -259,9 +288,9 @@
         {
           "title": "FileSystem Usage",
           "layout": {
-            "column": 1,
+            "column": 5,
             "row": 10,
-            "width": 12,
+            "width": 8,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -278,7 +307,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(`ibmmq.qmgr.queue_manager.file.system.in.use.bytes`) + average(`ibmmq.qmgr.log.file.system.in.use.bytes`) AS 'File system usage' FROM Metric TIMESERIES AUTO FACET ibmmq.queue_manager"
+                "query": "FROM Metric SELECT average(ibmmq_qmgr_queue_manager_file_system_in_use_bytes) + average(ibmmq_qmgr_log_file_system_in_use_bytes) AS 'File system usage' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES AUTO FACET qmgr"
               }
             ],
             "yAxisLeft": {
@@ -311,7 +340,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.queue.depth) AS 'Queue Depth' FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Queue Depth' WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -335,7 +364,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.queue.depth) * 100 / latest(ibmmq.queue.attribute.max.depth) AS 'Depth %' FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) * 100 / latest(ibmmq_queue_attribute_max_depth) AS 'Depth %' WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -362,7 +391,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.queue.depth) AS 'Queue Depth' FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_depth) AS 'Queue Depth' WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -390,7 +419,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT sum(depth) FROM (SELECT latest(ibmmq.queue.depth) AS depth FROM Metric FACET ibmmq.queue) COMPARE WITH 1 hour ago"
+                "query": "SELECT sum(depth) FROM (SELECT latest(ibmmq_queue_depth) AS depth FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET queue) COMPARE WITH 1 hour ago"
               }
             ],
             "thresholds": []
@@ -415,7 +444,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.mqget.count), 1 minute) AS 'Get/min' FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqget_count) WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -442,7 +471,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.mqget.count), 1 minute) AS 'Get/min' FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqget_count) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -451,7 +480,7 @@
           }
         },
         {
-          "title": "Time Since Last GET",
+          "title": "Oldest Message Age over Time",
           "layout": {
             "column": 9,
             "row": 5,
@@ -472,7 +501,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(`ibmmq.queue.time.since.get`) FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT 1000"
+                "query": "FROM Metric SELECT average(ibmmq_queue_oldest_message_age) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT 1000"
               }
             ],
             "yAxisLeft": {
@@ -499,7 +528,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.mqput.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.persistent.message.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.non.persistent.message.count), 1 minute) AS 'Put/min' FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqput_mqput1_count) WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -526,7 +555,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.mqput.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.persistent.message.count), 1 minute) + rate(sum(ibmmq.queue.mqput1.non.persistent.message.count), 1 minute) AS 'Put/min' FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_mqput_mqput1_count) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -535,7 +564,7 @@
           }
         },
         {
-          "title": "Time Since Last PUT",
+          "title": "Average Queue Time (seconds)",
           "layout": {
             "column": 9,
             "row": 8,
@@ -556,7 +585,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(`ibmmq.queue.time.since.put`) FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_average_queue_time_seconds) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -583,7 +612,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT max(ibmmq.queue.oldest_message_age) FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT max(ibmmq_queue_oldest_message_age) WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -610,7 +639,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(ibmmq.queue.qtime.short) FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_qtime_short) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -640,7 +669,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT average(ibmmq.queue.qtime.long) FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_qtime_long) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -667,7 +696,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.expired.messages), 1 minute) AS 'Expired/min' FROM Metric FACET ibmmq.queue LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_expired_messages) WHERE instrumentation.provider = 'opentelemetry' FACET queue LIMIT MAX"
               }
             ]
           }
@@ -694,7 +723,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.queue.expired.messages), 1 minute) AS 'Expired/min' FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_queue_expired_messages) WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -749,7 +778,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.qmgr.status) AS 'Status', latest(ibmmq.qmgr.uptime) / 86400 AS 'Uptime (days)', latest(ibmmq.qmgr.active.services) AS 'Active Services', latest(ibmmq.qmgr.active.listeners) AS 'Listeners', latest(ibmmq.qmgr.connection_count) AS 'Connections' FROM Metric FACET ibmmq.queue_manager LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_qmgr_status) AS 'Status', latest(ibmmq_qmgr_uptime) / 86400 AS 'Uptime (days)', latest(ibmmq_qmgr_active_services) AS 'Active Services', latest(ibmmq_qmgr_active_listeners) AS 'Listeners', latest(ibmmq_qmgr_connection_count) AS 'Connections' WHERE instrumentation.provider = 'opentelemetry' FACET qmgr LIMIT MAX"
               }
             ]
           }
@@ -769,17 +798,17 @@
           "rawConfiguration": {
             "dataFormatters": [
               {
-                "name": "Msgs/min",
+                "name": "Msgs",
                 "precision": null,
                 "type": "humanized"
               },
               {
-                "name": "Bytes Sent/min",
+                "name": "Bytes Sent",
                 "precision": null,
                 "type": "humanized"
               },
               {
-                "name": "Bytes Rcvd/min",
+                "name": "Bytes Rcvd",
                 "precision": null,
                 "type": "humanized"
               },
@@ -795,7 +824,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.channel.status) AS 'Status', latest(ibmmq.channel.type) AS 'Type', rate(sum(ibmmq.channel.messages), 1 minute) AS 'Msgs/min', rate(sum(ibmmq.channel.bytes.sent), 1 minute) AS 'Bytes Sent/min', rate(sum(ibmmq.channel.bytes.rcvd), 1 minute) AS 'Bytes Rcvd/min', latest(`ibmmq.channel.time.since.msg`) AS 'Idle (s)' FROM Metric FACET ibmmq.queue_manager, ibmmq.channel LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_channel_status) AS 'Status', latest(ibmmq_channel_type) AS 'Type', average(ibmmq_channel_messages) AS 'Msgs', average(ibmmq_channel_bytes_sent) AS 'Bytes Sent', average(ibmmq_channel_bytes_rcvd) AS 'Bytes Rcvd', latest(ibmmq_channel_time_since_msg) AS 'Idle (s)' WHERE instrumentation.provider = 'opentelemetry' FACET qmgr, channel LIMIT MAX"
               }
             ]
           }
@@ -822,7 +851,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT rate(sum(ibmmq.channel.bytes.sent), 1 minute) AS 'Sent/min', rate(sum(ibmmq.channel.bytes.rcvd), 1 minute) AS 'Received/min' FROM Metric FACET ibmmq.channel TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT average(ibmmq_channel_bytes_sent) AS 'Sent', average(ibmmq_channel_bytes_rcvd) AS 'Received' WHERE instrumentation.provider = 'opentelemetry' FACET channel TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
@@ -852,7 +881,7 @@
             "nrqlQueries": [
               {
                 "accountId": 0,
-                "query": "SELECT latest(ibmmq.queue.input_handles) AS 'Input', latest(ibmmq.queue.output_handles) AS 'Output', latest(ibmmq.queue.publish.handles) AS 'Publish', latest(ibmmq.queue.browse.handles) AS 'Browse' FROM Metric FACET ibmmq.queue TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Metric SELECT latest(ibmmq_queue_input_handles) AS 'Input', latest(ibmmq_queue_output_handles) AS 'Output', latest(ibmmq_queue_publish_handles) AS 'Publish', latest(ibmmq_queue_browse_handles) AS 'Browse' WHERE instrumentation.provider = 'opentelemetry' FACET queue TIMESERIES AUTO LIMIT MAX"
               }
             ],
             "yAxisLeft": {
