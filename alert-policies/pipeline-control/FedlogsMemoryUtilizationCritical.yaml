@@ -1,0 +1,50 @@
+# Alert: PCG Memory Utilization Critical
+# Detects when memory utilization is critically high, near OOM
+name: PCG Memory Utilization Critical
+
+# Description and details
+description: |
+  PCG memory utilization has exceeded 95%, which is critically close to OOM kill.
+
+  At this level:
+  - Emergency brake should be active (90%+)
+  - Aggressive request rejection in progress
+  - OOM kill imminent if memory continues to rise
+
+  Memory thresholds:
+  - 60%: Backpressure releases (hysteresis)
+  - 75%: Backpressure engages
+  - 90%: Emergency brake
+  - 95%: THIS ALERT - Critical
+  - 100%: OOM Kill by Kubernetes
+
+  IMMEDIATE ACTION REQUIRED:
+  - Check for memory leaks (heap trend)
+  - Consider pod restart if memory doesn't stabilize
+  - Review GOMEMLIMIT setting
+
+# Type of alert: BASELINE | STATIC
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT latest(pcg_instance_memory_utilization) * 100 FROM Metric WHERE namespace = 'pcg-backpressure-processor' FACET pod_name"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation (95% = near OOM)
+    threshold: 95
+    # Time in seconds; 120 - 3600 (2 minutes)
+    thresholdDuration: 120
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 259200
