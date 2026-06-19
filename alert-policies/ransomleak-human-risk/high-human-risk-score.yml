@@ -1,0 +1,41 @@
+# Name of the alert
+name: High team human-risk score
+
+# Description and details
+description: |+
+  Fires when any team's RansomLeak human-risk score crosses into the high-risk band.
+  Use it to route attention and training to the teams most likely to be the next click.
+  The score runs 0 to 100; higher is riskier. Tune the band to your own scoring baseline.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT latest(ransomleak.human_risk_score) FACET team"
+
+# Aggregate the query value(s) for comparison to terms.threshold
+valueFunction: SINGLE_VALUE
+
+# Critical and Warning thresholds
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 75
+    thresholdDuration: 1800
+    thresholdOccurrences: AT_LEAST_ONCE
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 60
+    thresholdDuration: 1800
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Advanced Signal Settings
+signal:
+  aggregationWindow: 1800
+  aggregationMethod: EVENT_TIMER
+  aggregationTimer: 1800
+  fillOption: LAST_VALUE
+
+# Duration after which a violation automatically closes (seconds)
+violationTimeLimitSeconds: 86400
