@@ -1,26 +1,7 @@
 {
   "name": "HAProxy (OpenTelemetry Collector)",
   "description": "Dashboard for monitoring HAProxy instances instrumented with the OpenTelemetry Collector haproxyreceiver.",
-  "variables": [
-    {
-      "name": "proxy_name",
-      "defaultValues": [
-        {
-          "value": {
-            "string": "*"
-          }
-        }
-      ],
-      "nrqlQuery": {
-        "accountIds": [],
-        "query": "FROM Metric SELECT uniques(haproxy.proxy_name) WHERE instrumentation.provider = 'opentelemetry' AND metricName LIKE 'haproxy.%' LIMIT MAX"
-      },
-      "title": "HAProxy Proxy",
-      "type": "NRQL",
-      "isMultiSelection": true,
-      "replacementStrategy": "STRING"
-    }
-  ],
+  "variables": [],
   "pages": [
     {
       "name": "HAProxy OTel Overview",
@@ -89,7 +70,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec', latest(haproxy.requests.rate) AS 'Requests/sec', latest(haproxy.connections.rate) AS 'Connections/sec', latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name IN ('FRONTEND', 'BACKEND') AND haproxy.proxy_name IN ({{proxy_name}})"
+                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec', latest(haproxy.requests.rate) AS 'Requests/sec', latest(haproxy.connections.rate) AS 'Connections/sec', latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name IN ('FRONTEND', 'BACKEND')"
               }
             ],
             "platformOptions": {
@@ -116,7 +97,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.requests.total) AS 'Total Requests', sum(haproxy.connections.errors) AS 'Total Errors' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND' AND haproxy.proxy_name IN ({{proxy_name}})"
+                "query": "FROM Metric SELECT sum(haproxy.requests.total) AS 'Total Requests', sum(haproxy.connections.errors) AS 'Total Errors' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND'"
               }
             ],
             "platformOptions": {
@@ -146,7 +127,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name TIMESERIES"
+                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -179,7 +160,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name TIMESERIES"
+                "query": "FROM Metric SELECT latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND' FACET haproxy.proxy_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -212,7 +193,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -245,7 +226,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.sessions.average) AS 'Avg Session Time (ms)' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'BACKEND' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name TIMESERIES"
+                "query": "FROM Metric SELECT latest(haproxy.sessions.average) AS 'Avg Session Time (ms)' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'BACKEND' FACET haproxy.proxy_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -293,7 +274,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -323,7 +304,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -365,7 +346,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(haproxy.connections.errors), 1 minute) AS 'Connection Errors/min', rate(sum(haproxy.responses.errors), 1 minute) AS 'Response Errors/min', rate(sum(haproxy.requests.errors), 1 minute) AS 'Request Errors/min' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) COMPARE WITH 1 hour ago"
+                "query": "FROM Metric SELECT rate(sum(haproxy.connections.errors), 1 minute) AS 'Connection Errors/min', rate(sum(haproxy.responses.errors), 1 minute) AS 'Response Errors/min', rate(sum(haproxy.requests.errors), 1 minute) AS 'Request Errors/min' WHERE instrumentation.provider = 'opentelemetry' COMPARE WITH 1 hour ago"
               }
             ],
             "platformOptions": {
@@ -401,7 +382,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.connections.errors) AS 'Connection Errors' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT sum(haproxy.connections.errors) AS 'Connection Errors' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -434,7 +415,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.responses.errors) AS 'Response Errors' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT sum(haproxy.responses.errors) AS 'Response Errors' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -482,7 +463,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code LIKE '2%') AS '2xx/sec', filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code NOT LIKE '2%') AS 'Non-2xx/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) TIMESERIES"
+                "query": "FROM Metric SELECT filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code LIKE '2%') AS '2xx/sec', filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code NOT LIKE '2%') AS 'Non-2xx/sec' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -515,7 +496,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.requests.total) WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET status_code TIMESERIES"
+                "query": "FROM Metric SELECT sum(haproxy.requests.total) WHERE instrumentation.provider = 'opentelemetry' FACET status_code TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -548,7 +529,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.requests.denied) AS 'Requests Denied', sum(haproxy.responses.denied) AS 'Responses Denied' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) TIMESERIES"
+                "query": "FROM Metric SELECT sum(haproxy.requests.denied) AS 'Requests Denied', sum(haproxy.responses.denied) AS 'Responses Denied' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -578,7 +559,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions', sum(haproxy.server_selected.total) AS 'Times Selected', sum(haproxy.connections.retries) AS 'Retries', sum(haproxy.requests.redispatched) AS 'Redispatches' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name"
+                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions', sum(haproxy.server_selected.total) AS 'Times Selected', sum(haproxy.connections.retries) AS 'Retries', sum(haproxy.requests.redispatched) AS 'Redispatches' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.proxy_name, haproxy.service_name"
               }
             ],
             "platformOptions": {
@@ -605,7 +586,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec', rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec', latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name"
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec', rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec', latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.proxy_name, haproxy.service_name"
               }
             ],
             "platformOptions": {
@@ -635,7 +616,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT sum(haproxy.connections.retries) AS 'Retries' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT sum(haproxy.connections.retries) AS 'Retries' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -668,7 +649,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(haproxy.requests.queued) AS 'Queued Requests' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.proxy_name IN ({{proxy_name}}) FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+                "query": "FROM Metric SELECT latest(haproxy.requests.queued) AS 'Queued Requests' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
               }
             ],
             "platformOptions": {
