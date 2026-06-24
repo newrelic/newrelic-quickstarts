@@ -1,0 +1,28 @@
+# DEMO clone for AFA2026 hackathon (EPIC NR-576657)
+name: High Redis memory usage
+
+description: |
+  Triggers when Redis memory utilization (redis.memory.used / redis.maxmemory) exceeds safe thresholds.
+  Critical at 90% — eviction or OOM imminent. Warning at 75% — capacity planning required.
+  Ensure the `redis.maxmemory` metric from the OTel Redis receiver is enabled for this alert to function.
+
+type: STATIC
+
+valueFunction: SINGLE_VALUE
+
+nrql:
+  query: "FROM Metric SELECT (max(redis.memory.used) / max(redis.maxmemory)) * 100"
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 90
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 75
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
