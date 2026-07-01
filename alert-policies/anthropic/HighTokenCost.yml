@@ -1,0 +1,25 @@
+name: High Token Cost
+
+description: |+
+  This alert triggers when the estimated cost of Anthropic LLM requests exceeds threshold
+  within a 1-hour window, helping you manage spend across Claude Haiku, Sonnet, and Opus models.
+
+type: STATIC
+nrql:
+  query: "SELECT (sum(llm.usage.input_tokens) * 0.15 / 1000000) + (sum(llm.usage.output_tokens) * 0.60 / 1000000) as 'Cost ($)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry'"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 100
+    thresholdDuration: 3600
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 50
+    thresholdDuration: 3600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
