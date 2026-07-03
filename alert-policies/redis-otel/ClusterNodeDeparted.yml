@@ -1,26 +1,29 @@
-name: Memory utilization is too high
+name: Redis Cluster node departed
 
 # Description and details
 description: |
-  This alert is triggered when the memory utilization exceeds 90%. Please ensure the `redis.maxmemory` metric from the Redis receiver is enabled for this alert to function correctly.
+  This alert is triggered when the number of known nodes in the cluster drops, indicating a node has departed or become unreachable. This reduces cluster capacity and fault tolerance — if the departed node was a master with no replica, data in its slots becomes unavailable.
 
 # Type of alert: BASELINE | STATIC
-type: STATIC
+type: BASELINE
 
 # Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
 valueFunction: SINGLE_VALUE
 
 # NRQL query
 nrql:
-  query: "FROM Metric SELECT (max(redis.memory.used)/max(redis.maxmemory))*100 FACET entity.name"
+  query: "FROM Metric SELECT latest(redis.cluster.known_nodes) WHERE metricName = 'redis.cluster.known_nodes' FACET entity.name"
+
+# Direction in which baseline is set (Default: LOWER_ONLY)
+baselineDirection: LOWER_ONLY
 
 # List of Critical and Warning thresholds for the condition
 terms:
   - priority: CRITICAL
     # Operator used to compare against the threshold.
     operator: ABOVE
-    # Value that triggers a violation
-    threshold: 90
+    # Value that triggers a violation (number of standard deviations)
+    threshold: 3
     # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
@@ -28,9 +31,9 @@ terms:
   - priority: WARNING
     # Operator used to compare against the threshold.
     operator: ABOVE
-    # Value that triggers a violation
-    threshold: 85
-    # Time in seconds; 120 - 3600
+    # Value that triggers a violation (number of standard deviations)
+    threshold: 2
+    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
     thresholdDuration: 300
     # How many data points must be in violation for the duration
     thresholdOccurrences: ALL
