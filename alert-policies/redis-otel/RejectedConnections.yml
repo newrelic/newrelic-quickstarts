@@ -1,0 +1,31 @@
+name: Rejected connections detected
+
+# Description and details
+description: |
+  This alert is triggered when Redis rejects client connections due to the maxclients limit being reached. Any rejected connection indicates clients are being turned away and requires immediate action.
+
+# Type of alert: BASELINE | STATIC
+type: STATIC
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT sum(redis.connections.rejected) FACET entity.name"
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation
+    threshold: 0
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 60
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400
