@@ -1,0 +1,1061 @@
+{
+  "name": "LLM and AI Observability",
+  "description": "Monitor Anthropic Claude API usage — cost, tokens, latency, and error rates across models.",
+  "pages": [
+    {
+      "name": "Service Health & Performance",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![Anthropic logo](https://raw.githubusercontent.com/newrelic/newrelic-quickstarts/main/quickstarts/anthropic/logo.png)\n\nMonitor your Anthropic Claude models (Haiku, Sonnet & Opus) in real time using **OpenLLMetry** — an OpenTelemetry-based instrumentation for LLMs.\n\n- Cost & token usage per model\n- Latency, TTFT & error rates\n- End-to-end request tracing"
+          }
+        },
+        {
+          "title": "AI Requests Total per AI Model",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Requests' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Service Health & Performance"
+          }
+        },
+        {
+          "title": "Open Problems",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Open Violations' FROM NrAiIncident WHERE event.state = 'open' SINCE 1 day ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 5
+              }
+            ]
+          }
+        },
+        {
+          "title": "# of Total Requests",
+          "layout": {
+            "column": 3,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Requests' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "AVG Request Duration",
+          "layout": {
+            "column": 5,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration.ms) as 'Avg Duration (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": []
+          }
+        },
+        {
+          "title": "P99 Request Duration",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms, 99) as 'P99 Duration (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Cost",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (sum(llm.usage.input_tokens) * 0.15 / 1000000) + (sum(llm.usage.output_tokens) * 0.60 / 1000000) as 'Cost ($)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Success Rate",
+          "layout": {
+            "column": 11,
+            "row": 5,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'OK') as 'Success %' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 101
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 102
+              }
+            ]
+          }
+        },
+        {
+          "title": "Time To First Token",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(llm.time_to_first_token) as 'Avg TTFT (ms)', percentile(llm.time_to_first_token, 50) as 'P50 (ms)', percentile(llm.time_to_first_token, 95) as 'P95 (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' AND llm.time_to_first_token IS NOT NULL SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": []
+          }
+        },
+        {
+          "title": "Throughput (tokens/second)",
+          "layout": {
+            "column": 4,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(llm.usage.total_tokens), 1 second) as 'Tokens/sec' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Service Health",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET cases(WHERE otel.status_code = 'ERROR' as 'Failed Requests', WHERE otel.status_code != 'ERROR' OR otel.status_code IS NULL as 'Successful Requests') SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Error Rate by Model",
+          "layout": {
+            "column": 10,
+            "row": 7,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') as 'Error %' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "AI Forecast — Token Consumption",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.total_tokens) as 'Tokens' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' TIMESERIES 1 hour SINCE 7 days ago PREDICT"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Service Consumption"
+          }
+        },
+        {
+          "title": "Prompt Token",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.input_tokens) as 'Input Tokens' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND llm.usage.input_tokens IS NOT NULL SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Completion Token",
+          "layout": {
+            "column": 3,
+            "row": 14,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.output_tokens) as 'Output Tokens' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND llm.usage.output_tokens IS NOT NULL SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Token Consumption",
+          "layout": {
+            "column": 5,
+            "row": 14,
+            "width": 2,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.total_tokens) as 'Total Tokens' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND llm.usage.total_tokens IS NOT NULL SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Token Consumption per AI Model",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.total_tokens) as 'Tokens' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "AI Requests Total per AI Model",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Requests' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Token Consumption Rate",
+          "layout": {
+            "column": 7,
+            "row": 16,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(llm.usage.total_tokens), 1 minute) as 'Tokens/min' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Service Cost & Forecast"
+          }
+        },
+        {
+          "title": "Forecast Token Consumption per AI Model",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.total_tokens) as 'Tokens' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES 1 hour SINCE 7 days ago PREDICT"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Cost by Model",
+          "layout": {
+            "column": 1,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (sum(llm.usage.input_tokens) * 0.15 / 1000000) + (sum(llm.usage.output_tokens) * 0.60 / 1000000) as 'Cost ($)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Cost Over Time",
+          "layout": {
+            "column": 5,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (sum(llm.usage.input_tokens) * 0.15 / 1000000) + (sum(llm.usage.output_tokens) * 0.60 / 1000000) as 'Cost ($)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests by Vendor",
+          "layout": {
+            "column": 9,
+            "row": 23,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Requests' FROM Span WHERE instrumentation.provider = 'opentelemetry' AND llm.vendor IS NOT NULL FACET llm.vendor SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 26,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Service Quality & Performance"
+          }
+        },
+        {
+          "title": "AI Latency per Service / Route",
+          "layout": {
+            "column": 1,
+            "row": 27,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration.ms) as 'Avg Latency (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET service.name TIMESERIES AUTO SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response Time per Model",
+          "layout": {
+            "column": 5,
+            "row": 27,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration.ms) as 'Avg Duration (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Throughput by Model",
+          "layout": {
+            "column": 9,
+            "row": 27,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(count(*), 1 minute) as 'Requests/min' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response Time Percentiles Over Time",
+          "layout": {
+            "column": 1,
+            "row": 30,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms, 50) as 'P50', percentile(duration.ms, 95) as 'P95', percentile(duration.ms, 99) as 'P99' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response Time Percentiles",
+          "layout": {
+            "column": 7,
+            "row": 30,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms, 50) as 'P50 (ms)', percentile(duration.ms, 95) as 'P95 (ms)', percentile(duration.ms, 99) as 'P99 (ms)' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Token Efficiency by Model",
+          "layout": {
+            "column": 1,
+            "row": 33,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) as 'Requests', sum(llm.usage.input_tokens) as 'Input', sum(llm.usage.output_tokens) as 'Output', average(llm.usage.total_tokens) as 'Avg Tokens', average(duration.ms) as 'Avg Duration', percentage(count(*), WHERE otel.status_code = 'OK') as 'Success %' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET llm.model SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Service by Token Usage",
+          "layout": {
+            "column": 9,
+            "row": 33,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(llm.usage.total_tokens) as 'Tokens' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' FACET service.name SINCE 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 36,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## End-To-End Tracing & Debugging"
+          }
+        },
+        {
+          "title": "Recent Requests with Status",
+          "layout": {
+            "column": 1,
+            "row": 37,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, llm.model, llm.vendor, duration.ms, llm.usage.input_tokens as 'Input', llm.usage.output_tokens as 'Output', llm.usage.total_tokens as 'Total', otel.status_code as 'Status' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago LIMIT 100"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 Most Expensive Requests",
+          "layout": {
+            "column": 1,
+            "row": 41,
+            "width": 6,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT llm.prompts.0.content as 'Prompt', llm.completions.0.content as 'Response', llm.model as 'Model', llm.usage.total_tokens as 'Tokens', if(llm.model LIKE 'claude-opus%', (llm.usage.input_tokens * 5.0 / 1000000) + (llm.usage.output_tokens * 25.0 / 1000000), if(llm.model LIKE 'claude-sonnet%', (llm.usage.input_tokens * 3.0 / 1000000) + (llm.usage.output_tokens * 15.0 / 1000000), (llm.usage.input_tokens * 1.0 / 1000000) + (llm.usage.output_tokens * 5.0 / 1000000))) as 'Cost ($)', traceId as 'Trace ID' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' AND llm.usage.total_tokens IS NOT NULL SINCE 1 hour ago LIMIT 10 ORDER BY llm.usage.total_tokens DESC"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top 10 Slowest Requests",
+          "layout": {
+            "column": 7,
+            "row": 41,
+            "width": 6,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT llm.prompts.0.content as 'Prompt', llm.completions.0.content as 'Response', llm.model as 'Model', duration.ms as 'Duration (ms)', llm.usage.total_tokens as 'Tokens', traceId as 'Trace ID' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' SINCE 1 hour ago LIMIT 10 ORDER BY duration.ms DESC"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

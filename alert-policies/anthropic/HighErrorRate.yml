@@ -1,0 +1,25 @@
+name: High Error Rate
+
+description: |+
+  This alert triggers when the success rate of Anthropic LLM requests drops below threshold,
+  indicating elevated error rates across your AI-powered services.
+
+type: STATIC
+nrql:
+  query: "SELECT percentage(count(*), WHERE otel.status_code = 'OK') as 'Success %' FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry'"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: BELOW
+    threshold: 95
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: BELOW
+    threshold: 98
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
