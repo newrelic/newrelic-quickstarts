@@ -7,7 +7,7 @@ import { generatePrUrl } from './lib/github-api-helpers';
 import { setDashboardsRequiredDataSources } from './set-dashboards-required-datasources';
 import { setAlertPoliciesRequiredDataSources } from './set-alert-policy-required-datasources';
 
-type Environment = 'local' | 'staging' | 'us' | 'eu' | 'jp';
+type Environment = 'local' | 'staging' | 'us' | 'eu';
 type Context = {
   ENVIRONMENT: Environment;
   GH_TOKEN: string;
@@ -22,7 +22,6 @@ const API_ENDPOINTS: Record<Environment, string> = {
   staging: 'https://staging-api.newrelic.com/graphql',
   us: 'https://api.newrelic.com/graphql',
   eu: 'https://api.eu.newrelic.com/graphql',
-  jp: 'https://api.jp.newrelic.com/graphql',
 };
 
 const divider = () => console.log('―――――――――――――――――――――――――――――');
@@ -40,7 +39,6 @@ const bootstrap = async (): Promise<Context> => {
       { name: 'Staging', value: 'staging' },
       { name: 'US Production', value: 'us' },
       { name: 'EU Production', value: 'eu' },
-      { name: 'JP Production', value: 'jp' },
     ],
   });
 
