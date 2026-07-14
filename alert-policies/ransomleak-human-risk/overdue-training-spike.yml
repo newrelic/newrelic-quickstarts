@@ -1,0 +1,42 @@
+# Name of the alert
+name: Overdue security training spike
+
+# Description and details
+description: |+
+  Fires when the number of employees with overdue RansomLeak training rises above the
+  acceptable coverage threshold. A growing overdue population means risky users are going
+  untrained and that audit evidence on the awareness-training control (SOC 2 CC1.4,
+  ISO 27001 A.7.2.2) is slipping. Tune the thresholds to your headcount before production.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "FROM RansomLeakTraining SELECT uniqueCount(userKey) WHERE status = 'overdue'"
+
+# Aggregate the query value(s) for comparison to terms.threshold
+valueFunction: SINGLE_VALUE
+
+# Critical and Warning thresholds
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 25
+    thresholdDuration: 3600
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 10
+    thresholdDuration: 3600
+    thresholdOccurrences: ALL
+
+# Advanced Signal Settings
+signal:
+  aggregationWindow: 3600
+  aggregationMethod: EVENT_FLOW
+  aggregationDelay: 120
+  fillOption: NONE
+
+# Duration after which a violation automatically closes (seconds)
+violationTimeLimitSeconds: 86400
