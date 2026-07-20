@@ -1,0 +1,47 @@
+# Alert: PCG Flush Channel Drops
+# CRITICAL: Detects permanent data loss due to flush queue overflow
+name: PCG Flush Channel Drops
+
+# Description and details
+description: |
+  CRITICAL DATA LOSS: PCG flush channel drops detected. Records dropped from the
+  flush channel are permanently lost and cannot be recovered.
+
+  This is a ZERO-TOLERANCE condition requiring immediate action.
+
+  Root cause investigation:
+  - Was S3 completely unavailable?
+  - Did backpressure fail to engage in time?
+  - Were queue depths at maximum capacity?
+
+  This typically occurs when:
+  1. S3 goes down completely
+  2. S3Write channel fills to capacity (20)
+  3. Arrow conversion continues producing files
+  4. Files cannot be queued and are dropped
+
+# Type of alert: BASELINE | STATIC
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT rate(sum(otelcol_icebergexporter_flush_channel_drops), 1 minute) FROM Metric WHERE namespace = 'pcg-backpressure-processor'"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: WARNING
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation - ANY drops are critical
+    threshold: 0
+    # Time in seconds; 120 - 3600
+    thresholdDuration: 60
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 259200
