@@ -1,0 +1,28 @@
+# DEMO clone for AFA2026 hackathon (EPIC NR-576657)
+name: Redis connection saturation
+
+description: |
+  Triggers when active client connections approach Redis's `maxclients` limit.
+  At 95% the server is close to refusing new connections (ERR max number of clients reached).
+  Warning at 80% gives you time to scale before clients are rejected.
+
+type: STATIC
+
+valueFunction: SINGLE_VALUE
+
+nrql:
+  query: "FROM Metric SELECT (max(redis.clients.connected) / max(redis.maxclients)) * 100"
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 95
+    thresholdDuration: 180
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 80
+    thresholdDuration: 180
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

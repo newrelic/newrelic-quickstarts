@@ -1,0 +1,29 @@
+# DEMO clone for AFA2026 hackathon (EPIC NR-576657)
+name: Redis keyspace miss ratio is too high
+
+description: |
+  Triggers when the cache miss ratio (misses / (hits + misses)) climbs.
+  A sustained high miss ratio indicates poor cache effectiveness, suggesting the working set
+  has outgrown memory, TTLs are too aggressive, or query patterns have shifted.
+  Warning at 50% — cache efficiency is degrading. Critical at 80% — cache is barely helping.
+
+type: STATIC
+
+valueFunction: SINGLE_VALUE
+
+nrql:
+  query: "FROM Metric SELECT (sum(redis.keyspace.misses) / (sum(redis.keyspace.hits) + sum(redis.keyspace.misses))) * 100"
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 80
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 50
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
