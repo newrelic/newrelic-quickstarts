@@ -1,0 +1,35 @@
+name: HAProxy backend response errors are abnormally high
+
+# Description and details
+description: |
+  This alert is triggered when HAProxy backend response errors deviate significantly from normal levels. Response errors indicate that backend servers are returning invalid or malformed responses — this typically signals application-level issues in the services behind HAProxy.
+
+# Type of alert: BASELINE | STATIC
+type: BASELINE
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT sum(haproxy.responses.errors) WHERE instrumentation.provider = 'opentelemetry'"
+
+# Direction of the baseline comparison (UPPER_ONLY | LOWER_ONLY | UPPER_AND_LOWER)
+baselineDirection: UPPER_ONLY
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 4
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 3
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400

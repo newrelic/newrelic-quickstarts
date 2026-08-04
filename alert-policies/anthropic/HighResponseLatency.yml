@@ -1,0 +1,25 @@
+name: High Response Latency
+
+description: |+
+  This alert triggers when the time to first token (TTFT) for Anthropic LLM requests
+  exceeds acceptable thresholds, indicating performance degradation in your AI services.
+
+type: STATIC
+nrql:
+  query: "SELECT average(llm.time_to_first_token) FROM Span WHERE llm.model IS NOT NULL AND instrumentation.provider = 'opentelemetry' AND llm.time_to_first_token IS NOT NULL"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 1000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 500
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400

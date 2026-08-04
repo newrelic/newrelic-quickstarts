@@ -1,0 +1,52 @@
+name: Anomaly in connected clients
+
+# Description and details
+description: |
+  This alert is triggered when the number of connected clients deviates significantly from the baseline, either up or down. A sudden increase may indicate a thundering herd or connection leak. A sudden decrease may indicate upstream failures or network issues.
+
+# Type of alert: BASELINE | STATIC
+type: BASELINE
+
+# Function used to aggregate the NRQL query value(s) for comparison to the terms.threshold (Default: SINGLE_VALUE)
+valueFunction: SINGLE_VALUE
+
+# NRQL query
+nrql:
+  query: "FROM Metric SELECT average(redis.clients.connected) FACET entity.name"
+
+# Direction in which baseline is set (Default: LOWER_ONLY)
+baselineDirection: UPPER_AND_LOWER
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    # Operator used to compare against the threshold.
+    operator: ABOVE
+    # Value that triggers a violation (standard deviations from baseline)
+    threshold: 5
+    # Time in seconds; 120 - 3600, must be a multiple of 60 for Baseline conditions
+    thresholdDuration: 300
+    # How many data points must be in violation for the duration
+    thresholdOccurrences: AT_LEAST_ONCE
+
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 3
+    thresholdDuration: 300
+    thresholdOccurrences: AT_LEAST_ONCE
+
+# Loss of Signal Settings
+expiration:
+  closeViolationsOnExpiration: false
+  openViolationOnExpiration: false
+  expirationDuration:
+
+# Advanced Signal Settings
+signal:
+  evaluationOffset: 3
+  fillOption: NONE
+  fillValue:
+
+# Duration after which a violation automatically closes
+# Time in seconds; 300 - 2592000 (Default: 86400 [1 day])
+violationTimeLimitSeconds: 86400

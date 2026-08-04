@@ -1,0 +1,666 @@
+{
+  "name": "HAProxy (OpenTelemetry Collector)",
+  "description": "Dashboard for monitoring HAProxy instances instrumented with the OpenTelemetry Collector haproxyreceiver.",
+  "variables": [],
+  "pages": [
+    {
+      "name": "HAProxy OTel Overview",
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "![HAProxy Logo](https://upload.wikimedia.org/wikipedia/commons/a/ab/Haproxy-logo.png)\n\n### OpenTelemetry Dashboard"
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 9,
+            "height": 4
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Overview\nThis dashboard provides visibility into your HAProxy load balancers instrumented with the OpenTelemetry Collector **haproxyreceiver**.\n\nMonitor frontend traffic, backend server health, error rates, and network throughput across all your HAProxy instances.\n\n**Filter:** Use the **HAProxy Proxy** variable above to focus on specific frontends or backend groups."
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 1
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Traffic | **Watch for:** Sessions/sec dropping while connections stay high = possible backend saturation"
+          }
+        },
+        {
+          "title": "Key Metrics",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec', latest(haproxy.requests.rate) AS 'Requests/sec', latest(haproxy.connections.rate) AS 'Connections/sec', latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name IN ('FRONTEND', 'BACKEND')"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Total Requests",
+          "layout": {
+            "column": 4,
+            "row": 6,
+            "width": 2,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.requests.total) AS 'Total Requests', sum(haproxy.connections.errors) AS 'Total Errors' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND'"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Sessions per second",
+          "layout": {
+            "column": 6,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.sessions.rate) AS 'Sessions/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests per second (Frontend)",
+          "layout": {
+            "column": 10,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'FRONTEND' FACET haproxy.proxy_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Active Sessions",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average Session Time (ms)",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.sessions.average) AS 'Avg Session Time (ms)' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name = 'BACKEND' FACET haproxy.proxy_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 12,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Network I/O\nBytes flowing in and out of HAProxy frontends and backends. Helps identify bandwidth bottlenecks and traffic asymmetry.\n\n**Watch for:** Bytes In/Out ratio significantly skewed = possible large response payloads or request body uploads."
+          }
+        },
+        {
+          "title": "Bytes In per second",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Bytes Out per second",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# Errors\nConnection, response, and request errors across your HAProxy infrastructure. Healthy systems should show zeros here.\n\n**Watch for:** Connection errors rising = backend servers becoming unreachable or overloaded. Response errors = backends returning malformed data."
+          }
+        },
+        {
+          "title": "Error Summary",
+          "layout": {
+            "column": 1,
+            "row": 19,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(haproxy.connections.errors), 1 minute) AS 'Connection Errors/min', rate(sum(haproxy.responses.errors), 1 minute) AS 'Response Errors/min', rate(sum(haproxy.requests.errors), 1 minute) AS 'Request Errors/min' WHERE instrumentation.provider = 'opentelemetry' COMPARE WITH 1 hour ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "title": "Connection Errors",
+          "layout": {
+            "column": 4,
+            "row": 19,
+            "width": 5,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.connections.errors) AS 'Connection Errors' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Response Errors",
+          "layout": {
+            "column": 9,
+            "row": 19,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.responses.errors) AS 'Response Errors' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 22,
+            "width": 12,
+            "height": 2
+          },
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# HTTP Responses and Backend Health\nIndividual backend server performance and HTTP response code distribution. Retries and redispatches indicate HAProxy is rerouting failed requests to healthy servers.\n\n**Watch for:** High retries/redispatches = unstable backends. Status codes shifting from 2xx to 4xx/5xx = application-level issues behind HAProxy."
+          }
+        },
+        {
+          "title": "HTTP 2xx vs Non-2xx Responses/sec",
+          "layout": {
+            "column": 1,
+            "row": 24,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code LIKE '2%') AS '2xx/sec', filter(rate(sum(haproxy.requests.total), 1 second), WHERE status_code NOT LIKE '2%') AS 'Non-2xx/sec' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "HTTP Responses by Status Code",
+          "layout": {
+            "column": 7,
+            "row": 24,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.requests.total) WHERE instrumentation.provider = 'opentelemetry' FACET status_code TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests Denied",
+          "layout": {
+            "column": 1,
+            "row": 27,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.requests.denied) AS 'Requests Denied', sum(haproxy.responses.denied) AS 'Responses Denied' WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Backend Server Health",
+          "layout": {
+            "column": 7,
+            "row": 27,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.sessions.count) AS 'Active Sessions', sum(haproxy.server_selected.total) AS 'Times Selected', sum(haproxy.connections.retries) AS 'Retries', sum(haproxy.requests.redispatched) AS 'Redispatches' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.proxy_name, haproxy.service_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Network I/O by Backend Server",
+          "layout": {
+            "column": 1,
+            "row": 30,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(haproxy.bytes.input), 1 second) AS 'Bytes In/sec', rate(sum(haproxy.bytes.output), 1 second) AS 'Bytes Out/sec', latest(haproxy.requests.rate) AS 'Requests/sec' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.proxy_name, haproxy.service_name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Connection Retries per Server",
+          "layout": {
+            "column": 7,
+            "row": 30,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(haproxy.connections.retries) AS 'Retries' WHERE instrumentation.provider = 'opentelemetry' AND haproxy.service_name NOT IN ('FRONTEND', 'BACKEND') FACET haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Requests Queued",
+          "layout": {
+            "column": 1,
+            "row": 33,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(haproxy.requests.queued) AS 'Queued Requests' WHERE instrumentation.provider = 'opentelemetry' FACET haproxy.proxy_name, haproxy.service_name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
