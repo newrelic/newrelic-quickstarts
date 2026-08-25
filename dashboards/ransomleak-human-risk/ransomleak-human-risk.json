@@ -1,0 +1,156 @@
+{
+  "name": "RansomLeak Human Risk",
+  "description": "Human-risk telemetry from RansomLeak: training completion, overdue coverage, per-team human-risk score, and phishing and smishing simulation outcomes.",
+  "pages": [
+    {
+      "name": "Human Risk Overview",
+      "description": "Training completion, overdue coverage, and per-team human-risk score.",
+      "widgets": [
+        {
+          "title": "",
+          "layout": { "column": 1, "row": 1, "width": 12, "height": 2 },
+          "visualization": { "id": "viz.markdown" },
+          "rawConfiguration": {
+            "text": "## RansomLeak Human Risk Overview\n\nTraining completion, overdue coverage, and per-team human risk, next to the New Relic signals that triggered each assignment. [Set up the integration](https://ransomleak.com/integrations/)."
+          }
+        },
+        {
+          "title": "Training completion rate (30d)",
+          "layout": { "column": 1, "row": 3, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE status = 'completed') AS 'Completion %' FROM RansomLeakTraining SINCE 30 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Employees with overdue training",
+          "layout": { "column": 5, "row": 3, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT uniqueCount(userKey) AS 'Users overdue' FROM RansomLeakTraining WHERE status = 'overdue' SINCE 7 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Auto-assigned by New Relic (7d)",
+          "layout": { "column": 9, "row": 3, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT count(*) AS 'Modules auto-assigned' FROM RansomLeakTraining WHERE triggerSource = 'newrelic-workflow' SINCE 7 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Human-risk score by team",
+          "layout": { "column": 1, "row": 6, "width": 8, "height": 3 },
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT latest(ransomleak.human_risk_score) FROM Metric FACET team TIMESERIES SINCE 30 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Assignments by category (30d)",
+          "layout": { "column": 9, "row": 6, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.pie" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT count(*) FROM RansomLeakTraining WHERE status = 'assigned' FACET category SINCE 30 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Completion rate by team (30d)",
+          "layout": { "column": 1, "row": 9, "width": 6, "height": 3 },
+          "visualization": { "id": "viz.bar" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE status = 'completed') AS 'Completion %' FROM RansomLeakTraining FACET team SINCE 30 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Employees with overdue training",
+          "layout": { "column": 7, "row": 9, "width": 6, "height": 3 },
+          "visualization": { "id": "viz.table" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT latest(userEmail) AS 'User', latest(team) AS 'Team', uniqueCount(moduleSlug) AS 'Overdue modules' FROM RansomLeakTraining WHERE status = 'overdue' FACET userKey SINCE 30 days ago LIMIT 100" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phishing & Smishing",
+      "description": "Phishing and smishing simulation outcomes by channel, team, and time.",
+      "widgets": [
+        {
+          "title": "Email phishing click rate (90d)",
+          "layout": { "column": 1, "row": 1, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE outcome = 'clicked') AS 'Click %' FROM RansomLeakPhishing WHERE channel = 'email' SINCE 90 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Email phishing report rate (90d)",
+          "layout": { "column": 5, "row": 1, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE outcome = 'reported') AS 'Report %' FROM RansomLeakPhishing WHERE channel = 'email' SINCE 90 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Smishing fail rate (90d)",
+          "layout": { "column": 9, "row": 1, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE outcome = 'clicked' OR outcome = 'submitted') AS 'Smishing fail %' FROM RansomLeakPhishing WHERE channel = 'sms' SINCE 90 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Click vs report rate over time (email)",
+          "layout": { "column": 1, "row": 4, "width": 8, "height": 3 },
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE outcome = 'clicked') AS 'Click %', percentage(count(*), WHERE outcome = 'reported') AS 'Report %' FROM RansomLeakPhishing WHERE channel = 'email' TIMESERIES SINCE 90 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Outcome breakdown (90d)",
+          "layout": { "column": 9, "row": 4, "width": 4, "height": 3 },
+          "visualization": { "id": "viz.pie" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT count(*) FROM RansomLeakPhishing FACET outcome SINCE 90 days ago" }
+            ]
+          }
+        },
+        {
+          "title": "Email click rate by team (90d)",
+          "layout": { "column": 1, "row": 7, "width": 12, "height": 3 },
+          "visualization": { "id": "viz.bar" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              { "accountId": 0, "query": "SELECT percentage(count(*), WHERE outcome = 'clicked') AS 'Click %' FROM RansomLeakPhishing WHERE channel = 'email' FACET team SINCE 90 days ago" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
