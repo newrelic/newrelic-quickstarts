@@ -1,0 +1,440 @@
+{
+  "name": "Linkerd (OpenTelemetry Collector)",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "TCP Connections",
+          "layout": { "column": 1, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(tcp_open_connections), 1 second) FROM Metric WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Requests Served by Proxies",
+          "layout": { "column": 5, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.area" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(request_total), 1 second) AS 'Requests/sec' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_ns IS NOT NULL AND linkerd_control_plane_component IS NULL TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        },
+        {
+          "title": "Success Rate",
+          "layout": { "column": 9, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT 100.0 * filter(sum(inbound_http_statuses_total), WHERE status NOT LIKE '5%') / sum(inbound_http_statuses_total) AS 'Success %' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [
+              { "alertSeverity": "CRITICAL", "value": 95 },
+              { "alertSeverity": "WARNING", "value": 99 }
+            ]
+          }
+        },
+        {
+          "title": "Inbound Request Rate",
+          "layout": { "column": 1, "row": 4, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(inbound_http_requests_total), 1 minute) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Outbound Request Rate",
+          "layout": { "column": 7, "row": 4, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(outbound_http_route_request_statuses_total), 1 minute) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET parent_name, parent_namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Success Rate by Deployment",
+          "layout": { "column": 1, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT 100.0 * filter(sum(inbound_http_statuses_total), WHERE status NOT LIKE '5%') / sum(inbound_http_statuses_total) AS 'Success %' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true, "max": 100 }
+          }
+        },
+        {
+          "title": "Error Rate by Deployment",
+          "layout": { "column": 7, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT 100.0 * filter(sum(inbound_http_statuses_total), WHERE status LIKE '5%') / sum(inbound_http_statuses_total) AS 'Error %' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Request Latency (p50/p95/p99)",
+          "layout": { "column": 1, "row": 10, "width": 12, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(inbound_http_request_duration_seconds, 50) * 1000 AS 'p50 ms', percentile(inbound_http_request_duration_seconds, 95) * 1000 AS 'p95 ms', percentile(inbound_http_request_duration_seconds, 99) * 1000 AS 'p99 ms' FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Latency p99 by Deployment",
+          "layout": { "column": 1, "row": 13, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.bar" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(inbound_http_request_duration_seconds, 99) * 1000 AS 'p99 ms' FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name LIMIT 10"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        },
+        {
+          "title": "Outbound Latency p99",
+          "layout": { "column": 7, "row": 13, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(outbound_http_route_request_duration_seconds, 99) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET parent_name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "HTTP Status Codes",
+          "layout": { "column": 1, "row": 16, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.area" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(inbound_http_statuses_total), 1 minute) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET status TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Bytes Transferred",
+          "layout": { "column": 7, "row": 16, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.area" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(tcp_read_bytes_total) + sum(tcp_write_bytes_total), 1 second) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Active TCP Connections",
+          "layout": { "column": 1, "row": 19, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(tcp_open_connections) FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "HTTP Traffic Authorization",
+          "layout": { "column": 7, "row": 19, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(inbound_http_authz_allow_total) FROM Metric WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Control Plane",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Control Plane Live Endpoints",
+          "layout": { "column": 1, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(control_destination_balancer_endpoints) AS 'destination', latest(control_identity_balancer_endpoints) AS 'identity', latest(control_policy_balancer_endpoints) AS 'policy' FROM Metric WHERE instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [{ "alertSeverity": "CRITICAL", "value": 1 }]
+          }
+        },
+        {
+          "title": "mTLS Certificate Expiry",
+          "layout": { "column": 5, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.billboard" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT min(control_identity_cert_expiration_timestamp_seconds) - (latest(timestamp) / 1000) AS 'Seconds until expiry' FROM Metric WHERE instrumentation.provider = 'opentelemetry'"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "thresholds": [
+              { "alertSeverity": "CRITICAL", "value": 3600 },
+              { "alertSeverity": "WARNING", "value": 86400 }
+            ]
+          }
+        },
+        {
+          "title": "Cert Refresh Rate",
+          "layout": { "column": 9, "row": 1, "width": 4, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(control_identity_cert_refreshes_total), 1 minute) FROM Metric WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Control Plane Request Rate",
+          "layout": { "column": 1, "row": 4, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(control_request_total), 1 minute) AS 'Req/min' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_ns IS NOT NULL FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Control Plane Queue Depth",
+          "layout": { "column": 7, "row": 4, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(control_destination_balancer_queue_length) AS 'destination', latest(control_identity_balancer_queue_length) AS 'identity', latest(control_policy_balancer_queue_length) AS 'policy', latest(opentelemetry_balancer_queue_length) AS 'otel-exporter' FROM Metric WHERE instrumentation.provider = 'opentelemetry' TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Authorization Policy",
+          "layout": { "column": 1, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.area" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(inbound_http_authz_allow_total), 1 minute) AS 'http allow', rate(sum(inbound_tcp_authz_allow_total), 1 minute) AS 'tcp allow' FROM Metric WHERE instrumentation.provider = 'opentelemetry' FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Process CPU (cores)",
+          "layout": { "column": 7, "row": 7, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.area" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(process_cpu_seconds_total), 1 second) AS 'CPU (cores)' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_ns IS NOT NULL FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        },
+        {
+          "title": "Proxy Memory Usage",
+          "layout": { "column": 1, "row": 10, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(process_resident_memory_bytes) / 1e6 AS 'RSS (MB)', latest(process_virtual_memory_bytes) / 1e6 AS 'VSZ (MB)' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_ns IS NOT NULL AND linkerd_control_plane_component IS NULL FACET k8s.deployment.name TIMESERIES"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Operations by Service",
+          "layout": { "column": 7, "row": 10, "width": 6, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.bar" },
+          "rawConfiguration": {
+            "legend": { "enabled": false },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(request_total), 1 minute) AS 'Req/min' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND direction = 'outbound' AND linkerd_control_plane_component IS NULL AND linkerd_control_plane_ns IS NOT NULL AND dst_service IS NOT NULL FACET concat(k8s.deployment.name, ' → ', dst_service, ' (', dst_namespace, ')') AS 'Service Call' SINCE 30 minutes ago LIMIT 20"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        },
+        {
+          "title": "Route-level Request Rate",
+          "layout": { "column": 1, "row": 13, "width": 12, "height": 3 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.line" },
+          "rawConfiguration": {
+            "legend": { "enabled": true },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT rate(sum(outbound_http_route_request_statuses_total), 1 minute) AS 'Req/min' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL AND route_name IS NOT NULL FACET k8s.deployment.name AS 'Service', route_name AS 'Route' TIMESERIES LIMIT 10"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false },
+            "yAxisLeft": { "zero": true }
+          }
+        },
+        {
+          "title": "Meshed Pods",
+          "layout": { "column": 1, "row": 16, "width": 12, "height": 4 },
+          "linkedEntityGuids": null,
+          "visualization": { "id": "viz.table" },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT uniqueCount(k8s.pod.name) AS 'Pods' FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND metricName = 'up' FACET k8s.namespace.name AS 'Namespace', k8s.deployment.name AS 'Deployment' LIMIT 50"
+              }
+            ],
+            "platformOptions": { "ignoreTimeRange": false }
+          }
+        }
+      ]
+    }
+  ]
+}
