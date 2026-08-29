@@ -1,0 +1,42 @@
+# Name of the alert
+name: Phishing click-rate anomaly
+
+# Description and details
+description: |+
+  Baseline alert that fires when the email phishing-simulation click rate spikes above its
+  normal pattern. A sudden jump usually means a new lure is working and a wave of users
+  needs immediate reinforcement training. Pairs well with a Workflow that auto-assigns the
+  phishing-recognition module to the affected recipients.
+
+# Type of alert
+type: BASELINE
+
+# NRQL query
+nrql:
+  query: "FROM RansomLeakPhishing SELECT percentage(count(*), WHERE outcome = 'clicked') WHERE channel = 'email'"
+
+# Direction in which the baseline is evaluated
+baselineDirection: UPPER_ONLY
+
+# Critical and Warning thresholds (number of standard deviations from baseline)
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 4
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 2
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+# Advanced Signal Settings
+signal:
+  aggregationWindow: 3600
+  aggregationMethod: EVENT_FLOW
+  aggregationDelay: 120
+  fillOption: NONE
+
+# Duration after which a violation automatically closes (seconds)
+violationTimeLimitSeconds: 86400
