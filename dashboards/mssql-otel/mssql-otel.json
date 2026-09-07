@@ -38,7 +38,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.user.connection.count) AS 'Connections' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.user.connection.count' TIMESERIES"
+                "query": "SELECT latest(sqlserver.user.connection.count) AS 'Connections' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.user.connection.count' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -59,7 +59,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.page.buffer_cache.hit_ratio) AS 'Hit %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.page.buffer_cache.hit_ratio'"
+                "query": "SELECT latest(sqlserver.page.buffer_cache.hit_ratio) AS 'Hit %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.page.buffer_cache.hit_ratio' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -90,7 +90,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.batch.request.rate) AS 'Batch Requests/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.request.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.batch.request.rate) AS 'Batch Requests/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.request.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -111,7 +111,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.process.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.process.count' FACET `process.status` TIMESERIES"
+                "query": "SELECT latest(sqlserver.process.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.process.count' FACET service.instance.id, `process.status` TIMESERIES"
               }
             ]
           }
@@ -132,7 +132,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.deadlock.rate) AS 'Deadlocks/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.deadlock.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.deadlock.rate) AS 'Deadlocks/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.deadlock.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -153,7 +153,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.processes.blocked) AS 'Blocked' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.processes.blocked' TIMESERIES"
+                "query": "SELECT latest(sqlserver.processes.blocked) AS 'Blocked' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.processes.blocked' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -174,7 +174,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.page.life_expectancy) AS 'PLE (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.page.life_expectancy' TIMESERIES"
+                "query": "SELECT latest(sqlserver.page.life_expectancy) AS 'PLE (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.page.life_expectancy' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -195,7 +195,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.cpu.count) AS 'CPUs', latest(sqlserver.computer.uptime) / 86400 AS 'Uptime (days)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.cpu.count', 'sqlserver.computer.uptime')"
+                "query": "SELECT latest(sqlserver.cpu.count) AS 'CPUs', latest(sqlserver.computer.uptime) / 86400 AS 'Uptime (days)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.cpu.count', 'sqlserver.computer.uptime') FACET service.instance.id"
               }
             ]
           }
@@ -241,7 +241,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(db.query.full_text) AS 'Query', latest(sqlserver.query_hash) AS 'query_hash', latest(db.namespace) AS 'Database', sum(sqlserver.execution_count) AS 'Executions', sum(sqlserver.total_elapsed_time)/sum(sqlserver.execution_count) AS 'Avg Duration (s)', sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)', sum(sqlserver.total_logical_reads) AS 'Logical Reads' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET sqlserver.query_hash LIMIT MAX"
+                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(service.instance.id) AS 'Instance', latest(db.query.full_text) AS 'Query', latest(sqlserver.query_hash) AS 'query_hash', latest(db.namespace) AS 'Database', sum(sqlserver.execution_count) AS 'Executions', sum(sqlserver.total_elapsed_time)/sum(sqlserver.execution_count) AS 'Avg Duration (s)', sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)', sum(sqlserver.total_logical_reads) AS 'Logical Reads' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET sqlserver.query_hash LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -265,7 +265,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(sqlserver.execution_count) FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET db.namespace TIMESERIES LIMIT MAX"
+                "query": "SELECT sum(sqlserver.execution_count) FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET service.instance.id, db.namespace TIMESERIES LIMIT MAX"
               }
             ]
           }
@@ -286,7 +286,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)' FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET db.namespace TIMESERIES LIMIT MAX"
+                "query": "SELECT sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)' FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET service.instance.id, db.namespace TIMESERIES LIMIT MAX"
               }
             ]
           }
@@ -332,7 +332,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(sqlserver.query_start) AS 'Start Time', latest(sqlserver.query_hash) AS 'query_hash',  latest(db.namespace) AS 'Database', latest(sqlserver.total_elapsed_time) AS 'Duration (s)', latest(db.query.full_text) AS 'Query', latest(user.name) AS 'User', latest(client.address) AS 'Host', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.blocking_session_id) AS 'Blocked By'  WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET sqlserver.query_start, sqlserver.session_id LIMIT MAX"
+                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(service.instance.id) AS 'Instance', latest(sqlserver.query_start) AS 'Start Time', latest(sqlserver.query_hash) AS 'query_hash',  latest(db.namespace) AS 'Database', latest(sqlserver.total_elapsed_time) AS 'Duration (s)', latest(db.query.full_text) AS 'Query', latest(user.name) AS 'User', latest(client.address) AS 'Host', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.blocking_session_id) AS 'Blocked By'  WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET sqlserver.query_start, sqlserver.session_id LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -356,7 +356,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(sqlserver.wait_time) AS 'Wait (s)' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_type != '' FACET sqlserver.wait_type TIMESERIES AUTO LIMIT MAX"
+                "query": "FROM Log SELECT latest(sqlserver.wait_time) AS 'Wait (s)' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type TIMESERIES AUTO LIMIT MAX"
               }
             ]
           }
@@ -377,7 +377,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET sqlserver.session_status TIMESERIES"
+                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET service.instance.id, sqlserver.session_status TIMESERIES"
               }
             ]
           }
@@ -398,7 +398,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_resource) AS 'Wait Resource', latest(user.name) AS 'User', latest(sqlserver.blocking_session_id) AS 'Blocked By', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.open_transaction_count) AS 'Open Txns', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_start) AS 'Start Time', latest(db.query.full_text) AS 'Query' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_time > 0 FACET sqlserver.session_id, sqlserver.blocking_session_id LIMIT MAX"
+                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(service.instance.id) AS 'Instance', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_resource) AS 'Wait Resource', latest(user.name) AS 'User', latest(sqlserver.blocking_session_id) AS 'Blocked By', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.open_transaction_count) AS 'Open Txns', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_start) AS 'Start Time', latest(db.query.full_text) AS 'Query' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_time > 0 FACET sqlserver.session_id, sqlserver.blocking_session_id LIMIT MAX"
               }
             ]
           }
@@ -419,7 +419,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.session_status = 'running' FACET db.namespace LIMIT MAX"
+                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.session_status = 'running' FACET service.instance.id, db.namespace LIMIT MAX"
               }
             ]
           }
@@ -440,7 +440,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) AS 'Blocked Sessions' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND numeric(sqlserver.blocking_session_id) > 0 TIMESERIES"
+                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) AS 'Blocked Sessions' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND numeric(sqlserver.blocking_session_id) > 0 FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -486,7 +486,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_plan_hash) AS 'plan_hash', latest(sqlserver.query_plan) AS 'Execution Plan XML' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan != '' FACET  sqlserver.query_plan_hash LIMIT 20"
+                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(service.instance.id) AS 'Instance', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_plan_hash) AS 'plan_hash', latest(sqlserver.query_plan) AS 'Execution Plan XML' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan != '' FACET  sqlserver.query_plan_hash LIMIT 20"
               }
             ],
             "platformOptions": {
@@ -510,7 +510,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.query_plan_hash) AS 'Plan Count', latest(db.query.full_text) AS 'Query', latest(db.namespace) AS 'Database' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan IS NOT NULL FACET sqlserver.query_hash LIMIT 20"
+                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(service.instance.id) AS 'Instance', uniqueCount(sqlserver.query_plan_hash) AS 'Plan Count', latest(db.query.full_text) AS 'Query', latest(db.namespace) AS 'Database' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan IS NOT NULL FACET sqlserver.query_hash LIMIT 20"
               }
             ]
           }
@@ -553,7 +553,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.batch.sql_compilation.rate) AS 'Compilations/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.sql_compilation.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.batch.sql_compilation.rate) AS 'Compilations/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.sql_compilation.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -574,7 +574,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.batch.sql_recompilation.rate) AS 'Recompilations/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.sql_recompilation.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.batch.sql_recompilation.rate) AS 'Recompilations/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.sql_recompilation.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -595,7 +595,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.recompilation.ratio) AS 'Recompile %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.recompilation.ratio'"
+                "query": "SELECT latest(sqlserver.recompilation.ratio) AS 'Recompile %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.recompilation.ratio' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -622,7 +622,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.batch.compilation.utilization) AS 'Compilations/Batch' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.compilation.utilization'"
+                "query": "SELECT latest(sqlserver.batch.compilation.utilization) AS 'Compilations/Batch' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.compilation.utilization' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -649,7 +649,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.batch.page_split.utilization) AS 'Page Splits/Batch' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.page_split.utilization'"
+                "query": "SELECT latest(sqlserver.batch.page_split.utilization) AS 'Page Splits/Batch' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.batch.page_split.utilization' FACET service.instance.id"
               }
             ]
           }
@@ -670,7 +670,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.parameterization.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.parameterization.rate' FACET `sqlserver.parameterization.result` TIMESERIES"
+                "query": "SELECT latest(sqlserver.parameterization.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.parameterization.rate' FACET service.instance.id, `sqlserver.parameterization.result` TIMESERIES"
               }
             ]
           }
@@ -691,7 +691,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.full_scan.rate) AS 'Full Scans/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.full_scan.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.database.full_scan.rate) AS 'Full Scans/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.full_scan.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -712,7 +712,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.index.search.rate) AS 'Index Searches/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.index.search.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.index.search.rate) AS 'Index Searches/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.index.search.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -755,7 +755,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.os.memory.utilization) * 100 AS 'Mem Util %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.memory.utilization'"
+                "query": "SELECT latest(sqlserver.os.memory.utilization) * 100 AS 'Mem Util %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.memory.utilization' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -786,7 +786,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.os.disk.size) / 1073741824 AS 'Disk (GB)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.disk.size'"
+                "query": "SELECT latest(sqlserver.os.disk.size) / 1073741824 AS 'Disk (GB)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.disk.size' FACET service.instance.id"
               }
             ]
           }
@@ -807,7 +807,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.memory.grants.pending.count) AS 'Pending' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.grants.pending.count'"
+                "query": "SELECT latest(sqlserver.memory.grants.pending.count) AS 'Pending' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.grants.pending.count' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -838,7 +838,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.memory.area) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.area' FACET `memory.pool`"
+                "query": "SELECT latest(sqlserver.memory.area) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.area' FACET service.instance.id, `memory.pool`"
               }
             ]
           }
@@ -859,7 +859,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.memory.page.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.page.count' FACET `page.pool`"
+                "query": "SELECT latest(sqlserver.memory.page.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.page.count' FACET service.instance.id, `page.pool`"
               }
             ]
           }
@@ -880,7 +880,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.os.memory.usage) / 1073741824 AS 'GB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.memory.usage' FACET `memory.state`"
+                "query": "SELECT latest(sqlserver.os.memory.usage) / 1073741824 AS 'GB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.memory.usage' FACET service.instance.id, `memory.state`"
               }
             ]
           }
@@ -901,7 +901,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.memory.cache.object.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.cache.object.count' FACET `cache.state`"
+                "query": "SELECT latest(sqlserver.memory.cache.object.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.memory.cache.object.count' FACET service.instance.id, `cache.state`"
               }
             ]
           }
@@ -944,7 +944,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.file.size' FACET `db.namespace`, `file_type` LIMIT 20"
+                "query": "SELECT latest(sqlserver.database.file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.file.size' FACET service.instance.id, `db.namespace`, `file_type` LIMIT 20"
               }
             ]
           }
@@ -965,7 +965,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.page_file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.page_file.size' FACET `db.namespace`, `page_file.state` LIMIT 20"
+                "query": "SELECT latest(sqlserver.database.page_file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.page_file.size' FACET service.instance.id, `db.namespace`, `page_file.state` LIMIT 20"
               }
             ]
           }
@@ -986,7 +986,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.io) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.io' FACET `direction`, `file_type` TIMESERIES"
+                "query": "SELECT latest(sqlserver.database.io) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.io' FACET service.instance.id, `direction`, `file_type` TIMESERIES"
               }
             ]
           }
@@ -1007,7 +1007,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.latency) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.latency' FACET `direction`, `file_type` TIMESERIES"
+                "query": "SELECT latest(sqlserver.database.latency) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.latency' FACET service.instance.id, `direction`, `file_type` TIMESERIES"
               }
             ]
           }
@@ -1050,7 +1050,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT max(sqlserver.os.wait.duration) AS 'Wait (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.duration' FACET `wait.category` LIMIT 15"
+                "query": "SELECT max(sqlserver.os.wait.duration) AS 'Wait (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.duration' FACET service.instance.id, `wait.category` LIMIT 15"
               }
             ]
           }
@@ -1071,7 +1071,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT max(sqlserver.os.wait.tasks.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.tasks.count' FACET `wait.category` LIMIT 15"
+                "query": "SELECT max(sqlserver.os.wait.tasks.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.tasks.count' FACET service.instance.id, `wait.category` LIMIT 15"
               }
             ]
           }
@@ -1092,7 +1092,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.os.wait.duration) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.duration' FACET `wait.category` TIMESERIES LIMIT 5"
+                "query": "SELECT latest(sqlserver.os.wait.duration) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.os.wait.duration' FACET service.instance.id, `wait.category` TIMESERIES LIMIT 5"
               }
             ]
           }
@@ -1135,7 +1135,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.lock.wait.rate) AS 'Lock Waits/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.wait.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.lock.wait.rate) AS 'Lock Waits/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.wait.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1156,7 +1156,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.lock.timeout.rate) AS 'Timeouts/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.timeout.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.lock.timeout.rate) AS 'Timeouts/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.timeout.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1177,7 +1177,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.lock.wait.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.wait.count' FACET `workload_group.name` TIMESERIES LIMIT MAX"
+                "query": "SELECT latest(sqlserver.lock.wait.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.lock.wait.count' FACET service.instance.id, `workload_group.name` TIMESERIES LIMIT MAX"
               }
             ]
           }
@@ -1220,7 +1220,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.database.transactions.active) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.transactions.active' FACET `db.namespace` LIMIT MAX"
+                "query": "SELECT latest(sqlserver.database.transactions.active) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.database.transactions.active' FACET service.instance.id, `db.namespace` LIMIT MAX"
               }
             ]
           }
@@ -1241,7 +1241,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.transaction.longest_running_time) AS 'Longest (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.transaction.longest_running_time' TIMESERIES"
+                "query": "SELECT latest(sqlserver.transaction.longest_running_time) AS 'Longest (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.transaction.longest_running_time' FACET service.instance.id TIMESERIES"
               }
             ],
             "thresholds": [
@@ -1272,7 +1272,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.transaction.delay) AS 'Delay (ms)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.transaction.delay' TIMESERIES"
+                "query": "SELECT latest(sqlserver.transaction.delay) AS 'Delay (ms)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.transaction.delay' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1293,7 +1293,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.transaction.version_cleanup.rate) AS 'Cleanup', latest(sqlserver.transaction.version_generation.rate) AS 'Generation' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.transaction.version_cleanup.rate', 'sqlserver.transaction.version_generation.rate') TIMESERIES"
+                "query": "SELECT latest(sqlserver.transaction.version_cleanup.rate) AS 'Cleanup', latest(sqlserver.transaction.version_generation.rate) AS 'Generation' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.transaction.version_cleanup.rate', 'sqlserver.transaction.version_generation.rate') FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1336,7 +1336,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.latch.wait.rate) AS 'Latch Waits/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.latch.wait.rate) AS 'Latch Waits/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1357,7 +1357,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.latch.wait_time.avg) AS 'Avg (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait_time.avg' TIMESERIES"
+                "query": "SELECT latest(sqlserver.latch.wait_time.avg) AS 'Avg (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait_time.avg' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1378,7 +1378,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.latch.wait_time.total) AS 'Total (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait_time.total' TIMESERIES"
+                "query": "SELECT latest(sqlserver.latch.wait_time.total) AS 'Total (s)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.wait_time.total' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1399,7 +1399,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.latch.superlatch.count) AS 'Active Superlatches' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.superlatch.count'"
+                "query": "SELECT latest(sqlserver.latch.superlatch.count) AS 'Active Superlatches' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.superlatch.count' FACET service.instance.id"
               }
             ]
           }
@@ -1420,7 +1420,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.latch.superlatch.transition.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.superlatch.transition.rate' FACET `transition.direction` TIMESERIES"
+                "query": "SELECT latest(sqlserver.latch.superlatch.transition.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.latch.superlatch.transition.rate' FACET service.instance.id, `transition.direction` TIMESERIES"
               }
             ]
           }
@@ -1463,7 +1463,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.thread_pool.workers.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.workers.count' FACET `worker.state` TIMESERIES"
+                "query": "SELECT latest(sqlserver.thread_pool.workers.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.workers.count' FACET service.instance.id, `worker.state` TIMESERIES"
               }
             ]
           }
@@ -1484,7 +1484,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.thread_pool.workers.utilization) * 100 AS 'Util %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.workers.utilization'"
+                "query": "SELECT latest(sqlserver.thread_pool.workers.utilization) * 100 AS 'Util %' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.workers.utilization' FACET service.instance.id"
               }
             ],
             "thresholds": [
@@ -1515,7 +1515,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.thread_pool.tasks.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.tasks.count' FACET `task.state` TIMESERIES"
+                "query": "SELECT latest(sqlserver.thread_pool.tasks.count) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.thread_pool.tasks.count' FACET service.instance.id, `task.state` TIMESERIES"
               }
             ]
           }
@@ -1536,7 +1536,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.tempdb.space.usage) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.space.usage' FACET `tempdb.space_kind`"
+                "query": "SELECT latest(sqlserver.tempdb.space.usage) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.space.usage' FACET service.instance.id, `tempdb.space_kind`"
               }
             ]
           }
@@ -1557,7 +1557,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.tempdb.file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.file.size' FACET `file_type`, `tempdb.file.id` LIMIT MAX"
+                "query": "SELECT latest(sqlserver.tempdb.file.size) / 1048576 AS 'MB' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.file.size' FACET service.instance.id, `file_type`, `tempdb.file.id` LIMIT MAX"
               }
             ]
           }
@@ -1578,7 +1578,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.tempdb.contention.waiters.count) AS 'Contention Waiters', latest(sqlserver.tempdb.data_files.count) AS 'Data Files' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.tempdb.contention.waiters.count', 'sqlserver.tempdb.data_files.count')"
+                "query": "SELECT latest(sqlserver.tempdb.contention.waiters.count) AS 'Contention Waiters', latest(sqlserver.tempdb.data_files.count) AS 'Data Files' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.tempdb.contention.waiters.count', 'sqlserver.tempdb.data_files.count') FACET service.instance.id"
               }
             ]
           }
@@ -1599,7 +1599,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.tempdb.allocation.wait_time.total) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.allocation.wait_time.total' FACET `allocation.page_type`"
+                "query": "SELECT latest(sqlserver.tempdb.allocation.wait_time.total) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.tempdb.allocation.wait_time.total' FACET service.instance.id, `allocation.page_type`"
               }
             ]
           }
@@ -1642,7 +1642,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.failover_cluster.replica.flow_control_time) AS 'Flow Control (ms)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.flow_control_time' TIMESERIES"
+                "query": "SELECT latest(sqlserver.failover_cluster.replica.flow_control_time) AS 'Flow Control (ms)' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.flow_control_time' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1663,7 +1663,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.replica.data.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.replica.data.rate' FACET `replica.direction` TIMESERIES"
+                "query": "SELECT latest(sqlserver.replica.data.rate) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.replica.data.rate' FACET service.instance.id, `replica.direction` TIMESERIES"
               }
             ]
           }
@@ -1684,7 +1684,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.failover_cluster.replica.database.queue_size) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.database.queue_size' FACET `replica.queue_kind` TIMESERIES"
+                "query": "SELECT latest(sqlserver.failover_cluster.replica.database.queue_size) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.database.queue_size' FACET service.instance.id, `replica.queue_kind` TIMESERIES"
               }
             ]
           }
@@ -1705,7 +1705,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.failover_cluster.replica.database.redo.rate) AS 'Redo Rate' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.database.redo.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.failover_cluster.replica.database.redo.rate) AS 'Redo Rate' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.failover_cluster.replica.database.redo.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1764,7 +1764,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.resource_pool.disk.operations) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.operations' FACET `direction` TIMESERIES"
+                "query": "SELECT latest(sqlserver.resource_pool.disk.operations) FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.operations' FACET service.instance.id, `direction` TIMESERIES"
               }
             ]
           }
@@ -1785,7 +1785,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.resource_pool.disk.throttled.read.rate) AS 'Read Throttled/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.throttled.read.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.resource_pool.disk.throttled.read.rate) AS 'Read Throttled/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.throttled.read.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1806,7 +1806,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.resource_pool.disk.throttled.write.rate) AS 'Write Throttled/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.throttled.write.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.resource_pool.disk.throttled.write.rate) AS 'Write Throttled/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.resource_pool.disk.throttled.write.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1827,7 +1827,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.login.rate) AS 'Logins/sec', latest(sqlserver.logout.rate) AS 'Logouts/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.login.rate', 'sqlserver.logout.rate') TIMESERIES"
+                "query": "SELECT latest(sqlserver.login.rate) AS 'Logins/sec', latest(sqlserver.logout.rate) AS 'Logouts/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName IN ('sqlserver.login.rate', 'sqlserver.logout.rate') FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -1848,7 +1848,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(sqlserver.attention.rate) AS 'Attentions/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.attention.rate' TIMESERIES"
+                "query": "SELECT latest(sqlserver.attention.rate) AS 'Attentions/sec' FROM Metric WHERE service.instance.id IN ({{instance}}) AND metricName = 'sqlserver.attention.rate' FACET service.instance.id TIMESERIES"
               }
             ]
           }
