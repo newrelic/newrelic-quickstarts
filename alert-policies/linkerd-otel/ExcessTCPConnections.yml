@@ -1,0 +1,33 @@
+# Name of the alert
+name: Linkerd Excess TCP Connections
+
+# Description and details
+description: |+
+  This alert is triggered when the total number of open TCP connections across all meshed pods
+  exceeds 1000 for 5 minutes, which may indicate a connection leak or traffic surge.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT sum(tcp_open_connections) FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the threshold
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 2000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 1000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+violationTimeLimitSeconds: 86400

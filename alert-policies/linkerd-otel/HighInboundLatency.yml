@@ -1,0 +1,33 @@
+# Name of the alert
+name: Linkerd High Inbound Request Latency
+
+# Description and details
+description: |+
+  This alert is triggered when the p99 inbound HTTP request latency exceeds 500ms for 5 minutes,
+  indicating a slow or overloaded service behind the Linkerd proxy.
+
+# Type of alert
+type: STATIC
+
+# NRQL query
+nrql:
+  query: "SELECT percentile(inbound_http_request_duration_seconds, 99) * 1000 FROM Metric WHERE instrumentation.provider = 'opentelemetry' AND linkerd_control_plane_component IS NULL"
+
+# Function used to aggregate the NRQL query value(s) for comparison to the threshold
+valueFunction: SINGLE_VALUE
+
+# List of Critical and Warning thresholds for the condition
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 1000
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 500
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+# Duration after which a violation automatically closes
+violationTimeLimitSeconds: 86400
