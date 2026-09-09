@@ -1778,6 +1778,646 @@
           }
         }
       ]
+    },
+    {
+      "name": "Stored Procedures",
+      "description": "Overview of all procedures \u2014 KPIs, trends, and rankings",
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Stored Procedures\n\nHigh-level KPIs for Oracle stored procedure performance: total active procedures, execution rate, p95 duration, disk reads, and a ranked table of top procedures by CPU, logical reads, and wait time."
+          }
+        },
+        {
+          "title": "Total Active Procedures",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(oracledb.procedure_name) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Avg Executions / min",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT rate(sum(oracledb.procedure_execution_count), 1 minute) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "p95 Avg Duration (ms)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT percentile(oracledb.procedure.avg_elapsed_time, 95) * 1000 WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name"
+              }
+            ],
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 5000
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 30000
+              }
+            ]
+          }
+        },
+        {
+          "title": "Physical Disk Reads",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.disk_reads) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name"
+              }
+            ],
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1000
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 5000
+              }
+            ]
+          }
+        },
+        {
+          "title": "Active Procedures \u2014 by PDB",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(oracledb.procedure_name) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, db.namespace TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Executions / min \u2014 by Procedure",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT rate(sum(oracledb.procedure_execution_count), 1 minute) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "p95 Avg Duration (ms) \u2014 by Procedure",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT percentile(oracledb.procedure.avg_elapsed_time, 95) * 1000 WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Physical Disk Reads \u2014 by Procedure",
+          "layout": {
+            "column": 10,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.disk_reads) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Procedures \u2014 by PDB",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT uniqueCount(oracledb.procedure_name) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, db.namespace"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Executions \u2014 by Procedure",
+          "layout": {
+            "column": 4,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.procedure_execution_count) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Total Elapsed Time \u2014 by Procedure",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.elapsed_time) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Physical Disk Reads \u2014 by Procedure",
+          "layout": {
+            "column": 10,
+            "row": 6,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.disk_reads) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top Stored Procedures \u2014 sorted by Avg Elapsed Time",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(host.name) AS 'Host', sum(oracledb.procedure_execution_count) as Executions, percentile(oracledb.procedure.avg_elapsed_time, 95) * 1000 as p95AvgDurationMs, sum(oracledb.cpu_time) / sum(oracledb.elapsed_time) * 100 as CpuPct, (sum(oracledb.elapsed_time) - sum(oracledb.cpu_time)) / sum(oracledb.procedure_execution_count) * 1000 as AvgWaitTimeMs, sum(oracledb.buffer_gets) / sum(oracledb.procedure_execution_count) as AvgLogicalReadsPerExec, sum(oracledb.disk_reads) / sum(oracledb.procedure_execution_count) as AvgDiskReadsPerExec WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET oracledb.procedure_name, db.namespace"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Procedure Statements",
+      "description": "Statement-level analysis across all stored procedures",
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "### Procedure Statements\n\nStatement-level analysis across all stored procedures: execution trends, wait event breakdown, duration/CPU/buffer trends, and top statements with performance metrics. Uses FACET by procedure name to show all procedures."
+          }
+        },
+        {
+          "title": "PDB (Database)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(db.namespace) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Schema",
+          "layout": {
+            "column": 4,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(oracledb.procedure.schema_name) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Last Active Time",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(oracledb.procedure.last_active_time) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "First Load Time",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 2
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(oracledb.procedure.first_load_time) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Execution Trend",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.procedure_execution_count) as Executions WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Wait Event Breakdown",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.query.wait_time) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.query_sample' AND oracledb.wait_class != 'Idle' AND oracledb.event != '' FACET host.name, oracledb.wait_class"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Avg Duration (ms) Trend",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT average(oracledb.procedure.avg_elapsed_time) * 1000 WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "CPU Time (sec) Trend",
+          "layout": {
+            "column": 5,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.cpu_time) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Buffer Gets Trend",
+          "layout": {
+            "column": 9,
+            "row": 6,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT sum(oracledb.buffer_gets) WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.procedure_metrics' FACET host.name, oracledb.procedure_name TIMESERIES"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Statements inside this procedure (from Top Queries)",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 12,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(host.name) AS 'Host', sum(oracledb.elapsed_time) / sum(oracledb.executions) * 1000 as AvgDurationMs, sum(oracledb.buffer_gets) / sum(oracledb.executions) as AvgLogicalReadsPerExec, sum(oracledb.cpu_time) / sum(oracledb.elapsed_time) * 100 as CpuPct, sum(oracledb.executions) as Executions, sum(oracledb.rows_processed) / sum(oracledb.executions) as AvgRowsPerExec WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.top_query' FACET oracledb.procedure_name, db.query.text"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top Wait Events",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Log SELECT latest(host.name) AS 'Host', sum(oracledb.query.wait_time) as TotalWaitTime, count(*) as Samples, average(oracledb.query.wait_time) as AvgWaitTime, latest(oracledb.wait_class) as WaitClass WHERE host.name IN ({{host_name}}) AND event.name = 'db.server.query_sample' AND oracledb.wait_class != 'Idle' AND oracledb.event != '' FACET oracledb.event"
+              }
+            ]
+          }
+        }
+      ]
     }
   ],
   "variables": [
