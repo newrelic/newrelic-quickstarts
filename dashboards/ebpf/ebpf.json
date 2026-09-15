@@ -41,7 +41,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Span SELECT count(*) AS 'Failure Count' WHERE protocol.name='dns' and dns.query != '[]' and dns.query != '' and entity.name IN ({{entity_name}}) AND dns.resolved=false FACET entity.name, dns.query LIMIT MAX"
+                "query": "FROM Metric SELECT count(*) AS 'Failure Count' WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) AND error.type is NOT NULL FACET entity.name, dns.question.name, error.type LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -57,7 +57,7 @@
           "layout": {
             "column": 1,
             "row": 4,
-            "width": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -82,7 +82,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Span SELECT count(*) WHERE protocol.name='dns' and dns.query != '[]' and dns.query != '' and entity.name IN ({{entity_name}}) FACET dns.resolved_status, entity.name LIMIT MAX TIMESERIES"
+                "query": "FROM Metric SELECT count(*) WHERE protocol.name = 'dns' AND entity.name IN ({{entity_name}}) FACET CASES(WHERE error.type IS NULL AS 'Success', WHERE error.type IS NOT NULL AS 'Failure'), entity.name LIMIT MAX TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -108,9 +108,9 @@
         {
           "title": "DNS resolution count",
           "layout": {
-            "column": 7,
+            "column": 5,
             "row": 4,
-            "width": 6,
+            "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -127,7 +127,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Span SELECT count(*) WHERE protocol.name='dns' and dns.query != '[]' and dns.query != '' and entity.name IN ({{entity_name}}) FACET dns.resolved_status, entity.name LIMIT MAX"
+                "query": "FROM Metric SELECT count(*) WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) FACET CASES(WHERE error.type IS NULL AS 'Success', WHERE error.type IS NOT NULL AS 'Failure'), entity.name LIMIT MAX"
               }
             ],
             "platformOptions": {
@@ -135,6 +135,59 @@
             },
             "refreshRate": {
               "frequency": 30000
+            }
+          }
+        },
+        {
+          "title": "DNS latency",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "markers": {
+              "displayedTypes": {
+                "criticalViolations": false,
+                "deployments": true,
+                "relatedDeployments": true,
+                "warningViolations": false
+              }
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT percentile(dns.lookup.duration, {{percentile_value}})/(1000*1000) WHERE protocol.name='dns' and entity.name IN ({{entity_name}}) FACET entity.name LIMIT MAX TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "refreshRate": {
+              "frequency": 30000
+            },
+            "thresholds": {
+              "isLabelVisible": true
+            },
+            "units": {
+              "unit": "MS"
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "yAxisRight": {
+              "zero": true
             }
           }
         },
