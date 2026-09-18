@@ -3,7 +3,7 @@
   "description": null,
   "pages": [
     {
-      "name": "Overview & Health",
+      "name": "Server & Connections",
       "description": null,
       "widgets": [
         {
@@ -22,55 +22,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.uptime`) WHERE metricName = 'mysql.uptime' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.buffer_pool.limit",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.limit`) WHERE metricName = 'mysql.buffer_pool.limit' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.page_size",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.page_size`) WHERE metricName = 'mysql.page_size' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
+                "query": "FROM Metric SELECT latest(`mysql.uptime`) AS 'mysql.uptime (seconds)' WHERE metricName = 'mysql.uptime' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
               }
             ],
             "platformOptions": {
@@ -81,8 +33,8 @@
         {
           "title": "mysql.max_used_connections",
           "layout": {
-            "column": 1,
-            "row": 4,
+            "column": 5,
+            "row": 1,
             "width": 4,
             "height": 3
           },
@@ -94,7 +46,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.max_used_connections`) WHERE metricName = 'mysql.max_used_connections' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
+                "query": "FROM Metric SELECT latest(`mysql.max_used_connections`) AS 'mysql.max_used_connections' WHERE metricName = 'mysql.max_used_connections' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
               }
             ],
             "platformOptions": {
@@ -103,7 +55,55 @@
           }
         },
         {
-          "title": "mysql.query.count",
+          "title": "mysql.connection.count",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`mysql.connection.count`), 1 SECOND) AS 'mysql.connection.count (per second)' WHERE metricName = 'mysql.connection.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.connection.errors",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`mysql.connection.errors`), 1 SECOND) AS 'mysql.connection.errors (per second)' WHERE metricName = 'mysql.connection.errors' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, error TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.threads",
           "layout": {
             "column": 5,
             "row": 4,
@@ -118,7 +118,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.query.count`), 1 SECOND) WHERE metricName = 'mysql.query.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.threads`) AS 'mysql.threads' WHERE metricName = 'mysql.threads' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -127,7 +127,7 @@
           }
         },
         {
-          "title": "mysql.query.slow.count",
+          "title": "mysql.client.network.io",
           "layout": {
             "column": 9,
             "row": 4,
@@ -142,7 +142,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.query.slow.count`), 1 SECOND) WHERE metricName = 'mysql.query.slow.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.client.network.io`), 1 SECOND) AS 'mysql.client.network.io (bytes/sec)' WHERE metricName = 'mysql.client.network.io' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -151,7 +151,7 @@
           }
         },
         {
-          "title": "mysql.query.client.count",
+          "title": "mysql.mysqlx_connections",
           "layout": {
             "column": 1,
             "row": 7,
@@ -166,7 +166,31 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.query.client.count`), 1 SECOND) WHERE metricName = 'mysql.query.client.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.mysqlx_connections`), 1 SECOND) AS 'mysql.mysqlx_connections (per second)' WHERE metricName = 'mysql.mysqlx_connections' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.mysqlx_worker_threads",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`mysql.mysqlx_worker_threads`) AS 'mysql.mysqlx_worker_threads' WHERE metricName = 'mysql.mysqlx_worker_threads' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -177,7 +201,7 @@
       ]
     },
     {
-      "name": "Throughput & Commands",
+      "name": "Statement Activity",
       "description": null,
       "widgets": [
         {
@@ -190,13 +214,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.commands`), 1 SECOND) WHERE metricName = 'mysql.commands' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, command TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.commands`), 1 SECOND) AS 'mysql.commands (per second)' WHERE metricName = 'mysql.commands' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, command TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -214,37 +238,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.handlers`), 1 SECOND) WHERE metricName = 'mysql.handlers' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.operations",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.operations`), 1 SECOND) WHERE metricName = 'mysql.operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.handlers`), 1 SECOND) AS 'mysql.handlers (per second)' WHERE metricName = 'mysql.handlers' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -255,6 +255,30 @@
         {
           "title": "mysql.prepared_statements",
           "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`mysql.prepared_statements`), 1 SECOND) AS 'mysql.prepared_statements (per second)' WHERE metricName = 'mysql.prepared_statements' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, command TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.query.count",
+          "layout": {
             "column": 1,
             "row": 4,
             "width": 4,
@@ -268,7 +292,55 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.prepared_statements`), 1 SECOND) WHERE metricName = 'mysql.prepared_statements' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, command TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.query.count`), 1 SECOND) AS 'mysql.query.count (per second)' WHERE metricName = 'mysql.query.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.query.slow.count",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`mysql.query.slow.count`), 1 SECOND) AS 'mysql.query.slow.count (per second)' WHERE metricName = 'mysql.query.slow.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.query.client.count",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`mysql.query.client.count`), 1 SECOND) AS 'mysql.query.client.count (per second)' WHERE metricName = 'mysql.query.client.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -279,11 +351,11 @@
       ]
     },
     {
-      "name": "Connections & Threads",
+      "name": "Query Optimizer",
       "description": null,
       "widgets": [
         {
-          "title": "mysql.threads",
+          "title": "mysql.joins",
           "layout": {
             "column": 1,
             "row": 1,
@@ -298,7 +370,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.threads`) WHERE metricName = 'mysql.threads' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.joins`), 1 SECOND) AS 'mysql.joins (per second)' WHERE metricName = 'mysql.joins' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -307,7 +379,7 @@
           }
         },
         {
-          "title": "mysql.connection.count",
+          "title": "mysql.sorts",
           "layout": {
             "column": 5,
             "row": 1,
@@ -322,7 +394,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.connection.count`), 1 SECOND) WHERE metricName = 'mysql.connection.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.sorts`), 1 SECOND) AS 'mysql.sorts (per second)' WHERE metricName = 'mysql.sorts' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -331,7 +403,7 @@
           }
         },
         {
-          "title": "mysql.connection.errors",
+          "title": "mysql.tmp_resources",
           "layout": {
             "column": 9,
             "row": 1,
@@ -346,85 +418,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.connection.errors`), 1 SECOND) WHERE metricName = 'mysql.connection.errors' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, error TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.client.network.io",
-          "layout": {
-            "column": 1,
-            "row": 4,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.client.network.io`), 1 SECOND) WHERE metricName = 'mysql.client.network.io' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "X Protocol (mysqlx)",
-      "description": null,
-      "widgets": [
-        {
-          "title": "mysql.mysqlx_connections",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.mysqlx_connections`), 1 SECOND) WHERE metricName = 'mysql.mysqlx_connections' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.mysqlx_worker_threads",
-          "layout": {
-            "column": 5,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.mysqlx_worker_threads`) WHERE metricName = 'mysql.mysqlx_worker_threads' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.tmp_resources`), 1 SECOND) AS 'mysql.tmp_resources (per second)' WHERE metricName = 'mysql.tmp_resources' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, resource TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -454,7 +448,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.usage`) WHERE metricName = 'mysql.buffer_pool.usage' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.usage`) AS 'mysql.buffer_pool.usage (bytes)' WHERE metricName = 'mysql.buffer_pool.usage' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -478,7 +472,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.data_pages`) WHERE metricName = 'mysql.buffer_pool.data_pages' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.data_pages`) AS 'mysql.buffer_pool.data_pages' WHERE metricName = 'mysql.buffer_pool.data_pages' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -502,7 +496,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.pages`) WHERE metricName = 'mysql.buffer_pool.pages' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.pages`) AS 'mysql.buffer_pool.pages' WHERE metricName = 'mysql.buffer_pool.pages' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -526,7 +520,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.buffer_pool.operations`), 1 SECOND) WHERE metricName = 'mysql.buffer_pool.operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.buffer_pool.operations`), 1 SECOND) AS 'mysql.buffer_pool.operations (per second)' WHERE metricName = 'mysql.buffer_pool.operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -550,7 +544,55 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.buffer_pool.page_flushes`), 1 SECOND) WHERE metricName = 'mysql.buffer_pool.page_flushes' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.buffer_pool.page_flushes`), 1 SECOND) AS 'mysql.buffer_pool.page_flushes (per second)' WHERE metricName = 'mysql.buffer_pool.page_flushes' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.buffer_pool.limit",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`mysql.buffer_pool.limit`) AS 'mysql.buffer_pool.limit (bytes)' WHERE metricName = 'mysql.buffer_pool.limit' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "mysql.page_size",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`mysql.page_size`) AS 'mysql.page_size (bytes)' WHERE metricName = 'mysql.page_size' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name"
               }
             ],
             "platformOptions": {
@@ -561,7 +603,7 @@
       ]
     },
     {
-      "name": "InnoDB Row / Page / Log Ops",
+      "name": "InnoDB Operations",
       "description": null,
       "widgets": [
         {
@@ -580,7 +622,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.row_operations`), 1 SECOND) WHERE metricName = 'mysql.row_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.row_operations`), 1 SECOND) AS 'mysql.row_operations (per second)' WHERE metricName = 'mysql.row_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -604,7 +646,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.page_operations`), 1 SECOND) WHERE metricName = 'mysql.page_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.page_operations`), 1 SECOND) AS 'mysql.page_operations (per second)' WHERE metricName = 'mysql.page_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -628,7 +670,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.log_operations`), 1 SECOND) WHERE metricName = 'mysql.log_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.log_operations`), 1 SECOND) AS 'mysql.log_operations (per second)' WHERE metricName = 'mysql.log_operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -652,37 +694,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.double_writes`), 1 SECOND) WHERE metricName = 'mysql.double_writes' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Joins, Sorts & Temp",
-      "description": null,
-      "widgets": [
-        {
-          "title": "mysql.joins",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.joins`), 1 SECOND) WHERE metricName = 'mysql.joins' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.double_writes`), 1 SECOND) AS 'mysql.double_writes (per second)' WHERE metricName = 'mysql.double_writes' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -691,46 +703,22 @@
           }
         },
         {
-          "title": "mysql.sorts",
+          "title": "mysql.operations",
           "layout": {
             "column": 5,
-            "row": 1,
+            "row": 4,
             "width": 4,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.line"
+            "id": "viz.stacked-bar"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.sorts`), 1 SECOND) WHERE metricName = 'mysql.sorts' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "mysql.tmp_resources",
-          "layout": {
-            "column": 9,
-            "row": 1,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.tmp_resources`), 1 SECOND) WHERE metricName = 'mysql.tmp_resources' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, resource TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.operations`), 1 SECOND) AS 'mysql.operations (per second)' WHERE metricName = 'mysql.operations' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, operation TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -741,7 +729,7 @@
       ]
     },
     {
-      "name": "Locks",
+      "name": "Locks & Contention",
       "description": null,
       "widgets": [
         {
@@ -760,7 +748,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.locks`), 1 SECOND) WHERE metricName = 'mysql.locks' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.locks`), 1 SECOND) AS 'mysql.locks (per second)' WHERE metricName = 'mysql.locks' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -784,7 +772,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.row_locks`), 1 SECOND) WHERE metricName = 'mysql.row_locks' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.row_locks`), 1 SECOND) AS 'mysql.row_locks (per second)' WHERE metricName = 'mysql.row_locks' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -802,13 +790,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.read.time`) - earliest(`mysql.table.lock_wait.read.time`) WHERE metricName = 'mysql.table.lock_wait.read.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.read.time`) - earliest(`mysql.table.lock_wait.read.time`) AS 'mysql.table.lock_wait.read.time (ns)' WHERE metricName = 'mysql.table.lock_wait.read.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
@@ -826,13 +814,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.write.time`) - earliest(`mysql.table.lock_wait.write.time`) WHERE metricName = 'mysql.table.lock_wait.write.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.write.time`) - earliest(`mysql.table.lock_wait.write.time`) AS 'mysql.table.lock_wait.write.time (ns)' WHERE metricName = 'mysql.table.lock_wait.write.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
@@ -850,13 +838,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.read.count`) - earliest(`mysql.table.lock_wait.read.count`) WHERE metricName = 'mysql.table.lock_wait.read.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.read.count`) - earliest(`mysql.table.lock_wait.read.count`) AS 'mysql.table.lock_wait.read.count' WHERE metricName = 'mysql.table.lock_wait.read.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
@@ -874,13 +862,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.write.count`) - earliest(`mysql.table.lock_wait.write.count`) WHERE metricName = 'mysql.table.lock_wait.write.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.lock_wait.write.count`) - earliest(`mysql.table.lock_wait.write.count`) AS 'mysql.table.lock_wait.write.count' WHERE metricName = 'mysql.table.lock_wait.write.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
@@ -891,7 +879,7 @@
       ]
     },
     {
-      "name": "Table & Index I/O Waits",
+      "name": "Table & Index I/O (Performance Schema)",
       "description": null,
       "widgets": [
         {
@@ -904,13 +892,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.io.wait.time`) - earliest(`mysql.table.io.wait.time`) WHERE metricName = 'mysql.table.io.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, operation"
+                "query": "FROM Metric SELECT latest(`mysql.table.io.wait.time`) - earliest(`mysql.table.io.wait.time`) AS 'mysql.table.io.wait.time (ns)' WHERE metricName = 'mysql.table.io.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, operation"
               }
             ],
             "platformOptions": {
@@ -928,13 +916,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.io.wait.count`) - earliest(`mysql.table.io.wait.count`) WHERE metricName = 'mysql.table.io.wait.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, operation"
+                "query": "FROM Metric SELECT latest(`mysql.table.io.wait.count`) - earliest(`mysql.table.io.wait.count`) AS 'mysql.table.io.wait.count' WHERE metricName = 'mysql.table.io.wait.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, operation"
               }
             ],
             "platformOptions": {
@@ -952,13 +940,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.index.io.wait.time`) - earliest(`mysql.index.io.wait.time`) WHERE metricName = 'mysql.index.io.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, index"
+                "query": "FROM Metric SELECT latest(`mysql.index.io.wait.time`) - earliest(`mysql.index.io.wait.time`) AS 'mysql.index.io.wait.time (ns)' WHERE metricName = 'mysql.index.io.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, index"
               }
             ],
             "platformOptions": {
@@ -976,13 +964,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.index.io.wait.count`) - earliest(`mysql.index.io.wait.count`) WHERE metricName = 'mysql.index.io.wait.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, index"
+                "query": "FROM Metric SELECT latest(`mysql.index.io.wait.count`) - earliest(`mysql.index.io.wait.count`) AS 'mysql.index.io.wait.count' WHERE metricName = 'mysql.index.io.wait.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, index"
               }
             ],
             "platformOptions": {
@@ -993,7 +981,7 @@
       ]
     },
     {
-      "name": "Statement Digests",
+      "name": "Statement Digests (Performance Schema)",
       "description": null,
       "widgets": [
         {
@@ -1001,18 +989,18 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.statement_event.count`) - earliest(`mysql.statement_event.count`) WHERE metricName = 'mysql.statement_event.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, schema, digest_text"
+                "query": "FROM Metric SELECT latest(`mysql.statement_event.count`) - earliest(`mysql.statement_event.count`) AS 'mysql.statement_event.count' WHERE metricName = 'mysql.statement_event.count' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, schema, digest_text"
               }
             ],
             "platformOptions": {
@@ -1023,20 +1011,20 @@
         {
           "title": "mysql.statement_event.wait.time",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.statement_event.wait.time`) - earliest(`mysql.statement_event.wait.time`) WHERE metricName = 'mysql.statement_event.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, schema, digest_text"
+                "query": "FROM Metric SELECT latest(`mysql.statement_event.wait.time`) - earliest(`mysql.statement_event.wait.time`) AS 'mysql.statement_event.wait.time (ns)' WHERE metricName = 'mysql.statement_event.wait.time' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, schema, digest_text"
               }
             ],
             "platformOptions": {
@@ -1047,7 +1035,7 @@
       ]
     },
     {
-      "name": "Table Storage",
+      "name": "Table Storage & Caches",
       "description": null,
       "widgets": [
         {
@@ -1060,13 +1048,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.rows`) WHERE metricName = 'mysql.table.rows' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.rows`) AS 'mysql.table.rows' WHERE metricName = 'mysql.table.rows' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
@@ -1084,13 +1072,13 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.size`) WHERE metricName = 'mysql.table.size' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, kind"
+                "query": "FROM Metric SELECT latest(`mysql.table.size`) AS 'mysql.table.size (bytes)' WHERE metricName = 'mysql.table.size' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema, kind"
               }
             ],
             "platformOptions": {
@@ -1108,31 +1096,25 @@
           },
           "linkedEntityGuids": null,
           "visualization": {
-            "id": "viz.bar"
+            "id": "viz.table"
           },
           "rawConfiguration": {
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.table.average_row_length`) WHERE metricName = 'mysql.table.average_row_length' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
+                "query": "FROM Metric SELECT latest(`mysql.table.average_row_length`) AS 'mysql.table.average_row_length (bytes)' WHERE metricName = 'mysql.table.average_row_length' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, table, schema"
               }
             ],
             "platformOptions": {
               "ignoreTimeRange": false
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "Caches & Open Resources",
-      "description": null,
-      "widgets": [
+        },
         {
           "title": "mysql.table_open_cache",
           "layout": {
             "column": 1,
-            "row": 1,
+            "row": 4,
             "width": 4,
             "height": 3
           },
@@ -1144,7 +1126,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.table_open_cache`), 1 SECOND) WHERE metricName = 'mysql.table_open_cache' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.table_open_cache`), 1 SECOND) AS 'mysql.table_open_cache (per second)' WHERE metricName = 'mysql.table_open_cache' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, status TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -1156,7 +1138,7 @@
           "title": "mysql.opened_resources",
           "layout": {
             "column": 5,
-            "row": 1,
+            "row": 4,
             "width": 4,
             "height": 3
           },
@@ -1168,7 +1150,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT rate(sum(`mysql.opened_resources`), 1 SECOND) WHERE metricName = 'mysql.opened_resources' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
+                "query": "FROM Metric SELECT rate(sum(`mysql.opened_resources`), 1 SECOND) AS 'mysql.opened_resources (per second)' WHERE metricName = 'mysql.opened_resources' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name, kind TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -1187,7 +1169,7 @@
           "layout": {
             "column": 1,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1198,7 +1180,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.replica.time_behind_source`) WHERE metricName = 'mysql.replica.time_behind_source' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.replica.time_behind_source`) AS 'mysql.replica.time_behind_source (seconds)' WHERE metricName = 'mysql.replica.time_behind_source' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
               }
             ],
             "platformOptions": {
@@ -1209,9 +1191,9 @@
         {
           "title": "mysql.replica.sql_delay",
           "layout": {
-            "column": 5,
+            "column": 7,
             "row": 1,
-            "width": 4,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -1222,7 +1204,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Metric SELECT latest(`mysql.replica.sql_delay`) WHERE metricName = 'mysql.replica.sql_delay' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+                "query": "FROM Metric SELECT latest(`mysql.replica.sql_delay`) AS 'mysql.replica.sql_delay (seconds)' WHERE metricName = 'mysql.replica.sql_delay' AND otel.library.name = 'github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrmysqlreceiver' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
               }
             ],
             "platformOptions": {
