@@ -1,0 +1,1108 @@
+{
+  "name": "Federated Logs",
+  "description": null,
+  "pages": [
+    {
+      "name": "Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Federated Logs\nAWS infrastructure monitoring for the New Relic Federated Logs pipeline. Use the variable filters above to scope to your setup."
+          }
+        },
+        {
+          "title": "SQS Queue Depth",
+          "layout": {
+            "column": 1,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.sqs.ApproximateNumberOfMessagesVisible`) AS 'Messages' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 5 minutes ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1000
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 5000
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "DLQ Depth",
+          "layout": {
+            "column": 4,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.sqs.ApproximateNumberOfMessagesVisible`) AS 'Messages' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsDlqName}} SINCE 5 minutes ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "thresholds": [
+              {
+                "alertSeverity": "WARNING",
+                "value": 1
+              },
+              {
+                "alertSeverity": "CRITICAL",
+                "value": 10
+              }
+            ],
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "S3 Bucket Size",
+          "layout": {
+            "column": 7,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.s3.BucketSizeBytes`) / 1073741824 AS 'Size (GB)' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 3 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Glue Optimizer Failures (24 h)",
+          "layout": {
+            "column": 10,
+            "row": 3,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table compaction failure`) + sum(`aws.glue.Iceberg table retention failure`) + sum(`aws.glue.Iceberg table orphan_file_deletion failure`) AS 'Failures' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "SQS Throughput \u2014 Messages Sent & Deleted",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.sqs.NumberOfMessagesSent`) AS 'Sent', sum(`aws.sqs.NumberOfMessagesDeleted`) AS 'Deleted' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 3 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Flink Application Uptime",
+          "layout": {
+            "column": 7,
+            "row": 6,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.kinesisanalytics.uptime`) / 60000 AS 'Uptime (min)' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 3 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Processing - SQS & Flink",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Messages Sent to Queue",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.sqs.NumberOfMessagesSent`) AS 'Sent' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Queue Depth \u2014 Visible Messages",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.sqs.ApproximateNumberOfMessagesVisible`) AS 'Visible', average(`aws.sqs.ApproximateNumberOfMessagesNotVisible`) AS 'In-Flight' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Oldest Message Age",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`aws.sqs.ApproximateAgeOfOldestMessage`) AS 'Age (s)' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Messages Deleted (Processed)",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.sqs.NumberOfMessagesDeleted`) AS 'Deleted messages' FROM Metric WHERE `aws.sqs.QueueName` = {{sqsQueueName}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Flink System Metrics"
+          }
+        },
+        {
+          "title": "Flink Uptime vs Downtime",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.kinesisanalytics.uptime`) / 60000 AS 'Uptime (min)', average(`aws.kinesisanalytics.downtime`) / 60000 AS 'Downtime (min)' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 6 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Flink Checkpoint Duration",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT max(`aws.kinesisanalytics.lastCheckpointDuration`) AS 'Last Checkpoint (ms)', sum(`aws.kinesisanalytics.numberOfFailedCheckpoints`) AS 'Failed Checkpoints' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 6 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Flink Full Restarts (24 h)",
+          "layout": {
+            "column": 9,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.kinesisanalytics.fullRestarts`) AS 'Full Restarts' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Flink CPU Utilization",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.kinesisanalytics.cpuUtilization`) AS 'CPU %' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 6 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Flink Heap Memory Utilization",
+          "layout": {
+            "column": 7,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.kinesisanalytics.heapMemoryUtilization`) AS 'Heap %' FROM Metric WHERE `aws.kinesisanalytics.Application` = {{flinkApp}} SINCE 6 hours ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 12,
+            "height": 1
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "## Flink Application Metrics"
+          }
+        },
+        {
+          "title": "Iceberg Commit Success",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'Commits' FROM Metric WHERE tableId = {{icebergTableId}} AND metricName = 'iceberg.commit.success' SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Iceberg Commit E2E Latency (ms)",
+          "layout": {
+            "column": 7,
+            "row": 15,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`iceberg.commit.e2e_latency_ms`) AS 'E2E Latency (ms)' FROM Metric WHERE tableId = {{icebergTableId}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Iceberg Commit Duration (ms)",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`iceberg.commit.duration_ms`) AS 'Commit Duration (ms)' FROM Metric WHERE tableId = {{icebergTableId}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Iceberg Batch Processing Latency (ms)",
+          "layout": {
+            "column": 5,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`iceberg.commit.batch_processing_latency_ms`) AS 'Batch Latency (ms)' FROM Metric WHERE tableId = {{icebergTableId}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Iceberg Commit File Count",
+          "layout": {
+            "column": 9,
+            "row": 18,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`iceberg.commit.file_count`) AS 'Files per Commit' FROM Metric WHERE tableId = {{icebergTableId}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Storage - S3",
+      "description": null,
+      "widgets": [
+        {
+          "title": "S3 Request Activity (GET / PUT / HEAD)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.s3.GetRequests`) AS 'GET', sum(`aws.s3.PutRequests`) AS 'PUT', sum(`aws.s3.HeadRequests`) AS 'HEAD' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "S3 Bytes Transferred",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.s3.BytesDownloaded`) AS 'Downloaded (bytes)', sum(`aws.s3.BytesUploaded`) AS 'Uploaded (bytes)' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "S3 Request Latency",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.s3.TotalRequestLatency`) AS 'Average latency (ms)' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 1 hour ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "S3 Bucket Size",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.s3.BucketSizeBytes`) / 1073741824 AS 'Bucket Size (GB)' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 7 days ago TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "S3 Object Count",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.s3.NumberOfObjects`) AS 'Objects' FROM Metric WHERE `aws.s3.BucketName` = {{s3Bucket}} SINCE 7 days ago TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Glue & Optimizer Health",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Compaction (24 h)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table compaction success`) AS 'Success', sum(`aws.glue.Iceberg table compaction failure`) AS 'Failures' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Retention (24 h)",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table retention success`) AS 'Success', sum(`aws.glue.Iceberg table retention failure`) AS 'Failures' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Orphan Deletion (24 h)",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table orphan_file_deletion success`) AS 'Success', sum(`aws.glue.Iceberg table orphan_file_deletion failure`) AS 'Failures' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 24 hours ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Optimizer Failure Trend",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table compaction failure`) AS 'Compaction', sum(`aws.glue.Iceberg table retention failure`) AS 'Retention', sum(`aws.glue.Iceberg table orphan_file_deletion failure`) AS 'Orphan Deletion' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 7 days ago TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Retention Job \u2014 Execution Time",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(`aws.glue.Duration of job (hours)`) * 3600 AS 'Duration (s)' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} AND metricName = 'aws.glue.Duration of job (hours)' SINCE 7 days ago TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        },
+        {
+          "title": "Retention Job Runs \u2014 Success vs Failure",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(`aws.glue.Iceberg table retention success`) AS 'Success', sum(`aws.glue.Iceberg table retention failure`) AS 'Failures' FROM Metric WHERE `aws.glue.DATABASE_NAME` = {{glueDb}} SINCE 30 days ago TIMESERIES 1 day"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "facet": {
+              "showOtherSeries": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "sqsQueueName",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(aws.sqs.QueueName) FROM Metric WHERE aws.sqs.QueueName LIKE 'newrelic-fed-logs-fleet%' AND aws.sqs.QueueName NOT LIKE '%-dlq%' SINCE 1 day ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "SQS Queue",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "sqsDlqName",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(aws.sqs.QueueName) FROM Metric WHERE aws.sqs.QueueName LIKE 'newrelic-fed-logs-fleet%' AND aws.sqs.QueueName LIKE '%-dlq%' SINCE 1 day ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "SQS DLQ",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "flinkApp",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(aws.kinesisanalytics.Application) FROM Metric WHERE aws.kinesisanalytics.Application LIKE 'newrelic-fed-logs-fleet%' SINCE 1 day ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "Flink Application",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "s3Bucket",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(aws.s3.BucketName) FROM Metric WHERE aws.s3.BucketName LIKE 'newrelic-fed-logs-%' AND aws.s3.BucketName NOT LIKE '%-fleet-%' SINCE 7 days ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "S3 Bucket",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "glueDb",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(aws.glue.DATABASE_NAME) FROM Metric WHERE aws.glue.DATABASE_NAME LIKE 'newrelic_fed_logs_%' SINCE 1 day ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "Glue Database",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    },
+    {
+      "name": "icebergTableId",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(tableId) FROM Metric WHERE metricName = 'iceberg.commit.success' SINCE 1 hour ago"
+      },
+      "options": {
+        "ignoreTimeRange": true,
+        "excluded": false
+      },
+      "title": "Iceberg Table",
+      "type": "NRQL",
+      "isMultiSelection": false,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
