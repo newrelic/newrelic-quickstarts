@@ -1,0 +1,125 @@
+{
+  "name": "AISIX AI Gateway Overview",
+  "description": "Monitor open-source AISIX AI Gateway traffic, latency, token throughput, policy outcomes, and operational health from Prometheus metrics.",
+  "pages": [
+    {
+      "name": "AISIX AI Gateway Overview",
+      "description": "Core traffic, model, policy, and gateway health signals.",
+      "widgets": [
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 1, "row": 1, "height": 3, "width": 6 },
+          "title": "Request throughput by model",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(aisix_requests_total), 1 minute) AS 'Requests per minute' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 7, "row": 1, "height": 3, "width": 6 },
+          "title": "Request outcomes",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(aisix_requests_total), 1 minute) AS 'Requests per minute' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET outcome TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 1, "row": 4, "height": 3, "width": 6 },
+          "title": "End-to-end latency percentiles",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT bucketPercentile(aisix_request_e2e_latency_seconds_bucket, 50, 95, 99) WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 7, "row": 4, "height": 3, "width": 6 },
+          "title": "Time to first token percentiles",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT bucketPercentile(aisix_request_ttft_seconds_bucket, 50, 95, 99) WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 1, "row": 7, "height": 3, "width": 6 },
+          "title": "Token throughput by model and type",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(aisix_llm_tokens_by_client_total), 1 minute) AS 'Tokens per minute' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET model, token_type TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 7, "row": 7, "height": 3, "width": 6 },
+          "title": "Cache outcomes",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(aisix_cache_requests_total), 1 minute) AS 'Cache requests per minute' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' FACET outcome TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.line" },
+          "layout": { "column": 1, "row": 10, "height": 3, "width": 6 },
+          "title": "Guardrail blocks",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT rate(sum(aisix_guardrail_blocks_total), 1 minute) AS 'Blocked requests per minute' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway' TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "visualization": { "id": "viz.billboard" },
+          "layout": { "column": 7, "row": 10, "height": 3, "width": 6 },
+          "title": "Last config reload successful",
+          "linkedEntityGuids": null,
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 0,
+                "query": "FROM Metric SELECT latest(aisix_config_last_reload_successful) AS 'Reload successful' WHERE instrumentation.provider = 'prometheus' AND instrumentation.name = 'remote-write' AND instrumentation.source = 'aisix-ai-gateway'"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}
