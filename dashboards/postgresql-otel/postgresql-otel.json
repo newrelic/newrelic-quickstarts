@@ -1,0 +1,1263 @@
+{
+  "name": "PostgreSQL OTel Monitoring",
+  "description": "Comprehensive PostgreSQL monitoring dashboard using nrpostgresqlreceiver metrics. Covers database overview, slow and active queries, transactions, row operations, tables and indexes, buffer cache, background writer, locks, and replication/WAL/vector. Multi-entity support via entity_name variable (entity.name), compliant with OTel semantic conventions.",
+  "pages": [
+    {
+      "name": "Database Overview",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.backends",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.backends`) WHERE metricName = 'postgresql.backends' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.connection.max",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.connection.max`) WHERE metricName = 'postgresql.connection.max' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET entity.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.database.count",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.database.count`) WHERE metricName = 'postgresql.database.count' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET entity.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.db_size",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.db_size`)/1073741824 AS 'DB Size (GB)' WHERE metricName = 'postgresql.db_size' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.table.count",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.table.count`) WHERE metricName = 'postgresql.table.count' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slow Queries",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Query Executions",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT sum(postgresql.calls) WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Average Query Duration",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT sum(postgresql.total_exec_time)/sum(postgresql.calls) AS 'avgDuration' WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top Queries by Execution Time",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT latest(db.query.text) AS 'queryText', latest(db.namespace) AS 'databaseName', sum(postgresql.calls) AS 'totalExecutions', sum(postgresql.total_exec_time) / sum(postgresql.calls) AS 'avgDuration', sum(postgresql.shared_blks_hit) + sum(postgresql.shared_blks_read) AS 'logicalReads' WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.queryid"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Active Queries",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Samples by Wait Event",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerQuerySample SELECT count(*) AS 'Samples' WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) AND postgresql.wait_event IS NOT NULL AND postgresql.wait_event != '' FACET postgresql.wait_event TIMESERIES AUTO LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Active Query Samples",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerQuerySample SELECT latest(postgresql.query_start) AS 'startTime', latest(postgresql.query_id) AS 'queryHash', latest(db.namespace) AS 'databaseName', latest(postgresql.total_exec_time)/1000 AS 'duration', latest(db.query.text) AS 'queryText', latest(user.name) AS 'callingUser', latest(network.peer.address) AS 'hostName', latest(postgresql.wait_event) AS 'waitEvent', latest(postgresql.blocking.wait_duration) AS 'waitTime' WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) AND db.query.text != '' FACET postgresql.pid, postgresql.query_start"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.commits",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.commits`), 1 SECOND) WHERE metricName = 'postgresql.commits' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.rollbacks",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.rollbacks`), 1 SECOND) WHERE metricName = 'postgresql.rollbacks' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.deadlocks",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.deadlocks`), 1 SECOND) WHERE metricName = 'postgresql.deadlocks' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.query.conflicts",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.query.conflicts`), 1 SECOND) WHERE metricName = 'postgresql.query.conflicts' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace, postgresql.conflict.type TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.query.execution.time",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.query.execution.time`), 1 SECOND) WHERE metricName = 'postgresql.query.execution.time' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.function.calls",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.function.calls`), 1 SECOND) WHERE metricName = 'postgresql.function.calls' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET function TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Row Operations",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.operations",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.operations`), 1 SECOND) WHERE metricName = 'postgresql.operations' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET operation TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.rows",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`postgresql.rows`) WHERE metricName = 'postgresql.rows' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET state TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.tup_inserted",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.tup_inserted`), 1 SECOND) WHERE metricName = 'postgresql.tup_inserted' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.tup_updated",
+          "layout": {
+            "column": 4,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.tup_updated`), 1 SECOND) WHERE metricName = 'postgresql.tup_updated' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.tup_deleted",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.tup_deleted`), 1 SECOND) WHERE metricName = 'postgresql.tup_deleted' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.tup_fetched",
+          "layout": {
+            "column": 10,
+            "row": 4,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.tup_fetched`), 1 SECOND) WHERE metricName = 'postgresql.tup_fetched' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.tup_returned",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.tup_returned`), 1 SECOND) WHERE metricName = 'postgresql.tup_returned' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tables & Indexes",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.table.size",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.table.size`)/1073741824 AS 'Size (GB)' WHERE metricName = 'postgresql.table.size' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.collection.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.table.vacuum.count",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.table.vacuum.count`) AS 'Vacuums' WHERE metricName = 'postgresql.table.vacuum.count' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.collection.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.sequential_scans",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.sequential_scans`), 1 SECOND) WHERE metricName = 'postgresql.sequential_scans' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace, db.collection.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.index.scans",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.index.scans`) AS 'Scans' WHERE metricName = 'postgresql.index.scans' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.index.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.index.size",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.index.size`)/1073741824 AS 'Size (GB)' WHERE metricName = 'postgresql.index.size' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.index.name"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Buffer Cache & Blocks",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.blocks_read",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`postgresql.blocks_read`) AS 'Blocks' WHERE metricName = 'postgresql.blocks_read' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET source"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.blks_hit",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.blks_hit`), 1 SECOND) WHERE metricName = 'postgresql.blks_hit' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.blks_read",
+          "layout": {
+            "column": 10,
+            "row": 1,
+            "width": 3,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.blks_read`), 1 SECOND) WHERE metricName = 'postgresql.blks_read' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.temp_files",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.temp_files`), 1 SECOND) WHERE metricName = 'postgresql.temp_files' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.temp.io",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.temp.io`), 1 SECOND) WHERE metricName = 'postgresql.temp.io' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Background Writer",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.bgwriter.buffers.allocated",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.bgwriter.buffers.allocated`), 1 SECOND) WHERE metricName = 'postgresql.bgwriter.buffers.allocated' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET entity.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.bgwriter.buffers.writes",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.bgwriter.buffers.writes`), 1 SECOND) WHERE metricName = 'postgresql.bgwriter.buffers.writes' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET source TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.bgwriter.maxwritten",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.bgwriter.maxwritten`), 1 SECOND) WHERE metricName = 'postgresql.bgwriter.maxwritten' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET entity.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.bgwriter.checkpoint.count",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.bgwriter.checkpoint.count`), 1 SECOND) WHERE metricName = 'postgresql.bgwriter.checkpoint.count' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET type TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.bgwriter.duration",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.bgwriter.duration`), 1 SECOND) WHERE metricName = 'postgresql.bgwriter.duration' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET type TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locks",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.database.locks",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.database.locks`) WHERE metricName = 'postgresql.database.locks' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace, lock_type, mode TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.database.locks by relation",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`postgresql.database.locks`) WHERE metricName = 'postgresql.database.locks' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET relation"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Replication, WAL & Vector",
+      "description": null,
+      "widgets": [
+        {
+          "title": "postgresql.wal.age",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.wal.age`) WHERE metricName = 'postgresql.wal.age' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET entity.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.wal.lag",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.wal.lag`) WHERE metricName = 'postgresql.wal.lag' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET operation, replication_client TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.wal.delay",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.wal.delay`) WHERE metricName = 'postgresql.wal.delay' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET operation, replication_client TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.replication.data_delay",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`postgresql.replication.data_delay`) WHERE metricName = 'postgresql.replication.data_delay' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET replication_client TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.vector.search.calls",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.vector.search.calls`), 1 SECOND) WHERE metricName = 'postgresql.vector.search.calls' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.distance.function.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.vector.search.duration",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.vector.search.duration`), 1 SECOND) WHERE metricName = 'postgresql.vector.search.duration' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.distance.function.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.vector.search.rows_returned",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.vector.search.rows_returned`), 1 SECOND) WHERE metricName = 'postgresql.vector.search.rows_returned' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET postgresql.distance.function.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.vector.insert.rows",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.vector.insert.rows`), 1 SECOND) WHERE metricName = 'postgresql.vector.insert.rows' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "postgresql.vector.insert.duration",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`postgresql.vector.insert.duration`), 1 SECOND) WHERE metricName = 'postgresql.vector.insert.duration' AND otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver') AND entity.name IN ({{entity_name}}) FACET db.namespace TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "entity_name",
+      "items": null,
+      "defaultValues": [],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": " FROM Metric SELECT uniques(entity.name) WHERE otel.library.name IN ('github.com/newrelic-forks/opentelemetry-collector-contrib/receiver/nrpostgresqlreceiver', 'github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver')"
+      },
+      "options": {
+        "hiddenOnVariablesBar": false,
+        "ignoreTimeRange": true,
+        "excluded": false,
+        "showApplyAction": true
+      },
+      "title": "Entity Name",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING"
+    }
+  ]
+}
