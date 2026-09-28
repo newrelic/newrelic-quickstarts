@@ -1213,6 +1213,162 @@
           }
         }
       ]
+    },
+    {
+      "name": "Top Queries (Query Insights)",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Top Queries by Total Execution Time",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT db.query.text, mysql.events_statements_summary_by_digest.digest, mysql.events_statements_summary_by_digest.sum_timer_wait, mysql.events_statements_summary_by_digest.count_star, mysql.events_statements_summary_by_digest.sum_rows_examined, mysql.events_statements_summary_by_digest.sum_rows_sent WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) ORDER BY `mysql.events_statements_summary_by_digest.sum_timer_wait` DESC LIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Top Queries by Rows Examined",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT sum(`mysql.events_statements_summary_by_digest.sum_rows_examined`) WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) FACET db.query.text, mysql.events_statements_summary_by_digest.digest LIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Query Execution Rate",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerTopQuery SELECT rate(sum(`mysql.events_statements_summary_by_digest.count_star`), 1 SECOND) WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Query Samples & Blocking (Query Insights)",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Active Query Samples Over Time",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerQuerySample SELECT count(*) WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) FACET host.name TIMESERIES"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Samples by Wait Event Type",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerQuerySample SELECT count(*) WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) FACET mysql.wait_event_type LIMIT 10"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Currently Blocked Sessions",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM DbServerQuerySample SELECT mysql.session.id, mysql.threads.thread_id, db.query.text, mysql.blocking.blocker.count, mysql.blocking.blockers WHERE db.system.name = 'mysql' AND host.name IN ({{host_name}}) AND mysql.blocking.blocker.count > 0 LIMIT 20"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
     }
   ],
   "variables": [
