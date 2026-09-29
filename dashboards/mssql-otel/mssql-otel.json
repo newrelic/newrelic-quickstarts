@@ -1,5 +1,5 @@
 {
-  "name": "SQL Server OTel Monitoring",
+  "name": "DB360 SQL Server Monitoring",
   "description": "Comprehensive SQL Server monitoring dashboard using nrsqlserverreceiver metrics. Covers golden signals, performance, memory, storage, waits, locks, security, transactions, query monitoring, thread pool, tempdb, and Always-On. Multi-instance support via instance variable (service.instance.id).",
   "pages": [
     {
@@ -241,7 +241,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(db.query.full_text) AS 'Query', latest(sqlserver.query_hash) AS 'query_hash', latest(db.namespace) AS 'Database', sum(sqlserver.execution_count) AS 'Executions', sum(sqlserver.total_elapsed_time)/sum(sqlserver.execution_count) AS 'Avg Duration (s)', sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)', sum(sqlserver.total_logical_reads) AS 'Logical Reads' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET sqlserver.query_hash  "
+                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', latest(db.query.full_text) AS 'Query', latest(sqlserver.query_hash) AS 'query_hash', latest(db.namespace) AS 'Database', sum(sqlserver.execution_count) AS 'Executions', sum(sqlserver.total_elapsed_time)/sum(sqlserver.execution_count) AS 'Avg Duration (s)', sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)', sum(sqlserver.total_logical_reads) AS 'Logical Reads' WHERE service.instance.id IN ({{instance}}) FACET sqlserver.query_hash  "
               }
             ],
             "platformOptions": {
@@ -265,7 +265,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(sqlserver.execution_count) FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET service.instance.id, db.namespace TIMESERIES"
+                "query": "SELECT sum(sqlserver.execution_count) FROM DbServerTopQuery WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, db.namespace TIMESERIES"
               }
             ]
           }
@@ -286,7 +286,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)' FROM Log WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' FACET service.instance.id, db.namespace TIMESERIES"
+                "query": "SELECT sum(sqlserver.total_worker_time)/sum(sqlserver.execution_count) AS 'Avg CPU (s)' FROM DbServerTopQuery WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, db.namespace TIMESERIES"
               }
             ]
           }
@@ -332,7 +332,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.query_start) AS 'Start Time', latest(sqlserver.query_hash) AS 'query_hash',  latest(db.namespace) AS 'Database', latest(sqlserver.total_elapsed_time) AS 'Duration (s)', latest(db.query.full_text) AS 'Query', latest(user.name) AS 'User', latest(client.address) AS 'Host', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.blocking_session_id) AS 'Blocked By'  WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET sqlserver.query_start, sqlserver.session_id"
+                "query": "FROM DbServerQuerySample SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.query_start) AS 'Start Time', latest(sqlserver.query_hash) AS 'query_hash',  latest(db.namespace) AS 'Database', latest(sqlserver.total_elapsed_time) AS 'Duration (s)', latest(db.query.full_text) AS 'Query', latest(user.name) AS 'User', latest(client.address) AS 'Host', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.blocking_session_id) AS 'Blocked By'  WHERE service.instance.id IN ({{instance}}) FACET sqlserver.query_start, sqlserver.session_id"
               }
             ],
             "platformOptions": {
@@ -356,7 +356,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(sqlserver.wait_time) AS 'Wait (s)' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type TIMESERIES AUTO"
+                "query": "FROM DbServerQuerySample SELECT latest(sqlserver.wait_time) AS 'Wait (s)' WHERE service.instance.id IN ({{instance}}) AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type TIMESERIES AUTO"
               }
             ]
           }
@@ -377,7 +377,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' FACET service.instance.id, sqlserver.session_status TIMESERIES"
+                "query": "FROM DbServerQuerySample SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.session_status TIMESERIES"
               }
             ]
           }
@@ -398,7 +398,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_resource) AS 'Wait Resource', latest(user.name) AS 'User', latest(sqlserver.blocking_session_id) AS 'Blocked By', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.open_transaction_count) AS 'Open Txns', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_start) AS 'Start Time', latest(db.query.full_text) AS 'Query' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_time > 0 FACET sqlserver.session_id, sqlserver.blocking_session_id  "
+                "query": "FROM DbServerQuerySample SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.wait_type) AS 'Wait Type', latest(sqlserver.wait_resource) AS 'Wait Resource', latest(user.name) AS 'User', latest(sqlserver.blocking_session_id) AS 'Blocked By', latest(sqlserver.wait_time) AS 'Wait (s)', latest(sqlserver.open_transaction_count) AS 'Open Txns', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_start) AS 'Start Time', latest(db.query.full_text) AS 'Query' WHERE service.instance.id IN ({{instance}}) AND sqlserver.wait_time > 0 FACET sqlserver.session_id, sqlserver.blocking_session_id  "
               }
             ]
           }
@@ -419,7 +419,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.session_status = 'running' FACET service.instance.id, db.namespace  "
+                "query": "FROM DbServerQuerySample SELECT uniqueCount(sqlserver.session_id) WHERE service.instance.id IN ({{instance}}) AND sqlserver.session_status = 'running' FACET service.instance.id, db.namespace  "
               }
             ]
           }
@@ -440,7 +440,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.session_id) AS 'Blocked Sessions' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND numeric(sqlserver.blocking_session_id) > 0 FACET service.instance.id TIMESERIES"
+                "query": "FROM DbServerQuerySample SELECT uniqueCount(sqlserver.session_id) AS 'Blocked Sessions' WHERE service.instance.id IN ({{instance}}) AND numeric(sqlserver.blocking_session_id) > 0 FACET service.instance.id TIMESERIES"
               }
             ]
           }
@@ -486,7 +486,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_plan_hash) AS 'plan_hash', latest(sqlserver.query_plan) AS 'Execution Plan XML' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan != '' FACET  service.instance.id, sqlserver.query_plan_hash LIMIT 20"
+                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_plan_hash) AS 'plan_hash', latest(sqlserver.query_plan) AS 'Execution Plan XML' WHERE service.instance.id IN ({{instance}}) AND sqlserver.query_plan != '' FACET  service.instance.id, sqlserver.query_plan_hash LIMIT 20"
               }
             ],
             "platformOptions": {
@@ -510,7 +510,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', uniqueCount(sqlserver.query_plan_hash) AS 'Plan Count', latest(db.query.full_text) AS 'Query', latest(db.namespace) AS 'Database' WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.query_plan IS NOT NULL FACET sqlserver.query_hash LIMIT 20"
+                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', uniqueCount(sqlserver.query_plan_hash) AS 'Plan Count', latest(db.query.full_text) AS 'Query', latest(db.namespace) AS 'Database' WHERE service.instance.id IN ({{instance}}) AND sqlserver.query_plan IS NOT NULL FACET sqlserver.query_hash LIMIT 20"
               }
             ]
           }
@@ -553,7 +553,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.procedure_name) as ActiveProcedures WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) as ActiveProcedures WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
               }
             ],
             "facet": {
@@ -580,7 +580,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) as ExecPerMin WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' COMPARE WITH 1 hour ago FACET service.instance.id"
+                "query": "FROM DbServerTopProcedure SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) as ExecPerMin WHERE service.instance.id IN ({{instance}}) COMPARE WITH 1 hour ago FACET service.instance.id"
               }
             ],
             "facet": {
@@ -607,7 +607,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95Duration WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id"
+                "query": "FROM DbServerTopProcedure SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95Duration WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
               }
             ],
             "facet": {
@@ -644,7 +644,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure.total_spills) as TotalSpills WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) as TotalSpills WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
               }
             ],
             "facet": {
@@ -681,7 +681,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure.database_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure.database_name TIMESERIES"
               }
             ],
             "facet": {
@@ -708,7 +708,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -735,7 +735,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -762,7 +762,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -789,7 +789,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.procedure_execution_count) as Executions, percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95DurationMs, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, (sum(sqlserver.total_elapsed_time) - sum(sqlserver.total_worker_time)) / sum(sqlserver.procedure_execution_count) * 1000 as AvgWaitMs, sum(sqlserver.total_logical_reads) / sum(sqlserver.procedure_execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.procedure.total_spills) / sum(sqlserver.procedure_execution_count) as AvgSpillsPerExec WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET sqlserver.procedure_name, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopProcedure SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.procedure_execution_count) as Executions, percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95DurationMs, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, (sum(sqlserver.total_elapsed_time) - sum(sqlserver.total_worker_time)) / sum(sqlserver.procedure_execution_count) * 1000 as AvgWaitMs, sum(sqlserver.total_logical_reads) / sum(sqlserver.procedure_execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.procedure.total_spills) / sum(sqlserver.procedure_execution_count) as AvgSpillsPerExec WHERE service.instance.id IN ({{instance}}) FACET sqlserver.procedure_name, sqlserver.procedure.database_name"
               }
             ],
             "facet": {
@@ -838,7 +838,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure.database_name"
               }
             ],
             "facet": {
@@ -865,7 +865,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
               }
             ],
             "facet": {
@@ -892,7 +892,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
               }
             ],
             "facet": {
@@ -919,7 +919,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
               }
             ],
             "facet": {
@@ -946,7 +946,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.total_worker_time) as CpuTimeSec WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_worker_time) as CpuTimeSec WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
               }
             ],
             "facet": {
@@ -973,7 +973,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.total_logical_reads) as LogicalReads WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_logical_reads) as LogicalReads WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
               }
             ],
             "facet": {
@@ -1000,7 +1000,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -1027,7 +1027,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT average(sqlserver.procedure.avg_elapsed_time_ms) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT average(sqlserver.procedure.avg_elapsed_time_ms) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -1076,7 +1076,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure_execution_count) as Executions, average(sqlserver.procedure.avg_elapsed_time_ms) as AvgDurationMs, sum(sqlserver.procedure.total_spills) as Spills WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) as Executions, average(sqlserver.procedure.avg_elapsed_time_ms) as AvgDurationMs, sum(sqlserver.procedure.total_spills) as Spills WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
               }
             ],
             "facet": {
@@ -1103,7 +1103,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT uniqueCount(sqlserver.query_plan_hash) as Plans WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopQuery SELECT uniqueCount(sqlserver.query_plan_hash) as Plans WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
               }
             ],
             "facet": {
@@ -1130,7 +1130,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.procedure_execution_count) as Executions WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.procedure_metrics' FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) as Executions WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -1157,7 +1157,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT count(*) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.query_sample' AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type"
+                "query": "FROM DbServerQuerySample SELECT count(*) WHERE service.instance.id IN ({{instance}}) AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type"
               }
             ],
             "facet": {
@@ -1184,7 +1184,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs, sum(sqlserver.total_elapsed_time) as TotalElapsedSec, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, sum(sqlserver.total_logical_reads) / sum(sqlserver.execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.execution_count) as Executions WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.procedure_name IS NOT NULL FACET sqlserver.procedure_name, db.query.text"
+                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs, sum(sqlserver.total_elapsed_time) as TotalElapsedSec, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, sum(sqlserver.total_logical_reads) / sum(sqlserver.execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.execution_count) as Executions WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET sqlserver.procedure_name, db.query.text"
               }
             ],
             "facet": {
@@ -1211,7 +1211,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text"
+                "query": "FROM DbServerTopQuery SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text"
               }
             ],
             "facet": {
@@ -1238,7 +1238,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM Log SELECT sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs WHERE service.instance.id IN ({{instance}}) AND event.name = 'db.server.top_query' AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text TIMESERIES"
+                "query": "FROM DbServerTopQuery SELECT sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text TIMESERIES"
               }
             ],
             "facet": {
