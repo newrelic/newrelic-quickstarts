@@ -448,76 +448,6 @@
       ]
     },
     {
-      "name": "Execution Plans",
-      "description": "Query execution plans with drill-down by normalized hash",
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 12,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "### Execution Plans\n\nQuery execution plans (ShowPlanXML) captured for top queries. To drill into a specific query:\n"
-          }
-        },
-        {
-          "title": "Execution Plan XML",
-          "layout": {
-            "column": 1,
-            "row": 3,
-            "width": 12,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "facet": {
-              "showOtherSeries": false
-            },
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerQueryPlan SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.query_hash) AS 'query_hash', latest(sqlserver.query_plan_hash) AS 'plan_hash' WHERE service.instance.id IN ({{instance}}) AND sqlserver.query_plan != '' FACET  service.instance.id, sqlserver.query_plan_hash LIMIT 20"
-              }
-            ],
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Plan Regression Detection (Queries with Multiple Plans)",
-          "layout": {
-            "column": 1,
-            "row": 7,
-            "width": 12,
-            "height": 4
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.table"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerQueryPlan SELECT latest(service.instance.id) AS 'Instance', uniqueCount(sqlserver.query_plan_hash) AS 'Plan Count', latest(db.namespace) AS 'Database' WHERE service.instance.id IN ({{instance}}) AND sqlserver.query_plan IS NOT NULL FACET sqlserver.query_hash LIMIT 20"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
       "name": "Stored Procedures - Overview",
       "description": "High-level stored procedure performance KPIs",
       "widgets": [
@@ -534,7 +464,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "### Stored Procedures - Overview\n\nHigh-level KPIs for stored procedure performance: total active procedures, execution rate, p95 duration, spills, and a ranked table of top procedures by CPU, reads, and wait time."
+            "text": "### Stored Procedures - Overview\n\nHigh-level KPIs for stored procedure performance: total active procedures by instance and database, average execution rate per minute, and a ranked table of top procedures by elapsed time, CPU, executions, and logical reads."
           }
         },
         {
@@ -542,7 +472,7 @@
           "layout": {
             "column": 1,
             "row": 3,
-            "width": 3,
+            "width": 6,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -553,7 +483,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) as ActiveProcedures WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name, db.namespace) as ActiveProcedures WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
               }
             ],
             "facet": {
@@ -567,9 +497,9 @@
         {
           "title": "Avg Executions / min",
           "layout": {
-            "column": 4,
+            "column": 7,
             "row": 3,
-            "width": 3,
+            "width": 6,
             "height": 2
           },
           "linkedEntityGuids": null,
@@ -592,85 +522,11 @@
           }
         },
         {
-          "title": "p95 Avg Duration (ms)",
-          "layout": {
-            "column": 7,
-            "row": 3,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95Duration WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "WARNING",
-                "value": 1000
-              },
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 5000
-              }
-            ]
-          }
-        },
-        {
-          "title": "Total Spills",
-          "layout": {
-            "column": 10,
-            "row": 3,
-            "width": 3,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.billboard"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) as TotalSpills WHERE service.instance.id IN ({{instance}}) FACET service.instance.id"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            },
-            "thresholds": [
-              {
-                "alertSeverity": "WARNING",
-                "value": 500
-              },
-              {
-                "alertSeverity": "CRITICAL",
-                "value": 1500
-              }
-            ]
-          }
-        },
-        {
           "title": "Active Procedures by Database",
           "layout": {
             "column": 1,
             "row": 5,
-            "width": 3,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -681,7 +537,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure.database_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, db.namespace TIMESERIES"
               }
             ],
             "facet": {
@@ -695,36 +551,9 @@
         {
           "title": "Executions/min by Procedure",
           "layout": {
-            "column": 4,
-            "row": 5,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "p95 Avg Duration by Procedure (ms)",
-          "layout": {
             "column": 7,
             "row": 5,
-            "width": 3,
+            "width": 6,
             "height": 3
           },
           "linkedEntityGuids": null,
@@ -735,7 +564,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
+                "query": "FROM DbServerTopProcedure SELECT rate(sum(sqlserver.procedure_execution_count), 1 minute) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, db.namespace, sqlserver.procedure_name TIMESERIES"
               }
             ],
             "facet": {
@@ -747,34 +576,7 @@
           }
         },
         {
-          "title": "Total Spills by Procedure",
-          "layout": {
-            "column": 10,
-            "row": 5,
-            "width": 3,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Top Stored Procedures",
+          "title": "Top Procedures",
           "layout": {
             "column": 1,
             "row": 8,
@@ -789,7 +591,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.procedure_execution_count) as Executions, percentile(sqlserver.procedure.avg_elapsed_time_ms, 95) as P95DurationMs, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, (sum(sqlserver.total_elapsed_time) - sum(sqlserver.total_worker_time)) / sum(sqlserver.procedure_execution_count) * 1000 as AvgWaitMs, sum(sqlserver.total_logical_reads) / sum(sqlserver.procedure_execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.procedure.total_spills) / sum(sqlserver.procedure_execution_count) as AvgSpillsPerExec WHERE service.instance.id IN ({{instance}}) FACET sqlserver.procedure_name, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopProcedure SELECT latest(sqlserver.procedure_name) AS 'Procedure Name', sum(sqlserver.total_elapsed_time) as TotalElapsedTime, sum(sqlserver.total_worker_time) as TotalCpuTime, sum(sqlserver.procedure_execution_count) as Executions, sum(sqlserver.total_logical_reads) as TotalLogicalReads WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_id, db.namespace LIMIT 20"
               }
             ],
             "facet": {
@@ -819,7 +621,7 @@
             "id": "viz.markdown"
           },
           "rawConfiguration": {
-            "text": "### Procedure Breakdown\n\nDetailed breakdown of stored procedure resource consumption: execution share, elapsed time, CPU, logical reads, spills, and execution/duration trends over time."
+            "text": "### Procedure Breakdown\n\nBreakdown of stored procedure activity by database: procedure count, execution share, and elapsed time share per procedure, with a detailed statement-level view of queries executed within each procedure."
           }
         },
         {
@@ -838,7 +640,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure.database_name"
+                "query": "FROM DbServerTopProcedure SELECT uniqueCount(sqlserver.procedure_name) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, db.namespace"
               }
             ],
             "facet": {
@@ -865,7 +667,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name, db.namespace"
               }
             ],
             "facet": {
@@ -892,272 +694,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Spills Share by Procedure",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure.total_spills) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "CPU Time by Procedure (s)",
-          "layout": {
-            "column": 5,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_worker_time) as CpuTimeSec WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Logical Reads by Procedure",
-          "layout": {
-            "column": 9,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_logical_reads) as LogicalReads WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Execution Trend (Stacked Area)",
-          "layout": {
-            "column": 1,
-            "row": 9,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Avg Duration Trend (ms)",
-          "layout": {
-            "column": 7,
-            "row": 9,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.area"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT average(sqlserver.procedure.avg_elapsed_time_ms) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Procedure Statements",
-      "description": "Statement-level analysis scoped to stored procedures",
-      "widgets": [
-        {
-          "title": "",
-          "layout": {
-            "column": 1,
-            "row": 1,
-            "width": 12,
-            "height": 2
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.markdown"
-          },
-          "rawConfiguration": {
-            "text": "### Procedure Statements\n\nStatement-level performance across all stored procedures: top statements by duration and CPU, wait breakdown, and per-statement duration trends. Use the SQL Server Instance variable to scope to a specific instance."
-          }
-        },
-        {
-          "title": "Top Procedures by Execution",
-          "layout": {
-            "column": 1,
-            "row": 3,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) as Executions, average(sqlserver.procedure.avg_elapsed_time_ms) as AvgDurationMs, sum(sqlserver.procedure.total_spills) as Spills WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Plan Count per Procedure",
-          "layout": {
-            "column": 7,
-            "row": 3,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.bar"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerQueryPlan SELECT uniqueCount(sqlserver.query_plan_hash) as Plans WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, sqlserver.procedure.database_name"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Execution Trend by Procedure",
-          "layout": {
-            "column": 1,
-            "row": 6,
-            "width": 8,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.procedure_execution_count) as Executions WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name TIMESERIES"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Wait Breakdown",
-          "layout": {
-            "column": 9,
-            "row": 6,
-            "width": 4,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerQuerySample SELECT count(*) WHERE service.instance.id IN ({{instance}}) AND sqlserver.wait_type != '' FACET service.instance.id, sqlserver.wait_type"
+                "query": "FROM DbServerTopProcedure SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) FACET service.instance.id, sqlserver.procedure_name, db.namespace"
               }
             ],
             "facet": {
@@ -1172,7 +709,7 @@
           "title": "Statements by Procedure",
           "layout": {
             "column": 1,
-            "row": 9,
+            "row": 6,
             "width": 12,
             "height": 5
           },
@@ -1184,61 +721,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs, sum(sqlserver.total_elapsed_time) as TotalElapsedSec, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, sum(sqlserver.total_logical_reads) / sum(sqlserver.execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.execution_count) as Executions WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET sqlserver.procedure_name, db.query.text"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Statement Duration Breakdown",
-          "layout": {
-            "column": 1,
-            "row": 14,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.pie"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopQuery SELECT sum(sqlserver.total_elapsed_time) WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text"
-              }
-            ],
-            "facet": {
-              "showOtherSeries": false
-            },
-            "platformOptions": {
-              "ignoreTimeRange": false
-            }
-          }
-        },
-        {
-          "title": "Avg Duration per Statement (ms) Over Time",
-          "layout": {
-            "column": 7,
-            "row": 14,
-            "width": 6,
-            "height": 3
-          },
-          "linkedEntityGuids": null,
-          "visualization": {
-            "id": "viz.line"
-          },
-          "rawConfiguration": {
-            "nrqlQueries": [
-              {
-                "accountIds": [],
-                "query": "FROM DbServerTopQuery SELECT sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL FACET service.instance.id, sqlserver.procedure_name, db.query.text TIMESERIES"
+                "query": "FROM DbServerTopQuery SELECT latest(service.instance.id) AS 'Instance', latest(sqlserver.procedure_name) AS 'Procedure Name', sum(sqlserver.total_elapsed_time) / sum(sqlserver.execution_count) * 1000 as AvgDurationMs, sum(sqlserver.total_elapsed_time) as TotalElapsedSec, sum(sqlserver.total_worker_time) / sum(sqlserver.total_elapsed_time) * 100 as CpuPct, sum(sqlserver.total_logical_reads) / sum(sqlserver.execution_count) as AvgLogicalReadsPerExec, sum(sqlserver.execution_count) as Executions WHERE service.instance.id IN ({{instance}}) AND sqlserver.procedure_name IS NOT NULL AND sqlserver.procedure_name != '' FACET service.instance.id, sqlserver.procedure_id, db.namespace, db.query.text"
               }
             ],
             "facet": {
