@@ -1,0 +1,75 @@
+slug: aisix-ai-gateway
+title: AISIX AI Gateway
+description: |
+  ## Why monitor AISIX AI Gateway
+
+  AI gateway traffic combines long-running streams, provider failures, model-specific latency, and token usage. AISIX is an Apache-2.0-licensed open-source AI gateway maintained by API7.ai, and it exposes Prometheus metrics for these operational signals.
+
+  ### AISIX AI Gateway quickstart highlights
+
+  This Community quickstart uses New Relic's existing Prometheus Remote Write integration to provide:
+
+  - Request throughput and outcomes by model
+  - End-to-end and time-to-first-token latency percentiles
+  - Input, output, and cache-inclusive total token throughput
+  - Conditional cache outcomes and guardrail blocks, plus configuration health
+
+  The AISIX metrics listener is unauthenticated by design. Keep it on a private network and allow access only from the Prometheus scraper.
+
+  ### Limit Remote Write to the dashboard metrics
+
+  Prometheus Remote Write sends every scraped series unless it is filtered. Use a dedicated `remote_write` entry with a metric-name allowlist so that this quickstart sends only the seven metric families used by the dashboard. This also avoids exporting detailed AISIX metric families that may contain internal identity labels.
+
+  ```yaml
+  remote_write:
+    - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=aisix-ai-gateway
+      authorization:
+        credentials: YOUR_NEW_RELIC_LICENSE_KEY
+      write_relabel_configs:
+        - source_labels: [__name__]
+          regex: aisix_(requests_total|request_(e2e_latency|ttft)_seconds_bucket|llm_tokens_by_client_total|cache_requests_total|guardrail_blocks_total|config_last_reload_successful)
+          action: keep
+  ```
+
+  Replace the example credential with a New Relic Ingest - License key. The URL above is the US endpoint; select the endpoint for your New Relic data region from the linked setup guide. If the Prometheus server already has other `remote_write` destinations, keep them as separate entries.
+summary: |
+  Monitor AISIX AI Gateway traffic, latency, low-cardinality token throughput, policy outcomes, and configuration health from Prometheus metrics in New Relic.
+level: Community
+authors:
+  - Yilia Lin
+keywords:
+  - infrastructure
+  - networking
+  - open source monitoring
+documentation:
+  - name: Send Prometheus metric data to New Relic
+    description: |
+      Configure Prometheus Remote Write to send metric data to New Relic.
+    url: >-
+      https://docs.newrelic.com/docs/infrastructure/prometheus-integrations/install-configure-remote-write/set-your-prometheus-remote-write-integration/
+  - name: Prometheus remote write relabeling
+    description: |
+      Review how Prometheus applies write relabeling before sending samples.
+    url: >-
+      https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write
+  - name: AISIX metrics reference
+    description: |
+      Review the metrics exposed by the open-source AISIX AI Gateway.
+    url: >-
+      https://docs.api7.ai/ai-gateway/reference/metrics
+  - name: AISIX metric labels
+    description: |
+      Review AISIX metric label defaults and cardinality controls.
+    url: >-
+      https://docs.api7.ai/ai-gateway/reference/metric-labels
+  - name: AISIX source code
+    description: |
+      Review the Apache-2.0-licensed AISIX source code and releases.
+    url: >-
+      https://github.com/api7/aisix
+icon: logo.svg
+dashboards:
+  - aisix-ai-gateway
+dataSourceIds:
+  - prometheus
+  - prometheus-agent-mode
