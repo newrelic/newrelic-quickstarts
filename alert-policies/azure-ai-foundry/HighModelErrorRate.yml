@@ -1,0 +1,24 @@
+name: High Model Call Error Rate
+
+description: |+
+  This alert triggers when the share of failed Azure AI Foundry model calls rises, which often means throttling or a deployment problem.
+
+type: STATIC
+nrql:
+  query: "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') FROM Span WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 10
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+  - priority: WARNING
+    operator: ABOVE
+    threshold: 5
+    thresholdDuration: 300
+    thresholdOccurrences: ALL
+
+violationTimeLimitSeconds: 86400
