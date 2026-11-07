@@ -1,0 +1,394 @@
+{
+  "name": "vLLM",
+  "description": "vLLM inference servers: scheduler queue, KV cache, token throughput, finished requests and latency, from Prometheus remote write.",
+  "pages": [
+    {
+      "name": "vLLM",
+      "description": null,
+      "widgets": [
+        {
+          "title": "",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "# vLLM\n\nMetrics from the vLLM `/metrics` endpoint, sent with Prometheus remote write.\n\n- A growing waiting queue, KV cache close to 100% and preemptions mean the server needs more KV cache or more replicas.\n- Time to first token matters for interactive use, inter-token latency for streaming."
+          }
+        },
+        {
+          "title": "Servers",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT latest(`vllm:num_requests_running`) AS 'Running', latest(`vllm:num_requests_waiting`) AS 'Waiting', latest(`vllm:kv_cache_usage_perc`) * 100 AS 'KV cache (%)' WHERE instrumentation.provider = 'prometheus' FACET instance, model_name LIMIT MAX"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Requests running and waiting",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT average(`vllm:num_requests_running`) AS 'Running', average(`vllm:num_requests_waiting`) AS 'Waiting' WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "KV cache usage (%)",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT max(`vllm:kv_cache_usage_perc`) * 100 AS 'KV cache (%)' WHERE instrumentation.provider = 'prometheus' FACET instance, model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            },
+            "thresholds": {
+              "isLabelVisible": true,
+              "lines": [
+                {
+                  "value": 95
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Preemptions per minute",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`vllm:num_preemptions_total`), 1 minute) AS 'Preemptions' WHERE instrumentation.provider = 'prometheus' FACET instance, model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Token throughput (tokens/s)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`vllm:prompt_tokens_total`), 1 second) AS 'Prompt', rate(sum(`vllm:generation_tokens_total`), 1 second) AS 'Generation' WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Prefix cache hit rate (%)",
+          "layout": {
+            "column": 5,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`vllm:prefix_cache_hits_total`) / sum(`vllm:prefix_cache_queries_total`) * 100 AS 'Hit rate (%)' WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Finished requests per minute by reason",
+          "layout": {
+            "column": 9,
+            "row": 7,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT rate(sum(`vllm:request_success_total`), 1 minute) WHERE instrumentation.provider = 'prometheus' FACET finished_reason TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Time to first token (s)",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT bucketPercentile(`vllm:time_to_first_token_seconds_bucket`, 50, 95) WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Inter-token latency (s)",
+          "layout": {
+            "column": 5,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT bucketPercentile(`vllm:inter_token_latency_seconds_bucket`, 50, 95) WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "End to end and queue time p95 (s)",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT bucketPercentile(`vllm:e2e_request_latency_seconds_bucket`, 95) AS 'End to end', bucketPercentile(`vllm:request_queue_time_seconds_bucket`, 95) AS 'Queue' WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        },
+        {
+          "title": "Average prompt and generation length (tokens)",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "FROM Metric SELECT sum(`vllm:request_prompt_tokens_sum`) / sum(`vllm:request_prompt_tokens_count`) AS 'Prompt', sum(`vllm:request_generation_tokens_sum`) / sum(`vllm:request_generation_tokens_count`) AS 'Generation' WHERE instrumentation.provider = 'prometheus' FACET model_name TIMESERIES AUTO"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "yAxisLeft": {
+              "zero": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variables": []
+}

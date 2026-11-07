@@ -1,0 +1,26 @@
+name: vLLM KV cache nearly full
+
+description: |+
+  - KV cache usage of a vLLM server stayed above 95% for 15 minutes.
+  - New requests wait in the queue and running ones get preempted and recomputed.
+  - Resolution: lower --max-num-seqs or --max-model-len, raise --gpu-memory-utilization, or add replicas.
+
+type: STATIC
+nrql:
+  query: "FROM Metric SELECT max(`vllm:kv_cache_usage_perc`) WHERE instrumentation.provider = 'prometheus' FACET instance, model_name"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 0.95
+    thresholdDuration: 900
+    thresholdOccurrences: ALL
+
+signal:
+  aggregationWindow: 60
+  aggregationMethod: EVENT_FLOW
+  aggregationDelay: 120
+
+violationTimeLimitSeconds: 86400

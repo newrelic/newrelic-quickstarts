@@ -1,0 +1,26 @@
+name: vLLM high time to first token
+
+description: |+
+  - The 95th percentile of time to first token stayed above 2 seconds for 10 minutes.
+  - Users of interactive applications wait too long for the first token.
+  - Tune the threshold to your SLO.
+
+type: STATIC
+nrql:
+  query: "FROM Metric SELECT bucketPercentile(`vllm:time_to_first_token_seconds_bucket`, 95) WHERE instrumentation.provider = 'prometheus' FACET model_name"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 2
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+signal:
+  aggregationWindow: 60
+  aggregationMethod: EVENT_FLOW
+  aggregationDelay: 120
+
+violationTimeLimitSeconds: 86400
