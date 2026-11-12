@@ -1,0 +1,1462 @@
+{
+  "name": "Amazon Bedrock AgentCore — Agents, Models & Cost",
+  "description": "Monitor Amazon Bedrock AgentCore agents, Bedrock model calls, tools, tokens and cost from OpenTelemetry GenAI spans.",
+  "pages": [
+    {
+      "name": "Agent orchestration",
+      "description": null,
+      "widgets": [
+        {
+          "title": "About this dashboard",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 5,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "Monitors **Amazon Bedrock AgentCore** agents and the Bedrock models they call, from OpenTelemetry GenAI spans (`gen_ai.*`).\n\n- **invoke_agent** spans are agent runs\n- **chat** spans are model calls\n- **execute_tool** spans are tool calls\n\nPick one or more services with the **Service** selector at the top (it lists services running on AgentCore). Cost uses built-in per-model prices; see the *Tokens & cost* page."
+          }
+        },
+        {
+          "title": "Activity",
+          "layout": {
+            "column": 6,
+            "row": 1,
+            "width": 7,
+            "height": 5
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent') AS 'Agent runs', filter(count(*), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) AS 'Model calls', filter(count(*), WHERE gen_ai.operation.name = 'execute_tool') AS 'Tool calls', filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent' AND otel.status_code = 'ERROR') * 100 / filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent') AS 'Agent error %', filter(percentile(duration.ms / 1000, 95), WHERE gen_ai.operation.name = 'invoke_agent') AS 'Agent run p95 (s)' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Operations over time",
+          "layout": {
+            "column": 1,
+            "row": 6,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET gen_ai.operation.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Agent runs by agent",
+          "layout": {
+            "column": 1,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Agent run time (seconds)",
+          "layout": {
+            "column": 7,
+            "row": 9,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration.ms / 1000) AS 'average', percentile(duration.ms / 1000, 95) AS 'p95' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Model calls per agent run — loops show up here",
+          "layout": {
+            "column": 1,
+            "row": 12,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(*), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) / filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Agents",
+          "layout": {
+            "column": 7,
+            "row": 12,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'runs', average(duration.ms / 1000) AS 'avg seconds', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'error %' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name AS 'agent'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Recent agent runs",
+          "layout": {
+            "column": 1,
+            "row": 15,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT latest(timestamp) AS 'time', latest(duration.ms / 1000) AS 'seconds', latest(otel.status_code) AS 'status', latest(session.id) AS 'session', latest(service.version) AS 'release', latest(trace.id) AS 'trace' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name AS 'agent', span.id LIMIT 25"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Costliest requests (by trace)",
+          "layout": {
+            "column": 1,
+            "row": 18,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(sum(gen_ai.usage.input_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 0.8, if(gen_ai.request.model LIKE '%nova-lite%', 0.06, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 3, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.15, if(gen_ai.request.model LIKE '%kimi-k2.5%', 0.6, {{inputPrice}}))))) + gen_ai.usage.output_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 3.2, if(gen_ai.request.model LIKE '%nova-lite%', 0.24, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 15, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.6, if(gen_ai.request.model LIKE '%kimi-k2.5%', 3, {{outputPrice}})))))), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) / 1000000 AS 'est. cost (USD)', filter(count(*), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) AS 'model calls', filter(count(*), WHERE gen_ai.operation.name = 'execute_tool') AS 'tool calls', filter(count(*), WHERE otel.status_code = 'ERROR') AS 'errors', filter(sum(gen_ai.usage.input_tokens + gen_ai.usage.output_tokens), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) AS 'tokens' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET trace.id AS 'trace' LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Model performance",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Every model, side by side",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'calls', average(duration.ms / 1000) AS 'avg s', percentile(duration.ms / 1000, 95) AS 'p95 s', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'error %', average(gen_ai.server.time_to_first_token) AS 'avg time to first token (ms)', average(gen_ai.usage.input_tokens) AS 'avg input tokens', average(gen_ai.usage.output_tokens) AS 'avg output tokens' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model AS 'model'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Model call latency, p95 (seconds)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms / 1000, 95) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Time to first token, p95 (ms)",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(gen_ai.server.time_to_first_token, 95) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Model call errors (%) — throttling shows here first",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Output tokens per second, by model",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.output_tokens) / (sum(duration.ms) / 1000) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Model calls by model",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Calls by provider",
+          "layout": {
+            "column": 9,
+            "row": 10,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.provider.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Which model each agent ran on",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'invocations', average(duration.ms / 1000) AS 'avg seconds', average(gen_ai.usage.input_tokens) AS 'avg input tokens', average(gen_ai.usage.output_tokens) AS 'avg output tokens' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name AS 'agent', gen_ai.request.model AS 'model'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "AI Monitoring: model calls New Relic recorded",
+          "layout": {
+            "column": 1,
+            "row": 16,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'calls', average(duration) AS 'avg s', sum(response.usage.total_tokens) AS 'tokens' FROM LlmChatCompletionSummary WHERE appName IN ({{service}}) FACET request.model, vendor"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tool calls & dependencies",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Tool calls",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'calls', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'error %', average(duration.ms) AS 'avg ms', percentile(duration.ms, 95) AS 'p95 ms' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' FACET gen_ai.tool.name AS 'tool'"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Tool errors (%)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE (otel.status_code = 'ERROR' OR (gen_ai.tool.status IS NOT NULL AND gen_ai.tool.status != 'success'))) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' FACET gen_ai.tool.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Tool latency, p95 (ms)",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms, 95) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' FACET gen_ai.tool.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Tool calls per agent run",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(*), WHERE gen_ai.operation.name = 'execute_tool') / filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Top tool errors",
+          "layout": {
+            "column": 7,
+            "row": 7,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'errors', latest(otel.status_description) AS 'example message' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' AND (otel.status_code = 'ERROR' OR (gen_ai.tool.status IS NOT NULL AND gen_ai.tool.status != 'success')) FACET gen_ai.tool.name AS 'tool' LIMIT 20"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Latest tool failures",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, gen_ai.tool.name, gen_ai.tool.status, otel.status_code, otel.status_description, trace.id FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' AND (otel.status_code = 'ERROR' OR (gen_ai.tool.status IS NOT NULL AND gen_ai.tool.status != 'success')) LIMIT 25"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Recent tool calls — arguments and results",
+          "layout": {
+            "column": 1,
+            "row": 13,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, gen_ai.tool.name AS 'tool', gen_ai.tool.call.arguments AS 'arguments', gen_ai.tool.call.result AS 'result', duration.ms, otel.status_code AS 'status' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tokens & cost",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Spend (estimate)",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 7,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 0.8, if(gen_ai.request.model LIKE '%nova-lite%', 0.06, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 3, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.15, if(gen_ai.request.model LIKE '%kimi-k2.5%', 0.6, {{inputPrice}}))))) + gen_ai.usage.output_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 3.2, if(gen_ai.request.model LIKE '%nova-lite%', 0.24, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 15, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.6, if(gen_ai.request.model LIKE '%kimi-k2.5%', 3, {{outputPrice}})))))) / 1000000 AS 'Cost (USD)', sum(gen_ai.usage.input_tokens) AS 'Input tokens', sum(gen_ai.usage.output_tokens) AS 'Output tokens', (sum(gen_ai.usage.input_tokens) + sum(gen_ai.usage.output_tokens)) / filter(count(*), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) AS 'Tokens / call' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')"
+              }
+            ]
+          }
+        },
+        {
+          "title": "How cost is estimated",
+          "layout": {
+            "column": 8,
+            "row": 1,
+            "width": 5,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "Cost = input tokens × input price + output tokens × output price, per million tokens, **by model**.\n\nBuilt-in prices (Amazon Bedrock on-demand standard tier, us-east-1; Sonnet 4.6 at Anthropic's list price). Models are matched by name, so `us.`, `eu.` and `global.` inference-profile IDs match too:\n\n| Model | Input | Output |\n|---|---|---|\n| `amazon.nova-pro` | $0.8 | $3.2 |\n| `amazon.nova-lite` | $0.06 | $0.24 |\n| `anthropic.claude-sonnet-4-6` | $3 | $15 |\n| `openai.gpt-oss-120b` | $0.15 | $0.6 |\n| `moonshotai.kimi-k2.5` | $0.6 | $3 |\n\nAny other model costs **$0** until you type fallback prices in the variables at the top (they default to 0, so no invented numbers). The *Models without a built-in price* table lists them. To add a model or update a price, edit the `if(gen_ai.request.model LIKE …)` lists in the cost widgets. Cache tokens are not billed here."
+          }
+        },
+        {
+          "title": "Tokens by model",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens + gen_ai.usage.output_tokens) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Estimated cost over time (USD)",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 0.8, if(gen_ai.request.model LIKE '%nova-lite%', 0.06, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 3, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.15, if(gen_ai.request.model LIKE '%kimi-k2.5%', 0.6, {{inputPrice}}))))) + gen_ai.usage.output_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 3.2, if(gen_ai.request.model LIKE '%nova-lite%', 0.24, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 15, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.6, if(gen_ai.request.model LIKE '%kimi-k2.5%', 3, {{outputPrice}})))))) / 1000000 AS 'Cost (USD)' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Estimated cost by model (USD)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 0.8, if(gen_ai.request.model LIKE '%nova-lite%', 0.06, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 3, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.15, if(gen_ai.request.model LIKE '%kimi-k2.5%', 0.6, {{inputPrice}}))))) + gen_ai.usage.output_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 3.2, if(gen_ai.request.model LIKE '%nova-lite%', 0.24, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 15, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.6, if(gen_ai.request.model LIKE '%kimi-k2.5%', 3, {{outputPrice}})))))) / 1000000 AS 'Cost (USD)' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Estimated cost by agent (USD)",
+          "layout": {
+            "column": 7,
+            "row": 8,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 0.8, if(gen_ai.request.model LIKE '%nova-lite%', 0.06, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 3, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.15, if(gen_ai.request.model LIKE '%kimi-k2.5%', 0.6, {{inputPrice}}))))) + gen_ai.usage.output_tokens * if(gen_ai.request.model LIKE '%nova-pro%', 3.2, if(gen_ai.request.model LIKE '%nova-lite%', 0.24, if(gen_ai.request.model LIKE '%claude-sonnet-4-6%', 15, if(gen_ai.request.model LIKE '%gpt-oss-120b%', 0.6, if(gen_ai.request.model LIKE '%kimi-k2.5%', 3, {{outputPrice}})))))) / 1000000 AS 'Cost (USD)' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Input vs output tokens, by model",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.input_tokens) AS 'input', sum(gen_ai.usage.output_tokens) AS 'output' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Prompt size: input tokens per model call, by model",
+          "layout": {
+            "column": 7,
+            "row": 11,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(gen_ai.usage.input_tokens) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Prompt cache: share of input tokens read from cache (%)",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.cache_read.input_tokens) * 100 / sum(gen_ai.usage.input_tokens) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Prompt cache tokens",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT sum(gen_ai.usage.cache_read.input_tokens) AS 'Read from cache', sum(gen_ai.usage.cache_creation.input_tokens) AS 'Written to cache' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Recent model calls with token usage",
+          "layout": {
+            "column": 1,
+            "row": 17,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, gen_ai.request.model, gen_ai.usage.input_tokens AS 'input', gen_ai.usage.output_tokens AS 'output', duration.ms / 1000 AS 'seconds', trace.id FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') AND gen_ai.usage.input_tokens IS NOT NULL LIMIT 25"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Models without a built-in price",
+          "layout": {
+            "column": 1,
+            "row": 20,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'calls', sum(gen_ai.usage.input_tokens) AS 'input tokens', sum(gen_ai.usage.output_tokens) AS 'output tokens' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') AND gen_ai.request.model NOT LIKE '%nova-pro%' AND gen_ai.request.model NOT LIKE '%nova-lite%' AND gen_ai.request.model NOT LIKE '%claude-sonnet-4-6%' AND gen_ai.request.model NOT LIKE '%gpt-oss-120b%' AND gen_ai.request.model NOT LIKE '%kimi-k2.5%' FACET gen_ai.request.model AS 'model'"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Answer quality",
+      "description": null,
+      "widgets": [
+        {
+          "title": "How answers are scored",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "Quality scores recorded by your evaluators, one `LlmFeedbackMessage` event per metric per answer (`category` = metric name, `rating` = score). The page works with any metric names, such as groundedness, answer relevancy, toxicity, bias or topic control, and follows the **Service** selector.\n\nScores are 0-1, higher is better. A score **below 0.9** is treated as needing review on this page."
+          }
+        },
+        {
+          "title": "Average score by metric",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 8,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(rating) FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) FACET category"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Score by metric over time",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(rating) FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) FACET category TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Scores recorded",
+          "layout": {
+            "column": 9,
+            "row": 5,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'Scores recorded', percentage(count(*), WHERE rating < 0.9) AS 'Below 0.9 %' FROM LlmFeedbackMessage WHERE service.name IN ({{service}})"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Which checks fail (score below 0.9)",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) AND rating < 0.9 FACET category"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Low scores over time",
+          "layout": {
+            "column": 5,
+            "row": 8,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) AND rating < 0.9 FACET category TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Scores by service and metric",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'scores', average(rating) AS 'average', percentage(count(*), WHERE rating < 0.9) AS 'below 0.9 %' FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) FACET service.name AS 'service', category AS 'metric' LIMIT 50"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Answers that need review",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 12,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, category, rating, message, trace_id, session.id FROM LlmFeedbackMessage WHERE service.name IN ({{service}}) AND rating < 0.9 LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reliability & safety",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Reliability",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 8,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'Error % (all operations)', filter(count(*), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') AND otel.status_code = 'ERROR') AS 'Failed model calls', filter(count(*), WHERE gen_ai.operation.name = 'execute_tool' AND (otel.status_code = 'ERROR' OR (gen_ai.tool.status IS NOT NULL AND gen_ai.tool.status != 'success'))) AS 'Failed tool calls', filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent' AND otel.status_code = 'ERROR') AS 'Failed agent runs' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL"
+              }
+            ]
+          }
+        },
+        {
+          "title": "What this page shows",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 4
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.markdown"
+          },
+          "rawConfiguration": {
+            "text": "Failures taken from span status and the error message, grouped into causes in *Why calls fail*. Guardrail and content-filter blocks appear there when an error message mentions them. Logs are the warning and error records from the same services."
+          }
+        },
+        {
+          "title": "Error % by operation",
+          "layout": {
+            "column": 1,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET gen_ai.operation.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Why calls fail — error taxonomy",
+          "layout": {
+            "column": 7,
+            "row": 5,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL AND otel.status_code = 'ERROR' FACET cases(WHERE otel.status_description LIKE '%hrottl%' OR otel.status_description LIKE '%429%' OR otel.status_description LIKE '%TooManyRequests%' AS 'Throttled', WHERE otel.status_description LIKE '%maximum token limit%' OR otel.status_description LIKE '%max_tokens%' AS 'Hit max tokens', WHERE otel.status_description LIKE '%Concurrent invocations%' AS 'Concurrency limit', WHERE otel.status_description LIKE '%Unknown tool%' AS 'Unknown tool called', WHERE otel.status_description LIKE '%uardrail%' OR otel.status_description LIKE '%content filter%' AS 'Guardrail / content filter', WHERE otel.status_description LIKE '%ValidationException%' OR otel.status_description LIKE '%invalid%' AS 'Invalid request', WHERE otel.status_description LIKE '%AccessDenied%' OR otel.status_description LIKE '%not authorized%' AS 'Access denied', WHERE otel.status_description LIKE '%imeout%' OR otel.status_description LIKE '%timed out%' AS 'Timeout', WHERE otel.status_description LIKE '%overloaded%' OR otel.status_description LIKE '%ServiceUnavailable%' OR otel.status_description LIKE '%InternalServer%' AS 'Model service error', WHERE otel.status_description LIKE '%onnect%' AS 'Connection error', WHERE otel.status_code = 'ERROR' AS 'Other')"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Failure types over time",
+          "layout": {
+            "column": 1,
+            "row": 8,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL AND otel.status_code = 'ERROR' FACET cases(WHERE otel.status_description LIKE '%hrottl%' OR otel.status_description LIKE '%429%' OR otel.status_description LIKE '%TooManyRequests%' AS 'Throttled', WHERE otel.status_description LIKE '%maximum token limit%' OR otel.status_description LIKE '%max_tokens%' AS 'Hit max tokens', WHERE otel.status_description LIKE '%Concurrent invocations%' AS 'Concurrency limit', WHERE otel.status_description LIKE '%Unknown tool%' AS 'Unknown tool called', WHERE otel.status_description LIKE '%uardrail%' OR otel.status_description LIKE '%content filter%' AS 'Guardrail / content filter', WHERE otel.status_description LIKE '%ValidationException%' OR otel.status_description LIKE '%invalid%' AS 'Invalid request', WHERE otel.status_description LIKE '%AccessDenied%' OR otel.status_description LIKE '%not authorized%' AS 'Access denied', WHERE otel.status_description LIKE '%imeout%' OR otel.status_description LIKE '%timed out%' AS 'Timeout', WHERE otel.status_description LIKE '%overloaded%' OR otel.status_description LIKE '%ServiceUnavailable%' OR otel.status_description LIKE '%InternalServer%' AS 'Model service error', WHERE otel.status_description LIKE '%onnect%' AS 'Connection error', WHERE otel.status_code = 'ERROR' AS 'Other') TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Latest failures",
+          "layout": {
+            "column": 1,
+            "row": 11,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, service.name, gen_ai.operation.name, gen_ai.request.model, gen_ai.agent.name, gen_ai.tool.name, otel.status_description, trace.id FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL AND otel.status_code = 'ERROR' LIMIT 25"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Warning and error logs",
+          "layout": {
+            "column": 1,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Log WHERE service.name IN ({{service}}) AND severity.number >= 13 FACET otel.library.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Latest warnings and errors",
+          "layout": {
+            "column": 7,
+            "row": 14,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT timestamp, severity.text, otel.library.name, message, trace.id FROM Log WHERE service.name IN ({{service}}) AND severity.number >= 13 LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Drift & regression",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Agent run p95 (seconds), by release",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms / 1000, 95) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET service.version TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Error %, by release",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentage(count(*), WHERE otel.status_code = 'ERROR') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET service.version TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Tokens per model call, by release",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT (sum(gen_ai.usage.input_tokens) + sum(gen_ai.usage.output_tokens)) / count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET service.version TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Models in use over time",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Tool calls per agent run, by release",
+          "layout": {
+            "column": 5,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(*), WHERE gen_ai.operation.name = 'execute_tool') / filter(count(*), WHERE gen_ai.operation.name = 'invoke_agent') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET service.version TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Today against yesterday",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.billboard"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(percentile(duration.ms / 1000, 95), WHERE gen_ai.operation.name = 'invoke_agent') AS 'Agent run p95 s', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'Error %', filter(sum(gen_ai.usage.input_tokens + gen_ai.usage.output_tokens), WHERE gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content')) AS 'Tokens' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL COMPARE WITH 1 day ago"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Releases seen (by service.version)",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT earliest(timestamp) AS 'first seen', latest(timestamp) AS 'last seen', uniqueCount(trace.id) AS 'requests' FROM Span WHERE service.name IN ({{service}}) FACET service.name AS 'service', service.version AS 'release' LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Full-stack correlation",
+      "description": null,
+      "widgets": [
+        {
+          "title": "Services in agent traces",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) FROM Span WHERE trace.id IN (SELECT trace.id FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' LIMIT MAX) FACET service.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Agent end to end, p95 (seconds)",
+          "layout": {
+            "column": 7,
+            "row": 1,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT percentile(duration.ms / 1000, 95) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET service.name TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Average duration by operation (seconds)",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT average(duration.ms / 1000) FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IS NOT NULL FACET gen_ai.operation.name"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Model calls failed, by model",
+          "layout": {
+            "column": 7,
+            "row": 4,
+            "width": 6,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT filter(count(*), WHERE otel.status_code = 'ERROR') FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name IN ('chat', 'text_completion', 'generate_content') FACET gen_ai.request.model TIMESERIES AUTO"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Agent runs by session",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountIds": [],
+                "query": "SELECT count(*) AS 'agent runs', average(duration.ms / 1000) AS 'avg seconds', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'error %' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' AND session.id IS NOT NULL FACET session.id AS 'session' LIMIT 25"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "service",
+      "title": "Service",
+      "type": "NRQL",
+      "isMultiSelection": true,
+      "replacementStrategy": "STRING",
+      "defaultValues": [
+        {
+          "value": {
+            "string": "travel-agent-agentcore"
+          }
+        }
+      ],
+      "nrqlQuery": {
+        "accountIds": [],
+        "query": "SELECT uniques(service.name) FROM Span WHERE gen_ai.operation.name IS NOT NULL AND deployment.environment.name LIKE 'bedrock-agentcore%' SINCE 7 days ago"
+      },
+      "items": null,
+      "options": {
+        "ignoreTimeRange": false,
+        "excluded": false
+      }
+    },
+    {
+      "name": "inputPrice",
+      "title": "Fallback input price (USD per 1M tokens)",
+      "type": "STRING",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER",
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0"
+          }
+        }
+      ],
+      "items": null,
+      "options": {
+        "ignoreTimeRange": false,
+        "excluded": false
+      }
+    },
+    {
+      "name": "outputPrice",
+      "title": "Fallback output price (USD per 1M tokens)",
+      "type": "STRING",
+      "isMultiSelection": false,
+      "replacementStrategy": "NUMBER",
+      "defaultValues": [
+        {
+          "value": {
+            "string": "0"
+          }
+        }
+      ],
+      "items": null,
+      "options": {
+        "ignoreTimeRange": false,
+        "excluded": false
+      }
+    }
+  ]
+}
