@@ -1,0 +1,26 @@
+name: vLLM requests queueing
+
+description: |+
+  - More than 10 requests have been waiting to be scheduled for 10 minutes.
+  - The engine is saturated and time to first token grows.
+  - Resolution: add replicas or move traffic to another server.
+
+type: STATIC
+nrql:
+  query: "FROM Metric SELECT max(`vllm:num_requests_waiting`) WHERE instrumentation.provider = 'prometheus' FACET instance, model_name"
+
+valueFunction: SINGLE_VALUE
+
+terms:
+  - priority: CRITICAL
+    operator: ABOVE
+    threshold: 10
+    thresholdDuration: 600
+    thresholdOccurrences: ALL
+
+signal:
+  aggregationWindow: 60
+  aggregationMethod: EVENT_FLOW
+  aggregationDelay: 120
+
+violationTimeLimitSeconds: 86400
