@@ -164,7 +164,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT latest(timestamp) AS 'time', latest(duration.ms / 1000) AS 'seconds', latest(otel.status_code) AS 'status', latest(session.id) AS 'session', latest(service.version) AS 'release', latest(trace.id) AS 'trace' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name AS 'agent', span.id LIMIT 25"
+                "query": "SELECT latest(timestamp) AS 'time', latest(duration.ms / 1000) AS 'seconds', latest(otel.status_code) AS 'status', latest(session.id) AS 'session', latest(service.version) AS 'release', latest(trace.id) AS 'trace' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'invoke_agent' FACET gen_ai.agent.name AS 'agent', id LIMIT 25"
               }
             ]
           }
@@ -407,7 +407,7 @@
             "nrqlQueries": [
               {
                 "accountIds": [],
-                "query": "SELECT count(*) AS 'calls', percentage(count(*), WHERE otel.status_code = 'ERROR') AS 'error %', average(duration.ms) AS 'avg ms', percentile(duration.ms, 95) AS 'p95 ms' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' FACET gen_ai.tool.name AS 'tool'"
+                "query": "SELECT count(*) AS 'calls', percentage(count(*), WHERE (otel.status_code = 'ERROR' OR (gen_ai.tool.status IS NOT NULL AND gen_ai.tool.status != 'success'))) AS 'error %', average(duration.ms) AS 'avg ms', percentile(duration.ms, 95) AS 'p95 ms' FROM Span WHERE service.name IN ({{service}}) AND gen_ai.operation.name = 'execute_tool' FACET gen_ai.tool.name AS 'tool'"
               }
             ]
           }
@@ -1406,7 +1406,7 @@
       "defaultValues": [
         {
           "value": {
-            "string": "travel-agent-agentcore"
+            "string": "*"
           }
         }
       ],
